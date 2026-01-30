@@ -1,4 +1,4 @@
-# 🎨 Frontend Architecture & UI/UX Spec
+# 🎨 BN-Aura: Frontend Architecture & UI/UX Spec
 
 ## 1. Design Philosophy: "Premium Medical AI"
 - **Color Palette**: 

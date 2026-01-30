@@ -1,4 +1,4 @@
-# 🚀 Deployment & Environment Setup
+# 🚀 BN-Aura: Deployment & Environment Setup
 
 ## 1. Environment Variables (.env.local)
 เพื่อให้ระบบทำงานได้สมบูรณ์ จำเป็นต้องตั้งค่า Key ต่อไปนี้:
@@ -8,13 +8,14 @@
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Anon Key สำหรับ Client-side
 - `SUPABASE_SERVICE_ROLE_KEY`: Service Role Key (ใช้ใน Server-side เท่านั้น)
 
-### 🔹 AI Services
-- `GOOGLE_GEMINI_API_KEY`: สำหรับ Gemini 1.5 Analysis (Pro & Flash)
+### 🔹 AI Services (via Vercel AI Gateway)
+- `VERCEL_AI_GATEWAY_URL`: URL ของ Vercel AI Gateway (เช่น https://gateway.ai.vercel.com/v1/projects/...)
+- `GOOGLE_GEMINI_API_KEY`: สำหรับ Gemini 1.5 Analysis (ตั้งค่าผ่าน Gateway)
 - `GOOGLE_CLOUD_VISION_KEY`: สำหรับ Image Processing
 
 ### 🔹 Communication & Email
 - `RESEND_API_KEY`: สำหรับส่ง Email แจ้งเตือน/ใบเสนอราคา
-- `RESEND_FROM_EMAIL`: Email ต้นทาง (เช่น noreply@cliniciq.com)
+- `RESEND_FROM_EMAIL`: Email ต้นทาง (เช่น noreply@bn-aura.com)
 
 ### 🔹 Deployment Optimization (Optional)
 - `FAST_BUILD=1`: เปิดโหมด Build เร็วบน Vercel (ข้ามบางขั้นตอนที่ไม่จำเป็นใน Production)

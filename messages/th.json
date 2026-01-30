@@ -1,0 +1,18 @@
+{
+  "common": {
+    "title": "BN-Aura",
+    "description": "Premium Aesthetic Intelligence"
+  },
+  "auth": {
+    "login": "เข้าสู่ระบบ",
+    "register": "สมัครสมาชิก",
+    "email": "อีเมล",
+    "password": "รหัสผ่าน",
+    "welcome_back": "ยินดีต้อนรับกลับมา",
+    "enter_details": "กรุณากรอกรายละเอียดเพื่อเข้าสู่ระบบ",
+    "signin": "ลงชื่อเข้าใช้",
+    "forgot_password": "ลืมรหัสผ่าน?",
+    "no_account": "ยังไม่มีบัญชี?",
+    "signup_now": "สมัครสมาชิกตอนนี้"
+  }
+}

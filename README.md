@@ -60,4 +60,3 @@ pnpm build
 
 ---
 Developed with ❤️ for the future of Aesthetic Excellence.
-

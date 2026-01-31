@@ -10,7 +10,6 @@ import {
   ArrowDownRight,
   UserPlus,
   Zap,
-  BarChart3,
   Sparkles,
   Loader2
 } from 'lucide-react';
@@ -18,6 +17,9 @@ import { cn } from '@/lib/utils';
 import { Link } from '@/i18n/routing';
 import { useEffect, useState, useMemo } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import MyCustomersSection from '@/components/sales/MyCustomersSection';
+import CommissionTracker from '@/components/sales/CommissionTracker';
+import ChatCenter from '@/components/sales/ChatCenter';
 
 interface Stat {
   label: string;
@@ -32,13 +34,18 @@ interface RecentLead {
   name: string;
   status: string;
   score: number;
+  category: 'hot' | 'warm' | 'cold';
+  confidence: number;
   time: string;
+  estimatedValue: number;
+  priority: 'immediate' | 'follow_up' | 'nurture';
 }
 
 export default function SalesDashboard() {
   const [stats, setStats] = useState<Stat[]>([]);
   const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -46,6 +53,9 @@ export default function SalesDashboard() {
     async function fetchSalesData() {
       setLoading(true);
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) setUserId(user.id);
+
         const { data: leads, error: leadsError } = await supabase
           .from('sales_leads')
           .select('*')
@@ -70,13 +80,20 @@ export default function SalesDashboard() {
           { label: 'AI Proposals Sent', value: (proposals?.length || 0).toString(), change: '+28%', trend: 'up', icon: Zap },
         ]);
 
-        setRecentLeads(leads?.slice(0, 3).map(l => ({
+        // Fetch and process real leads
+        const processedLeads: RecentLead[] = (leads || []).map(l => ({
           id: l.id,
-          name: l.name,
-          status: l.status,
+          name: l.metadata?.customerProfile?.name || 'Unknown Customer',
+          status: l.status === 'new' ? 'ใหม่' : l.status === 'won' ? 'ปิดการขาย' : 'กำลังติดตาม',
           score: l.score || 0,
-          time: new Date(l.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        })) || []);
+          category: l.category as 'hot' | 'warm' | 'cold',
+          confidence: l.confidence || 0,
+          time: new Date(l.created_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
+          estimatedValue: l.metadata?.scoring?.estimatedValue || 0,
+          priority: (l.metadata?.scoring?.priority || 'nurture') as 'immediate' | 'follow_up' | 'nurture'
+        })).slice(0, 5);
+
+        setRecentLeads(processedLeads);
 
       } catch (err) {
         console.error('Sales Dashboard Error:', err);
@@ -98,26 +115,57 @@ export default function SalesDashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-10 pb-20"
+    >
       {/* Welcome Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-heading font-bold text-white uppercase tracking-tight">Sales Intelligence</h1>
-          <p className="text-muted-foreground font-light text-sm italic">Empowering aesthetic advisors with AI-driven insights.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
+          >
+            <Zap className="w-4 h-4" />
+            Active Intelligence
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+          >
+            Sales <span className="text-primary text-glow">Intelligence</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Empowering aesthetic advisors with real-time cognitive insights.
+          </motion.p>
         </div>
-        <div className="flex gap-3">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex gap-3"
+        >
           <Link href="/analysis">
-            <button className="px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm font-semibold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-primary" />
+            <button className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2 group">
+              <Sparkles className="w-4 h-4 text-primary group-hover:animate-pulse" />
               Quick AI Scan
             </button>
           </Link>
           <Link href="/sales/leads">
-            <button className="px-5 py-2.5 bg-primary text-primary-foreground rounded-xl text-sm font-semibold shadow-premium hover:brightness-110 transition-all active:scale-95">
+            <button className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-premium hover:brightness-110 transition-all active:scale-95">
               Manage Kanban
             </button>
           </Link>
-        </div>
+        </motion.div>
       </div>
 
       {/* Stats Grid */}
@@ -127,19 +175,20 @@ export default function SalesDashboard() {
             key={stat.label}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card p-6 rounded-2xl relative overflow-hidden group"
+            transition={{ delay: 0.4 + i * 0.1 }}
+            whileHover={{ y: -5, transition: { duration: 0.2 } }}
+            className="glass-card p-6 rounded-3xl relative overflow-hidden group"
           >
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
-              <stat.icon className="w-12 h-12 text-primary" />
+            <div className="absolute -top-4 -right-4 p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-500">
+              <stat.icon className="w-16 h-16 text-primary" />
             </div>
             
             <div className="space-y-2 relative z-10">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-widest">{stat.label}</p>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{stat.label}</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-white">{stat.value}</span>
+                <span className="text-3xl font-black text-white tracking-tighter">{stat.value}</span>
                 <span className={cn(
-                  "text-[10px] font-bold flex items-center",
+                  "text-[10px] font-bold flex items-center px-1.5 py-0.5 rounded-full bg-white/5",
                   stat.trend === 'up' ? "text-emerald-400" : "text-rose-400"
                 )}>
                   {stat.trend === 'up' ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
@@ -152,59 +201,96 @@ export default function SalesDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Performance Chart Placeholder */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="lg:col-span-2 glass-card p-8 rounded-[40px] border border-white/10 min-h-[400px] flex flex-col justify-center items-center text-center space-y-4"
-        >
-          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-2">
-            <BarChart3 className="w-8 h-8" />
-          </div>
-          <h3 className="text-xl font-bold text-white">Sales Funnel Analytics</h3>
-          <p className="text-muted-foreground max-w-xs font-light">
-            AI-powered performance metrics will be displayed here in the next phase.
-          </p>
-        </motion.div>
+        {/* Left Column: Intelligence Components */}
+        <div className="lg:col-span-2 space-y-8">
+          {/* Earning Intelligence */}
+          {userId && (
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <CommissionTracker salesId={userId!} />
+            </motion.div>
+          )}
+          
+          {/* Chat Intelligence */}
+          {userId && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <ChatCenter salesId={userId!} />
+            </motion.div>
+          )}
+        </div>
 
-        {/* Recent Hot Leads */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6"
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-white">Hot Leads (AI Scored)</h3>
-            <Users className="w-5 h-5 text-primary opacity-60" />
-          </div>
+        {/* Right Column: CRM Components */}
+        <div className="space-y-8">
+          {/* Recent Hot Leads */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 }}
+            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-8 opacity-5">
+              <Users className="w-32 h-32 text-primary" />
+            </div>
 
-          <div className="space-y-4">
-            {recentLeads.map((lead) => (
-              <div key={lead.id} className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all cursor-pointer group">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="text-sm font-bold text-white group-hover:text-primary transition-colors">{lead.name}</span>
-                  <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded uppercase tracking-tighter">
-                    Score: {lead.score}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center text-xs text-muted-foreground font-light">
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3 h-3" />
-                    {lead.time}
-                  </div>
-                  <span className="italic">{lead.status}</span>
-                </div>
+            <div className="flex items-center justify-between relative z-10">
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Hot Leads <span className="text-primary">Intel</span></h3>
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                <Target className="w-4 h-4" />
               </div>
-            ))}
-          </div>
+            </div>
 
-          <Link href="/sales/leads">
-            <button className="w-full mt-4 py-3 bg-white/5 border border-white/10 rounded-xl text-xs font-bold uppercase tracking-widest text-white hover:bg-white/10 transition-all">
-              View All Leads
-            </button>
-          </Link>
-        </motion.div>
+            <div className="space-y-4 relative z-10">
+              {recentLeads.map((lead, idx) => (
+                <motion.div 
+                  key={lead.id} 
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.8 + idx * 0.1 }}
+                  className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all cursor-pointer group hover:bg-white/[0.08]"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-sm font-bold text-white group-hover:text-primary transition-colors">{lead.name}</span>
+                    <span className="text-[9px] font-black text-primary bg-primary/10 px-2 py-0.5 rounded-full uppercase tracking-tighter border border-primary/20 shadow-[0_0_10px_rgba(var(--primary),0.2)]">
+                      AI Score: {lead.score}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center text-[10px] text-muted-foreground font-light">
+                    <div className="flex items-center gap-1.5">
+                      <Clock className="w-3 h-3 text-primary/60" />
+                      {lead.time}
+                    </div>
+                    <span className="italic font-medium text-white/40">{lead.status}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <Link href="/sales/leads" className="block relative z-10">
+              <button className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 transition-all active:scale-95">
+                Review All Prospects
+              </button>
+            </Link>
+          </motion.div>
+
+          {/* Managed Customers */}
+          {userId && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.9 }}
+            >
+              <MyCustomersSection salesId={userId!} />
+            </motion.div>
+          )}
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

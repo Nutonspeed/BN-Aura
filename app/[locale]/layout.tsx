@@ -1,9 +1,11 @@
-import {NextIntlClientProvider} from 'next-intl';
-import {getMessages, setRequestLocale} from 'next-intl/server';
-import {notFound} from 'next/navigation';
-import {routing} from '@/i18n/routing';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
+import { routing } from '@/i18n/routing';
+import { AuthProvider } from '@/hooks/useAuth';
 import {IBM_Plex_Sans_Thai, Anuphan, Inter} from "next/font/google";
 import "@/app/globals.css";
+import PDPAModal from "@/components/ui/PDPAModal";
 
 const ibmPlexThai = IBM_Plex_Sans_Thai({
   subsets: ["thai", "latin"],
@@ -56,8 +58,11 @@ export default async function LocaleLayout({
         className={`${ibmPlexThai.variable} ${anuphan.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
         <NextIntlClientProvider messages={messages}>
-          <div className="fixed inset-0 bg-grain pointer-events-none z-[9999]" />
-          {children}
+          <AuthProvider>
+            <div className="fixed inset-0 bg-grain pointer-events-none z-[9999]" />
+            <PDPAModal />
+            {children}
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

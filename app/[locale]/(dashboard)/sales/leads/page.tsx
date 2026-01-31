@@ -7,7 +7,7 @@ import {
   MoreHorizontal, 
   Clock,
   Sparkles,
-  Loader2
+  Target
 } from 'lucide-react';
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
@@ -67,109 +67,170 @@ export default function LeadsKanbanPage() {
   };
 
   return (
-    <div className="space-y-8 h-[calc(100vh-160px)] flex flex-col">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-10 h-[calc(100vh-160px)] flex flex-col pb-6"
+    >
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 flex-shrink-0">
-        <div>
-          <h1 className="text-3xl font-heading font-bold text-white uppercase tracking-tight">Leads Management</h1>
-          <p className="text-muted-foreground font-light text-sm italic">AI-driven sales pipeline for BN-Aura.</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 flex-shrink-0">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
+          >
+            <Target className="w-4 h-4" />
+            Revenue Pipeline
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+          >
+            Leads <span className="text-primary text-glow">Management</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating high-value aesthetic transformations.
+          </motion.p>
         </div>
-        <div className="flex gap-3">
-          <div className="relative hidden sm:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+          className="flex items-center gap-4"
+        >
+          <div className="relative hidden lg:block group">
+            <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Search leads..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all w-64"
+              className="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm text-white focus:outline-none focus:border-primary/50 transition-all w-72 backdrop-blur-md relative z-10"
             />
           </div>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-xl font-semibold shadow-premium hover:brightness-110 transition-all active:scale-95 text-sm">
-            <Plus className="w-4 h-4" />
-            <span>Add New Lead</span>
+          <button className="flex items-center gap-3 px-6 py-3 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs">
+            <Plus className="w-4 h-4 stroke-[3px]" />
+            <span>Register New Lead</span>
           </button>
-        </div>
+        </motion.div>
       </div>
 
       {/* Kanban Board */}
       {loading ? (
-        <div className="flex-1 flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="w-10 h-10 text-primary animate-spin" />
-          <p className="text-muted-foreground animate-pulse font-light uppercase tracking-widest text-xs">Synchronizing Pipeline...</p>
+        <div className="flex-1 flex flex-col items-center justify-center space-y-6">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+            <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
+          </div>
+          <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Synchronizing Pipeline Node...</p>
         </div>
       ) : (
-        <div className="flex-1 flex gap-6 overflow-x-auto pb-4 scrollbar-hide">
-          {COLUMNS.map((column) => (
-            <div key={column.id} className="flex-shrink-0 w-80 flex flex-col gap-4">
-              <div className="flex items-center justify-between px-2">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xs font-bold text-white uppercase tracking-widest opacity-60">{column.title}</h3>
-                  <span className="bg-white/5 text-muted-foreground text-[10px] px-2 py-0.5 rounded-full border border-white/5">
+        <div className="flex-1 flex gap-8 overflow-x-auto pb-6 custom-scrollbar">
+          {COLUMNS.map((column, colIdx) => (
+            <motion.div 
+              key={column.id} 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + colIdx * 0.1 }}
+              className="flex-shrink-0 w-[340px] flex flex-col gap-6"
+            >
+              <div className="flex items-center justify-between px-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
+                  <h3 className="text-xs font-black text-white uppercase tracking-[0.2em]">{column.title}</h3>
+                  <span className="bg-white/5 text-primary text-[10px] font-black px-2.5 py-0.5 rounded-full border border-primary/20 shadow-sm">
                     {getLeadsByStatus(column.id).length}
                   </span>
                 </div>
-                <button className="text-muted-foreground hover:text-white transition-colors">
-                  <Plus className="w-3 h-3" />
+                <button className="p-1.5 hover:bg-white/5 rounded-lg text-muted-foreground hover:text-white transition-all">
+                  <Plus className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="flex-1 space-y-4 bg-white/[0.01] border border-white/[0.03] rounded-[32px] p-4 min-h-[200px]">
+              <div className="flex-1 space-y-5 bg-white/[0.02] border border-white/[0.05] rounded-[40px] p-5 min-h-[300px] backdrop-blur-sm relative group/column overflow-y-auto custom-scrollbar">
                 <AnimatePresence mode="popLayout">
                   {getLeadsByStatus(column.id).length > 0 ? (
-                    getLeadsByStatus(column.id).map((lead) => (
+                    getLeadsByStatus(column.id).map((lead, idx) => (
                       <motion.div
                         key={lead.id}
                         layout
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        className="glass-card p-4 rounded-2xl border border-white/10 hover:border-primary/30 transition-all cursor-grab active:cursor-grabbing group relative"
+                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                        transition={{ duration: 0.3, delay: idx * 0.05 }}
+                        whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                        className="glass-card p-5 rounded-[28px] border border-white/5 hover:border-primary/40 transition-all cursor-grab active:cursor-grabbing group/card relative overflow-hidden"
                       >
-                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+                        {/* Status Accent Glow */}
+                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 blur-3xl opacity-0 group-hover/card:opacity-100 transition-opacity" />
+                        
+                        <div className="absolute top-5 right-5 opacity-0 group-hover/card:opacity-100 transition-all">
+                          <button className="p-1.5 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-white">
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
                         </div>
                         
-                        <div className="flex items-start gap-3 mb-4">
-                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary text-xs font-bold">
+                        <div className="flex items-start gap-4 mb-5">
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary text-sm font-black border border-primary/20 shadow-premium group-hover/card:scale-110 transition-transform duration-500">
                             {lead.name?.split(' ').map((n: string) => n[0]).join('') || 'L'}
                           </div>
-                          <div className="space-y-0.5">
-                            <h4 className="text-sm font-bold text-white truncate w-40">{lead.name}</h4>
-                            <p className="text-[10px] text-muted-foreground truncate">{lead.email}</p>
+                          <div className="space-y-1 pr-6">
+                            <h4 className="text-sm font-black text-white group-hover/card:text-primary transition-colors truncate w-44">{lead.name}</h4>
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-1 h-1 rounded-full bg-emerald-400" />
+                              <p className="text-[10px] text-muted-foreground truncate w-40 font-medium italic">{lead.email}</p>
+                            </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                          <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-light">
-                            <Clock className="w-3 h-3" />
-                            {new Date(lead.created_at).toLocaleDateString()}
+                        <div className="flex items-center justify-between pt-5 border-t border-white/5">
+                          <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+                            <Clock className="w-3 h-3 text-primary/60" />
+                            {new Date(lead.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <Link href={`/analysis?leadId=${lead.id}`}>
-                              <button className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
-                                <Sparkles className="w-3 h-3" />
+                              <button className="p-2 rounded-xl bg-primary text-primary-foreground hover:brightness-110 transition-all shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+                                <Sparkles className="w-3.5 h-3.5 stroke-[2.5px]" />
                               </button>
                             </Link>
-                            <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-white/5 border border-white/5 text-white text-[10px] font-bold">
-                              {lead.score || 0}%
+                            <div className="flex flex-col items-end">
+                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Scoring</span>
+                              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white text-[10px] font-black">
+                                {lead.score || 0}%
+                              </div>
                             </div>
                           </div>
                         </div>
                       </motion.div>
                     ))
                   ) : (
-                    <div className="h-full flex flex-col items-center justify-center text-center opacity-20 py-10">
-                      <div className="w-10 h-10 border-2 border-dashed border-white/20 rounded-xl mb-2" />
-                      <p className="text-[10px] font-bold uppercase tracking-tighter">No Leads</p>
+                    <div className="h-full flex flex-col items-center justify-center text-center opacity-30 py-16 space-y-4">
+                      <div className="w-16 h-16 border-2 border-dashed border-white/10 rounded-3xl flex items-center justify-center">
+                        <Plus className="w-6 h-6 text-white/20" />
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white">Empty Node</p>
+                        <p className="text-[9px] text-muted-foreground font-light max-w-[120px]">Awaiting new lead registrations.</p>
+                      </div>
                     </div>
                   )}
                 </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

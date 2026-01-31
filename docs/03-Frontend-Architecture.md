@@ -1,56 +1,49 @@
-# 🎨 BN-Aura: Frontend Architecture & UI/UX Spec
+# 🎨 BN-Aura: Frontend Architecture & UI/UX Spec (Production v2.0)
 
 ## 1. Design Philosophy: "Premium Medical AI"
 - **Color Palette**: 
-  - Main: Midnight Navy (`#020617`) - ตั้งค่าใน `hsl(var(--background))`
-  - Accent: Blue/Cyan Gradients (`primary`, `secondary` ใน tailwind config)
-  - Glassmorphism: `glass-white` (`rgba(255, 255, 255, 0.03)`) และ `glass-border`
+  - Main: Midnight Navy (`#050505`) - พื้นหลังเน้นความลึกและมีมิติ
+  - Accent: Blue/Cyan/Emerald Gradients (`primary`, `emerald` ใน tailwind config)
+  - Glassmorphism: `glass-premium` (การผสมผสานระหว่างความใสและเบลอระดับสูง)
 - **Typography**: 
-  - Thai: **Noto Sans Thai** (Body), **Kanit** (Display/Headings)
-  - English: Inter (Fallback)
-  - กำหนดผ่าน CSS Variables: `--font-noto-thai` และ `--font-kanit`
+  - Thai: **IBM Plex Sans Thai** (Body/UI), **Anuphan** (Display/Headings)
+  - English: **Inter** (Technical/Numbers)
 - **Visual Effects**: 
-  - **Ambient Glow**: `glow-pulse` animation
-  - **Cinematic Shadows**: `shadow-premium` (0 4px 20px -5px rgba(0, 0, 0, 0.1))
-  - **Grain Effect**: `animate-grain` สำหรับ Texture พื้นหลังที่ดูพรีเมียม
-  - **Smooth Transitions**: ใช้ `Framer Motion` ผ่าน `PageTransition` component
+  - **Aura Glow**: เอฟเฟกต์แสงเรืองรอบคอมโพเนนต์สำคัญ
+  - **Luxury Motion**: ใช้ `Framer Motion` สำหรับการเคลื่อนไหวที่นุ่มนวลและมีระดับ
+  - **Grain Texture**: พื้นผิวละเอียดเพิ่มความรู้สึก Enterprise-grade
 
-## 2. Directory Structure (App Router)
+## 2. Directory Structure (Next.js 15 App Router)
 ```
 /app
-├── layout.tsx          # Root layout (Providers, Fonts, SEO)
+├── layout.tsx          # Root layout (Fonts, SEO, PDPA Modal)
 ├── [locale]
-│   ├── layout.tsx      # Locale-specific layout (Intl, SmoothScroll)
-│   ├── page.tsx        # Landing Page
-│   ├── /(auth)         # Authentication flows
-│   ├── /(dashboard)    # Role-based dashboards
-│   │   ├── /clinic     # Clinic Owner/Admin views
-│   │   ├── /sales      # Sales Staff tools
-│   │   ├── /customer   # Customer profile & results
-│   │   └── /super-admin# System-wide management
-│   ├── /analysis       # AI Skin Scan interface
-│   └── /ar-simulator   # 3D/AR Face simulation
+│   ├── layout.tsx      # Locale Provider, Auth Provider
+│   ├── page.tsx        # Luxury Marketing Landing Page
+│   ├── /(auth)         # Secure Login Flow
+│   ├── /(dashboard)    # Unified Dashboard Hub
+│   │   ├── layout.tsx  # Sidebar Drawer & Top Header
+│   │   ├── /admin      # Super Admin Global Console
+│   │   ├── /clinic     # Executive Intelligence & Operations
+│   │   ├── /sales      # Sales Intelligence & Magic Scan
+│   │   ├── /beautician # Clinical Node & Protocol Registry
+│   │   └── /customer   # Elite Member Portal & Journey
+│   └── /analysis       # Legacy Redirect to Sales Intelligence
 ```
 
-## 3. Core Design Patterns
-- **Glass Card**: 
-  ```tsx
-  className="bg-white/5 backdrop-blur-3xl border border-white/10 shadow-premium"
-  ```
-- **Pulsing Glow**: ใช้สำหรับจุดที่ต้องการดึงดูดสายตา (เช่น AI Scanning)
-  ```tsx
-  className="animate-glow-pulse bg-primary/20"
-  ```
-- **Responsive Handling**: 
-  - Mobile: เน้นการใช้งานมือเดียว (Bottom sheets, Large tap targets)
-  - Desktop: Sidebar navigation พร้อม Glassmorphism effect
+## 3. Component Architecture
+- **/components/ui**: คอมโพเนนต์พื้นฐานที่ได้รับการปรับแต่งให้เป็น Glassmorphism
+- **/components/sales**: เครื่องมือเฉพาะทาง เช่น `CommissionTracker`, `ChatCenter`
+- **/components/analytics**: ระบบ Visualisation เช่น `RevenueChart`, `StrategicForecast`
+- **/components/customer**: ระบบติดตาม เช่น `TreatmentJourney`, `MySalesRep`
+- **/components/beautician**: ระบบปฏิบัติการ เช่น `TaskQueue`, `ProtocolInsights`
 
-## 4. Global State & Layout
-- **Middleware**: จัดการ i18n และ Auth Redirects (รองรับการ Refresh Session อัตโนมัติ)
-- **Smooth Scroll**: ใช้ `lenis` หรือ Custom implementation เพื่อความรู้สึกลื่นไหล
-- **IntlProvider**: จัดการคำแปล TH/EN แบบ Client-side
+## 4. Animation Strategy (Framer Motion)
+- **Spring Physics**: ใช้ค่า Stiffness/Damping เพื่อความรู้สึกที่เป็นธรรมชาติ
+- **AnimatePresence**: จัดการการเปลี่ยนสถานะของ UI (เช่น การเปลี่ยน Step ใน Magic Scan)
+- **Layout Animations**: ใช้ `layout` prop เพื่อให้ UI ปรับขนาดอย่างนุ่มนวล
+- **Staggered Entrance**: การปรากฏของข้อมูลใน Grid แบบเรียงลำดับ
 
-## 5. Animation Strategy
-- **Entry**: `initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}`
-- **Hover**: Scale เล็กน้อย (1.02) และเพิ่มความสว่าง (Brightness)
-- **Loading**: Skeleton screens ที่มี Pulsing effect สีเทาเข้ม
+---
+**สถานะเอกสาร**: ✅ **LATEST & VERIFIED**
+**อัปเดตล่าสุด**: 31 มกราคม 2569

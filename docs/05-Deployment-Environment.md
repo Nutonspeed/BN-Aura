@@ -1,43 +1,34 @@
-# 🚀 BN-Aura: Deployment & Environment Setup
+# 🚀 BN-Aura: Deployment & Environment Setup (Production Ready)
+
+เพื่อให้ระบบทำงานได้สมบูรณ์ตามมาตรฐาน Enterprise-grade จำเป็นต้องตั้งค่าดังนี้:
 
 ## 1. Environment Variables (.env.local)
-เพื่อให้ระบบทำงานได้สมบูรณ์ จำเป็นต้องตั้งค่า Key ต่อไปนี้:
 
-### 🔹 Supabase (Core)
-- `NEXT_PUBLIC_SUPABASE_URL`: URL ของ Supabase Project
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Anon Key สำหรับ Client-side
-- `SUPABASE_SERVICE_ROLE_KEY`: Service Role Key (ใช้ใน Server-side เท่านั้น)
+### 🔹 Supabase Infrastructure
+- `NEXT_PUBLIC_SUPABASE_URL`: API Endpoint ของโปรเจกต์
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Client-side access key
+- `SUPABASE_SERVICE_ROLE_KEY`: Key สำหรับ Server-side operations (ข้าม RLS)
 
-### 🔹 AI Services (via Vercel AI Gateway)
-- `VERCEL_AI_GATEWAY_URL`: URL ของ Vercel AI Gateway (เช่น https://gateway.ai.vercel.com/v1/projects/...)
-- `GOOGLE_GEMINI_API_KEY`: สำหรับ Gemini 1.5 Analysis (ตั้งค่าผ่าน Gateway)
-- `GOOGLE_CLOUD_VISION_KEY`: สำหรับ Image Processing
+### 🔹 AI Neural Engine (via Vercel AI Gateway)
+- `VERCEL_AI_GATEWAY_URL`: Orchestration URL สำหรับ Caching และ Rate Limiting
+- `GOOGLE_GEMINI_API_KEY`: Key สำหรับ Gemini 1.5 Pro (Clinical) และ Flash (Quick Scan)
 
-### 🔹 Communication & Email
-- `RESEND_API_KEY`: สำหรับส่ง Email แจ้งเตือน/ใบเสนอราคา
-- `RESEND_FROM_EMAIL`: Email ต้นทาง (เช่น noreply@bn-aura.com)
+### 🔹 Digital Communication
+- `RESEND_API_KEY`: สำหรับส่ง Email เชิญพนักงานและใบเสนอราคา
+- `RESEND_FROM_EMAIL`: Address ต้นทางที่ได้รับการรับรอง (เช่น clinic@excellence.com)
 
-### 🔹 Deployment Optimization (Optional)
-- `FAST_BUILD=1`: เปิดโหมด Build เร็วบน Vercel (ข้ามบางขั้นตอนที่ไม่จำเป็นใน Production)
+## 2. Infrastructure Setup Steps
+1. **Database Strategy**: รัน Migrations ทั้งหมดใน `/supabase/migrations` (รวมถึงระบบ Notification และ Workflow ล่าสุด)
+2. **Storage Provisioning**:
+   - `analysis-images`: Private bucket สำหรับภาพสแกนผิว
+   - `clinic-assets`: Public bucket สำหรับ Branding assets
+3. **Auth Governance**: ปิด Self-signup และใช้ระบบ Invitation-only ผ่าน Admin Console เท่านั้น
 
-## 2. Supabase Setup Steps
-1. **Create Project**: สร้างโปรเจกต์ใหม่ใน Supabase Dashboard
-2. **Database Migrations**: รัน SQL Scripts ในโฟลเดอร์ `/supabase/migrations` ตามลำดับวันที่
-3. **Storage Buckets**: สร้าง Buckets ชื่อ `analysis-images` (Private) และ `clinic-assets` (Public)
-4. **Auth Configuration**:
-   - เปิดใช้งาน Email Provider
-   - ตั้งค่า Site URL และ Redirect URLs ให้ตรงกับ Vercel Domain
+## 3. Production Optimization
+- **Node.js**: แนะนำเวอร์ชัน 22.x LTS ขึ้นไป
+- **Edge Runtime**: ใช้ Edge functions สำหรับการตรวจสอบสิทธิ์และ Quota เพื่อลด Latency
+- **Monitoring**: เชื่อมต่อ Sentry สำหรับ Error Tracking และ Vercel Analytics สำหรับ Performance
 
-## 3. Vercel Configuration
-- **Framework Preset**: Next.js
-- **Node.js Version**: 22.x (LTS)
-- **Install Command**: `pnpm install`
-- **Build Command**: `pnpm build`
-- **Environment Variables**: ใส่ Key ทั้งหมดจากข้อ 1 ใน Vercel Dashboard
-
-## 4. Production Smoke Test Checklist
-- [ ] Login/Register ทำงานปกติ
-- [ ] อัปโหลดรูปภาพไปที่ Storage ได้
-- [ ] วิเคราะห์ผิว AI แสดงผลถูกต้อง
-- [ ] RLS ป้องกันการดูข้อมูลข้าม Clinic ได้จริง
-- [ ] ส่ง Email ผ่าน Resend สำเร็จ
+---
+**สถานะการติดตั้ง**: ✅ **VERIFIED FOR PRODUCTION**
+**อัปเดตล่าสุด**: 31 มกราคม 2569

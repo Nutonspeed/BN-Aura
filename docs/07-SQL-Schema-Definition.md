@@ -94,89 +94,88 @@ CREATE TABLE public.skin_analyses (
   spots_detections JSONB,
   recommendations JSONB,
   
-  analyzed_at TIMESTAMPTZ DEFAULT NOW()
+  analyzed_at TIMESTAMPTZ DEFAULT NOW(),
+  skin_age INTEGER,
+  skin_type TEXT
 );
 ```
 
-### 💰 Sales CRM & Proposals
+### 💰 Sales CRM, Proposals & Commissions
 ```sql
 CREATE TABLE public.sales_leads (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   clinic_id UUID REFERENCES public.clinics(id),
-  sales_user_id UUID REFERENCES public.users(id),
+  sales_user_id UUID REFERENCES auth.users(id),
   name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT,
   status lead_status DEFAULT 'new',
   score INTEGER DEFAULT 0,
-  source lead_source DEFAULT 'website',
+  source TEXT DEFAULT 'website',
   primary_concern TEXT,
   estimated_value DECIMAL(10, 2),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- ระบบมอบหมายเซลส์ดูแลลูกค้า (Sales Ownership)
+CREATE TABLE public.customer_sales_assignments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_id UUID NOT NULL REFERENCES public.customers(id) ON DELETE CASCADE,
+  sales_staff_id UUID NOT NULL REFERENCES public.clinic_staff(id) ON DELETE CASCADE,
+  assigned_by UUID REFERENCES public.clinic_staff(id),
+  assignment_date TIMESTAMPTZ DEFAULT NOW(),
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 CREATE TABLE public.sales_proposals (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   lead_id UUID REFERENCES public.sales_leads(id) ON DELETE CASCADE,
-  sales_user_id UUID REFERENCES public.users(id),
+  sales_user_id UUID REFERENCES auth.users(id),
   clinic_id UUID REFERENCES public.clinics(id),
   title TEXT NOT NULL,
-  treatments JSONB NOT NULL DEFAULT '[]'::jsonb, -- Array of {name, price, sessions}
+  treatments JSONB NOT NULL DEFAULT '[]'::jsonb,
   total_value DECIMAL(10, 2) NOT NULL DEFAULT 0,
   status proposal_status DEFAULT 'draft',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
-```
 
-### 📅 Branches & Appointments
-```sql
-CREATE TABLE public.branches (
+-- ระบบคอมมิชชั่นพนักงานขาย
+CREATE TABLE public.sales_commissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   clinic_id UUID NOT NULL REFERENCES public.clinics(id) ON DELETE CASCADE,
-  branch_code VARCHAR(50) UNIQUE NOT NULL,
-  branch_name VARCHAR(255) NOT NULL,
-  address TEXT NOT NULL,
-  city VARCHAR(100) NOT NULL,
-  province VARCHAR(100) NOT NULL,
-  is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-CREATE TABLE public.appointment_slots (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  clinic_id UUID NOT NULL REFERENCES public.clinics(id) ON DELETE CASCADE,
-  customer_id UUID NOT NULL REFERENCES public.users(id),
-  doctor_id UUID REFERENCES public.users(id),
-  room_id UUID,
-  appointment_date DATE NOT NULL,
-  start_time TIME NOT NULL,
-  end_time TIME NOT NULL,
-  status VARCHAR(20) DEFAULT 'scheduled', -- scheduled, completed, cancelled
-  service_name VARCHAR(255) NOT NULL,
+  sales_staff_id UUID NOT NULL REFERENCES public.clinic_staff(id) ON DELETE CASCADE,
+  customer_id UUID NOT NULL REFERENCES public.customers(id) ON DELETE CASCADE,
+  transaction_type VARCHAR(50) NOT NULL, -- 'treatment', 'product', 'package'
+  base_amount DECIMAL(10,2) NOT NULL,
+  commission_rate DECIMAL(5,2) NOT NULL,
+  commission_amount DECIMAL(10,2) NOT NULL,
+  payment_status VARCHAR(20) DEFAULT 'pending', -- 'pending', 'paid', 'cancelled'
+  transaction_date TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 ```
 
-### 💉 Treatments & Recommendations
+### � Workflow & Journeys
 ```sql
-CREATE TABLE public.treatments (
+-- ระบบติดตามเส้นทางการรักษา (End-to-End Workflow)
+CREATE TABLE public.customer_treatment_journeys (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  names JSONB NOT NULL, -- { "th": "...", "en": "..." }
-  category VARCHAR(50) NOT NULL, -- injectable, laser, skincare
-  price_min NUMERIC(10, 2) NOT NULL,
-  price_max NUMERIC(10, 2) NOT NULL,
-  is_active BOOLEAN DEFAULT true,
+  customer_id UUID NOT NULL REFERENCES public.customers(id) ON DELETE CASCADE,
+  sales_staff_id UUID NOT NULL REFERENCES public.clinic_staff(id),
+  clinic_id UUID NOT NULL REFERENCES public.clinics(id) ON DELETE CASCADE,
+  journey_status VARCHAR(30) DEFAULT 'consultation', -- 'consultation', 'treatment_planned', 'in_progress', 'completed'
+  initial_scan_results JSONB,
+  treatment_plan JSONB,
+  consultation_date TIMESTAMPTZ,
+  treatment_start_date TIMESTAMPTZ,
+  actual_completion_date TIMESTAMPTZ,
+  next_follow_up_date TIMESTAMPTZ,
+  progress_notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
-
-CREATE TABLE public.treatment_recommendations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  analysis_id UUID NOT NULL REFERENCES public.skin_analyses(id) ON DELETE CASCADE,
-  treatment_id UUID NOT NULL REFERENCES public.treatments(id) ON DELETE CASCADE,
-  priority INTEGER DEFAULT 1,
-  confidence_score NUMERIC(3, 2),
   recommendation_reason TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );

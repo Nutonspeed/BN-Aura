@@ -1,12 +1,12 @@
 import * as FaceMeshModule from '@mediapipe/face_mesh';
 
-interface Landmark {
+export interface Landmark {
   x: number;
   y: number;
   z: number;
 }
 
-interface FaceMeshResults {
+export interface FaceMeshResults {
   multiFaceLandmarks: Landmark[][];
 }
 

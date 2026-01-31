@@ -1,64 +1,40 @@
-# 💎 BN-Aura: Subscription Tiers & Pricing
+# 💎 BN-Aura: Subscription Tiers & Pricing (Production v2.0)
 
-เอกสารฉบับนี้กำหนดโครงสร้างราคา (Pricing) และสิทธิประโยชน์ของแต่ละแพ็กเกจ (Tiers) สำหรับ BN-Aura เพื่อให้ระบบสามารถควบคุม Quota และฟีเจอร์ได้ตามสัญญาการใช้งาน
+เอกสารฉบับนี้กำหนดโครงสร้างราคาและสิทธิประโยชน์ของแต่ละแพ็กเกจสำหรับ BN-Aura เพื่อควบคุม Quota และการเข้าถึงฟีเจอร์ระดับสูง
 
----
+## 1. Intelligence Tiers Overview
 
-## 1. Package Overview
-
-| Feature | **Starter (Basic)** | **Professional (Growth)** | **Enterprise (Premium)** |
+| Feature | **Starter (Base)** | **Professional (Growth)** | **Enterprise (Elite)** |
 |---------|---------------------|--------------------------|--------------------------|
-| **Target** | คลินิกเปิดใหม่ / ขนาดเล็ก | คลินิกมาตรฐาน / เติบโต | เชนคลินิก / สาขาเยอะ |
-| **AI Skin Analysis** | 100 Scans / Month | 1,000 Scans / Month | Unlimited* |
-| **AI Model** | Gemini 1.5 Flash | Gemini 1.5 Flash + Pro | Gemini 1.5 Pro (High-end) |
-| **Branches (สาขา)** | 1 Branch | Up to 5 Branches | Unlimited |
-| **Sales Staff** | Max 3 Users | Max 15 Users | Unlimited |
-| **3D/AR Simulator** | Basic (Glow only) | Full Suite (Botox/Filler) | Customized Simulator |
-| **Storage** | 10 GB | 100 GB | 1 TB+ |
-| **Support** | Email Support | Priority Chat Support | 24/7 Dedicated Manager |
-| **Custom Branding** | ❌ | ✅ (Logo & Colors) | ✅ (Custom Domain) |
+| **AI Analysis Node** | 100 Scans / Month | 1,000 Scans / Month | Unlimited* |
+| **Neural Engine** | Gemini 1.5 Flash | Gemini 1.5 Pro & Flash | Gemini 1.5 Pro (Custom) |
+| **Workflow Nodes** | 1 Clinic / 1 Branch | Up to 5 Branches | Global Cluster |
+| **Personnel Limit** | Max 3 Staff | Max 15 Staff | Unlimited |
+| **Business Intel** | Basic Revenue | Advanced BI + Forecast | Custom BI Engine |
+| **Commission System** | Standard Rate | Custom per Treatment | Multi-level Tracking |
+| **Communication** | System Chat | Integrated Advisor Chat | Full White-label Chat |
+
+## 2. Technical Governance (Hard Limits)
+
+### 🔹 AI Quota Orchestration
+- ระบบตรวจสอบ Quota แบบ Real-time ผ่าน `usage_metrics` และ Vercel AI Gateway
+- เมื่อเกินกำหนด ระบบจะตัดเข้าสู่โหมด **Pay-as-you-go** อัตโนมัติ (หากตั้งค่าไว้) หรือแจ้งเตือนการอัปเกรด
+- **Neural Caching**: ข้อมูลการสแกนซ้ำใน 24 ชม. จะไม่ถูกหัก Quota เพิ่ม
+
+### 🔹 Commission Logic
+- **Starter**: ค่าคอมมิชชั่นคงที่ 10% สำหรับทุกบริการ
+- **Professional/Enterprise**: สามารถตั้งค่าคอมมิชชั่นแยกตามประเภทหัตถการ (Treatment-specific) ผ่าน Clinic Settings
+
+### 🔹 Security & RLS
+- ทุก Tier ได้รับการคุ้มครองข้อมูลด้วย Row Level Security (RLS) ระดับสูงสุด
+- **Enterprise**: รองรับการทำ Audit Logs แบบละเอียดสำหรับ Super Admin
+
+## 3. Commercial Structure (Estimates)
+
+- **Starter Node**: 2,900 THB / Month
+- **Professional Node**: 7,900 THB / Month
+- **Enterprise Cluster**: Custom Quote (เริ่มต้น 19,000 THB / Month)
 
 ---
-
-## 2. Technical Limitations (Hard Limits)
-
-### 🔹 AI Quota Management
-- ระบบจะนับจำนวนการสแกนจริงผ่าน `usage_metrics` table
-- เมื่อ Quota เต็ม ระบบจะแสดงหน้า "Upgrade Required" และไม่อนุญาตให้สแกนเพิ่มจนกว่าจะขึ้นรอบเดือนใหม่หรือซื้อ Add-on
-- **Add-on Scans**: สามารถซื้อเพิ่มได้เป็น Batch (เช่น 500 Scans = 2,000 THB)
-
-### 🔹 API Rate Limiting (Vercel AI Gateway)
-- **Starter**: 5 Requests / Minute
-- **Professional**: 20 Requests / Minute
-- **Enterprise**: 60 Requests / Minute
-- เพื่อป้องกันการใช้ AI เกินความจำเป็น (Bot/Abuse)
-
-### 🔹 User Role Restrictions
-- **Starter**: ไม่สามารถเพิ่ม Role "Clinic Admin" ได้ (Owner ต้องจัดการเองทั้งหมด)
-- **Professional/Enterprise**: สามารถสร้าง Role ได้ครบทุกระดับตาม `@/docs/02-Database-Security-Spec.md`
-
----
-
-## 3. Pricing (Estimates)
-
-*ราคาที่ระบุเป็นราคาประมาณการสำหรับการตั้งค่าระบบ*
-
-- **Starter**: 2,900 THB / Month (หรือ 29,000 THB / Year)
-- **Professional**: 7,900 THB / Month (หรือ 79,000 THB / Year)
-- **Enterprise**: Custom Quote (เริ่มต้น 19,000 THB / Month)
-
----
-
-## 4. Integration Logic
-
-ในระดับ Database (`public.clinics`):
-- คอลัมน์ `subscription_tier` จะเก็บค่า `starter`, `professional`, `enterprise`
-- คอลัมน์ `max_sales_staff` จะถูก Set ตามแพ็กเกจเมื่อมีการสมัครหรืออัปเกรด
-- ระบบ Middleware จะตรวจสอบสิทธิ์เข้าถึงฟีเจอร์ (เช่น AR Simulator) ตามค่า `subscription_tier` ของคลินิกนั้นๆ
-
----
-
-## 5. Billing Cycle & Automation
-- ระบบรองรับการตัดรอบบิลทุกวันที่ 1 ของเดือน
-- แจ้งเตือนผ่าน Email/Dashboard เมื่อ Quota เหลือต่ำกว่า 10%
-- รองรับการชำระเงินผ่าน PromptPay (Webhook integration)
+**สถานะแพ็กเกจ**: ✅ **ACTIVE & DEPLOYED**
+**อัปเดตล่าสุด**: 31 มกราคม 2569

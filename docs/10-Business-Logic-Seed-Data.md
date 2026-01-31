@@ -1,58 +1,42 @@
-# 📋 BN-Aura: Business Logic & Seed Data
+# 📋 BN-Aura: Business Logic & Seed Data (Production v2.0)
 
-เพื่อให้ AI สามารถทดสอบระบบ BN-Aura ที่สร้างขึ้นใหม่ได้ทันที จำเป็นต้องมีข้อมูลเริ่มต้น (Seed Data) ที่สะท้อนถึง Business Logic ของคลินิกความงาม
+ข้อมูลเริ่มต้นสำหรับการตั้งค่าระบบและทดสอบ E2E เพื่อให้ครอบคลุม Workflow การขายและหัตถการจริง
 
-## 1. Roles & Permissions Mapping
+## 1. Roles & Permissions Mapping (RBAC 2.0)
 
-ข้อมูลเริ่มต้นสำหรับตาราง `user_roles` หรือการกำหนดสิทธิ์:
+| Role | Operational Scope | Entry Point |
+|------|------------------|-------------|
+| `super_admin` | Global node monitoring & clinic approval | `/admin` |
+| `clinic_owner` | Executive BI & Strategic forecasting | `/clinic` |
+| `sales_staff` | Magic Scan, CRM & Digital Proposals | `/sales` |
+| `clinic_staff` | Beautician tasks & Protocol execution | `/beautician` |
+| `customer` | Elite Portal & Skin Journey tracking | `/customer` |
 
-| Role | Permissions | Dashboard Access |
-|------|------------|------------------|
-| `super_admin` | จัดการทุกอย่างในระบบ, ดูสถิติรวมทุกคลินิก | `/super-admin` |
-| `clinic_owner` | จัดการคลินิกตัวเอง, จัดการพนักงาน, ดูรายได้ | `/clinic/dashboard` |
-| `sales_staff` | เพิ่ม Lead, สแกนผิว, สร้าง Proposal | `/sales/dashboard` |
-| `customer` | ดูผลการวิเคราะห์ผิวของตัวเอง, จองคิว | `/customer/dashboard` |
-
-## 1.1 Subscription Tiers (Mapping)
-
-รายละเอียดเพิ่มเติมอยู่ในเอกสาร `@/docs/12-Subscription-Tiers-Pricing.md`
-
-- **starter**: สำหรับคลินิกขนาดเล็ก (100 Scans/Month)
-- **professional**: สำหรับคลินิกขนาดกลาง (1,000 Scans/Month)
-- **enterprise**: สำหรับเชนคลินิก (Unlimited*)
-
-## 2. Default Treatment Catalog (Sample)
-
-ข้อมูลเริ่มต้นสำหรับตาราง `treatments` เพื่อให้ระบบแนะนำโปรแกรมได้:
+## 2. Advanced Treatment & Pricing Seed
+ข้อมูลสำหรับตาราง `clinic_treatment_pricing` เพื่อทดสอบระบบคำนวณคอมมิชชั่น:
 
 ```sql
-INSERT INTO public.treatments (name, name_th, category, price_min, price_max, effectiveness_overall)
+INSERT INTO public.clinic_treatment_pricing (treatment_name, base_price, sales_commission_rate)
 VALUES 
-('Pico Rejuvenation', 'พีโคเลเซอร์หน้าใส', 'laser', 5000, 15000, 90),
-('Botox Wrinkle Reduction', 'ฉีดโบท็อกซ์ลดริ้วรอย', 'injectable', 3500, 12000, 85),
-('HIFU Ultra Lift', 'ไฮฟูยกกระชับ', 'device', 8000, 25000, 80),
-('Deep Cleansing Facial', 'ทำความสะอาดผิวล้ำลึก', 'skincare', 1500, 3000, 70);
+('HydraFacial Premium', 4500, 15.00),
+('Pico Rejuvenation', 8500, 12.50),
+('Ulthera Full Face', 45000, 10.00),
+('Vitamin C Infusion', 2500, 20.00);
 ```
 
-## 3. Lead Scoring Logic (Technical)
+## 3. Workflow Intelligence Logic
+- **Initialization**: ทันทีที่สแกนเสร็จ ระบบสร้าง `customer_treatment_journeys` สถานะ `consultation`
+- **Handover**: เมื่อฝ่ายขายส่งแผนการรักษา ระบบเปลี่ยนสถานะเป็น `treatment_planned` และส่งงานเข้า `task_queue`
+- **Execution**: พนักงานหัตถการเริ่มงาน เปลี่ยนสถานะเป็น `in_progress` และแจ้งเตือนฝ่ายขายแบบ Real-time
+- **Completion**: เมื่อจบหัตถการ ระบบเปลี่ยนสถานะเป็น `completed` และส่ง Care Instructions ให้ลูกค้าผ่านแชท
 
-เกณฑ์การคำนวณ `lead_score` (0-100) เบื้องต้น:
-- **Scan Done**: +40 points (มีความสนใจสูง)
-- **Email/Phone Provided**: +20 points
-- **Budget > 20,000 THB**: +20 points
-- **Proposal Opened**: +20 points
+## 4. AI Strategic Thresholds
+- **Lead Scoring**: 
+  - Scan Matrix Completeness: 40%
+  - Intent to Purchase (via Chat): 30%
+  - Budget/Pricing Alignment: 30%
+- **Quota Warnings**: แจ้งเตือนระดับระบบ (Super Admin) เมื่อ Load รวมเกิน 85% และแจ้งรายคลินิกเมื่อเหลือ < 10%
 
-## 4. Multi-tenant Configuration (Default Settings)
-
-การตั้งค่าพื้นฐานสำหรับคลินิกใหม่ในตาราง `clinics`:
-- `subscription_tier`: 'starter'
-- `max_sales_staff`: 3
-- `features_enabled`: `{"ai_analysis": true, "ar_simulator": false, "crm": true}`
-
-## 5. Development Test Users
-
-สำหรับการทดสอบ E2E ในสภาพแวดล้อมใหม่:
-- **Admin**: `admin@test.com` / `password123`
-- **Clinic**: `owner@test.com` / `password123`
-- **Sales**: `sales@test.com` / `password123`
-- **Customer**: `customer@test.com` / `password123`
+---
+**สถานะข้อมูล**: ✅ **READY FOR SEEDING**
+**อัปเดตล่าสุด**: 31 มกราคม 2569

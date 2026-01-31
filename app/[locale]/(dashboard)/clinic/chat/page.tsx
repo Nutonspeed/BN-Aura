@@ -36,63 +36,91 @@ export default function ChatAdvisor() {
   };
 
   return (
-    <div className="h-[calc(100vh-160px)] flex flex-col space-y-6">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="h-[calc(100vh-160px)] flex flex-col space-y-8 pb-6 font-sans"
+    >
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-            <Bot className="w-7 h-7" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="flex items-center gap-4">
+          <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
+            <Bot className="w-8 h-8" />
           </div>
-          <div>
-            <h1 className="text-3xl font-display font-bold text-white">AI Chat Advisor</h1>
-            <p className="text-muted-foreground font-light text-sm flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-primary" /> Powered by Gemini 1.5 Pro
-            </p>
+          <div className="space-y-1">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+            >
+              <Sparkles className="w-3 h-3 animate-glow-pulse" />
+              Cognitive Reasoning Node
+            </motion.div>
+            <h1 className="text-3xl font-heading font-bold text-white uppercase tracking-tight">AI Chat <span className="text-primary text-glow">Advisor</span></h1>
           </div>
         </div>
-        <div className="flex gap-2">
-          <button className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all">
-            <History className="w-5 h-5" />
-          </button>
-          <button className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all">
-            <Info className="w-5 h-5" />
-          </button>
+        <div className="flex gap-3">
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-3 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all shadow-sm group"
+          >
+            <History className="w-5 h-5 group-hover:rotate-[-10deg] transition-transform" />
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="p-3 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all shadow-sm group"
+          >
+            <Info className="w-5 h-5 group-hover:scale-110 transition-transform" />
+          </motion.button>
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-6 overflow-hidden">
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-8 overflow-hidden">
         {/* Chat Interface */}
-        <div className="lg:col-span-3 glass-card rounded-3xl border border-white/10 flex flex-col overflow-hidden">
+        <div className="lg:col-span-3 glass-premium rounded-[48px] border border-white/10 flex flex-col overflow-hidden relative shadow-2xl">
+          <div className="absolute inset-0 bg-chat-pattern opacity-[0.03] pointer-events-none" />
+          
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-hide">
+          <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar relative z-10">
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
-                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 20, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
                   className={cn(
                     "flex w-full",
                     msg.role === 'user' ? "justify-end" : "justify-start"
                   )}
                 >
                   <div className={cn(
-                    "flex gap-3 max-w-[80%]",
+                    "flex gap-5 max-w-[85%]",
                     msg.role === 'user' ? "flex-row-reverse" : "flex-row"
                   )}>
                     <div className={cn(
-                      "w-8 h-8 rounded-lg flex-shrink-0 flex items-center justify-center",
-                      msg.role === 'user' ? "bg-primary text-primary-foreground" : "bg-white/10 text-primary"
+                      "w-10 h-10 rounded-2xl flex-shrink-0 flex items-center justify-center border transition-all duration-500 shadow-sm",
+                      msg.role === 'user' 
+                        ? "bg-primary text-primary-foreground border-primary/20" 
+                        : "bg-white/5 text-primary border-white/10"
                     )}>
-                      {msg.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                      {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
                     </div>
                     <div className={cn(
-                      "p-4 rounded-2xl text-sm leading-relaxed",
+                      "p-5 rounded-[28px] text-sm leading-relaxed shadow-lg backdrop-blur-md transition-all duration-500",
                       msg.role === 'user' 
-                        ? "bg-primary text-primary-foreground font-medium rounded-tr-none" 
-                        : "bg-white/5 text-white/90 border border-white/5 rounded-tl-none"
+                        ? "bg-primary text-primary-foreground font-medium rounded-tr-none shadow-[0_0_20px_rgba(var(--primary),0.15)]" 
+                        : "bg-white/5 text-white/90 border border-white/10 rounded-tl-none hover:bg-white/[0.08]"
                     )}>
                       {msg.content}
+                      <p className={cn(
+                        "text-[9px] mt-2 opacity-40 font-bold uppercase tracking-widest",
+                        msg.role === 'user' ? "text-right" : "text-left"
+                      )}>
+                        {new Date(msg.id).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -101,68 +129,120 @@ export default function ChatAdvisor() {
           </div>
 
           {/* Input Area */}
-          <div className="p-6 bg-white/[0.02] border-t border-white/5">
-            <div className="relative">
+          <div className="p-8 bg-white/[0.03] border-t border-white/10 backdrop-blur-xl relative z-20">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-[24px]" />
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="ถามข้อมูลเคสลูกค้า หรือขอคำแนะนำการเลือกทรีตเมนต์..."
-                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-6 pr-14 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all shadow-inner"
+                placeholder="Inquire about clinical cases or treatment optimization..."
+                className="w-full bg-white/5 border border-white/10 rounded-[24px] py-5 pl-8 pr-20 text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all shadow-inner relative z-10"
               />
-              <button 
+              <motion.button 
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handleSend}
                 disabled={!input.trim()}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-premium hover:brightness-110 disabled:opacity-50 transition-all active:scale-95"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-premium hover:brightness-110 disabled:opacity-30 disabled:grayscale transition-all z-20"
               >
-                <Send className="w-5 h-5" />
-              </button>
+                <Send className="w-5 h-5 stroke-[3px]" />
+              </motion.button>
             </div>
-            <p className="mt-3 text-[10px] text-center text-muted-foreground font-light tracking-wider uppercase">
-              AI recommendations should be verified by a medical professional.
-            </p>
+            <div className="mt-4 flex items-center justify-center gap-3 opacity-40">
+              <Shield className="w-3 h-3 text-emerald-400" />
+              <p className="text-[9px] text-center text-muted-foreground font-black tracking-[0.2em] uppercase">
+                Secure Neural Encryption Enabled • Clinical Verification Required
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Sidebar Info/Status */}
-        <div className="hidden lg:flex flex-col gap-6">
-          <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Activity className="w-4 h-4 text-primary" /> Active Context
+        <div className="hidden lg:flex flex-col gap-8">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="glass-premium p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group"
+          >
+            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all" />
+            
+            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3 relative z-10">
+              <Activity className="w-4 h-4 text-primary" />
+              Active Context
             </h3>
-            <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
-              <p className="text-xs text-muted-foreground mb-1">Current Customer</p>
-              <p className="text-sm font-bold text-white">Nattaya R. (NR)</p>
-            </div>
-            <div className="space-y-2">
-              <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Recent Activity</p>
-              <div className="text-xs text-white/60 space-y-2">
-                <div className="flex gap-2">
-                  <div className="w-1 h-1 rounded-full bg-primary mt-1.5" />
-                  <span>Skin Analysis completed (Score: 91%)</span>
-                </div>
-                <div className="flex gap-2">
-                  <div className="w-1 h-1 rounded-full bg-primary mt-1.5" />
-                  <span>Previous treatment: Pico Rejuvenation</span>
+            
+            <div className="space-y-6 relative z-10">
+              <div className="p-5 bg-primary/10 rounded-3xl border border-primary/20 backdrop-blur-md group-hover:bg-primary/20 transition-all duration-500">
+                <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">Subject Focus</p>
+                <p className="text-base font-black text-white tracking-tight">Nattaya R. <span className="text-[10px] text-muted-foreground ml-1">ID: NR-2026</span></p>
+              </div>
+              
+              <div className="space-y-4">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Historical Sequence</p>
+                <div className="space-y-3">
+                  {[
+                    "Analysis complete (91%)",
+                    "Previous: Pico Rejuvenation"
+                  ].map((activity, i) => (
+                    <div key={i} className="flex gap-3 items-center group/item">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:scale-150 transition-transform" />
+                      <span className="text-[11px] text-white/60 font-medium">{activity}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="glass-card p-6 rounded-3xl border border-white/10 space-y-4">
-            <h3 className="text-sm font-bold text-white">Suggested Topics</h3>
-            <div className="flex flex-wrap gap-2">
-              {['Compare with last scan', 'Optimize treatment', 'Explain results', 'Create proposal'].map(tag => (
-                <button key={tag} className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-[10px] text-white/70 hover:bg-white/10 hover:text-white transition-all">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6"
+          >
+            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Neural Prompts</h3>
+            <div className="flex flex-wrap gap-2.5">
+              {['Compare Scans', 
+                'Optimize Protocol', 
+                'Neural Reasoning', 
+                'Financial Logic'
+              ].map((tag) => (
+                <motion.button 
+                  key={tag} 
+                  whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-white/60 hover:text-white hover:border-primary/30 transition-all uppercase tracking-widest"
+                >
                   {tag}
-                </button>
+                </motion.button>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
+  );
+}
+
+function Shield(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+    </svg>
   );
 }
 

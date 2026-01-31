@@ -21,7 +21,14 @@ export interface PriceCalculation {
 }
 
 export class ClinicPricingEngine {
-  private supabase = createClient();
+  private _supabase: ReturnType<typeof createClient> | null = null;
+
+  private get supabase() {
+    if (!this._supabase) {
+      this._supabase = createClient();
+    }
+    return this._supabase;
+  }
 
   async getClinicTreatmentPricing(clinicId: string): Promise<TreatmentPricing[]> {
     const { data, error } = await this.supabase
@@ -80,19 +87,32 @@ export class ClinicPricingEngine {
     customerId: string,
     treatmentName: string,
     amount: number,
-    commissionRate: number
-  ): Promise<void> {
+    commissionRate: number,
+    clinicId: string
+  ): Promise<string> {
     const commissionAmount = (amount * commissionRate) / 100;
 
-    await this.supabase.from('sales_commissions').insert({
-      sales_staff_id: salesStaffId,
-      customer_id: customerId,
-      transaction_type: 'treatment',
-      base_amount: amount,
-      commission_rate: commissionRate,
-      commission_amount: commissionAmount,
-      payment_status: 'pending'
-    });
+    const { data, error } = await this.supabase
+      .from('sales_commissions')
+      .insert({
+        clinic_id: clinicId,
+        sales_staff_id: salesStaffId,
+        customer_id: customerId,
+        transaction_type: treatmentName,
+        base_amount: amount,
+        commission_rate: commissionRate,
+        commission_amount: commissionAmount,
+        payment_status: 'pending'
+      })
+      .select('id')
+      .single();
+
+    if (error) {
+      console.error('Error recording commission:', error);
+      throw new Error(`Failed to record commission: ${error.message}`);
+    }
+
+    return data.id;
   }
 
   /**

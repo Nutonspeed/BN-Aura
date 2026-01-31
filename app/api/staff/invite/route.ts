@@ -118,12 +118,37 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get clinic information for email
+    const { data: clinic, error: clinicError } = await supabase
+      .from('clinics')
+      .select('display_name')
+      .eq('id', profile.clinic_id)
+      .single();
+
+    // Get inviter's information
+    const { data: inviterProfile, error: inviterError } = await supabase
+      .from('users')
+      .select('full_name')
+      .eq('id', user.id)
+      .single();
+
+    // Determine clinic name (with fallback)
+    const clinicName = clinic?.display_name?.en || 
+                      clinic?.display_name?.th || 
+                      'Your Clinic';
+
+    // Determine inviter name (with multiple fallbacks)
+    const inviterName = inviterProfile?.full_name ||
+                       user.user_metadata?.full_name ||
+                       user.email?.split('@')[0] ||
+                       'Admin';
+
     // Send email invitation
     try {
       await sendInvitationEmail({
         email: invitation.email,
-        clinicName: 'Bangkok Premium Clinic', // TODO: Get from clinic data
-        inviterName: 'Admin', // TODO: Get from auth context
+        clinicName,
+        inviterName,
         role: invitation.role,
         invitationUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/accept-invitation?token=${invitation.invitation_token}`,
         expiresAt: invitation.expires_at

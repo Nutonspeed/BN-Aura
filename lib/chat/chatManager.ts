@@ -36,7 +36,14 @@ export interface ChatContext {
 }
 
 export class ChatManager {
-  private supabase = createClient();
+  private _supabase: ReturnType<typeof createClient> | null = null;
+
+  private get supabase() {
+    if (!this._supabase) {
+      this._supabase = createClient();
+    }
+    return this._supabase;
+  }
 
   /**
    * Send message in chat

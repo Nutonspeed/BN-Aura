@@ -27,21 +27,41 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { salesId, customerId, treatmentName, amount, commissionRate } = body;
+    const { salesId, customerId, treatmentName, amount, commissionRate, clinicId } = body;
 
-    if (!salesId || !customerId || !treatmentName || !amount || !commissionRate) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!salesId || !customerId || !treatmentName || !amount || !commissionRate || !clinicId) {
+      return NextResponse.json({ 
+        error: 'Missing required fields: salesId, customerId, treatmentName, amount, commissionRate, clinicId' 
+      }, { status: 400 });
     }
 
-    await pricingEngine.recordCommission(
+    // Validate numeric values
+    if (typeof amount !== 'number' || typeof commissionRate !== 'number') {
+      return NextResponse.json({ 
+        error: 'Amount and commissionRate must be valid numbers' 
+      }, { status: 400 });
+    }
+
+    if (amount <= 0 || commissionRate < 0 || commissionRate > 100) {
+      return NextResponse.json({ 
+        error: 'Invalid values: amount must be positive, commissionRate must be between 0-100' 
+      }, { status: 400 });
+    }
+
+    const commissionId = await pricingEngine.recordCommission(
       salesId,
       customerId,
       treatmentName,
       amount,
-      commissionRate
+      commissionRate,
+      clinicId
     );
 
-    return successResponse({ message: 'Commission recorded successfully' });
+    return successResponse({ 
+      message: 'Commission recorded successfully',
+      commissionId,
+      calculatedCommission: (amount * commissionRate) / 100
+    });
     
   } catch (error) {
     return handleAPIError(error);

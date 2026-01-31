@@ -1,9 +1,8 @@
 {
-  "name": "bn-aura",
-  "buildCommand": "npm run build",
+  "buildCommand": "pnpm build",
   "outputDirectory": ".next",
-  "installCommand": "npm ci",
-  "devCommand": "npm run dev",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "devCommand": "pnpm dev",
   "framework": "nextjs",
   
   "functions": {
@@ -63,7 +62,6 @@
     }
   ],
   
-  "regions": ["sin1", "hnd1"],
   
   "crons": [
     {

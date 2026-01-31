@@ -9,11 +9,13 @@ import {
   TrendingUp, 
   Edit2, 
   Trash2,
-  BarChart3
+  BarChart3,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useEffect, useState, useCallback } from 'react';
+import ProductModal from '@/components/ProductModal';
+import StockMovementModal from '@/components/StockMovementModal';
 
 interface Product {
   id: string;
@@ -33,29 +35,58 @@ export default function InventoryManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-
-  const supabase = useMemo(() => createClient(), []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
+  const [isMovementModalOpen, setIsMovementModalOpen] = useState(false);
+  const [selectedProductForMovement, setSelectedProductForMovement] = useState<Product | undefined>(undefined);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('inventory_products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setProducts((data as unknown as Product[]) || []);
+      const res = await fetch('/api/products');
+      const result = await res.json();
+      if (result.success) {
+        setProducts(result.data || []);
+      }
     } catch (err) {
       console.error('Error fetching products:', err);
     } finally {
       setLoading(false);
     }
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  const handleAddProduct = () => {
+    setSelectedProduct(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProduct = (product: Product) => {
+    setSelectedProduct(product);
+    setIsModalOpen(true);
+  };
+
+  const handleAdjustStock = (product: Product) => {
+    setSelectedProductForMovement(product);
+    setIsMovementModalOpen(true);
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    if (!confirm('Are you sure you want to terminate this asset node?')) return;
+    
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
+        fetchProducts();
+      }
+    } catch (err) {
+      console.error('Error deleting product:', err);
+    }
+  };
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -75,6 +106,20 @@ export default function InventoryManagement() {
       animate={{ opacity: 1 }}
       className="space-y-10 pb-20 font-sans"
     >
+      <ProductModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={fetchProducts}
+        product={selectedProduct}
+      />
+
+      <StockMovementModal 
+        isOpen={isMovementModalOpen}
+        onClose={() => setIsMovementModalOpen(false)}
+        onSuccess={fetchProducts}
+        product={selectedProductForMovement}
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
@@ -106,6 +151,7 @@ export default function InventoryManagement() {
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          onClick={handleAddProduct}
           className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
         >
           <Plus className="w-4 h-4 stroke-[3px]" />
@@ -265,14 +311,14 @@ export default function InventoryManagement() {
                 {filteredProducts.length > 0 ? (
                   filteredProducts.map((product, i) => {
                     const isLowStock = product.stock_quantity <= product.min_stock_level;
-                    const totalValue = product.stock_quantity * product.cost_price;
+                    const rowTotalValue = product.stock_quantity * product.cost_price;
 
                     return (
                       <motion.tr 
                         key={product.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.8 + i * 0.03 }}
+                        transition={{ delay: i * 0.03 }}
                         className="group hover:bg-white/[0.05] transition-all relative overflow-hidden"
                       >
                         <td className="px-8 py-6 relative">
@@ -284,7 +330,7 @@ export default function InventoryManagement() {
                             <div className="flex flex-col space-y-1">
                               <span className="text-base font-black text-white group-hover:text-primary transition-colors tracking-tight">{product.name}</span>
                               <div className="flex items-center gap-2">
-                                <div className="w-1 h-1 rounded-full bg-primary/40" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
                                 <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{product.category}</span>
                               </div>
                             </div>
@@ -316,21 +362,34 @@ export default function InventoryManagement() {
                           ฿{product.sale_price?.toLocaleString() || '0'}
                         </td>
                         <td className="px-8 py-6 text-lg font-black text-white tracking-tight tabular-nums">
-                          ฿{totalValue.toLocaleString()}
+                          ฿{rowTotalValue.toLocaleString()}
                         </td>
                         <td className="px-8 py-6 text-right">
                           <div className="flex items-center justify-end gap-3">
                             <motion.button 
                               whileHover={{ scale: 1.1 }}
                               whileTap={{ scale: 0.9 }}
+                              onClick={() => handleAdjustStock(product)}
+                              className="p-3 text-primary/30 hover:text-primary transition-all rounded-xl hover:bg-primary/10 border border-transparent hover:border-primary/10 shadow-sm"
+                              title="Adjust Stock"
+                            >
+                              <TrendingUp className="w-4 h-4" />
+                            </motion.button>
+                            <motion.button 
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => handleEditProduct(product)}
                               className="p-3 text-white/30 hover:text-white transition-all rounded-xl hover:bg-white/10 border border-transparent hover:border-white/5 shadow-sm"
+                              title="Edit Asset"
                             >
                               <Edit2 className="w-4 h-4" />
                             </motion.button>
                             <motion.button 
                               whileHover={{ scale: 1.1, rotate: 5 }}
                               whileTap={{ scale: 0.9 }}
+                              onClick={() => handleDeleteProduct(product.id)}
                               className="p-3 text-rose-500/30 hover:text-rose-400 transition-all rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/10 shadow-sm"
+                              title="Terminate Asset"
                             >
                               <Trash2 className="w-4 h-4" />
                             </motion.button>

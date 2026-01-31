@@ -41,11 +41,18 @@ interface RecentLead {
   priority: 'immediate' | 'follow_up' | 'nurture';
 }
 
+interface SalesTarget {
+  target: { target_amount: number };
+  actualSales: number;
+  progress: number;
+}
+
 export default function SalesDashboard() {
   const [stats, setStats] = useState<Stat[]>([]);
   const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
+  const [targetStats, setTargetStats] = useState<SalesTarget | null>(null);
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -56,29 +63,29 @@ export default function SalesDashboard() {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) setUserId(user.id);
 
-        const { data: leads, error: leadsError } = await supabase
-          .from('sales_leads')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        const { data: proposals, error: propsError } = await supabase
-          .from('sales_proposals')
-          .select('*');
-
-        if (leadsError || propsError) throw new Error('Failed to fetch stats');
-
-        const newLeadsCount = leads?.filter(l => l.status === 'new').length || 0;
-        const totalLeads = leads?.length || 0;
-        const wonLeads = leads?.filter(l => l.status === 'won').length || 0;
-        const conversionRate = totalLeads > 0 ? (wonLeads / totalLeads) * 100 : 0;
-        const avgDealSize = proposals?.length ? proposals.reduce((acc, p) => acc + Number(p.total_value), 0) / proposals.length : 0;
-
-        setStats([
-          { label: 'New Leads', value: newLeadsCount.toString(), change: '+15%', trend: 'up', icon: UserPlus },
-          { label: 'Conversion Rate', value: `${conversionRate.toFixed(1)}%`, change: '+4.2%', trend: 'up', icon: Target },
-          { label: 'Avg. Deal Size', value: `฿${Math.round(avgDealSize).toLocaleString()}`, change: '-2.1%', trend: 'down', icon: TrendingUp },
-          { label: 'AI Proposals Sent', value: (proposals?.length || 0).toString(), change: '+28%', trend: 'up', icon: Zap },
+        const [leadsRes, reportsRes, targetRes] = await Promise.all([
+          supabase.from('sales_leads').select('*').order('created_at', { ascending: false }).limit(5),
+          fetch('/api/reports?type=sales_overview').then(res => res.json()),
+          fetch('/api/sales/targets').then(res => res.json())
         ]);
+
+        const { data: leads, error: leadsError } = leadsRes;
+        
+        if (leadsError) throw leadsError;
+
+        if (reportsRes.success) {
+          const d = reportsRes.data;
+          setStats([
+            { label: 'New Leads', value: d.newLeads.toString(), change: '+15%', trend: 'up', icon: UserPlus },
+            { label: 'Conversion Rate', value: `${d.conversionRate.toFixed(1)}%`, change: '+4.2%', trend: 'up', icon: Target },
+            { label: 'Monthly Sales', value: targetRes.success ? `฿${targetRes.data.actualSales.toLocaleString()}` : '฿0', change: '+12%', trend: 'up', icon: TrendingUp },
+            { label: 'AI Proposals Sent', value: d.proposalsSent.toString(), change: '+28%', trend: 'up', icon: Zap },
+          ]);
+        }
+
+        if (targetRes.success) {
+          setTargetStats(targetRes.data);
+        }
 
         // Fetch and process real leads
         const processedLeads: RecentLead[] = (leads || []).map(l => ({
@@ -91,7 +98,7 @@ export default function SalesDashboard() {
           time: new Date(l.created_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
           estimatedValue: l.metadata?.scoring?.estimatedValue || 0,
           priority: (l.metadata?.scoring?.priority || 'nurture') as 'immediate' | 'follow_up' | 'nurture'
-        })).slice(0, 5);
+        }));
 
         setRecentLeads(processedLeads);
 
@@ -199,6 +206,46 @@ export default function SalesDashboard() {
           </motion.div>
         ))}
       </div>
+
+      {/* Target Progress Section (NEW) */}
+      {targetStats && targetStats.target.target_amount > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-premium p-8 rounded-[40px] border border-primary/20 bg-primary/[0.02] relative overflow-hidden"
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
+                <Target className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-white uppercase tracking-tight">Performance <span className="text-primary">Target</span></h3>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Monthly Revenue Goal</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Cycle Progress</p>
+              <p className="text-2xl font-black text-white">{Math.round(targetStats.progress)}%</p>
+            </div>
+          </div>
+
+          <div className="mt-8 space-y-4 relative z-10">
+            <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest">
+              <span className="text-white/40">Current: ฿{targetStats.actualSales.toLocaleString()}</span>
+              <span className="text-primary">Target: ฿{targetStats.target.target_amount.toLocaleString()}</span>
+            </div>
+            <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(targetStats.progress, 100)}%` }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="h-full bg-primary shadow-glow-sm rounded-full"
+              />
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Intelligence Components */}

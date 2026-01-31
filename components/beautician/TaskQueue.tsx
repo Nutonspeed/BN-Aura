@@ -41,6 +41,7 @@ export default function TaskQueue({
           .from('customer_treatment_journeys')
           .select('*, customers(full_name)')
           .eq('journey_status', 'treatment_planned')
+          .eq('assigned_beautician_id', staffId)
           .order('created_at', { ascending: true });
 
         if (error) throw error;

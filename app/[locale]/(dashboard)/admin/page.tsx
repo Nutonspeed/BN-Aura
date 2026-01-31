@@ -30,6 +30,12 @@ interface Clinic {
 export default function SuperAdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [clinics, setClinics] = useState<Clinic[]>([]);
+  const [globalStats, setGlobalStats] = useState({
+    totalClinics: 0,
+    globalCustomers: 0,
+    monthlyAILoad: 0,
+    activeSessions: 0
+  });
   const [systemStatus, setSystemHealth] = useState<Record<string, string>>({
     database: 'Checking...',
     storage: 'Checking...',
@@ -44,13 +50,7 @@ export default function SuperAdminDashboard() {
       const resClinics = await fetch('/api/admin/management?type=clinics');
       const dataClinics = await resClinics.json();
       if (dataClinics.success) {
-        setClinics(dataClinics.data.clinics.map((c: { id: string; name: string; status: string; customers: { count: number }[]; clinic_staff: { count: number }[] }) => ({
-          ...c,
-          plan: 'Premium AI',
-          status: c.status as 'active' | 'inactive' | 'pending',
-          customerCount: c.customers?.[0]?.count || 0,
-          staffCount: c.clinic_staff?.[0]?.count || 0
-        })));
+        setClinics(dataClinics.data.clinics);
       }
 
       // 2. Fetch health
@@ -58,6 +58,19 @@ export default function SuperAdminDashboard() {
       const dataHealth = await resHealth.json();
       if (dataHealth.success) {
         setSystemHealth(dataHealth.data.health);
+      }
+
+      // 3. Fetch stats
+      const resStats = await fetch('/api/admin/management?type=stats');
+      const dataStats = await resStats.json();
+      if (dataStats.success) {
+        const d = dataStats.data;
+        setGlobalStats({
+          totalClinics: d.totalClinics,
+          globalCustomers: d.globalCustomers,
+          monthlyAILoad: d.monthlyAILoad,
+          activeSessions: d.activeStaff // Using active staff as a proxy for activity
+        });
       }
     } catch (err) {
       console.error('Super Admin Error:', err);
@@ -84,7 +97,7 @@ export default function SuperAdminDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        setClinics(prev => prev.map(c => c.id === clinicId ? { ...c, status: newStatus as 'active' | 'inactive' | 'pending' } : c));
+        setClinics(prev => prev.map(c => c.id === clinicId ? { ...c, status: newStatus as any } : c));
       }
     } catch (error) {
       console.error('Error updating status:', error);
@@ -103,10 +116,10 @@ export default function SuperAdminDashboard() {
   }
 
   const stats = [
-    { label: 'Total Clinics', value: clinics.length.toString(), icon: Building2, color: 'text-primary' },
-    { label: 'Global Customers', value: clinics.reduce((acc, c) => acc + c.customerCount, 0).toLocaleString(), icon: Users, color: 'text-emerald-400' },
-    { label: 'Monthly AI Load', value: '84.2k', icon: Zap, color: 'text-amber-400' },
-    { label: 'Active Sessions', value: '1,248', icon: Activity, color: 'text-rose-400' },
+    { label: 'Total Clinics', value: globalStats.totalClinics.toString(), icon: Building2, color: 'text-primary' },
+    { label: 'Global Customers', value: globalStats.globalCustomers.toLocaleString(), icon: Users, color: 'text-emerald-400' },
+    { label: 'Monthly AI Load', value: `${(globalStats.monthlyAILoad / 1000).toFixed(1)}k`, icon: Zap, color: 'text-amber-400' },
+    { label: 'Active Personnel', value: globalStats.activeSessions.toLocaleString(), icon: Activity, color: 'text-rose-400' },
   ];
 
   return (

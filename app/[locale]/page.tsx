@@ -7,6 +7,7 @@ import {
   MessageCircle, Mail, Phone
 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { cn } from '@/lib/utils';
 import FloatingElements from '@/components/FloatingElements';
 import AnimatedMascot from '@/components/AnimatedMascot';
 
@@ -392,6 +393,137 @@ export default function LandingPage() {
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="relative py-32 px-6 bg-white/[0.02]">
+        <div className="max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-20 space-y-4"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">
+              Deployment <span className="text-primary text-glow">Tiers</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light">
+              เลือกแพ็กเกจที่เหมาะกับขนาดและเป้าหมายการเติบโตของคลินิกคุณ
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                name: "Starter",
+                price: "2,990",
+                desc: "สำหรับคลินิกเปิดใหม่",
+                scans: "50",
+                staff: "3 Accounts",
+                features: ["AI Skin Analysis พื้นฐาน", "สร้าง AI Proposal", "ระบบจัดการลูกค้า", "Commission Tracking"],
+                color: "text-blue-400",
+                recommended: false
+              },
+              {
+                name: "Professional",
+                price: "8,990",
+                desc: "สำหรับคลินิกที่ต้องการโต",
+                scans: "200",
+                staff: "10 Accounts",
+                features: ["Advanced AI Analysis", "AI Lead Scoring", "ระบบแชทอัจฉริยะ", "Analytics พื้นฐาน"],
+                color: "text-primary",
+                recommended: true
+              },
+              {
+                name: "Premium",
+                price: "19,990",
+                desc: "สำหรับคลินิกขนาดใหญ่",
+                scans: "500",
+                staff: "30 Accounts",
+                features: ["Premium AI + AR", "Full BI Dashboard", "Workflow Automation", "Priority Support"],
+                color: "text-emerald-400",
+                recommended: false
+              },
+              {
+                name: "Enterprise",
+                price: "39,990",
+                desc: "สำหรับเครือข่ายสาขา",
+                scans: "Unlimited",
+                staff: "ไม่จำกัด",
+                features: ["Multi-branch Control", "Custom Branding", "Full API Access", "Dedicated Solutions"],
+                color: "text-rose-400",
+                recommended: false
+              }
+            ].map((plan, i) => (
+              <motion.div
+                key={plan.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -10 }}
+                className={cn(
+                  "p-8 rounded-[48px] border transition-all duration-500 relative overflow-hidden group",
+                  plan.recommended 
+                    ? "bg-primary/10 border-primary/40 shadow-[0_0_40px_rgba(var(--primary),0.15)] ring-1 ring-primary/30" 
+                    : "bg-white/5 border-white/10 hover:border-white/20 shadow-xl"
+                )}
+              >
+                {plan.recommended && (
+                  <div className="absolute top-6 right-6">
+                    <span className="px-3 py-1 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest rounded-full shadow-glow">Most Popular</span>
+                  </div>
+                )}
+
+                <div className="space-y-8 relative z-10">
+                  <div>
+                    <h3 className={cn("text-2xl font-black uppercase tracking-tight", plan.color)}>{plan.name}</h3>
+                    <p className="text-xs text-muted-foreground italic font-light mt-1">{plan.desc}</p>
+                  </div>
+
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-[10px] font-black text-muted-foreground uppercase mr-1">฿</span>
+                    <span className="text-5xl font-black text-white tracking-tighter tabular-nums">{plan.price}</span>
+                    <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">/ เดือน</span>
+                  </div>
+
+                  <div className="space-y-4 pt-6 border-t border-white/5 font-medium">
+                    <div className="flex justify-between items-center text-[11px] uppercase tracking-widest">
+                      <span className="text-white/40">AI Bandwidth</span>
+                      <span className="text-white font-bold">{plan.scans} Scans</span>
+                    </div>
+                    <div className="flex justify-between items-center text-[11px] uppercase tracking-widest">
+                      <span className="text-white/40">Capacity</span>
+                      <span className="text-white font-bold">{plan.staff}</span>
+                    </div>
+                  </div>
+
+                  <ul className="space-y-3 pt-4">
+                    {plan.features.map((f, fi) => (
+                      <li key={fi} className="flex items-center gap-3 text-xs text-white/60">
+                        <CheckCircle2 className={cn("w-4 h-4 shrink-0", plan.color)} />
+                        <span className="line-clamp-1">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className={cn(
+                      "w-full py-5 rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all",
+                      plan.recommended 
+                        ? "bg-primary text-primary-foreground shadow-premium" 
+                        : "bg-white/5 text-white hover:bg-white/10"
+                    )}
+                  >
+                    เริ่มใช้งานเลย
+                  </motion.button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

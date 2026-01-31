@@ -16,16 +16,23 @@ import {
   Sparkles,
   ChevronLeft,
   LogOut,
-  ShieldCheck,
-  Menu,
-  X as CloseIcon,
-  Camera
+  ShieldCheck, 
+  Menu, 
+  X as CloseIcon, 
+  Camera,
+  ShoppingCart,
+  TrendingUp,
+  BarChart3,
+  HelpCircle
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import NotificationCenter from "@/components/ui/NotificationCenter";
+import BranchSwitcher from "@/components/ui/BranchSwitcher";
+import HelpModal from "@/components/ui/HelpModal";
 import { useAuth } from '@/hooks/useAuth';
+import Head from 'next/head';
 
 export default function DashboardLayout({
   children,
@@ -34,8 +41,10 @@ export default function DashboardLayout({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   const pathname = usePathname();
-  const { getUserRole, getFullName, getClinicName } = useAuth();
+  const { getUserRole, getFullName, getClinicName, getClinicMetadata } = useAuth();
+  const metadata = getClinicMetadata();
 
   // Handle window resize for mobile state
   useEffect(() => {
@@ -53,6 +62,7 @@ export default function DashboardLayout({
     { icon: LayoutDashboard, label: 'Clinic Overview', href: '/clinic', roles: ['clinic_owner', 'clinic_admin'] },
     { icon: LayoutDashboard, label: 'My Skin Portal', href: '/customer', roles: ['customer'] },
     { icon: Stethoscope, label: 'Clinical Node', href: '/beautician', roles: ['clinic_staff'] },
+    { icon: ShoppingCart, label: 'Point of Sale (POS)', href: '/clinic/pos', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
     { icon: Target, label: 'Sales Intelligence', href: '/sales', roles: ['sales_staff'] },
     { icon: CalendarDays, label: 'Appointments', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer'] },
     { icon: Sparkles, label: 'AI Skin Analysis', href: '/sales/analysis', roles: ['sales_staff'] },
@@ -64,12 +74,30 @@ export default function DashboardLayout({
       roles: ['clinic_owner', 'clinic_admin']
     },
     {
+      icon: Building2,
+      label: 'Branches',
+      href: '/clinic/branches',
+      roles: ['clinic_owner', 'clinic_admin']
+    },
+    {
       icon: Package,
       label: 'Inventory Control',
       href: '/clinic/inventory',
       roles: ['clinic_owner', 'clinic_admin', 'clinic_staff']
     },
     { icon: BriefcaseMedical, label: 'Treatments & Protocol', href: '/clinic/treatments', roles: ['clinic_owner', 'clinic_staff'] },
+    {
+      icon: TrendingUp,
+      label: 'Revenue & Sales',
+      href: '/clinic/revenue',
+      roles: ['clinic_owner', 'clinic_admin']
+    },
+    {
+      icon: BarChart3,
+      label: 'Business Reports',
+      href: '/clinic/reports',
+      roles: ['clinic_owner', 'clinic_admin']
+    },
     {
       icon: Zap,
       label: 'AI Quota',
@@ -82,6 +110,12 @@ export default function DashboardLayout({
 
   return (
     <div className="flex min-h-screen bg-background text-foreground overflow-hidden relative">
+      <HelpModal 
+        isOpen={isHelpOpen} 
+        onClose={() => setIsHelpOpen(false)} 
+        role={getUserRole()} 
+      />
+      
       {/* Mobile Overlay */}
       <AnimatePresence>
         {isMobileOpen && (
@@ -111,8 +145,12 @@ export default function DashboardLayout({
       >
         {/* Sidebar Header */}
         <div className="h-20 flex items-center px-6 gap-3 flex-shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-premium flex-shrink-0">
-            <Sparkles className="w-6 h-6" />
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-premium flex-shrink-0 overflow-hidden">
+            {metadata?.logo_url ? (
+              <img src={metadata.logo_url} alt="Logo" className="w-full h-full object-cover" />
+            ) : (
+              <Sparkles className="w-6 h-6" />
+            )}
           </div>
           <AnimatePresence>
             {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && (
@@ -122,7 +160,7 @@ export default function DashboardLayout({
                 exit={{ opacity: 0, x: -10 }}
                 className="font-heading font-bold text-xl tracking-tight text-white whitespace-nowrap uppercase"
               >
-                BN-Aura
+                {getClinicName()}
               </motion.span>
             )}
           </AnimatePresence>
@@ -215,6 +253,13 @@ export default function DashboardLayout({
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
+            {['clinic_owner', 'clinic_admin'].includes(getUserRole()) && <BranchSwitcher />}
+            <button 
+              onClick={() => setIsHelpOpen(true)}
+              className="p-2 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-primary transition-all"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
             <NotificationCenter />
             <div className="h-8 w-px bg-white/5 mx-1 md:mx-2" />
             <div className="hidden md:flex flex-col text-right">

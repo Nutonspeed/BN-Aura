@@ -53,6 +53,10 @@ export default async function LocaleLayout({
     <html lang={locale} suppressHydrationWarning>
       <head>
         <title>BN-Aura | Premium Aesthetic Intelligence</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+        <meta name="theme-color" content="#0A0A0A" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/next.svg" />
       </head>
       <body
         className={`${ibmPlexThai.variable} ${anuphan.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}

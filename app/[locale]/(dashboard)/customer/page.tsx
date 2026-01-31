@@ -25,6 +25,12 @@ export default function CustomerDashboard() {
   const [realCustomerId, setRealCustomerId] = useState<string | null>(null);
   const [salesRep, setSalesRep] = useState<{ id: string; name: string } | null>(null);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
+  const [overview, setOverview] = useState({
+    skinScore: 0,
+    activeTreatments: 0,
+    nextSessionDate: null as string | null
+  });
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -37,18 +43,48 @@ export default function CustomerDashboard() {
           // Fetch customer specific data using the Auth User ID (user_id)
           const { data: customer } = await supabase
             .from('customers')
-            .select('id, full_name, assigned_sales_id, clinic_staff!customers_assigned_sales_id_fkey(id, name)')
+            .select(`
+              id, 
+              full_name, 
+              assigned_sales_id, 
+              sales_rep:users!customers_assigned_sales_id_fkey(
+                id, 
+                full_name
+              )
+            `)
             .eq('user_id', user.id)
             .single();
           
           if (customer) {
             setCustomerName(customer.full_name);
             setRealCustomerId(customer.id);
-            if (customer.clinic_staff) {
-              const staff = Array.isArray(customer.clinic_staff) ? customer.clinic_staff[0] : customer.clinic_staff;
+            if (customer.sales_rep) {
+              const staff = Array.isArray(customer.sales_rep) ? customer.sales_rep[0] : customer.sales_rep;
               if (staff) {
-                setSalesRep(staff as { id: string; name: string });
+                setSalesRep({
+                  id: (staff as any).id,
+                  name: (staff as any).full_name
+                });
               }
+            }
+
+            // Fetch real-time overview and points
+            const [pointsRes, overviewRes] = await Promise.all([
+              fetch('/api/loyalty/points'),
+              fetch('/api/reports?type=customer_overview')
+            ]);
+
+            const [pointsData, overviewData] = await Promise.all([
+              pointsRes.json(),
+              overviewRes.json()
+            ]);
+
+            if (pointsData.success) {
+              setLoyaltyPoints(pointsData.data.points || 0);
+            }
+
+            if (overviewData.success) {
+              setOverview(overviewData.data);
             }
           }
         }
@@ -114,7 +150,7 @@ export default function CustomerDashboard() {
           transition={{ delay: 0.3 }}
           className="flex gap-3"
         >
-          <Link href="/clinic/appointments">
+          <Link href="/customer/booking">
             <button className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-premium hover:brightness-110 transition-all active:scale-95 flex items-center gap-2">
               <Calendar className="w-4 h-4" />
               Book Treatment
@@ -137,9 +173,9 @@ export default function CustomerDashboard() {
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { label: 'Skin Health Score', value: '88/100', icon: TrendingUp, color: 'text-emerald-400' },
-              { label: 'Active Treatments', value: '2', icon: Zap, color: 'text-primary' },
-              { label: 'Next Session', value: 'Feb 12', icon: Calendar, color: 'text-amber-400' }
+              { label: 'Skin Health Score', value: `${overview.skinScore}/100`, icon: TrendingUp, color: 'text-emerald-400' },
+              { label: 'Active Treatments', value: overview.activeTreatments.toString(), icon: Zap, color: 'text-primary' },
+              { label: 'Next Session', value: overview.nextSessionDate ? new Date(overview.nextSessionDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'None', icon: Calendar, color: 'text-amber-400' }
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -290,16 +326,18 @@ export default function CustomerDashboard() {
             <h3 className="text-sm font-black text-white uppercase tracking-[0.3em] relative z-10">Aura Elite <span className="text-primary">Status</span></h3>
             <div className="space-y-4 relative z-10">
               <div className="space-y-1">
-                <p className="text-3xl font-black text-white">2,450 <span className="text-xs font-light text-muted-foreground uppercase tracking-widest ml-1">Points</span></p>
+                <p className="text-3xl font-black text-white">{loyaltyPoints.toLocaleString()} <span className="text-xs font-light text-muted-foreground uppercase tracking-widest ml-1">Points</span></p>
                 <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden p-0.5 border border-white/5">
                   <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: '65%' }}
+                    animate={{ width: `${Math.min(100, (loyaltyPoints / 3000) * 100)}%` }}
                     transition={{ duration: 2, ease: "easeOut" }}
                     className="h-full bg-primary shadow-[0_0_15px_rgba(var(--primary),0.6)] rounded-full" 
                   />
                 </div>
-                <p className="text-[9px] text-muted-foreground text-right uppercase tracking-widest font-black pt-1">550 points until Platinum</p>
+                <p className="text-[9px] text-muted-foreground text-right uppercase tracking-widest font-black pt-1">
+                  {loyaltyPoints < 3000 ? `${3000 - loyaltyPoints} points until Platinum` : 'Platinum Status Achieved'}
+                </p>
               </div>
               <button className="w-full py-3 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-primary hover:bg-primary/10 transition-all">
                 Membership Benefits

@@ -12,28 +12,46 @@ interface CommissionSummary {
   averageCommission: number;
 }
 
+interface TargetStats {
+  target: { target_amount: number };
+  actualSales: number;
+  progress: number;
+}
+
 export default function CommissionTracker({ salesId }: { salesId: string }) {
   const [summary, setSummary] = useState<CommissionSummary | null>(null);
+  const [target, setTarget] = useState<TargetStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
 
   useEffect(() => {
-    async function fetchSummary() {
+    async function fetchSalesData() {
       setLoading(true);
       try {
-        const res = await fetch(`/api/commissions?salesId=${salesId}&period=${period}`);
-        const data = await res.json();
-        if (data.success) {
-          setSummary(data.data.summary);
+        const [commRes, targetRes] = await Promise.all([
+          fetch(`/api/commissions?salesId=${salesId}&period=${period}`),
+          fetch(`/api/sales/targets?userId=${salesId}`)
+        ]);
+        
+        const commData = await commRes.json();
+        const targetData = await targetRes.json();
+
+        if (commData.success) {
+          setSummary(commData.data.summary);
+        }
+        if (targetData.success) {
+          setTarget(targetData.data);
         }
       } catch (error) {
-        console.error('Error fetching commission summary:', error);
+        console.error('Error fetching sales data:', error);
       } finally {
         setLoading(false);
       }
     }
-    fetchSummary();
+    fetchSalesData();
   }, [salesId, period]);
+
+  const progressValue = target?.target.target_amount ? Math.min(100, target.progress) : 0;
 
   return (
     <div className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group">
@@ -113,19 +131,22 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
               </div>
             </div>
 
-            {/* Progress Bar (Visual Only) */}
+            {/* Progress Bar */}
             <div className="space-y-2">
               <div className="flex justify-between text-[9px] uppercase tracking-tighter font-bold">
                 <span className="text-muted-foreground">Monthly Target Progress</span>
-                <span className="text-primary">75%</span>
+                <span className="text-primary">{Math.round(progressValue)}%</span>
               </div>
               <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
-                  animate={{ width: '75%' }}
+                  animate={{ width: `${progressValue}%` }}
                   className="h-full bg-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]"
                 />
               </div>
+              {target && target.target.target_amount > 0 && (
+                <p className="text-[8px] text-muted-foreground italic text-right">Goal: ฿{target.target.target_amount.toLocaleString()}</p>
+              )}
             </div>
           </div>
         </div>

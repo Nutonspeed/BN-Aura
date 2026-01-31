@@ -10,18 +10,25 @@ import {
   Clock,
   Search,
   Filter,
-  Users
+  Users,
+  Trash2,
+  Target
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import InviteStaffModal from '@/components/InviteStaffModal';
+import SetTargetModal from '@/components/SetTargetModal';
 
 interface StaffMember {
   id: string;
   role: string;
   is_active: boolean;
   created_at: string;
+  clinic_id: string;
+  user_id: string;
   users: {
+    id: string;
     full_name: string;
     email: string;
   } | null;
@@ -32,6 +39,8 @@ export default function StaffManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [isTargetModalOpen, setIsTargetModalOpen] = useState(false);
+  const [selectedStaffForTarget, setSelectedStaffForTarget] = useState<{ id: string; name: string } | null>(null);
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -45,7 +54,10 @@ export default function StaffManagement() {
           role,
           is_active,
           created_at,
+          clinic_id,
+          user_id,
           users:user_id (
+            id,
             full_name,
             email
           )
@@ -59,6 +71,39 @@ export default function StaffManagement() {
       setLoading(false);
     }
   }, [supabase]);
+
+  const handleSetTarget = (person: any) => {
+    setSelectedStaffForTarget({
+      id: person.users?.id || '',
+      name: person.users?.full_name || 'Personnel'
+    });
+    setIsTargetModalOpen(true);
+  };
+
+  const handleUpdateStatus = async (staffId: string, isActive: boolean) => {
+    try {
+      const res = await fetch(`/api/clinic/staff/${staffId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !isActive })
+      });
+      if (res.ok) fetchStaff();
+    } catch (err) {
+      console.error('Error updating staff status:', err);
+    }
+  };
+
+  const handleRemoveStaff = async (staffId: string) => {
+    if (!confirm('Are you sure you want to terminate this personnel node?')) return;
+    try {
+      const res = await fetch(`/api/clinic/staff/${staffId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) fetchStaff();
+    } catch (err) {
+      console.error('Error removing staff:', err);
+    }
+  };
 
   useEffect(() => {
     fetchStaff();
@@ -225,13 +270,44 @@ export default function StaffManagement() {
                         {new Date(person.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                       </td>
                       <td className="px-8 py-6 text-right">
-                        <motion.button 
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          className="p-3 text-white/30 hover:text-white transition-all rounded-xl hover:bg-white/10 border border-transparent hover:border-white/5 shadow-sm"
-                        >
-                          <MoreVertical className="w-5 h-5" />
-                        </motion.button>
+                        <div className="flex items-center justify-end gap-3">
+                          <motion.button 
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={() => handleUpdateStatus(person.id, person.is_active)}
+                            className={cn(
+                              "p-3 rounded-xl border border-transparent transition-all shadow-sm",
+                              person.is_active 
+                                ? "text-amber-500/40 hover:text-amber-500 hover:bg-amber-500/10 hover:border-amber-500/10" 
+                                : "text-emerald-500/40 hover:text-emerald-500 hover:bg-emerald-500/10 hover:border-emerald-500/10"
+                            )}
+                            title={person.is_active ? "Suspend Node" : "Activate Node"}
+                          >
+                            {person.is_active ? <Clock className="w-4 h-4" /> : <CheckCircle2 className="w-4 h-4" />}
+                          </motion.button>
+                          
+                          {person.role === 'sales_staff' && (
+                            <motion.button 
+                              whileHover={{ scale: 1.1 }}
+                              whileTap={{ scale: 0.9 }}
+                              onClick={() => handleSetTarget(person)}
+                              className="p-3 text-primary/40 hover:text-primary transition-all rounded-xl hover:bg-primary/10 border border-transparent hover:border-primary/10 shadow-sm"
+                              title="Set Sales Target"
+                            >
+                              <Target className="w-4 h-4" />
+                            </motion.button>
+                          )}
+
+                          <motion.button 
+                            whileHover={{ scale: 1.1, rotate: 5 }} 
+                            whileTap={{ scale: 0.9 }} 
+                            onClick={() => handleRemoveStaff(person.id)}
+                            className="p-3 text-rose-500/30 hover:text-rose-400 transition-all rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/10 shadow-sm"
+                            title="Terminate Personnel"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </motion.button>
+                        </div>
                       </td>
                     </motion.tr>
                   ))
@@ -256,6 +332,18 @@ export default function StaffManagement() {
           )}
         </div>
       </motion.div>
+
+      {/* Set Target Modal */}
+      {selectedStaffForTarget && (
+        <SetTargetModal
+          isOpen={isTargetModalOpen}
+          onClose={() => setIsTargetModalOpen(false)}
+          onSuccess={fetchStaff}
+          staffId={selectedStaffForTarget.id}
+          staffName={selectedStaffForTarget.name}
+          currentClinicId={staff[0]?.clinic_id || ''}
+        />
+      )}
 
       {/* Invite Staff Modal */}
       <InviteStaffModal

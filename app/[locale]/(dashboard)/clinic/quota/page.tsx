@@ -67,41 +67,6 @@ export default function QuotaManagement() {
         setUsageStats(data.stats);
         setRecommendations(data.recommendations);
         setDaysUntilReset(data.daysUntilReset);
-      } else {
-        // Fallback to mock data
-        setQuotaData({
-          clinicId,
-          plan: 'professional',
-          monthlyQuota: 200,
-          currentUsage: 78,
-          resetDate: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
-          overage: 0,
-          overageRate: 60,
-          features: {
-            advancedAnalysis: true,
-            proposalGeneration: true,
-            leadScoring: true,
-            realtimeSupport: false
-          }
-        });
-        
-        setUsageStats({
-          totalScans: 78,
-          successfulScans: 73,
-          failedScans: 5,
-          totalCost: 0,
-          averageCostPerScan: 0,
-          mostUsedScanType: 'detailed',
-          peakUsageDay: 'Tuesday',
-          utilizationRate: 39 // 78/200 * 100
-        });
-        
-        setRecommendations({
-          currentPlan: 'professional',
-          reasoning: 'แผนปัจจุบันเหมาะสมกับการใช้งาน'
-        });
-        
-        setDaysUntilReset(15);
       }
     } catch (error) {
       console.error('Error fetching quota data:', error);

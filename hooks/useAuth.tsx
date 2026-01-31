@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
 
@@ -10,6 +10,7 @@ interface AuthUser extends User {
     clinic_id?: string;
     full_name?: string;
     clinic_name?: string;
+    clinic_metadata?: any;
   };
 }
 
@@ -22,6 +23,7 @@ interface AuthContextType {
   getUserId: () => string | null;
   getFullName: () => string;
   getClinicName: () => string;
+  getClinicMetadata: () => any;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -29,12 +31,30 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [clinicMetadata, setClinicMetadata] = useState<any>(null);
   const supabase = createClient();
+
+  const fetchClinicMetadata = useCallback(async (clinicId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('clinics')
+        .select('metadata')
+        .eq('id', clinicId)
+        .single();
+      if (data) setClinicMetadata(data.metadata);
+    } catch (err) {
+      console.error('Error fetching clinic metadata:', err);
+    }
+  }, [supabase]);
 
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user as AuthUser || null);
+      const authUser = session?.user as AuthUser || null;
+      setUser(authUser);
+      if (authUser?.user_metadata?.clinic_id) {
+        fetchClinicMetadata(authUser.user_metadata.clinic_id);
+      }
       setLoading(false);
     });
 
@@ -42,16 +62,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user as AuthUser || null);
+      const authUser = session?.user as AuthUser || null;
+      setUser(authUser);
+      if (authUser?.user_metadata?.clinic_id) {
+        fetchClinicMetadata(authUser.user_metadata.clinic_id);
+      }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase.auth, fetchClinicMetadata]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setClinicMetadata(null);
   };
 
   const getUserRole = (): string => {
@@ -74,6 +99,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return user?.user_metadata?.clinic_name || 'Bangkok Premium Clinic';
   };
 
+  const getClinicMetadata = (): any => {
+    return clinicMetadata || {};
+  };
+
   const value = {
     user,
     loading,
@@ -83,6 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     getUserId,
     getFullName,
     getClinicName,
+    getClinicMetadata,
   };
 
   return (

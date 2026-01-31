@@ -9,20 +9,22 @@ import {
   DollarSign, 
   Zap, 
   Layers,
-  Edit2,
+  Edit2, 
   Trash2,
   MoreHorizontal,
-  Sparkles
+  Sparkles,
+  Loader2
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useEffect, useState, useMemo, useCallback } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { useEffect, useState, useCallback } from 'react';
+import TreatmentModal from '@/components/TreatmentModal';
 
 interface Treatment {
   id: string;
   names: { [key: string]: string } | string;
   category: string;
   price_min: number;
+  price_max?: number;
   is_active: boolean;
   created_at: string;
 }
@@ -31,29 +33,51 @@ export default function TreatmentCatalog() {
   const [treatments, setTreatments] = useState<Treatment[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-
-  const supabase = useMemo(() => createClient(), []);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTreatment, setSelectedTreatment] = useState<Treatment | undefined>(undefined);
 
   const fetchTreatments = useCallback(async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('treatments')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setTreatments((data as unknown as Treatment[]) || []);
+      const res = await fetch('/api/treatments');
+      const result = await res.json();
+      if (result.success) {
+        setTreatments(result.data || []);
+      }
     } catch (err) {
       console.error('Error fetching treatments:', err);
     } finally {
       setLoading(false);
     }
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     fetchTreatments();
   }, [fetchTreatments]);
+
+  const handleAddTreatment = () => {
+    setSelectedTreatment(undefined);
+    setIsModalOpen(true);
+  };
+
+  const handleEditTreatment = (treatment: Treatment) => {
+    setSelectedTreatment(treatment);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteTreatment = async (id: string) => {
+    if (!confirm('Are you sure you want to terminate this protocol node?')) return;
+    
+    try {
+      const res = await fetch(`/api/treatments/${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      if (result.success) {
+        fetchTreatments();
+      }
+    } catch (err) {
+      console.error('Error deleting treatment:', err);
+    }
+  };
 
   const filteredTreatments = treatments.filter(item => {
     const nameStr = typeof item.names === 'object' ? JSON.stringify(item.names) : item.names;
@@ -69,6 +93,13 @@ export default function TreatmentCatalog() {
       animate={{ opacity: 1 }}
       className="space-y-10 pb-20 font-sans"
     >
+      <TreatmentModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSuccess={fetchTreatments}
+        treatment={selectedTreatment}
+      />
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
@@ -100,6 +131,7 @@ export default function TreatmentCatalog() {
         <motion.button 
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
+          onClick={handleAddTreatment}
           className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
         >
           <Plus className="w-4 h-4 stroke-[3px]" />
@@ -171,7 +203,7 @@ export default function TreatmentCatalog() {
                 key={item.id}
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: 0.6 + i * 0.05 }}
+                transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -8, transition: { duration: 0.2 } }}
                 className="glass-premium p-8 rounded-[40px] border border-white/10 flex flex-col justify-between group hover:border-primary/40 transition-all duration-500 relative overflow-hidden"
               >
@@ -185,10 +217,20 @@ export default function TreatmentCatalog() {
                       <BriefcaseMedical className="w-7 h-7" />
                     </div>
                     <div className="flex gap-2">
-                      <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="p-2.5 bg-white/5 rounded-xl text-white/30 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10 shadow-sm">
+                      <motion.button 
+                        whileHover={{ scale: 1.1 }} 
+                        whileTap={{ scale: 0.9 }} 
+                        onClick={() => handleEditTreatment(item)}
+                        className="p-2.5 bg-white/5 rounded-xl text-white/30 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10 shadow-sm"
+                      >
                         <Edit2 className="w-4 h-4" />
                       </motion.button>
-                      <motion.button whileHover={{ scale: 1.1, rotate: 5 }} whileTap={{ scale: 0.9 }} className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/10 shadow-sm">
+                      <motion.button 
+                        whileHover={{ scale: 1.1, rotate: 5 }} 
+                        whileTap={{ scale: 0.9 }} 
+                        onClick={() => handleDeleteTreatment(item.id)}
+                        className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/10 shadow-sm"
+                      >
                         <Trash2 className="w-4 h-4" />
                       </motion.button>
                     </div>

@@ -15,25 +15,58 @@ export async function GET(request: Request) {
 
     // Verify Super Admin Role
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('users')
       .select('role')
       .eq('id', user.id)
       .single();
 
     if (profile?.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Forbidden: Super Admin access required' }, { status: 0 });
+      return NextResponse.json({ error: 'Forbidden: Super Admin access required' }, { status: 403 });
     }
 
     const { searchParams } = new URL(request.url);
-    const type = searchParams.get('type'); // 'clinics', 'system_health', 'logs'
+    const type = searchParams.get('type'); // 'clinics', 'system_health', 'stats'
+
+    if (type === 'stats') {
+      // 1. Total Clinics
+      const { count: totalClinics } = await supabase
+        .from('clinics')
+        .select('id', { count: 'exact', head: true });
+
+      // 2. Global Customers
+      const { count: globalCustomers } = await supabase
+        .from('customers')
+        .select('id', { count: 'exact', head: true });
+
+      // 3. Monthly AI Load (Scans in last 30 days)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+      const { count: monthlyScans } = await supabase
+        .from('skin_analyses')
+        .select('id', { count: 'exact', head: true })
+        .gte('created_at', thirtyDaysAgo);
+
+      // 4. Active Staff
+      const { count: totalStaff } = await supabase
+        .from('clinic_staff')
+        .select('id', { count: 'exact', head: true })
+        .eq('is_active', true);
+
+      return successResponse({
+        totalClinics: totalClinics || 0,
+        globalCustomers: globalCustomers || 0,
+        monthlyAILoad: monthlyScans || 0,
+        activeStaff: totalStaff || 0
+      });
+    }
 
     if (type === 'clinics') {
       const { data: clinics, error } = await supabase
         .from('clinics')
         .select(`
           id, 
-          name, 
-          status, 
+          clinic_code,
+          display_name, 
+          status:is_active, 
           created_at,
           clinic_staff(count),
           customers(count)
@@ -41,7 +74,15 @@ export async function GET(request: Request) {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      return successResponse({ clinics });
+      
+      // Transform status from is_active boolean to string if needed by UI
+      const transformedClinics = clinics.map(c => ({
+        ...c,
+        name: typeof c.display_name === 'object' ? (c.display_name as any).th || (c.display_name as any).en : c.display_name,
+        status: c.status ? 'active' : 'inactive'
+      }));
+
+      return successResponse({ clinics: transformedClinics });
     }
 
     if (type === 'system_health') {

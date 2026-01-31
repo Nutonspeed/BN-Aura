@@ -46,10 +46,10 @@ export interface QuotaPlan {
 // Available Quota Plans
 export const QUOTA_PLANS: QuotaPlan[] = [
   {
-    id: 'basic',
-    name: 'Basic Plan',
+    id: 'starter',
+    name: 'Starter Plan',
     monthlyQuota: 50,
-    monthlyPrice: 2500,
+    monthlyPrice: 2990,
     scanPrice: 75,
     features: {
       advancedAnalysis: false,
@@ -57,13 +57,13 @@ export const QUOTA_PLANS: QuotaPlan[] = [
       leadScoring: false,
       realtimeSupport: false
     },
-    description: 'เหมาะสำหรับคลินิกเล็ก การใช้งานพื้นฐาน'
+    description: 'เหมาะสำหรับคลินิกเล็ก เริ่มต้นใช้งานพื้นฐาน'
   },
   {
     id: 'professional',
     name: 'Professional Plan',
     monthlyQuota: 200,
-    monthlyPrice: 8500,
+    monthlyPrice: 8990,
     scanPrice: 60,
     features: {
       advancedAnalysis: true,
@@ -71,14 +71,14 @@ export const QUOTA_PLANS: QuotaPlan[] = [
       leadScoring: true,
       realtimeSupport: false
     },
-    description: 'เหมาะสำหรับคลินิกขนาดกลาง AI ครบครัน',
+    description: 'เหมาะสำหรับคลินิกขนาดกลาง ต้องการ AI เต็มระบบ',
     recommended: true
   },
   {
     id: 'premium',
     name: 'Premium Plan',
     monthlyQuota: 500,
-    monthlyPrice: 18000,
+    monthlyPrice: 19990,
     scanPrice: 45,
     features: {
       advancedAnalysis: true,
@@ -86,13 +86,13 @@ export const QUOTA_PLANS: QuotaPlan[] = [
       leadScoring: true,
       realtimeSupport: true
     },
-    description: 'เหมาะสำหรับคลินิกใหญ่ ฟีเจอร์พรีเมียม'
+    description: 'เหมาะสำหรับคลินิกใหญ่ หลายสาขา ฟีเจอร์พรีเมียม'
   },
   {
     id: 'enterprise',
     name: 'Enterprise Plan',
     monthlyQuota: 1000,
-    monthlyPrice: 35000,
+    monthlyPrice: 39990,
     scanPrice: 35,
     features: {
       advancedAnalysis: true,
@@ -100,7 +100,7 @@ export const QUOTA_PLANS: QuotaPlan[] = [
       leadScoring: true,
       realtimeSupport: true
     },
-    description: 'เหมาะสำหรับเครือข่ายคลินิก บริการ VIP'
+    description: 'เหมาะสำหรับเครือข่ายคลินิก บริการ VIP ครบวงจร'
   }
 ];
 

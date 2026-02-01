@@ -1,0 +1,317 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - img [ref=e16]
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]:
+            - generic [ref=e33]: "468"
+            - generic [ref=e34]: Facial Points
+          - generic [ref=e36]:
+            - generic [ref=e37]: 30s
+            - generic [ref=e38]: Analysis Time
+          - generic [ref=e40]:
+            - generic [ref=e41]: 95%
+            - generic [ref=e42]: Accuracy
+        - heading "The platform where skin analysis happens in seconds." [level=1] [ref=e43]:
+          - text: The platform where
+          - generic [ref=e44]: skin analysis happens in seconds.
+        - paragraph [ref=e45]: If skin consultation takes 30 minutes and customers still can't see results, it's not your team. It's the tools.
+        - generic [ref=e46]:
+          - link "ทดลองใช้งาน" [ref=e47] [cursor=pointer]:
+            - /url: /th/demo
+            - button "ทดลองใช้งาน" [ref=e48]
+          - link "ติดต่อทีมขาย" [ref=e49] [cursor=pointer]:
+            - /url: "#contact"
+            - button "ติดต่อทีมขาย" [ref=e50]
+        - generic [ref=e51]:
+          - generic [ref=e52]: Trusted by leading clinics
+          - generic [ref=e53]:
+            - generic [ref=e54]:
+              - img [ref=e55]
+              - generic [ref=e58]: 10+ คลินิกชั้นนำ
+            - generic [ref=e59]:
+              - img [ref=e60]
+              - generic [ref=e63]: 5,000+ การวิเคราะห์
+            - generic [ref=e64]:
+              - img [ref=e65]
+              - generic [ref=e68]: Enterprise Security
+    - generic [ref=e71]:
+      - heading "the next layer of aesthetic consultation" [level=2] [ref=e72]
+      - heading "Automate how you analyze, present, and close sales with real-time AI + AR." [level=3] [ref=e73]:
+        - text: Automate how you analyze, present, and close sales
+        - text: with real-time AI + AR.
+      - paragraph [ref=e74]:
+        - text: No manual skin analysis, no guesswork, no lost customers.
+        - text: If consultation takes hours and customers still hesitate, it's not your team. It's the tools!
+    - generic [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - generic [ref=e79]: For Clinic Owners
+          - heading "Run your clinic without engineering bottlenecks." [level=3] [ref=e80]
+          - paragraph [ref=e81]: Launch new treatments, manage staff, and monitor AI usage. Get insights in real-time, not next week.
+          - list [ref=e82]:
+            - listitem [ref=e83]:
+              - img [ref=e84]
+              - generic [ref=e87]: จัดการ packages และ treatments แยกรายสาขา
+            - listitem [ref=e88]:
+              - img [ref=e89]
+              - generic [ref=e92]: ดู analytics และ revenue dashboard แบบ real-time
+            - listitem [ref=e93]:
+              - img [ref=e94]
+              - generic [ref=e97]: ควบคุม AI quota และ usage tracking
+            - listitem [ref=e98]:
+              - img [ref=e99]
+              - generic [ref=e102]: Multi-clinic management ในที่เดียว
+          - link "เริ่มใช้งาน" [ref=e103] [cursor=pointer]:
+            - /url: /th/auth/login
+            - button "เริ่มใช้งาน" [ref=e104]
+        - generic [ref=e106]:
+          - img [ref=e107]
+          - generic [ref=e112]: 10+
+          - generic [ref=e113]: Clinics Trust Us
+      - generic [ref=e114]:
+        - generic [ref=e116]:
+          - img [ref=e117]
+          - generic [ref=e119]: 30s
+          - generic [ref=e120]: Analysis Time
+        - generic [ref=e121]:
+          - generic [ref=e122]: For Sales Staff
+          - heading "10x your closing rate with AI that shows results." [level=3] [ref=e123]
+          - paragraph [ref=e124]: Scan faces, see AI results instantly, and show AR simulations. Close deals in minutes, not hours.
+          - list [ref=e125]:
+            - listitem [ref=e126]:
+              - img [ref=e127]
+              - generic [ref=e130]: สแกนและวิเคราะห์ผิวได้ทันที ใน 30 วินาที
+            - listitem [ref=e131]:
+              - img [ref=e132]
+              - generic [ref=e135]: แสดงผล AR simulator ให้ลูกค้าเห็นก่อนทำจริง
+            - listitem [ref=e136]:
+              - img [ref=e137]
+              - generic [ref=e140]: สร้างใบเสนอราคาอัตโนมัติด้วย AI
+            - listitem [ref=e141]:
+              - img [ref=e142]
+              - generic [ref=e145]: ติดตาม leads และ follow-up แบบ smart
+          - link "ทดลองใช้ Demo" [ref=e146] [cursor=pointer]:
+            - /url: /th/demo
+            - button "ทดลองใช้ Demo" [ref=e147]
+    - generic [ref=e149]:
+      - generic [ref=e150]:
+        - heading "วิธีการทำงาน" [level=2] [ref=e151]
+        - paragraph [ref=e152]: เริ่มใช้งานได้ใน 3 ขั้นตอนง่าย ๆ
+      - generic [ref=e153]:
+        - generic [ref=e154]:
+          - generic [ref=e155]: "01"
+          - generic [ref=e156]:
+            - img [ref=e158]
+            - heading "สแกนใบหน้า" [level=3] [ref=e161]
+            - paragraph [ref=e162]: ใช้กล้องสแกนใบหน้าลูกค้า ระบบจะวิเคราะห์อัตโนมัติด้วย AI
+        - generic [ref=e163]:
+          - generic [ref=e164]: "02"
+          - generic [ref=e165]:
+            - img [ref=e167]
+            - heading "ดูผลวิเคราะห์" [level=3] [ref=e170]
+            - paragraph [ref=e171]: รับผลวิเคราะห์ครบถ้วน พร้อมคำแนะนำการรักษาที่เหมาะสม
+        - generic [ref=e172]:
+          - generic [ref=e173]: "03"
+          - generic [ref=e174]:
+            - img [ref=e176]
+            - heading "จำลอง AR" [level=3] [ref=e179]
+            - paragraph [ref=e180]: ให้ลูกค้าเห็นผลลัพธ์ก่อนรักษาด้วย AR Simulator
+    - generic [ref=e183]:
+      - heading "เทคโนโลยีชั้นนำระดับโลก" [level=2] [ref=e184]
+      - paragraph [ref=e185]: พัฒนาด้วยเทคโนโลยีล้ำสมัยที่ใช้ในองค์กรใหญ่ทั่วโลก
+      - generic [ref=e186]:
+        - generic [ref=e187]:
+          - generic [ref=e188]: Google Gemini
+          - generic [ref=e189]: AI Model
+        - generic [ref=e190]:
+          - generic [ref=e191]: MediaPipe
+          - generic [ref=e192]: Face Detection
+        - generic [ref=e193]:
+          - generic [ref=e194]: Next.js 15
+          - generic [ref=e195]: Framework
+        - generic [ref=e196]:
+          - generic [ref=e197]: Supabase
+          - generic [ref=e198]: Database
+    - generic [ref=e200]:
+      - generic [ref=e201]:
+        - heading "Deployment Tiers" [level=2] [ref=e202]
+        - paragraph [ref=e203]: เลือกแพ็กเกจที่เหมาะกับขนาดและเป้าหมายการเติบโตของคลินิกคุณ
+      - generic [ref=e204]:
+        - generic [ref=e206]:
+          - generic [ref=e207]:
+            - heading "Starter" [level=3] [ref=e208]
+            - paragraph [ref=e209]: สำหรับคลินิกเปิดใหม่
+          - generic [ref=e210]:
+            - generic [ref=e211]: ฿
+            - generic [ref=e212]: 2,990
+            - generic [ref=e213]: / เดือน
+          - generic [ref=e214]:
+            - generic [ref=e215]:
+              - generic [ref=e216]: AI Bandwidth
+              - generic [ref=e217]: 50 Scans
+            - generic [ref=e218]:
+              - generic [ref=e219]: Capacity
+              - generic [ref=e220]: 3 Accounts
+          - list [ref=e221]:
+            - listitem [ref=e222]:
+              - img [ref=e223]
+              - generic [ref=e226]: AI Skin Analysis พื้นฐาน
+            - listitem [ref=e227]:
+              - img [ref=e228]
+              - generic [ref=e231]: สร้าง AI Proposal
+            - listitem [ref=e232]:
+              - img [ref=e233]
+              - generic [ref=e236]: ระบบจัดการลูกค้า
+            - listitem [ref=e237]:
+              - img [ref=e238]
+              - generic [ref=e241]: Commission Tracking
+          - button "เริ่มใช้งานเลย" [ref=e242] [cursor=pointer]
+        - generic [ref=e243]:
+          - generic [ref=e244]: Most Popular
+          - generic [ref=e245]:
+            - generic [ref=e246]:
+              - heading "Professional" [level=3] [ref=e247]
+              - paragraph [ref=e248]: สำหรับคลินิกที่ต้องการโต
+            - generic [ref=e249]:
+              - generic [ref=e250]: ฿
+              - generic [ref=e251]: 8,990
+              - generic [ref=e252]: / เดือน
+            - generic [ref=e253]:
+              - generic [ref=e254]:
+                - generic [ref=e255]: AI Bandwidth
+                - generic [ref=e256]: 200 Scans
+              - generic [ref=e257]:
+                - generic [ref=e258]: Capacity
+                - generic [ref=e259]: 10 Accounts
+            - list [ref=e260]:
+              - listitem [ref=e261]:
+                - img [ref=e262]
+                - generic [ref=e265]: Advanced AI Analysis
+              - listitem [ref=e266]:
+                - img [ref=e267]
+                - generic [ref=e270]: AI Lead Scoring
+              - listitem [ref=e271]:
+                - img [ref=e272]
+                - generic [ref=e275]: ระบบแชทอัจฉริยะ
+              - listitem [ref=e276]:
+                - img [ref=e277]
+                - generic [ref=e280]: Analytics พื้นฐาน
+            - button "เริ่มใช้งานเลย" [ref=e281] [cursor=pointer]
+        - generic [ref=e283]:
+          - generic [ref=e284]:
+            - heading "Premium" [level=3] [ref=e285]
+            - paragraph [ref=e286]: สำหรับคลินิกขนาดใหญ่
+          - generic [ref=e287]:
+            - generic [ref=e288]: ฿
+            - generic [ref=e289]: 19,990
+            - generic [ref=e290]: / เดือน
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - generic [ref=e293]: AI Bandwidth
+              - generic [ref=e294]: 500 Scans
+            - generic [ref=e295]:
+              - generic [ref=e296]: Capacity
+              - generic [ref=e297]: 30 Accounts
+          - list [ref=e298]:
+            - listitem [ref=e299]:
+              - img [ref=e300]
+              - generic [ref=e303]: Premium AI + AR
+            - listitem [ref=e304]:
+              - img [ref=e305]
+              - generic [ref=e308]: Full BI Dashboard
+            - listitem [ref=e309]:
+              - img [ref=e310]
+              - generic [ref=e313]: Workflow Automation
+            - listitem [ref=e314]:
+              - img [ref=e315]
+              - generic [ref=e318]: Priority Support
+          - button "เริ่มใช้งานเลย" [ref=e319] [cursor=pointer]
+        - generic [ref=e321]:
+          - generic [ref=e322]:
+            - heading "Enterprise" [level=3] [ref=e323]
+            - paragraph [ref=e324]: สำหรับเครือข่ายสาขา
+          - generic [ref=e325]:
+            - generic [ref=e326]: ฿
+            - generic [ref=e327]: 39,990
+            - generic [ref=e328]: / เดือน
+          - generic [ref=e329]:
+            - generic [ref=e330]:
+              - generic [ref=e331]: AI Bandwidth
+              - generic [ref=e332]: Unlimited Scans
+            - generic [ref=e333]:
+              - generic [ref=e334]: Capacity
+              - generic [ref=e335]: ไม่จำกัด
+          - list [ref=e336]:
+            - listitem [ref=e337]:
+              - img [ref=e338]
+              - generic [ref=e341]: Multi-branch Control
+            - listitem [ref=e342]:
+              - img [ref=e343]
+              - generic [ref=e346]: Custom Branding
+            - listitem [ref=e347]:
+              - img [ref=e348]
+              - generic [ref=e351]: Full API Access
+            - listitem [ref=e352]:
+              - img [ref=e353]
+              - generic [ref=e356]: Dedicated Solutions
+          - button "เริ่มใช้งานเลย" [ref=e357] [cursor=pointer]
+    - generic [ref=e359]:
+      - heading "พร้อมยกระดับคลินิกของคุณ?" [level=2] [ref=e360]
+      - paragraph [ref=e361]: เริ่มต้นใช้งาน BN-Aura วันนี้ หรือลองใช้ Demo ฟรีโดยไม่ต้องสมัครสมาชิก
+      - generic [ref=e362]:
+        - link "ทดลองใช้ Demo ฟรี" [ref=e363] [cursor=pointer]:
+          - /url: /th/demo
+          - button "ทดลองใช้ Demo ฟรี" [ref=e364]
+        - link "ติดต่อทีมขาย" [ref=e365] [cursor=pointer]:
+          - /url: "#contact"
+          - button "ติดต่อทีมขาย" [ref=e366]
+    - generic [ref=e368]:
+      - generic [ref=e369]:
+        - heading "ติดต่อเรา" [level=2] [ref=e370]
+        - paragraph [ref=e371]: สนใจใช้งานหรือมีคำถาม? ติดต่อทีมเราได้เลย
+      - generic [ref=e372]:
+        - link "LINE Official @bn-aura" [ref=e373] [cursor=pointer]:
+          - /url: https://line.me/ti/p/~@bn-aura
+          - img [ref=e374]
+          - generic [ref=e376]: LINE Official
+          - generic [ref=e377]: "@bn-aura"
+        - link "Email contact@bn-aura.com" [ref=e378] [cursor=pointer]:
+          - /url: mailto:contact@bn-aura.com
+          - img [ref=e379]
+          - generic [ref=e382]: Email
+          - generic [ref=e383]: contact@bn-aura.com
+        - link "โทรศัพท์ 02-XXX-XXXX" [ref=e384] [cursor=pointer]:
+          - /url: tel:02XXXXXXX
+          - img [ref=e385]
+          - generic [ref=e387]: โทรศัพท์
+          - generic [ref=e388]: 02-XXX-XXXX
+    - generic [ref=e391]:
+      - generic [ref=e392]:
+        - img [ref=e393]
+        - generic [ref=e396]: BN-Aura
+      - generic [ref=e397]:
+        - link "Demo" [ref=e398] [cursor=pointer]:
+          - /url: /th/demo
+        - link "Login" [ref=e399] [cursor=pointer]:
+          - /url: /th/auth/login
+        - link "Contact" [ref=e400] [cursor=pointer]:
+          - /url: "#contact"
+      - generic [ref=e401]: © 2026 BN-Aura. All rights reserved.
+  - generic [ref=e406] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e407]:
+      - img [ref=e408]
+    - generic [ref=e411]:
+      - button "Open issues overlay" [ref=e412]:
+        - generic [ref=e413]:
+          - generic [ref=e414]: "0"
+          - generic [ref=e415]: "1"
+        - generic [ref=e416]: Issue
+      - button "Collapse issues badge" [ref=e417]:
+        - img [ref=e418]
+  - alert [ref=e420]
+```

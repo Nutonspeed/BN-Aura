@@ -190,7 +190,7 @@ export default function DemoPage() {
               </p>
             </div>
             <button
-              onClick={() => router.push('/auth/login')}
+              onClick={() => router.push('/login')}
               className="px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:brightness-110 transition-all"
             >
               เข้าสู่ระบบ

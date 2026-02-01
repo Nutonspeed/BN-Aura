@@ -6,8 +6,14 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:setup": "playwright test --project=setup"
   },
+  "packageManager": "pnpm@8.0.0",
   "dependencies": {
     "@ai-sdk/google": "^3.0.18",
     "@google/generative-ai": "^0.24.1",
@@ -31,7 +37,7 @@
     "lenis": "^1.3.17",
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
-    "next-intl": "^4.8.0",
+    "next-intl": "^4.8.1",
     "qrcode.react": "^4.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -41,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.58.1",
     "@types/earcut": "^3.0.0",
     "@types/node": "^20",
     "@types/react": "^19",

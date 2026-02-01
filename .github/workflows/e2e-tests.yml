@@ -1,0 +1,240 @@
+name: BN-Aura E2E Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run nightly at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  e2e-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+
+    env:
+      BASE_URL: ${{ secrets.TEST_BASE_URL || 'http://localhost:3000' }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Setup test environment
+        run: |
+          echo "Setting up test environment for ${{ matrix.browser }}"
+          pnpm run test:setup
+
+      - name: Start application
+        run: |
+          pnpm run build
+          pnpm start &
+          sleep 30
+          curl -f http://localhost:3000 || exit 1
+
+      - name: Run Playwright tests
+        run: |
+          pnpm exec playwright test --project=${{ matrix.browser }} --reporter=html,junit
+        env:
+          CI: true
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+
+      - name: Upload test videos
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-videos-${{ matrix.browser }}
+          path: test-results/**/video.webm
+          retention-days: 7
+
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request' && failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = './test-results/results.json';
+            
+            if (fs.existsSync(path)) {
+              const results = JSON.parse(fs.readFileSync(path, 'utf8'));
+              const failedTests = results.suites
+                .flatMap(suite => suite.specs)
+                .filter(spec => spec.status === 'failed')
+                .map(spec => `- ❌ ${spec.title}`);
+              
+              if (failedTests.length > 0) {
+                const body = `## 🧪 E2E Test Results (${{ matrix.browser }})
+            
+            **Failed Tests:**
+            ${failedTests.join('\n')}
+            
+            View full report in the [Actions tab](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})`;
+                
+                github.rest.issues.createComment({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  body: body
+                });
+              }
+            }
+
+  mobile-tests:
+    timeout-minutes: 45
+    runs-on: ubuntu-latest
+    if: github.event_name != 'schedule'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+
+      - name: Setup test environment
+        run: pnpm run test:setup
+
+      - name: Start application
+        run: |
+          pnpm run build
+          pnpm start &
+          sleep 30
+
+      - name: Run mobile tests
+        run: |
+          pnpm exec playwright test --project="Mobile Chrome" --project="iPad"
+        env:
+          CI: true
+
+      - name: Upload mobile test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mobile-test-results
+          path: test-results/
+
+  security-tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install chromium
+
+      - name: Run security and RLS tests
+        run: |
+          pnpm exec playwright test tests/multi-tenant/ tests/security/
+        env:
+          CI: true
+          BASE_URL: ${{ secrets.TEST_BASE_URL }}
+
+      - name: Upload security test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-test-results
+          path: test-results/
+
+  performance-tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install chromium
+
+      - name: Run performance tests
+        run: |
+          pnpm exec playwright test tests/performance/
+        env:
+          CI: true
+
+      - name: Upload performance results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-results
+          path: test-results/

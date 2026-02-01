@@ -20,6 +20,10 @@ import { createClient } from '@/lib/supabase/client';
 import MyCustomersSection from '@/components/sales/MyCustomersSection';
 import CommissionTracker from '@/components/sales/CommissionTracker';
 import ChatCenter from '@/components/sales/ChatCenter';
+import AICoachPanel from '@/components/sales/AICoachPanel';
+import HotLeadsAlert from '@/components/sales/HotLeadsAlert';
+import SmartSuggestions from '@/components/sales/SmartSuggestions';
+import { CustomerContext } from '@/lib/ai/salesCoach';
 
 interface Stat {
   label: string;
@@ -53,6 +57,10 @@ export default function SalesDashboard() {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [targetStats, setTargetStats] = useState<SalesTarget | null>(null);
+  
+  // AI Sales Coach State
+  const [currentCustomer, setCurrentCustomer] = useState<CustomerContext | null>(null);
+  const [currentConversation, setCurrentConversation] = useState<string>('');
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -125,8 +133,21 @@ export default function SalesDashboard() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20"
+      className="space-y-10 pb-20 relative"
     >
+      {/* Hot Leads Alert - Fixed Position */}
+      <HotLeadsAlert />
+      
+      {/* AI Sales Coach Panel - Conditionally show when customer is selected */}
+      {currentCustomer && (
+        <AICoachPanel 
+          customerContext={currentCustomer}
+          currentConversation={currentConversation}
+          onSuggestionApply={(suggestion) => {
+            setCurrentConversation(prev => prev + '\n[AI แนะนำ]: ' + suggestion);
+          }}
+        />
+      )}
       {/* Welcome Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
@@ -167,6 +188,29 @@ export default function SalesDashboard() {
               Quick AI Scan
             </button>
           </Link>
+          <button 
+            onClick={() => {
+              // Demo AI Coach with sample customer
+              const demoCustomer: CustomerContext = {
+                name: 'ลูกค้าทดลอง',
+                skinAnalysis: {
+                  skinType: 'oily',
+                  concerns: ['acne', 'large_pores', 'oily_t_zone'],
+                  ageEstimate: 25,
+                  urgencyScore: 75
+                },
+                previousTreatments: [],
+                budget: '฿15,000-25,000',
+                objections: []
+              };
+              setCurrentCustomer(demoCustomer);
+              setCurrentConversation('ลูกค้าสนใจ treatment สำหรับปัญหาสิว และรูขุมขนกว้าง งบประมาณ 15-25k');
+            }}
+            className="px-6 py-3 bg-primary/20 border border-primary/30 rounded-2xl text-sm font-bold text-primary hover:bg-primary/30 transition-all active:scale-95 flex items-center gap-2 group"
+          >
+            <Sparkles className="w-4 h-4 group-hover:animate-spin" />
+            AI Coach Demo
+          </button>
           <Link href="/sales/leads">
             <button className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-premium hover:brightness-110 transition-all active:scale-95">
               Manage Kanban
@@ -250,6 +294,20 @@ export default function SalesDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column: Intelligence Components */}
         <div className="lg:col-span-2 space-y-8">
+          {/* AI Smart Suggestions - NEW */}
+          {currentCustomer && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <SmartSuggestions 
+                customerContext={currentCustomer}
+                currentTreatments={currentCustomer.previousTreatments || []}
+              />
+            </motion.div>
+          )}
+
           {/* Earning Intelligence */}
           {userId && (
             <motion.div
@@ -301,6 +359,23 @@ export default function SalesDashboard() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.8 + idx * 0.1 }}
                   className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all cursor-pointer group hover:bg-white/[0.08]"
+                  onClick={() => {
+                    // Convert lead to CustomerContext for AI Coach
+                    const customerContext: CustomerContext = {
+                      name: lead.name,
+                      skinAnalysis: {
+                        skinType: 'combination', // Default value
+                        concerns: ['aging', 'acne'], // Default values  
+                        ageEstimate: 30, // Default value
+                        urgencyScore: lead.score
+                      },
+                      previousTreatments: [],
+                      budget: `฿${lead.estimatedValue.toLocaleString()}`,
+                      objections: []
+                    };
+                    setCurrentCustomer(customerContext);
+                    setCurrentConversation(`เริ่มสนทนากับ ${lead.name} - Lead Score: ${lead.score}%`);
+                  }}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-sm font-bold text-white group-hover:text-primary transition-colors">{lead.name}</span>

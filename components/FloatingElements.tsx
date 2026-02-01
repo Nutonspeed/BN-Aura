@@ -2,6 +2,15 @@
 
 import { motion } from 'framer-motion';
 
+// Fixed particle positions to avoid hydration mismatch
+const PARTICLE_POSITIONS = [
+  { top: '15%', left: '10%' },
+  { top: '35%', left: '85%' },
+  { top: '55%', left: '25%' },
+  { top: '75%', left: '70%' },
+  { top: '25%', left: '50%' },
+];
+
 export default function FloatingElements() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -52,14 +61,14 @@ export default function FloatingElements() {
         }}
       />
 
-      {/* Small Particles */}
-      {[...Array(5)].map((_, i) => (
+      {/* Small Particles - Using fixed positions */}
+      {PARTICLE_POSITIONS.map((pos, i) => (
         <motion.div
           key={i}
           className="absolute w-4 h-4 rounded-full bg-primary/30"
           style={{
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
+            top: pos.top,
+            left: pos.left,
           }}
           animate={{
             y: [0, -100, 0],

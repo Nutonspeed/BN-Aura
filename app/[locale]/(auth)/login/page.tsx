@@ -1,12 +1,63 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Sparkles, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { createClient } from '@/lib/supabase/client';
 
 export default function LoginPage() {
   const t = useTranslations('auth');
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const supabase = createClient();
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (authError) {
+        setError(authError.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        // Get user role from users table
+        const { data: userData } = await supabase
+          .from('users')
+          .select('role, clinic_id')
+          .eq('id', data.user.id)
+          .single();
+
+        // Redirect based on role
+        if (userData?.role === 'super_admin') {
+          router.push('/th/clinic');
+        } else if (userData?.role === 'sales_staff') {
+          router.push('/th/sales');
+        } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(userData?.role || '')) {
+          router.push('/th/clinic');
+        } else {
+          router.push('/th/demo');
+        }
+      }
+    } catch (err) {
+      setError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-background px-6 overflow-hidden relative">
@@ -28,7 +79,18 @@ export default function LoginPage() {
             <p className="text-muted-foreground font-light text-sm">{t('enter_details')}</p>
           </div>
 
-          <form className="space-y-6">
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3"
+            >
+              <AlertCircle className="w-5 h-5 text-red-400" />
+              <p className="text-sm text-red-400">{error}</p>
+            </motion.div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-white/70 ml-1">{t('email')}</label>
@@ -36,7 +98,10 @@ export default function LoginPage() {
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="name@clinic.com"
+                    required
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                   />
                 </div>
@@ -53,7 +118,10 @@ export default function LoginPage() {
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
                   <input
                     type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
+                    required
                     className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                   />
                 </div>
@@ -61,12 +129,23 @@ export default function LoginPage() {
             </div>
 
             <motion.button
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.99 }}
-              className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold shadow-premium transition-all hover:brightness-110 flex items-center justify-center gap-2"
+              type="submit"
+              disabled={loading}
+              whileHover={{ scale: loading ? 1 : 1.01 }}
+              whileTap={{ scale: loading ? 1 : 0.99 }}
+              className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-semibold shadow-premium transition-all hover:brightness-110 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <span>{t('signin')}</span>
-              <ArrowRight className="w-4 h-4" />
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>กำลังเข้าสู่ระบบ...</span>
+                </>
+              ) : (
+                <>
+                  <span>{t('signin')}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
             </motion.button>
           </form>
 

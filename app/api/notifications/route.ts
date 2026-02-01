@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/client';
+import { createClient } from '@/lib/supabase/server';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 import { 
   createSuccessResponse, 
@@ -15,7 +15,7 @@ import { notificationEngine, NotificationType, NotificationChannel } from '@/lib
  */
 
 export const GET = withErrorHandling(async (request: Request) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {
@@ -60,7 +60,7 @@ export const GET = withErrorHandling(async (request: Request) => {
 });
 
 export const POST = withErrorHandling(async (request: Request) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   
   if (!user) {

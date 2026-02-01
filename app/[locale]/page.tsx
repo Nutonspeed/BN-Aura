@@ -204,7 +204,7 @@ export default function LandingPage() {
                   </motion.li>
                 ))}
               </ul>
-              <Link href="/auth/login">
+              <Link href="/login">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -620,7 +620,7 @@ export default function LandingPage() {
               <Link href="/demo" className="hover:text-white transition-colors">
                 Demo
               </Link>
-              <Link href="/auth/login" className="hover:text-white transition-colors">
+              <Link href="/login" className="hover:text-white transition-colors">
                 Login
               </Link>
               <a href="#contact" className="hover:text-white transition-colors">

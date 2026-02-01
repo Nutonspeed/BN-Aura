@@ -34,16 +34,90 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [clinicMetadata, setClinicMetadata] = useState<any>(null);
   const supabase = createClient();
 
-  const fetchClinicMetadata = useCallback(async (clinicId: string) => {
+  const fetchUserProfile = useCallback(async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from('clinics')
-        .select('metadata')
-        .eq('id', clinicId)
+      // Fetch user profile from users table
+      const { data: userData, error } = await supabase
+        .from('users')
+        .select('role, clinic_id, full_name')
+        .eq('id', userId)
         .single();
-      if (data) setClinicMetadata(data.metadata);
+      
+      // Also fetch clinic_staff role if exists
+      const { data: staffData } = await supabase
+        .from('clinic_staff')
+        .select('role, clinic_id, clinics(display_name, metadata)')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .single();
+
+      // Determine effective role and clinic_id
+      let effectiveRole = userData?.role || 'guest';
+      let effectiveClinicId = userData?.clinic_id || null;
+      let clinicName = 'Bangkok Premium Clinic';
+      let clinicMeta = null;
+
+      // If user is in clinic_staff, use that role for clinic access
+      if (staffData) {
+        effectiveRole = staffData.role;
+        effectiveClinicId = staffData.clinic_id;
+        if (staffData.clinics) {
+          const clinic = staffData.clinics as any;
+          clinicName = typeof clinic.display_name === 'object' 
+            ? clinic.display_name.th || clinic.display_name.en 
+            : clinic.display_name;
+          clinicMeta = clinic.metadata;
+          setClinicMetadata(clinicMeta);
+        }
+      }
+
+      // Super admin keeps their role but can access clinic if in clinic_staff
+      if (userData?.role === 'super_admin') {
+        effectiveRole = 'super_admin';
+      }
+
+      setUser(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          user_metadata: {
+            ...prev.user_metadata,
+            role: effectiveRole,
+            clinic_id: effectiveClinicId,
+            full_name: userData?.full_name || prev.email?.split('@')[0],
+            clinic_name: clinicName,
+            clinic_metadata: clinicMeta,
+          }
+        };
+      });
+
+      // If user has clinic_id from users table but no staff record, fetch clinic info
+      if (userData?.clinic_id && !staffData) {
+        const { data: clinicData } = await supabase
+          .from('clinics')
+          .select('metadata, display_name')
+          .eq('id', userData.clinic_id)
+          .single();
+        if (clinicData) {
+          setClinicMetadata(clinicData.metadata);
+          setUser(prev => {
+            if (!prev) return prev;
+            const displayName = typeof clinicData.display_name === 'object' 
+              ? (clinicData.display_name as any).th || (clinicData.display_name as any).en 
+              : clinicData.display_name;
+            return {
+              ...prev,
+              user_metadata: {
+                ...prev.user_metadata,
+                clinic_name: displayName,
+                clinic_metadata: clinicData.metadata,
+              }
+            };
+          });
+        }
+      }
     } catch (err) {
-      console.error('Error fetching clinic metadata:', err);
+      console.error('Error fetching user profile:', err);
     }
   }, [supabase]);
 
@@ -52,8 +126,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session } }) => {
       const authUser = session?.user as AuthUser || null;
       setUser(authUser);
-      if (authUser?.user_metadata?.clinic_id) {
-        fetchClinicMetadata(authUser.user_metadata.clinic_id);
+      if (authUser?.id) {
+        fetchUserProfile(authUser.id);
       }
       setLoading(false);
     });
@@ -64,14 +138,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       const authUser = session?.user as AuthUser || null;
       setUser(authUser);
-      if (authUser?.user_metadata?.clinic_id) {
-        fetchClinicMetadata(authUser.user_metadata.clinic_id);
+      if (authUser?.id) {
+        fetchUserProfile(authUser.id);
       }
       setLoading(false);
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth, fetchClinicMetadata]);
+  }, [supabase.auth, fetchUserProfile]);
 
   const signOut = async () => {
     await supabase.auth.signOut();

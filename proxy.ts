@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from './lib/supabase/middleware'
 import { createClient } from './lib/supabase/server'
+import { locales, defaultLocale } from './i18n'
 
 // Role-based route access control
 const ROUTE_PERMISSIONS = {
@@ -14,7 +15,19 @@ const ROUTE_PERMISSIONS = {
   '/sales/proposals': ['clinic_owner', 'sales_staff'],
 }
 
-export default async function middleware(request: NextRequest) {
+// i18n: ตรวจสอบว่า locale ถูกต้อง
+function getLocale(request: NextRequest): string {
+  const pathname = request.nextUrl.pathname;
+  const segments = pathname.split('/');
+  const locale = segments[1];
+
+  if (locales.includes(locale as any)) {
+    return locale;
+  }
+  return defaultLocale;
+}
+
+export default async function proxy(request: NextRequest) {
   // First, update the Supabase session
   const response = await updateSession(request)
   

@@ -23,7 +23,14 @@ import {
   ShoppingCart,
   TrendingUp,
   BarChart3,
-  HelpCircle
+  HelpCircle,
+  CreditCard,
+  Activity,
+  Shield,
+  Lock,
+  Headphones,
+  Megaphone,
+  Bell
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname } from '@/i18n/routing';
@@ -59,6 +66,17 @@ export default function DashboardLayout({
 
   const menuItems = [
     { icon: ShieldCheck, label: 'System Admin', href: '/admin', roles: ['super_admin'] },
+    { icon: Shield, label: 'Security Dashboard', href: '/admin/security', roles: ['super_admin'] },
+    { icon: Users, label: 'User Management', href: '/admin/users', roles: ['super_admin'] },
+    { icon: BarChart3, label: 'Analytics & Reports', href: '/admin/analytics', roles: ['super_admin'] },
+    { icon: CreditCard, label: 'Subscription & Billing', href: '/admin/billing', roles: ['super_admin'] },
+    { icon: Activity, label: 'System Monitoring', href: '/admin/system', roles: ['super_admin'] },
+    { icon: Shield, label: 'Audit Trail', href: '/admin/audit', roles: ['super_admin'] },
+    { icon: Lock, label: 'Permissions & Roles', href: '/admin/permissions', roles: ['super_admin'] },
+    { icon: Headphones, label: 'Support Tickets', href: '/admin/support', roles: ['super_admin'] },
+    { icon: Settings, label: 'Global Settings', href: '/admin/settings', roles: ['super_admin'] },
+    { icon: Megaphone, label: 'Broadcast Messaging', href: '/admin/broadcast', roles: ['super_admin'] },
+    { icon: Bell, label: 'Announcements', href: '/admin/announcements', roles: ['super_admin'] },
     { icon: LayoutDashboard, label: 'Clinic Overview', href: '/clinic', roles: ['clinic_owner', 'clinic_admin'] },
     { icon: LayoutDashboard, label: 'My Skin Portal', href: '/customer', roles: ['customer'] },
     { icon: Stethoscope, label: 'Clinical Node', href: '/beautician', roles: ['clinic_staff'] },

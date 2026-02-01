@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 
 interface Notification {
   id: string;
-  type: 'new_lead' | 'treatment_update' | 'message' | 'system' | 'quota_alert';
+  type: 'new_lead' | 'treatment_update' | 'message' | 'system' | 'quota_alert' | 'security_alert';
   title: string;
   message: string;
   link?: string;
@@ -57,7 +57,7 @@ export default function NotificationCenter() {
       const res = await fetch('/api/notifications');
       const data = await res.json();
       if (data.success) {
-        setNotifications(data.data.notifications);
+        setNotifications(Array.isArray(data.data) ? data.data : (data.data?.notifications || []));
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
@@ -81,7 +81,7 @@ export default function NotificationCenter() {
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const unreadCount = (notifications || []).filter(n => n && !n.is_read).length;
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -89,6 +89,7 @@ export default function NotificationCenter() {
       case 'treatment_update': return <Activity className="w-4 h-4 text-primary" />;
       case 'message': return <MessageSquare className="w-4 h-4 text-amber-400" />;
       case 'quota_alert': return <Zap className="w-4 h-4 text-rose-400" />;
+      case 'security_alert': return <ShieldCheck className="w-4 h-4 text-red-400" />;
       default: return <ShieldCheck className="w-4 h-4 text-blue-400" />;
     }
   };

@@ -127,7 +127,8 @@
     },
     "audit": {
       "title": "Audit Trail",
-      "description": "Track all system activities and user actions",
+      "description": "View activity history and changes",
+      "user": "User",
       "audit_logs": "Audit Logs",
       "activity_logs": "Activity Logs",
       "recent_activity": "Recent Activity",
@@ -258,7 +259,8 @@
       "priority": "Priority",
       "high": "High",
       "medium": "Medium",
-      "low": "Low"
+      "low": "Low",
+      "create_ticket": "Create Ticket"
     },
     "announcements": {
       "title": "Announcements",

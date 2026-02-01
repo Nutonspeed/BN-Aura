@@ -7,7 +7,7 @@ import { useAnnouncementContext } from '../context';
 import { AnnouncementFormData } from '../types';
 
 interface AnnouncementFormProps {
-  initialData?: Partial<AnnouncementFormData>;
+  initialData?: Partial<AnnouncementFormData> & { id?: string };
   onClose?: () => void;
 }
 

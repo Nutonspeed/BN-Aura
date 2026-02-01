@@ -41,7 +41,7 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
   const [showAddPlan, setShowAddPlan] = useState(false);
   const [showAddOn, setShowAddOn] = useState(false);
 
-  const [plans, setPlans] = useState<Record<string, Plan>>(settings?.subscription_plans || {});
+  const [plans, setPlans] = useState<Record<string, Plan>>((settings?.subscription_plans as unknown) as Record<string, Plan> || {});
   const [addOns, setAddOns] = useState<AddOn[]>([
     {
       id: 'extra_ai',
@@ -97,7 +97,7 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
   const handleSavePlans = async () => {
     try {
       await updateSettings({
-        subscription_plans: plans
+        subscription_plans: (plans as unknown) as any
       });
     } catch (error) {
       console.error('Failed to save plans:', error);

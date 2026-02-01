@@ -5,13 +5,13 @@ import { createAdminClient } from '@/lib/supabase/admin';
 // PUT - Update announcement
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
     const supabaseAdmin = createAdminClient();
     const body = await request.json();
-    const { id } = params;
+    const { id } = await params;
 
     // Verify admin access
     const { data: { user } } = await supabase.auth.getUser();
@@ -69,12 +69,12 @@ export async function PUT(
 // DELETE - Delete announcement
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = await createClient();
     const supabaseAdmin = createAdminClient();
-    const { id } = params;
+    const { id } = await params;
 
     // Verify admin access
     const { data: { user } } = await supabase.auth.getUser();

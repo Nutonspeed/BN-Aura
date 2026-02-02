@@ -24,6 +24,9 @@ import AICoachPanel from '@/components/sales/AICoachPanel';
 import HotLeadsAlert from '@/components/sales/HotLeadsAlert';
 import SmartSuggestions from '@/components/sales/SmartSuggestions';
 import { CustomerContext } from '@/lib/ai/salesCoach';
+import { useHotLeadsRealtime } from '@/hooks/useHotLeadsRealtime';
+import { useHotLeads } from '@/hooks/useSalesLeads';
+import { useSalesStats, useSalesTarget } from '@/hooks/useSalesStats';
 
 interface Stat {
   label: string;
@@ -52,73 +55,59 @@ interface SalesTarget {
 }
 
 export default function SalesDashboard() {
-  const [stats, setStats] = useState<Stat[]>([]);
-  const [recentLeads, setRecentLeads] = useState<RecentLead[]>([]);
-  const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
-  const [targetStats, setTargetStats] = useState<SalesTarget | null>(null);
+  const [clinicId, setClinicId] = useState<string>('');
   
   // AI Sales Coach State
   const [currentCustomer, setCurrentCustomer] = useState<CustomerContext | null>(null);
   const [currentConversation, setCurrentConversation] = useState<string>('');
 
   const supabase = useMemo(() => createClient(), []);
-
+  
+  // Get user/clinic info
   useEffect(() => {
-    async function fetchSalesData() {
-      setLoading(true);
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) setUserId(user.id);
-
-        const [leadsRes, reportsRes, targetRes] = await Promise.all([
-          supabase.from('sales_leads').select('*').order('created_at', { ascending: false }).limit(5),
-          fetch('/api/reports?type=sales_overview').then(res => res.json()),
-          fetch('/api/sales/targets').then(res => res.json())
-        ]);
-
-        const { data: leads, error: leadsError } = leadsRes;
-        
-        if (leadsError) throw leadsError;
-
-        if (reportsRes.success) {
-          const d = reportsRes.data;
-          setStats([
-            { label: 'New Leads', value: d.newLeads.toString(), change: '+15%', trend: 'up', icon: UserPlus },
-            { label: 'Conversion Rate', value: `${d.conversionRate.toFixed(1)}%`, change: '+4.2%', trend: 'up', icon: Target },
-            { label: 'Monthly Sales', value: targetRes.success ? `฿${targetRes.data.actualSales.toLocaleString()}` : '฿0', change: '+12%', trend: 'up', icon: TrendingUp },
-            { label: 'AI Proposals Sent', value: d.proposalsSent.toString(), change: '+28%', trend: 'up', icon: Zap },
-          ]);
-        }
-
-        if (targetRes.success) {
-          setTargetStats(targetRes.data);
-        }
-
-        // Fetch and process real leads
-        const processedLeads: RecentLead[] = (leads || []).map(l => ({
-          id: l.id,
-          name: l.metadata?.customerProfile?.name || 'Unknown Customer',
-          status: l.status === 'new' ? 'ใหม่' : l.status === 'won' ? 'ปิดการขาย' : 'กำลังติดตาม',
-          score: l.score || 0,
-          category: l.category as 'hot' | 'warm' | 'cold',
-          confidence: l.confidence || 0,
-          time: new Date(l.created_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
-          estimatedValue: l.metadata?.scoring?.estimatedValue || 0,
-          priority: (l.metadata?.scoring?.priority || 'nurture') as 'immediate' | 'follow_up' | 'nurture'
-        }));
-
-        setRecentLeads(processedLeads);
-
-      } catch (err) {
-        console.error('Sales Dashboard Error:', err);
-      } finally {
-        setLoading(false);
+    async function getUserInfo() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserId(user.id);
+        const clinic = user.user_metadata?.clinic_id || '';
+        setClinicId(clinic);
       }
     }
-
-    fetchSalesData();
+    getUserInfo();
   }, [supabase]);
+
+  // React Query hooks - automatic caching and refetching
+  const { data: salesStats, isLoading: statsLoading } = useSalesStats();
+  const { data: targetData, isLoading: targetLoading } = useSalesTarget();
+  const { data: hotLeadsData = [], isLoading: leadsLoading } = useHotLeads(clinicId, 5);
+
+  const loading = statsLoading || targetLoading || leadsLoading;
+
+  // Build stats array from query data
+  const stats: Stat[] = salesStats ? [
+    { label: 'New Leads', value: salesStats.newLeads.toString(), change: '+15%', trend: 'up', icon: UserPlus },
+    { label: 'Conversion Rate', value: `${salesStats.conversionRate.toFixed(1)}%`, change: '+4.2%', trend: 'up', icon: Target },
+    { label: 'Monthly Sales', value: targetData ? `฿${targetData.actualSales.toLocaleString()}` : '฿0', change: '+12%', trend: 'up', icon: TrendingUp },
+    { label: 'AI Proposals Sent', value: salesStats.proposalsSent.toString(), change: '+28%', trend: 'up', icon: Zap },
+  ] : [];
+
+  // Process hot leads
+  const recentLeads: RecentLead[] = hotLeadsData.map(l => ({
+    id: l.id,
+    name: l.name || 'Unknown Customer',
+    status: l.status === 'new' ? 'ใหม่' : l.status === 'won' ? 'ปิดการขาย' : 'กำลังติดตาม',
+    score: l.score || 0,
+    category: l.category as 'hot' | 'warm' | 'cold',
+    confidence: l.confidence || l.score || 0,
+    time: new Date(l.created_at).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.',
+    estimatedValue: 0,
+    priority: 'immediate' as const
+  }));
+
+  // Real-time hot leads notifications (toast only, React Query handles data refresh)
+  useHotLeadsRealtime(clinicId);
+
 
   if (loading) {
     return (
@@ -252,7 +241,7 @@ export default function SalesDashboard() {
       </div>
 
       {/* Target Progress Section (NEW) */}
-      {targetStats && targetStats.target.target_amount > 0 && (
+      {targetData && targetData.target.target_amount > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -270,19 +259,19 @@ export default function SalesDashboard() {
             </div>
             <div className="text-right">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Cycle Progress</p>
-              <p className="text-2xl font-black text-white">{Math.round(targetStats.progress)}%</p>
+              <p className="text-2xl font-black text-white">{Math.round(targetData.progress)}%</p>
             </div>
           </div>
 
           <div className="mt-8 space-y-4 relative z-10">
             <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest">
-              <span className="text-white/40">Current: ฿{targetStats.actualSales.toLocaleString()}</span>
-              <span className="text-primary">Target: ฿{targetStats.target.target_amount.toLocaleString()}</span>
+              <span className="text-white/40">Current: ฿{targetData.actualSales.toLocaleString()}</span>
+              <span className="text-primary">Target: ฿{targetData.target.target_amount.toLocaleString()}</span>
             </div>
             <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
               <motion.div 
                 initial={{ width: 0 }}
-                animate={{ width: `${Math.min(targetStats.progress, 100)}%` }}
+                animate={{ width: `${Math.min(targetData.progress, 100)}%` }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
                 className="h-full bg-primary shadow-glow-sm rounded-full"
               />

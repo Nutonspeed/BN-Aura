@@ -9,9 +9,24 @@ import {
   Sparkles,
   Target
 } from 'lucide-react';
-import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from '@/i18n/routing';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  closestCorners
+} from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { useLeadStatusRealtime } from '@/hooks/useHotLeadsRealtime';
+import { useSalesLeads, useUpdateLeadStatus } from '@/hooks/useSalesLeads';
 
 interface Lead {
   id: string;
@@ -31,32 +46,41 @@ const COLUMNS = [
 ];
 
 export default function LeadsKanbanPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [clinicId, setClinicId] = useState<string>('');
 
-  const supabase = createClient();
-
-  const fetchLeads = useCallback(async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('sales_leads')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setLeads((data as unknown as Lead[]) || []);
-    } catch (err) {
-      console.error('Error fetching leads:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [supabase]);
-
+  const supabase = useMemo(() => createClient(), []);
+  
+  // Get clinic ID from user
   useEffect(() => {
-    fetchLeads();
-  }, [fetchLeads]);
+    async function getClinicId() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const clinic = user.user_metadata?.clinic_id || '';
+        setClinicId(clinic);
+      }
+    }
+    getClinicId();
+  }, [supabase]);
+  
+  // React Query hooks
+  const { data: leads = [], isLoading: loading } = useSalesLeads(clinicId);
+  const updateLeadStatus = useUpdateLeadStatus();
+  
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
+
+  // Real-time status updates (still needed for cross-tab sync)
+  useLeadStatusRealtime(() => {
+    // React Query will auto-refetch on window focus
+    // No manual state update needed
+  });
 
   const getLeadsByStatus = (status: string) => {
     return leads.filter(l => 
@@ -66,12 +90,45 @@ export default function LeadsKanbanPage() {
     );
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    setActiveId(null);
+    
+    if (!over) return;
+    
+    const leadId = active.id as string;
+    const newStatus = over.id as string;
+    
+    // Check if it's a valid column
+    const validStatuses = COLUMNS.map(c => c.id);
+    if (!validStatuses.includes(newStatus)) return;
+    
+    // Find the lead
+    const lead = leads.find(l => l.id === leadId);
+    if (!lead || lead.status === newStatus) return;
+    
+    // Use React Query mutation (includes optimistic update and error handling)
+    updateLeadStatus.mutate({ leadId, status: newStatus });
+  };
+
+  const activeLead = activeId ? leads.find(l => l.id === activeId) : null;
+
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-10 h-[calc(100vh-160px)] flex flex-col pb-6"
+    <DndContext
+      sensors={sensors}
+      collisionDetection={closestCorners}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
     >
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="space-y-10 h-[calc(100vh-160px)] flex flex-col pb-6"
+      >
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 flex-shrink-0">
         <div className="space-y-1">
@@ -137,13 +194,19 @@ export default function LeadsKanbanPage() {
       ) : (
         <div className="flex-1 flex gap-8 overflow-x-auto pb-6 custom-scrollbar">
           {COLUMNS.map((column, colIdx) => (
-            <motion.div 
-              key={column.id} 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 + colIdx * 0.1 }}
-              className="flex-shrink-0 w-[340px] flex flex-col gap-6"
+            <SortableContext
+              key={column.id}
+              items={getLeadsByStatus(column.id).map(l => l.id)}
+              strategy={verticalListSortingStrategy}
             >
+              <motion.div 
+                id={column.id}
+                data-column={column.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 + colIdx * 0.1 }}
+                className="flex-shrink-0 w-[340px] flex flex-col gap-6"
+              >
               <div className="flex items-center justify-between px-4">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(var(--primary),0.6)]" />
@@ -161,58 +224,11 @@ export default function LeadsKanbanPage() {
                 <AnimatePresence mode="popLayout">
                   {getLeadsByStatus(column.id).length > 0 ? (
                     getLeadsByStatus(column.id).map((lead, idx) => (
-                      <motion.div
+                      <DraggableLeadCard
                         key={lead.id}
-                        layout
-                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                        transition={{ duration: 0.3, delay: idx * 0.05 }}
-                        whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                        className="glass-card p-5 rounded-[28px] border border-white/5 hover:border-primary/40 transition-all cursor-grab active:cursor-grabbing group/card relative overflow-hidden"
-                      >
-                        {/* Status Accent Glow */}
-                        <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 blur-3xl opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                        
-                        <div className="absolute top-5 right-5 opacity-0 group-hover/card:opacity-100 transition-all">
-                          <button className="p-1.5 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-white">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </button>
-                        </div>
-                        
-                        <div className="flex items-start gap-4 mb-5">
-                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary text-sm font-black border border-primary/20 shadow-premium group-hover/card:scale-110 transition-transform duration-500">
-                            {lead.name?.split(' ').map((n: string) => n[0]).join('') || 'L'}
-                          </div>
-                          <div className="space-y-1 pr-6">
-                            <h4 className="text-sm font-black text-white group-hover/card:text-primary transition-colors truncate w-44">{lead.name}</h4>
-                            <div className="flex items-center gap-1.5">
-                              <div className="w-1 h-1 rounded-full bg-emerald-400" />
-                              <p className="text-[10px] text-muted-foreground truncate w-40 font-medium italic">{lead.email}</p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-5 border-t border-white/5">
-                          <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-widest">
-                            <Clock className="w-3 h-3 text-primary/60" />
-                            {new Date(lead.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Link href={`/analysis?leadId=${lead.id}`}>
-                              <button className="p-2 rounded-xl bg-primary text-primary-foreground hover:brightness-110 transition-all shadow-[0_0_15px_rgba(var(--primary),0.3)]">
-                                <Sparkles className="w-3.5 h-3.5 stroke-[2.5px]" />
-                              </button>
-                            </Link>
-                            <div className="flex flex-col items-end">
-                              <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Scoring</span>
-                              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white text-[10px] font-black">
-                                {lead.score || 0}%
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </motion.div>
+                        lead={lead}
+                        idx={idx}
+                      />
                     ))
                   ) : (
                     <div className="h-full flex flex-col items-center justify-center text-center opacity-30 py-16 space-y-4">
@@ -228,9 +244,108 @@ export default function LeadsKanbanPage() {
                 </AnimatePresence>
               </div>
             </motion.div>
-          ))}
+          </SortableContext>
+        ))}
+      </div>
+    )}
+  </motion.div>
+  
+  <DragOverlay>
+    {activeLead ? (
+      <div className="glass-card p-5 rounded-[28px] border border-primary/40 shadow-2xl opacity-90 w-[340px]">
+        <div className="flex items-start gap-4 mb-5">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary text-sm font-black border border-primary/20 shadow-premium">
+            {activeLead.name?.split(' ').map((n: string) => n[0]).join('') || 'L'}
+          </div>
+          <div className="space-y-1 pr-6">
+            <h4 className="text-sm font-black text-white truncate w-44">{activeLead.name}</h4>
+            <div className="flex items-center gap-1.5">
+              <div className="w-1 h-1 rounded-full bg-emerald-400" />
+              <p className="text-[10px] text-muted-foreground truncate w-40 font-medium italic">{activeLead.email}</p>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
+    ) : null}
+  </DragOverlay>
+</DndContext>
+  );
+}
+
+// Draggable Lead Card Component
+function DraggableLeadCard({ lead, idx }: { lead: Lead; idx: number }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: lead.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <motion.div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      key={lead.id}
+      data-lead-id={lead.id}
+      layout
+      initial={{ opacity: 0, scale: 0.95, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+      transition={{ duration: 0.3, delay: idx * 0.05 }}
+      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+      className="glass-card p-5 rounded-[28px] border border-white/5 hover:border-primary/40 transition-all cursor-grab active:cursor-grabbing group/card relative overflow-hidden"
+    >
+      {/* Status Accent Glow */}
+      <div className="absolute -top-10 -right-10 w-24 h-24 bg-primary/5 blur-3xl opacity-0 group-hover/card:opacity-100 transition-opacity" />
+      
+      <div className="absolute top-5 right-5 opacity-0 group-hover/card:opacity-100 transition-all">
+        <button className="p-1.5 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-white">
+          <MoreHorizontal className="w-4 h-4" />
+        </button>
+      </div>
+      
+      <div className="flex items-start gap-4 mb-5">
+        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary text-sm font-black border border-primary/20 shadow-premium group-hover/card:scale-110 transition-transform duration-500">
+          {lead.name?.split(' ').map((n: string) => n[0]).join('') || 'L'}
+        </div>
+        <div className="space-y-1 pr-6">
+          <h4 className="text-sm font-black text-white group-hover/card:text-primary transition-colors truncate w-44">{lead.name}</h4>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1 h-1 rounded-full bg-emerald-400" />
+            <p className="text-[10px] text-muted-foreground truncate w-40 font-medium italic">{lead.email}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between pt-5 border-t border-white/5">
+        <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-widest">
+          <Clock className="w-3 h-3 text-primary/60" />
+          {new Date(lead.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href={`/analysis?leadId=${lead.id}`}>
+            <button className="p-2 rounded-xl bg-primary text-primary-foreground hover:brightness-110 transition-all shadow-[0_0_15px_rgba(var(--primary),0.3)]">
+              <Sparkles className="w-3.5 h-3.5 stroke-[2.5px]" />
+            </button>
+          </Link>
+          <div className="flex flex-col items-end">
+            <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Scoring</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white text-[10px] font-black">
+              {lead.score || 0}%
+            </div>
+          </div>
+        </div>
+      </div>
     </motion.div>
   );
 }

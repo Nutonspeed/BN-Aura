@@ -6,6 +6,8 @@ import { AuthProvider } from '@/hooks/useAuth';
 import {IBM_Plex_Sans_Thai, Anuphan, Inter} from "next/font/google";
 import "@/app/globals.css";
 import PDPAModal from "@/components/ui/PDPAModal";
+import { Toaster } from 'sonner';
+import { ReactQueryProvider } from '@/app/providers';
 
 const ibmPlexThai = IBM_Plex_Sans_Thai({
   subsets: ["thai", "latin"],
@@ -62,11 +64,14 @@ export default async function LocaleLayout({
         className={`${ibmPlexThai.variable} ${anuphan.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
       >
         <NextIntlClientProvider messages={messages}>
-          <AuthProvider>
-            <div className="fixed inset-0 bg-grain pointer-events-none z-[9999]" />
-            <PDPAModal />
-            {children}
-          </AuthProvider>
+          <ReactQueryProvider>
+            <AuthProvider>
+              <div className="fixed inset-0 bg-grain pointer-events-none z-[9999]" />
+              <Toaster position="top-right" expand={false} richColors />
+              <PDPAModal />
+              {children}
+            </AuthProvider>
+          </ReactQueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>

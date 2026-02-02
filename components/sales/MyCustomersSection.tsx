@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Search, ExternalLink, MessageSquare, Plus } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { useWorkflowState } from '@/hooks/useWorkflowStatus';
+import WorkflowStatusBadge from './WorkflowStatusBadge';
 
 interface Customer {
   id: string;
@@ -12,6 +14,49 @@ interface Customer {
   phone: string;
   totalSpent: number;
   lastContactDate: string | null;
+}
+
+function CustomerCard({ customer }: { customer: Customer }) {
+  const { data: workflowState } = useWorkflowState(customer.id);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all group"
+    >
+      <div className="flex justify-between items-start">
+        <div className="space-y-1 flex-1">
+          <div className="flex items-center gap-2">
+            <div className="text-sm font-bold text-white group-hover:text-primary transition-colors flex items-center gap-2">
+              {customer.name}
+              <Link href={`/sales/customers/${customer.id}`}>
+                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+            </div>
+            {workflowState && (
+              <WorkflowStatusBadge stage={workflowState.current_stage} size="sm" />
+            )}
+          </div>
+          <p className="text-[10px] text-muted-foreground font-light">{customer.email}</p>
+        </div>
+        <div className="text-right space-y-1">
+          <div className="text-xs font-bold text-emerald-400">฿{customer.totalSpent.toLocaleString()}</div>
+          <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Total Spent</p>
+        </div>
+      </div>
+      
+      <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
+        <span className="text-[10px] text-muted-foreground italic">
+          Last contact: {customer.lastContactDate ? new Date(customer.lastContactDate).toLocaleDateString() : 'Never'}
+        </span>
+        <button className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors">
+          <MessageSquare className="w-3 h-3" />
+          Chat
+        </button>
+      </div>
+    </motion.div>
+  );
 }
 
 export default function MyCustomersSection({ salesId }: { salesId: string }) {
@@ -73,38 +118,7 @@ export default function MyCustomersSection({ salesId }: { salesId: string }) {
           <div className="py-8 text-center text-muted-foreground text-sm italic">No customers found.</div>
         ) : (
           filteredCustomers.map((customer) => (
-            <motion.div
-              key={customer.id}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all group"
-            >
-              <div className="flex justify-between items-start">
-                <div className="space-y-1">
-                  <div className="text-sm font-bold text-white group-hover:text-primary transition-colors flex items-center gap-2">
-                    {customer.name}
-                    <Link href={`/sales/customers/${customer.id}`}>
-                      <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </Link>
-                  </div>
-                  <p className="text-[10px] text-muted-foreground font-light">{customer.email}</p>
-                </div>
-                <div className="text-right space-y-1">
-                  <div className="text-xs font-bold text-emerald-400">฿{customer.totalSpent.toLocaleString()}</div>
-                  <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Total Spent</p>
-                </div>
-              </div>
-              
-              <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
-                <span className="text-[10px] text-muted-foreground italic">
-                  Last contact: {customer.lastContactDate ? new Date(customer.lastContactDate).toLocaleDateString() : 'Never'}
-                </span>
-                <button className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors">
-                  <MessageSquare className="w-3 h-3" />
-                  Chat
-                </button>
-              </div>
-            </motion.div>
+            <CustomerCard key={customer.id} customer={customer} />
           ))
         )}
       </div>

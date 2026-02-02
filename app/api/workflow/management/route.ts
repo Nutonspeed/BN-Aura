@@ -29,6 +29,155 @@ export async function POST(request: NextRequest) {
 
     const clinicId = userData.clinic_id;
 
+    const tierMultiplier: Record<string, number> = {
+      bronze: 1,
+      silver: 1.1,
+      gold: 1.25,
+      platinum: 1.5,
+      diamond: 2
+    };
+    const generateReferralCode = () => {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let result = 'BN';
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return result;
+    };
+
+    const ensureLoyaltyProfile = async (customerId: string) => {
+      const { data: profileRow, error: profileError } = await supabase
+        .from('loyalty_profiles')
+        .select('available_points, total_points, referral_code, current_tier')
+        .eq('customer_id', customerId)
+        .eq('clinic_id', clinicId)
+        .single();
+
+      if (profileRow) {
+        return {
+          availablePoints: profileRow.available_points || 0,
+          totalPoints: profileRow.total_points || 0,
+          referralCode: profileRow.referral_code as string,
+          currentTier: (profileRow.current_tier || 'bronze') as string
+        };
+      }
+
+      if (profileError && profileError.code !== 'PGRST116') {
+        throw profileError;
+      }
+
+      const referralCode = generateReferralCode();
+
+      const { data: createdProfile, error: createError } = await supabase
+        .from('loyalty_profiles')
+        .insert({
+          customer_id: customerId,
+          clinic_id: clinicId,
+          referral_code: referralCode
+        })
+        .select('available_points, total_points, referral_code, current_tier')
+        .single();
+
+      if (createError) {
+        if (createError.code === '23505') {
+          const { data: existingProfile, error: refetchError } = await supabase
+            .from('loyalty_profiles')
+            .select('available_points, total_points, referral_code, current_tier')
+            .eq('customer_id', customerId)
+            .eq('clinic_id', clinicId)
+            .single();
+
+          if (refetchError) throw refetchError;
+          return {
+            availablePoints: existingProfile?.available_points || 0,
+            totalPoints: existingProfile?.total_points || 0,
+            referralCode: existingProfile?.referral_code as string,
+            currentTier: (existingProfile?.current_tier || 'bronze') as string
+          };
+        }
+        throw createError;
+      }
+
+      return {
+        availablePoints: createdProfile?.available_points || 0,
+        totalPoints: createdProfile?.total_points || 0,
+        referralCode: createdProfile?.referral_code as string,
+        currentTier: (createdProfile?.current_tier || 'bronze') as string
+      };
+    };
+
+    const awardLoyaltyPointsIfEligible = async (params: {
+      actionType: string;
+      workflowId: string;
+      customerId: string;
+      treatmentPlan?: any;
+    }) => {
+      const eventKey = `workflow:${params.workflowId}:action:${params.actionType}`;
+
+      let points: number | null = null;
+      let transactionType: 'earned' | 'bonus' = 'earned';
+      let description = 'Loyalty points';
+
+      // Note: payment points are awarded in /api/payments to avoid duplication.
+
+      if (params.actionType === 'complete_treatment') {
+        points = 50;
+        transactionType = 'bonus';
+        description = 'Treatment completed (+50 bonus points)';
+      }
+
+      if (!points || points <= 0) {
+        return;
+      }
+
+      const profile = await ensureLoyaltyProfile(params.customerId);
+
+      const multiplier = tierMultiplier[profile.currentTier] || 1;
+      const finalPoints = Math.floor(points * multiplier);
+      if (finalPoints <= 0) return;
+      const { data: insertedTx, error: insertError } = await supabase
+        .from('point_transactions')
+        .insert({
+          customer_id: params.customerId,
+          clinic_id: clinicId,
+          type: transactionType,
+          amount: finalPoints,
+          description,
+          workflow_id: params.workflowId,
+          event_key: eventKey
+        })
+        .select('id')
+        .single();
+
+      if (insertError) {
+        if (insertError.code === '23505') {
+          return;
+        }
+        throw insertError;
+      }
+
+      if (!insertedTx?.id) {
+        return;
+      }
+
+      const newAvailable = profile.availablePoints + finalPoints;
+      const newTotal = profile.totalPoints + finalPoints;
+
+      const { error: updateError } = await supabase
+        .from('loyalty_profiles')
+        .update({
+          available_points: newAvailable,
+          total_points: newTotal,
+          updated_at: new Date().toISOString()
+        })
+        .eq('customer_id', params.customerId)
+        .eq('clinic_id', clinicId);
+
+      if (updateError) {
+        throw updateError;
+      }
+    };
+
     switch (action) {
       case 'create_workflow': {
         const { customerId, customerName, customerEmail, customerPhone, assignedSalesId } = data;
@@ -59,6 +208,15 @@ export async function POST(request: NextRequest) {
           actionData,
           notes
         );
+
+        if (updatedWorkflow) {
+          await awardLoyaltyPointsIfEligible({
+            actionType,
+            workflowId,
+            customerId: updatedWorkflow.customerId,
+            treatmentPlan: updatedWorkflow.treatmentPlan
+          });
+        }
 
         return NextResponse.json({ success: true, workflow: updatedWorkflow });
       }

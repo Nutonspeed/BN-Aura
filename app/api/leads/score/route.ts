@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import { calculateLeadScore, createCustomerProfile } from '@/lib/scoring/leadScoring';
 import { createClient } from '@/lib/supabase/client';
+import { automationEngine } from '@/lib/automation/smartTriggers';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { analysisData, engagementData, leadId } = body;
+    const { analysisData, engagementData, leadId, clinicId } = body;
 
     // Create customer profile from the provided data
     const customerProfile = createCustomerProfile(analysisData, engagementData);
@@ -41,6 +42,14 @@ export async function POST(request: Request) {
           { error: 'Failed to update lead score' },
           { status: 500 }
         );
+      }
+
+      // Check for automation triggers
+      // We fire and forget this to not block the response
+      if (clinicId) {
+        automationEngine.checkLeadTriggers(leadId, leadScore.totalScore, clinicId).catch(err => {
+          console.error('Automation trigger error:', err);
+        });
       }
     }
 

@@ -173,16 +173,15 @@ function verifySignature(body: any, signature: string, provider: string): boolea
  */
 function mapDeliveryStatus(status: string, provider: string): string {
   const statusMap: Record<string, string> = {
-    // ThaiSMSPlus
+    // ThaiSMSPlus & Twilio
     'success': 'delivered',
     'delivered': 'delivered',
     'failed': 'failed',
     'expired': 'failed',
+    'undelivered': 'failed',
     // SMS.to
     'sent': 'delivered',
-    'error': 'failed',
-    // Twilio
-    'undelivered': 'failed'
+    'error': 'failed'
   };
 
   return statusMap[status.toLowerCase()] || 'unknown';

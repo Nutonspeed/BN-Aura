@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, TrendingUp, MessageCircle, Lightbulb, Target, AlertCircle } from 'lucide-react';
 import { CustomerContext, SalesCoachResponse } from '@/lib/ai/salesCoach';
+import { conversationManager } from '@/lib/conversations/conversationManager';
+import { createClient } from '@/lib/supabase/client';
 
 interface AICoachPanelProps {
   customerContext: CustomerContext;
@@ -20,6 +22,49 @@ export default function AICoachPanel({
   const [loading, setLoading] = useState(false);
   const [dealProbability, setDealProbability] = useState<number | null>(null);
   const [showPanel, setShowPanel] = useState(true);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string>('');
+  const [clinicId, setClinicId] = useState<string>('');
+  
+  const supabase = createClient();
+
+  // Initialize or resume conversation
+  useEffect(() => {
+    async function initConversation() {
+      if (!customerContext) return;
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      setUserId(user.id);
+      const clinic = user.user_metadata?.clinic_id || '';
+      setClinicId(clinic);
+      
+      // Try to get active conversation
+      const activeConv = await conversationManager.getActiveConversation(
+        customerContext.name, // Using name as customer ID for demo
+        user.id
+      );
+      
+      if (activeConv) {
+        setConversationId(activeConv.id);
+        if (activeConv.deal_probability) {
+          setDealProbability(activeConv.deal_probability);
+        }
+      } else {
+        // Start new conversation
+        const newConvId = await conversationManager.startConversation({
+          customerId: customerContext.name,
+          salesStaffId: user.id,
+          clinicId: clinic,
+          type: 'ai_coach'
+        });
+        setConversationId(newConvId);
+      }
+    }
+    
+    initConversation();
+  }, [customerContext, supabase]);
 
   // Auto-refresh advice when conversation changes
   useEffect(() => {
@@ -44,6 +89,19 @@ export default function AICoachPanel({
       const result = await response.json();
       if (result.success) {
         setAdvice(result.advice);
+        
+        // Save AI suggestion to conversation
+        if (conversationId) {
+          await conversationManager.addMessage(conversationId, {
+            role: 'ai_coach',
+            content: result.advice.suggestion,
+            metadata: {
+              confidence: result.advice.confidence,
+              talkingPoints: result.advice.talkingPoints,
+              closingTechnique: result.advice.closingTechnique
+            }
+          });
+        }
       }
     } catch (error) {
       console.error('Failed to fetch AI advice:', error);
@@ -73,7 +131,13 @@ export default function AICoachPanel({
 
       const result = await response.json();
       if (result.success) {
-        setDealProbability(result.probability.probability);
+        const probability = result.probability.probability;
+        setDealProbability(probability);
+        
+        // Update conversation with deal probability
+        if (conversationId) {
+          await conversationManager.updateDealProbability(conversationId, probability);
+        }
       }
     } catch (error) {
       console.error('Failed to calculate probability:', error);

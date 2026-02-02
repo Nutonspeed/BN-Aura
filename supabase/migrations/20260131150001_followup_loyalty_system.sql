@@ -215,11 +215,13 @@ ALTER TABLE achievements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE loyalty_rewards ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies
+DROP POLICY IF EXISTS "Users can manage followup rules in their clinic" ON followup_rules;
 CREATE POLICY "Users can manage followup rules in their clinic" ON followup_rules
   FOR ALL USING (
     clinic_id IN (SELECT clinic_id FROM users WHERE id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Users can view followup executions in their clinic" ON followup_executions;
 CREATE POLICY "Users can view followup executions in their clinic" ON followup_executions
   FOR SELECT USING (
     rule_id IN (
@@ -229,27 +231,32 @@ CREATE POLICY "Users can view followup executions in their clinic" ON followup_e
     )
   );
 
+DROP POLICY IF EXISTS "Users can manage customer preferences in their clinic" ON customer_preferences;
 CREATE POLICY "Users can manage customer preferences in their clinic" ON customer_preferences
   FOR ALL USING (
     clinic_id IN (SELECT clinic_id FROM users WHERE id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Users can view templates for their clinic" ON followup_templates;
 CREATE POLICY "Users can view templates for their clinic" ON followup_templates
   FOR SELECT USING (
     clinic_id IN (SELECT clinic_id FROM users WHERE id = auth.uid())
     OR is_system_template = true
   );
 
+DROP POLICY IF EXISTS "Users can view journey events in their clinic" ON customer_journey_events;
 CREATE POLICY "Users can view journey events in their clinic" ON customer_journey_events
   FOR SELECT USING (
     clinic_id IN (SELECT clinic_id FROM users WHERE id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Users can view loyalty profiles in their clinic" ON loyalty_profiles;
 CREATE POLICY "Users can view loyalty profiles in their clinic" ON loyalty_profiles
   FOR SELECT USING (
     clinic_id IN (SELECT clinic_id FROM users WHERE id = auth.uid())
   );
 
+DROP POLICY IF EXISTS "Users can manage loyalty profiles in their clinic" ON loyalty_profiles;
 CREATE POLICY "Users can manage loyalty profiles in their clinic" ON loyalty_profiles
   FOR ALL USING (
     clinic_id IN (SELECT clinic_id FROM users WHERE id = auth.uid())

@@ -1,5 +1,10 @@
 import { createClient } from '@/lib/supabase/client';
 import { callGemini } from '@/lib/ai';
+import { resendService } from '@/lib/email/resendService';
+import { emailTemplates, type FollowUpEmailData } from '@/lib/email/templates/followUpEmail';
+import { smsService } from '@/lib/sms/smsService';
+import { smsTemplates, type SMSTemplateData } from '@/lib/sms/templates';
+import { lineService } from '@/lib/line';
 import { taskQueueManager } from '@/lib/workflow/taskQueue';
 import { eventBroadcaster } from '@/lib/workflow/eventBroadcaster';
 
@@ -298,34 +303,216 @@ Template เดิม: ${rule.template.message}
    * Send Email Follow-up
    */
   private async sendEmail(execution: FollowUpExecution): Promise<boolean> {
-    // TODO: Implement actual email sending
-    // For now, just mark as sent
-    await this.updateExecutionStatus(execution.id, 'sent');
-    
-    console.log(`📧 Email sent to customer ${execution.customerId}: ${execution.personalizedContent?.subject}`);
-    return true;
+    try {
+      // Get customer details
+      const { data: customer } = await this.supabase
+        .from('customers')
+        .select('full_name, email, clinic_id, clinics(display_name)')
+        .eq('id', execution.customerId)
+        .single();
+
+      if (!customer?.email) {
+        console.error('❌ Customer email not found');
+        await this.updateExecutionStatus(execution.id, 'failed', 'Customer email not found');
+        return false;
+      }
+
+      // Prepare email data
+      const content = execution.personalizedContent as any;
+      const emailData: Partial<FollowUpEmailData> = {
+        customerName: customer.full_name,
+        clinicName: (customer.clinics as any)?.[0]?.display_name?.th || 'BN-Aura',
+        subject: content?.subject || 'ข้อความจากคลินิก',
+        message: content?.message || '',
+        ctaText: content?.ctaText,
+        ctaUrl: content?.ctaUrl
+      };
+
+      // Select appropriate template based on execution type
+      let emailHtml: string;
+      const templateType = execution.metadata?.templateType as string | undefined;
+      
+      if (templateType && templateType in emailTemplates) {
+        emailHtml = emailTemplates[templateType as keyof typeof emailTemplates](emailData);
+      } else {
+        // Use generic template
+        emailHtml = emailTemplates.followUpCheck(emailData);
+      }
+
+      // Send email via Resend
+      const result = await resendService.send({
+        to: customer.email,
+        subject: emailData.subject || 'ข้อความจากคลินิก',
+        html: emailHtml,
+        tags: [
+          { name: 'type', value: 'follow_up' },
+          { name: 'customer_id', value: execution.customerId },
+          { name: 'clinic_id', value: customer.clinic_id || '' }
+        ]
+      });
+
+      if (result.success) {
+        await this.updateExecutionStatus(execution.id, 'sent', undefined, {
+          messageId: result.messageId,
+          sentAt: new Date().toISOString()
+        });
+        console.log(`✅ Email sent to ${customer.email}: ${emailData.subject}`);
+        return true;
+      } else {
+        await this.updateExecutionStatus(execution.id, 'failed', result.error);
+        console.error(`❌ Email failed: ${result.error}`);
+        return false;
+      }
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      await this.updateExecutionStatus(execution.id, 'failed', errorMessage);
+      console.error('❌ Email sending error:', error);
+      return false;
+    }
   }
 
   /**
    * Send SMS Follow-up
    */
   private async sendSMS(execution: FollowUpExecution): Promise<boolean> {
-    // TODO: Implement actual SMS sending via Thailand SMS Gateway
-    await this.updateExecutionStatus(execution.id, 'sent');
-    
-    console.log(`📱 SMS sent to customer ${execution.customerId}`);
-    return true;
+    try {
+      // Get customer details
+      const { data: customer } = await this.supabase
+        .from('customers')
+        .select('full_name, phone, clinic_id, clinics(display_name)')
+        .eq('id', execution.customerId)
+        .single();
+
+      if (!customer?.phone) {
+        console.error('❌ Customer phone not found');
+        await this.updateExecutionStatus(execution.id, 'failed', 'Customer phone not found');
+        return false;
+      }
+
+      // Validate phone number
+      if (!smsService.isValidThaiPhone(customer.phone)) {
+        console.error('❌ Invalid Thai phone number:', customer.phone);
+        await this.updateExecutionStatus(execution.id, 'failed', 'Invalid phone number');
+        return false;
+      }
+
+      // Prepare SMS data
+      const smsContent = execution.personalizedContent as any;
+      const smsData: SMSTemplateData = {
+        customerName: customer.full_name,
+        clinicName: (customer.clinics as any)?.[0]?.display_name?.th || 'BN-Aura',
+        treatmentName: execution.metadata?.treatmentName,
+        appointmentDate: execution.metadata?.appointmentDate,
+        appointmentTime: execution.metadata?.appointmentTime,
+        amount: execution.metadata?.amount,
+        link: smsContent?.ctaUrl
+      };
+
+      // Select appropriate template
+      let smsMessage: string;
+      const templateType = execution.metadata?.templateType as string | undefined;
+      
+      if (templateType && templateType in smsTemplates) {
+        smsMessage = smsTemplates[templateType as keyof typeof smsTemplates](smsData as any);
+      } else if (execution.personalizedContent?.message) {
+        // Use personalized message (truncate if needed)
+        smsMessage = execution.personalizedContent.message.substring(0, 160);
+      } else {
+        // Generic notification
+        smsMessage = smsTemplates.notification({
+          customerName: customer.full_name,
+          message: 'มีข้อความจากคลินิก',
+          clinicName: smsData.clinicName
+        });
+      }
+
+      // Send SMS
+      const result = await smsService.send({
+        to: customer.phone,
+        message: smsMessage,
+        sender: 'BN-Aura',
+        tags: {
+          type: 'follow_up',
+          customer_id: execution.customerId,
+          clinic_id: customer.clinic_id || ''
+        }
+      });
+
+      if (result.success) {
+        await this.updateExecutionStatus(execution.id, 'sent', undefined, {
+          messageId: result.messageId,
+          creditsUsed: result.creditsUsed,
+          sentAt: new Date().toISOString()
+        });
+        console.log(`✅ SMS sent to ${customer.phone}: ${smsMessage.substring(0, 50)}...`);
+        return true;
+      } else {
+        await this.updateExecutionStatus(execution.id, 'failed', result.error);
+        console.error(`❌ SMS failed: ${result.error}`);
+        return false;
+      }
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      await this.updateExecutionStatus(execution.id, 'failed', errorMessage);
+      console.error('❌ SMS sending error:', error);
+      return false;
+    }
   }
 
   /**
    * Send LINE Message
    */
   private async sendLineMessage(execution: FollowUpExecution): Promise<boolean> {
-    // TODO: Implement LINE Bot integration
-    await this.updateExecutionStatus(execution.id, 'sent');
-    
-    console.log(`💬 LINE message sent to customer ${execution.customerId}`);
-    return true;
+    try {
+      // Get customer LINE ID from database
+      const { data: customer } = await this.supabase
+        .from('customers')
+        .select('full_name, metadata, clinic_id, clinics(display_name)')
+        .eq('id', execution.customerId)
+        .single();
+
+      const lineUserId = customer?.metadata?.lineUserId;
+
+      if (!lineUserId) {
+        console.warn('⚠️ Customer LINE ID not found, skipping LINE message');
+        await this.updateExecutionStatus(execution.id, 'failed', 'LINE ID not found');
+        return false;
+      }
+
+      // Prepare message
+      const lineContent = execution.personalizedContent as any;
+      const message = lineContent?.message ||
+        `สวัสดีค่ะ คุณ${customer.full_name}\nมีข้อความจาก${(customer.clinics as any)?.[0]?.display_name?.th || 'คลินิก'}`;
+
+      // Send LINE message
+      const result = await lineService.sendMessage({
+        to: lineUserId,
+        message,
+        imageUrl: execution.metadata?.imageUrl,
+        quickReply: execution.metadata?.quickReply
+      });
+
+      if (result.success) {
+        await this.updateExecutionStatus(execution.id, 'sent', undefined, {
+          messageId: result.messageId,
+          sentAt: new Date().toISOString()
+        });
+        console.log(`✅ LINE message sent to ${customer.full_name}`);
+        return true;
+      } else {
+        await this.updateExecutionStatus(execution.id, 'failed', result.error);
+        console.error(`❌ LINE failed: ${result.error}`);
+        return false;
+      }
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      await this.updateExecutionStatus(execution.id, 'failed', errorMessage);
+      console.error('❌ LINE sending error:', error);
+      return false;
+    }
   }
 
   /**
@@ -390,7 +577,12 @@ Template เดิม: ${rule.template.message}
   /**
    * Update Execution Status
    */
-  private async updateExecutionStatus(executionId: string, status: FollowUpExecution['status']): Promise<void> {
+  private async updateExecutionStatus(
+    executionId: string,
+    status: 'pending' | 'sent' | 'failed' | 'cancelled',
+    errorMessage?: string,
+    metadata?: Record<string, any>
+  ): Promise<void> {
     const updates: any = { 
       status, 
       updated_at: new Date().toISOString() 
@@ -398,6 +590,14 @@ Template เดิม: ${rule.template.message}
 
     if (status === 'sent') {
       updates.executed_at = new Date().toISOString();
+    }
+    
+    if (errorMessage) {
+      updates.error = errorMessage;
+    }
+    
+    if (metadata) {
+      updates.metadata = { ...updates.metadata, ...metadata };
     }
 
     const { error } = await this.supabase

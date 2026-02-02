@@ -27,7 +27,7 @@ interface AnalyticsData {
     monthlyScans: number;
     growth: number;
     avgPerClinic: number;
-    topClinics: { clinic: string; scans: number }[];
+    topClinics: { clinic: string; scans: number; clinicId: string }[];
   };
 }
 

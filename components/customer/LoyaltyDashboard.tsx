@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { createClient } from '@/lib/supabase/client';
 import { 
   Crown, 
   Star, 
@@ -13,9 +14,12 @@ import {
   Sparkles,
   ChevronRight,
   Trophy,
-  Zap
+  Zap,
+  Copy,
+  Check
 } from 'lucide-react';
-import { LoyaltyProfile, LoyaltyTier, Achievement } from '@/lib/customer/loyaltySystem';
+import { toast } from 'sonner';
+import { LoyaltyProfile, LoyaltyTier, Achievement, PointTransaction } from '@/lib/customer/loyaltySystem';
 
 interface LoyaltyDashboardProps {
   customerId: string;
@@ -25,7 +29,9 @@ interface LoyaltyDashboardProps {
 export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashboardProps) {
   const [profile, setProfile] = useState<LoyaltyProfile | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [transactions, setTransactions] = useState<PointTransaction[]>([]);
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     fetchLoyaltyData();
@@ -33,46 +39,129 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
 
   const fetchLoyaltyData = async () => {
     try {
-      // TODO: Replace with actual API calls
-      const mockProfile: LoyaltyProfile = {
-        customerId,
-        clinicId,
-        totalPoints: 2850,
-        availablePoints: 2100,
-        currentTier: 'gold',
-        tierProgress: 65,
-        totalSpent: 28500,
-        totalVisits: 12,
-        averageSpend: 2375,
-        lastVisit: new Date('2024-01-15'),
-        unlockedAchievements: ['first-visit', 'big-spender', 'loyal-customer'],
-        totalAchievements: 3,
-        successfulReferrals: 2,
-        referralCode: 'BNAU2850',
-        joinedAt: new Date('2023-06-15'),
-        lastUpdated: new Date()
+      const supabase = createClient();
+
+      const generateReferralCode = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = 'BN';
+        for (let i = 0; i < 8; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
       };
 
-      const mockAchievements: Achievement[] = [
-        {
-          id: 'first-visit',
-          clinicId,
-          name: 'First Steps',
-          description: 'ครั้งแรกที่มาใช้บริการ',
-          category: 'milestone',
-          conditions: { visitCount: 1 },
-          pointsReward: 100,
-          badgeIcon: '🎉',
-          isActive: true,
-          isSecret: false,
-          createdAt: new Date()
-        }
-      ];
+      // Load or create loyalty profile
+      const { data: profileRow, error: profileError } = await supabase
+        .from('loyalty_profiles')
+        .select('*')
+        .eq('customer_id', customerId)
+        .eq('clinic_id', clinicId)
+        .single();
 
-      setProfile(mockProfile);
-      setAchievements(mockAchievements);
+      let ensuredProfileRow = profileRow;
+
+      if (!ensuredProfileRow && profileError?.code === 'PGRST116') {
+        const { data: createdProfile, error: createError } = await supabase
+          .from('loyalty_profiles')
+          .insert({
+            customer_id: customerId,
+            clinic_id: clinicId,
+            referral_code: generateReferralCode()
+          })
+          .select('*')
+          .single();
+
+        if (createError) throw createError;
+        ensuredProfileRow = createdProfile;
+      } else if (profileError && profileError.code !== 'PGRST116') {
+        throw profileError;
+      }
+
+      if (!ensuredProfileRow) {
+        setProfile(null);
+        setAchievements([]);
+        setTransactions([]);
+        return;
+      }
+
+      const mappedProfile: LoyaltyProfile = {
+        customerId: ensuredProfileRow.customer_id,
+        clinicId: ensuredProfileRow.clinic_id,
+        totalPoints: ensuredProfileRow.total_points ?? 0,
+        availablePoints: ensuredProfileRow.available_points ?? 0,
+        currentTier: (ensuredProfileRow.current_tier ?? 'bronze') as LoyaltyTier,
+        tierProgress: Number(ensuredProfileRow.tier_progress ?? 0),
+        totalSpent: Number(ensuredProfileRow.total_spent ?? 0),
+        totalVisits: ensuredProfileRow.total_visits ?? 0,
+        averageSpend: Number(ensuredProfileRow.average_spend ?? 0),
+        lastVisit: ensuredProfileRow.last_visit ? new Date(ensuredProfileRow.last_visit) : new Date(),
+        unlockedAchievements: ensuredProfileRow.unlocked_achievements ?? [],
+        totalAchievements: ensuredProfileRow.total_achievements ?? 0,
+        successfulReferrals: ensuredProfileRow.successful_referrals ?? 0,
+        referralCode: ensuredProfileRow.referral_code,
+        joinedAt: ensuredProfileRow.joined_at ? new Date(ensuredProfileRow.joined_at) : new Date(),
+        lastUpdated: ensuredProfileRow.updated_at ? new Date(ensuredProfileRow.updated_at) : new Date()
+      };
+
+      // Load achievements
+      const { data: achievementRows, error: achievementsError } = await supabase
+        .from('achievements')
+        .select('*')
+        .eq('clinic_id', clinicId)
+        .eq('is_active', true)
+        .order('created_at', { ascending: false });
+
+      if (achievementsError) throw achievementsError;
+
+      const unlockedSet = new Set(mappedProfile.unlockedAchievements);
+      const mappedAchievements: Achievement[] = (achievementRows || [])
+        .filter((a: any) => !a.is_secret || unlockedSet.has(a.id))
+        .map((a: any) => ({
+          id: a.id,
+          clinicId: a.clinic_id,
+          name: a.name,
+          description: a.description,
+          category: a.category,
+          conditions: a.conditions,
+          pointsReward: a.points_reward,
+          badgeIcon: a.badge_icon,
+          specialReward: a.special_reward,
+          isActive: a.is_active,
+          isSecret: a.is_secret,
+          createdAt: new Date(a.created_at)
+        }));
+
+      // Load recent point transactions
+      const { data: transactionRows, error: transactionsError } = await supabase
+        .from('point_transactions')
+        .select('*')
+        .eq('customer_id', customerId)
+        .eq('clinic_id', clinicId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (transactionsError) throw transactionsError;
+
+      const mappedTransactions: PointTransaction[] = (transactionRows || []).map((t: any) => ({
+        id: t.id,
+        customerId: t.customer_id,
+        clinicId: t.clinic_id,
+        type: t.type,
+        amount: t.amount,
+        description: t.description,
+        workflowId: t.workflow_id,
+        achievementId: t.achievement_id,
+        rewardId: t.reward_id,
+        createdAt: new Date(t.created_at),
+        expiresAt: t.expires_at ? new Date(t.expires_at) : undefined
+      }));
+
+      setProfile(mappedProfile);
+      setAchievements(mappedAchievements);
+      setTransactions(mappedTransactions);
     } catch (error) {
       console.error('Failed to fetch loyalty data:', error);
+      toast.error('ไม่สามารถโหลดข้อมูลสมาชิกได้');
     } finally {
       setLoading(false);
     }
@@ -92,12 +181,24 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
   const getTierPoints = (tier: LoyaltyTier) => {
     const thresholds = {
       bronze: 0,
-      silver: 1000,
-      gold: 3000,
-      platinum: 7000,
-      diamond: 15000
+      silver: 10000,
+      gold: 30000,
+      platinum: 60000,
+      diamond: 100000
     };
     return thresholds[tier];
+  };
+
+  const copyReferralCode = async () => {
+    if (!profile) return;
+    try {
+      await navigator.clipboard.writeText(profile.referralCode);
+      setCopied(true);
+      toast.success('คัดลอกรหัสแนะนำแล้ว!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch (error) {
+      toast.error('ไม่สามารถคัดลอกได้');
+    }
   };
 
   if (loading || !profile) {
@@ -151,10 +252,6 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
           </div>
           <div className="text-sm text-muted-foreground uppercase tracking-wide">
             แต้มที่ใช้ได้
-          </div>
-          <div className="mt-3 flex items-center justify-center gap-1 text-xs text-green-500">
-            <TrendingUp className="w-3 h-3" />
-            +150 แต้มเดือนนี้
           </div>
         </div>
 
@@ -216,7 +313,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               </h3>
               {nextTierPoints && (
                 <div className="text-sm text-muted-foreground">
-                  อีก {(nextTierPoints - profile.totalPoints).toLocaleString()} แต้ม → {tierConfig.nextTier}
+                  อีก ฿{(nextTierPoints - profile.totalSpent).toLocaleString()} → {tierConfig.nextTier}
                 </div>
               )}
             </div>
@@ -237,33 +334,11 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                   />
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>{currentTierPoints.toLocaleString()} แต้ม</span>
-                  <span>{nextTierPoints.toLocaleString()} แต้ม</span>
+                  <span>฿{currentTierPoints.toLocaleString()}</span>
+                  <span>฿{nextTierPoints.toLocaleString()}</span>
                 </div>
               </div>
             )}
-
-            {/* Tier Benefits */}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-primary/10 rounded-xl">
-                <div className="text-sm font-medium text-foreground mb-2">สิทธิพิเศษปัจจุบัน</div>
-                <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• ส่วนลด 10% ทุก Treatment</li>
-                  <li>• รับแต้ม 2 เท่าทุกวันอังคาร</li>
-                  <li>• ฟรี Consultation</li>
-                </ul>
-              </div>
-              {nextTierPoints && (
-                <div className="p-4 bg-muted/20 rounded-xl">
-                  <div className="text-sm font-medium text-foreground mb-2">สิทธิ์ {tierConfig.nextTier}</div>
-                  <ul className="text-xs text-muted-foreground space-y-1">
-                    <li>• ส่วนลด 15% ทุก Treatment</li>
-                    <li>• รับแต้ม 3 เท่าทุกวันอังคาร</li>
-                    <li>• ฟรี Premium Mask</li>
-                  </ul>
-                </div>
-              )}
-            </div>
           </motion.div>
 
           {/* Recent Activity */}
@@ -279,42 +354,39 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
             </h3>
             
             <div className="space-y-4">
-              {[
-                { action: 'รับแต้ม', amount: '+150 แต้ม', description: 'HydraFacial Treatment', date: '15 ม.ค. 2567', type: 'earned' },
-                { action: 'ใช้แต้ม', amount: '-500 แต้ม', description: 'แลกส่วนลด 10%', date: '10 ม.ค. 2567', type: 'redeemed' },
-                { action: 'โบนัส', amount: '+100 แต้ม', description: 'แนะนำเพื่อนใหม่', date: '5 ม.ค. 2567', type: 'bonus' }
-              ].map((activity, index) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                      activity.type === 'earned' ? 'bg-green-500/20 text-green-500' :
-                      activity.type === 'redeemed' ? 'bg-red-500/20 text-red-500' :
-                      'bg-blue-500/20 text-blue-500'
-                    }`}>
-                      {activity.type === 'earned' ? '+' : activity.type === 'redeemed' ? '-' : '🎁'}
+              {transactions.length === 0 ? (
+                <div className="py-8 text-center text-muted-foreground text-sm">
+                  ยังไม่มีประวัติการใช้แต้ม
+                </div>
+              ) : (
+                transactions.map((tx) => (
+                  <div key={tx.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
+                        tx.type === 'earned' ? 'bg-green-500/20 text-green-500' :
+                        tx.type === 'redeemed' ? 'bg-red-500/20 text-red-500' :
+                        'bg-blue-500/20 text-blue-500'
+                      }`}>
+                        {tx.type === 'earned' ? '+' : tx.type === 'redeemed' ? '-' : '🎁'}
+                      </div>
+                      <div>
+                        <div className="font-medium text-foreground">{tx.description}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {tx.createdAt.toLocaleDateString('th-TH')}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-medium text-foreground">{activity.action}</div>
-                      <div className="text-sm text-muted-foreground">{activity.description}</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
                     <div className={`font-bold ${
-                      activity.type === 'earned' ? 'text-green-500' :
-                      activity.type === 'redeemed' ? 'text-red-500' :
+                      tx.type === 'earned' ? 'text-green-500' :
+                      tx.type === 'redeemed' ? 'text-red-500' :
                       'text-blue-500'
                     }`}>
-                      {activity.amount}
+                      {tx.type === 'earned' ? '+' : '-'}{tx.amount}
                     </div>
-                    <div className="text-xs text-muted-foreground">{activity.date}</div>
                   </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-
-            <button className="w-full mt-4 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors">
-              ดูประวัติทั้งหมด
-            </button>
           </motion.div>
         </div>
 
@@ -331,83 +403,45 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               <Trophy className="w-5 h-5 text-primary" />
               Achievements
               <span className="ml-auto text-sm bg-primary/20 text-primary px-2 py-1 rounded-full">
-                {profile.totalAchievements}/15
+                {profile.totalAchievements}
               </span>
             </h3>
 
             <div className="space-y-3">
-              {achievements.map((achievement, index) => (
-                <motion.div
-                  key={achievement.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 * index }}
-                  className="p-3 bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 rounded-lg flex items-center gap-3"
-                >
-                  <div className="text-2xl">{achievement.badgeIcon}</div>
-                  <div className="flex-1">
-                    <div className="font-medium text-foreground">{achievement.name}</div>
-                    <div className="text-xs text-muted-foreground">{achievement.description}</div>
-                    <div className="text-xs text-primary font-medium">+{achievement.pointsReward} แต้ม</div>
-                  </div>
-                  <div className="text-green-500">
-                    <Award className="w-4 h-4" />
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Locked Achievement Preview */}
-              <div className="p-3 bg-muted/20 border border-border rounded-lg flex items-center gap-3 opacity-60">
-                <div className="text-2xl">🔒</div>
-                <div className="flex-1">
-                  <div className="font-medium text-muted-foreground">VIP Member</div>
-                  <div className="text-xs text-muted-foreground">ใช้จ่าย ฿50,000</div>
-                  <div className="text-xs text-muted-foreground">+500 แต้ม</div>
+              {achievements.length === 0 ? (
+                <div className="py-8 text-center text-muted-foreground text-sm">
+                  ยังไม่มี achievements
                 </div>
-              </div>
-            </div>
-
-            <button className="w-full mt-4 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors">
-              ดู Achievements ทั้งหมด
-            </button>
-          </motion.div>
-
-          {/* Quick Actions */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-card border border-border rounded-2xl p-6"
-          >
-            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
-              Quick Actions
-            </h3>
-
-            <div className="space-y-3">
-              <button className="w-full p-3 bg-primary/10 hover:bg-primary/20 border border-primary/20 rounded-lg flex items-center justify-between group transition-colors">
-                <div className="flex items-center gap-3">
-                  <Gift className="w-5 h-5 text-primary" />
-                  <span className="font-medium text-foreground">แลกรางวัล</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-primary group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button className="w-full p-3 bg-muted/20 hover:bg-muted/30 border border-border rounded-lg flex items-center justify-between group transition-colors">
-                <div className="flex items-center gap-3">
-                  <Users className="w-5 h-5 text-foreground" />
-                  <span className="font-medium text-foreground">แนะนำเพื่อน</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button className="w-full p-3 bg-muted/20 hover:bg-muted/30 border border-border rounded-lg flex items-center justify-between group transition-colors">
-                <div className="flex items-center gap-3">
-                  <Calendar className="w-5 h-5 text-foreground" />
-                  <span className="font-medium text-foreground">จองนัดหมาย</span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
-              </button>
+              ) : (
+                achievements.slice(0, 3).map((achievement, index) => {
+                  const unlocked = profile.unlockedAchievements.includes(achievement.id);
+                  return (
+                    <motion.div
+                      key={achievement.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 * index }}
+                      className={`p-3 rounded-lg flex items-center gap-3 ${
+                        unlocked 
+                          ? 'bg-gradient-to-r from-primary/10 to-transparent border border-primary/20' 
+                          : 'bg-muted/20 border border-border opacity-60'
+                      }`}
+                    >
+                      <div className="text-2xl">{achievement.badgeIcon || '🏆'}</div>
+                      <div className="flex-1">
+                        <div className="font-medium text-foreground">{achievement.name}</div>
+                        <div className="text-xs text-muted-foreground">{achievement.description}</div>
+                        <div className="text-xs text-primary font-medium">+{achievement.pointsReward} แต้ม</div>
+                      </div>
+                      {unlocked && (
+                        <div className="text-green-500">
+                          <Award className="w-4 h-4" />
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })
+              )}
             </div>
           </motion.div>
 
@@ -421,14 +455,27 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
             <div className="text-2xl mb-2">👥</div>
             <h4 className="font-semibold text-foreground mb-2">แนะนำเพื่อน รับแต้มฟรี!</h4>
             <p className="text-sm text-muted-foreground mb-4">
-              แนะนำเพื่อนมาใช้บริการ รับ 200 แต้ม ทันที!
+              แนะนำเพื่อนมาใช้บริการ รับ 500 แต้ม ทันที!
             </p>
             <div className="bg-background/50 border border-primary/20 rounded-lg p-3 mb-4">
               <div className="text-xs text-muted-foreground mb-1">รหัสแนะนำของคุณ</div>
               <div className="text-lg font-bold text-primary font-mono">{profile.referralCode}</div>
             </div>
-            <button className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all">
-              แชร์รหัสแนะนำ
+            <button 
+              onClick={copyReferralCode}
+              className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all flex items-center justify-center gap-2"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" />
+                  คัดลอกแล้ว!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4" />
+                  คัดลอกรหัส
+                </>
+              )}
             </button>
           </motion.div>
         </div>

@@ -20,6 +20,8 @@ import TaskQueue from '@/components/beautician/TaskQueue';
 import ProtocolInsights from '@/components/beautician/ProtocolInsights';
 import ComparisonModal from '@/components/beautician/ComparisonModal';
 import { cn } from '@/lib/utils';
+import { useBeauticianTasks, useStartTreatment, useCompleteTreatment, useTaskRealtime } from '@/hooks/useBeauticianTasks';
+import { toast } from 'sonner';
 
 export default function BeauticianDashboard() {
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,14 @@ export default function BeauticianDashboard() {
   const [checklist, setChecklist] = useState<any[]>([]);
 
   const supabase = useMemo(() => createClient(), []);
+
+  // Real-time task management hooks
+  const { data: pendingTasks = [], isLoading: tasksLoading } = useBeauticianTasks('pending', 20);
+  const startTreatment = useStartTreatment();
+  const completeTreatment = useCompleteTreatment();
+  
+  // Setup real-time updates
+  useTaskRealtime(userId || '');
 
   const fetchStaffData = useCallback(async () => {
     setLoading(true);
@@ -134,41 +144,35 @@ export default function BeauticianDashboard() {
     fetchStaffData();
   }, [fetchStaffData]);
 
-  const handleStartTreatment = async (journeyId: string) => {
+  const handleStartTreatment = async (taskId: string, workflowId: string) => {
+    if (!userId) return;
     try {
-      const res = await fetch('/api/workflow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'startTreatment',
-          journeyId,
-          beauticianId: userId
-        })
+      await startTreatment.mutateAsync({
+        taskId,
+        workflowId,
+        beauticianId: userId
       });
-      const data = await res.json();
-      if (data.success) {
-        await fetchStaffData(); // Refresh dashboard state
-      }
+      await fetchStaffData(); // Refresh dashboard state
     } catch (error) {
       console.error('Error starting treatment:', error);
     }
   };
 
   const handleCompleteTreatment = async (journeyId: string) => {
+    // Find the task associated with this journey
+    const task = pendingTasks.find(t => t.workflow_id === journeyId);
+    if (!task) {
+      toast.error('Task not found');
+      return;
+    }
+
     try {
-      const res = await fetch('/api/workflow', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'completeTreatment',
-          journeyId,
-          notes: 'Treatment completed successfully according to protocol.'
-        })
+      await completeTreatment.mutateAsync({
+        taskId: task.id,
+        workflowId: journeyId,
+        notes: 'Treatment completed successfully according to protocol.'
       });
-      const data = await res.json();
-      if (data.success) {
-        await fetchStaffData(); // Refresh dashboard state
-      }
+      await fetchStaffData(); // Refresh dashboard state
     } catch (error) {
       console.error('Error completing treatment:', error);
     }

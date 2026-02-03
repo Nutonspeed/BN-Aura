@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
 import { Sparkles, Mail, Lock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { Link } from '@/i18n/routing';
@@ -42,15 +42,31 @@ export default function LoginPage() {
           .eq('id', data.user.id)
           .single();
 
-        // Redirect based on role
+        // Check if super_admin
         if (userData?.role === 'super_admin') {
-          router.push('/th/clinic');
-        } else if (userData?.role === 'sales_staff') {
-          router.push('/th/sales');
-        } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(userData?.role || '')) {
-          router.push('/th/clinic');
+          router.push('/admin');
         } else {
-          router.push('/th/demo');
+          // For staff, check clinic_staff table for actual role - get first record when multiple exist
+          const { data: staffData, error: staffError } = await supabase
+            .from('clinic_staff')
+            .select('role, clinic_id')
+            .eq('user_id', data.user.id)
+            .eq('is_active', true)
+            .order('created_at', { ascending: true })
+            .limit(1)
+            .maybeSingle();
+
+          console.log('Login: Staff data check', { staffData, staffError });
+
+          if (staffData?.role === 'sales_staff') {
+            router.push('/th/sales');
+          } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) {
+            router.push('/th/clinic');
+          } else {
+            // Customer or free user - redirect to customer dashboard
+            console.log('Login: No staff role found, redirecting to customer');
+            router.push('/th/customer');
+          }
         }
       }
     } catch (err) {

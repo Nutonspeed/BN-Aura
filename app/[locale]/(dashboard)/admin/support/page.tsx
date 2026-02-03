@@ -7,13 +7,13 @@ import { SupportProvider, useSupportContext } from './context';
 import SupportHeader from './components/SupportHeader';
 import SupportStats from './components/SupportStats';
 import TicketFilters from './components/TicketFilters';
-import TicketsList from './components/TicketsList';
+import SupportTicketTable from './components/SupportTicketTable';
 import { SupportTicket } from './types';
 
 function SupportContent() {
-  const { loading, refreshTickets } = useSupportContext();
+  const { loading, tickets, refreshTickets } = useSupportContext();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedTicket, setSelectedTicket] = useState<SupportTicket | null>(null);
+  const [selectedTicket, setSelectedTicket] = useState<any>(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
   useEffect(() => {
@@ -24,12 +24,12 @@ function SupportContent() {
     setShowCreateModal(true);
   };
 
-  const handleViewTicket = (ticket: SupportTicket) => {
+  const handleViewTicket = (ticket: any) => {
     setSelectedTicket(ticket);
     setShowDetailModal(true);
   };
 
-  const handleEditTicket = (ticket: SupportTicket) => {
+  const handleEditTicket = (ticket: any) => {
     setSelectedTicket(ticket);
     setShowDetailModal(true);
   };
@@ -54,9 +54,12 @@ function SupportContent() {
       
       <TicketFilters />
       
-      <TicketsList 
-        onViewTicket={handleViewTicket}
-        onEditTicket={handleEditTicket}
+      <SupportTicketTable 
+        tickets={tickets || []}
+        onTicketSelect={handleViewTicket}
+        onTicketEdit={handleEditTicket}
+        onTicketDelete={(ticketId) => console.log('Delete ticket:', ticketId)}
+        loading={loading}
       />
 
       {/* Create Ticket Modal */}

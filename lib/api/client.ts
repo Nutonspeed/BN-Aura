@@ -1,5 +1,7 @@
 // Centralized API client with error handling and response standardization
 
+import { createClient } from '@/lib/supabase/client';
+
 export interface APIResponse<T> {
   success: boolean;
   data?: T;
@@ -22,6 +24,7 @@ export interface APIRequestOptions {
   body?: any;
   headers?: Record<string, string>;
   cache?: RequestCache;
+  includeAuth?: boolean; // New option to include auth header
 }
 
 class APIClient {
@@ -31,21 +34,63 @@ class APIClient {
     this.baseURL = baseURL;
   }
 
+  private async getAuthHeaders(): Promise<Record<string, string>> {
+    try {
+      // Try to get session from Supabase client first
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session?.access_token) {
+        return {
+          'Authorization': `Bearer ${session.access_token}`
+        };
+      }
+      
+      // If that fails, try to get from localStorage directly (for server-side rendering issues)
+      if (typeof window !== 'undefined') {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        if (sessionStr && sessionStr.startsWith('base64-')) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          
+          if (decodedSession.access_token) {
+            return {
+              'Authorization': `Bearer ${decodedSession.access_token}`
+            };
+          }
+        }
+      }
+    } catch (error) {
+      console.warn('[APIClient] Failed to get auth headers:', error);
+    }
+    
+    return {};
+  }
+
   private async request<T>(
     endpoint: string,
     options: APIRequestOptions = {}
   ): Promise<APIResponse<T>> {
-    const { method = 'GET', body, headers = {}, cache } = options;
+    const { method = 'GET', body, headers = {}, cache, includeAuth = true } = options;
 
     try {
       const url = `${this.baseURL}${endpoint}`;
       
+      // Build headers
+      const requestHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...headers,
+      };
+
+      // Add auth header if needed
+      if (includeAuth) {
+        const authHeaders = await this.getAuthHeaders();
+        Object.assign(requestHeaders, authHeaders);
+      }
+      
       const fetchOptions: RequestInit = {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-          ...headers,
-        },
+        headers: requestHeaders,
         cache,
       };
 

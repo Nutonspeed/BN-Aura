@@ -33,7 +33,7 @@ export const BroadcastProvider = ({ children }: { children: ReactNode }) => {
       const data = await response.json();
       
       if (data.success) {
-        setMessages(data.data);
+        setMessages(data.data.messages || []);
       } else {
         console.error('Broadcast API error:', data.error);
         setMessages([]);

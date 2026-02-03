@@ -11,11 +11,25 @@ import crypto from 'crypto';
 
 export async function GET(request: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
+    // For Super Admin operations, we can use the admin client directly
+    // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();
+    
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    }
+
+    const token = authHeader.substring(7);
+    
+    // Verify the JWT token and get user info
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+    }
+
+    // Verify Super Admin Role
     const { data: profile } = await adminClient
       .from('users')
       .select('role')
@@ -23,7 +37,7 @@ export async function GET(request: Request) {
       .single();
 
     if (profile?.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden: Super Admin access required' }, { status: 403 });
     }
 
     const { data: keys, error } = await adminClient
@@ -45,11 +59,25 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
+    // For Super Admin operations, we can use the admin client directly
+    // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();
+    
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Unauthorized: No token provided' }, { status: 401 });
+    }
+
+    const token = authHeader.substring(7);
+    
+    // Verify the JWT token and get user info
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'Unauthorized: Invalid token' }, { status: 401 });
+    }
+
+    // Verify Super Admin Role
     const { data: profile } = await adminClient
       .from('users')
       .select('role')
@@ -57,7 +85,7 @@ export async function POST(request: Request) {
       .single();
 
     if (profile?.role !== 'super_admin') {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Forbidden: Super Admin access required' }, { status: 403 });
     }
 
     const body = await request.json();

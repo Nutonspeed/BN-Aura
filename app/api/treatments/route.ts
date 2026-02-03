@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { 
   createSuccessResponse, 
   createErrorResponse, 
@@ -20,10 +21,10 @@ export const GET = withErrorHandling(async (request: Request) => {
     return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
   }
 
-  // Get clinic_id for the current user
+  // Get clinic_id and role for the current user
   const { data: staffData, error: staffError } = await supabase
     .from('clinic_staff')
-    .select('clinic_id')
+    .select('clinic_id, role')
     .eq('user_id', user.id)
     .single();
 
@@ -35,10 +36,21 @@ export const GET = withErrorHandling(async (request: Request) => {
   const category = searchParams.get('category');
   const activeOnly = searchParams.get('activeOnly') === 'true';
 
-  let query = supabase
+  console.log('Treatments API - User Role:', staffData.role);
+  console.log('Treatments API - Clinic ID:', staffData.clinic_id);
+
+  // Choose client based on user role and data access needs
+  let dataClient;
+  const useAdminClient = false;
+  
+  // Use regular client with proper RLS policies
+  dataClient = supabase;
+  console.log('Using regular client with RLS policies for role:', staffData.role);
+  
+  let query = dataClient
     .from('treatments')
     .select('*')
-    .or(`clinic_id.eq.${staffData.clinic_id},clinic_id.is.null`) // Global or clinic-specific
+    .eq('clinic_id', staffData.clinic_id)
     .order('category', { ascending: true })
     .order('created_at', { ascending: false });
 
@@ -49,6 +61,8 @@ export const GET = withErrorHandling(async (request: Request) => {
   if (activeOnly) {
     query = query.eq('is_active', true);
   }
+
+  console.log('Final query built for clinic:', staffData.clinic_id, 'using admin client:', useAdminClient);
 
   const { data, error } = await query;
 

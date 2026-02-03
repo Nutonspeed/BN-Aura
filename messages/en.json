@@ -145,10 +145,15 @@
       "search": "Search...",
       "date_range": "Date Range",
       "last_24h": "Last 24 hours",
-      "last_7d": "Last 7 days",
-      "last_30d": "Last 30 days",
-      "all_time": "All Time",
       "actions": {
+        "CREATE": "Create",
+        "UPDATE": "Update",
+        "DELETE": "Delete",
+        "INSERT": "Insert",
+        "SELECT": "Select",
+        "LOGIN": "Login",
+        "LOGOUT": "Logout",
+        "REGISTER": "Register",
         "create_clinic": "Create Clinic",
         "update_user": "Update User",
         "delete_user": "Delete User",
@@ -163,7 +168,10 @@
         "reset_password": "Reset Password",
         "enable_2fa": "Enable 2FA",
         "disable_2fa": "Disable 2FA"
-      }
+      },
+      "last_7d": "Last 7 days",
+      "last_30d": "Last 30 days",
+      "all_time": "All Time"
     },
     "security": {
       "title": "Security",
@@ -175,25 +183,12 @@
       "access_control": "Access Control",
       "active_sessions": "Active Sessions",
       "failed_logins": "Failed Logins",
-      "security_alerts_count": "Security Alerts",
       "two_factor_enabled": "2FA Enabled",
       "password_strength": "Password Strength",
       "security_incidents": "Security Incidents",
       "recent_events": "Recent Events",
-      "api_key_management": "API Key Management",
-      "last_24h": "Last 24 hours",
-      "last_7d": "Last 7 days",
-      "last_30d": "Last 30 days",
-      "active": "Active",
-      "investigating": "Investigating",
-      "resolved": "Resolved",
-      "critical": "Critical",
-      "high": "High",
-      "medium": "Medium",
-      "low": "Low",
-      "affected_users": "Affected Users",
-      "reported_time": "Reported Time",
-      "investigate": "Investigate",
+      "api_key_management": "API Key Management"
+    },
       "view_details": "View Details",
       "close": "Close",
       "strong": "Strong",
@@ -461,3 +456,4 @@
     }
   }
 }
+

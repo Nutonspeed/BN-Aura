@@ -83,7 +83,7 @@ export default function BeforeAfterReport({ before, after, treatmentType }: Befo
       {/* Radar Chart */}
       <div className="glass-card p-6 rounded-2xl">
         <h3 className="text-lg font-semibold text-white mb-4">Overall Improvement</h3>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" aspect={2} minHeight={300}>
           <RadarChart data={radarData}>
             <PolarGrid stroke="rgba(255,255,255,0.1)" />
             <PolarAngleAxis dataKey="metric" tick={{ fill: '#94a3b8' }} />

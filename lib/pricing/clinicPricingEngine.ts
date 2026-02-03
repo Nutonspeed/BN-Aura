@@ -3,6 +3,7 @@
  */
 
 import { createClient } from '@/lib/supabase/client';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export interface TreatmentPricing {
   id: string;
@@ -131,23 +132,30 @@ export class ClinicPricingEngine {
       
       switch (period) {
         case 'daily':
-          dateFilter = now.toISOString().split('T')[0];
+          // Today's date at 00:00:00
+          const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+          dateFilter = today.toISOString();
           break;
         case 'weekly':
+          // 7 days ago at 00:00:00
           const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          dateFilter = weekAgo.toISOString().split('T')[0];
+          weekAgo.setHours(0, 0, 0, 0);
+          dateFilter = weekAgo.toISOString();
           break;
         case 'monthly':
-          const monthAgo = new Date(now.getFullYear(), now.getMonth(), 1);
-          dateFilter = monthAgo.toISOString().split('T')[0];
+          // First day of current month at 00:00:00 UTC
+          const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+          dateFilter = monthStart.toISOString();
           break;
       }
 
-      const { data, error } = await this.supabase
+      // Use admin client to bypass RLS policies for API calls
+      const adminClient = createAdminClient();
+      const { data, error } = await adminClient
         .from('sales_commissions')
         .select('commission_amount, payment_status')
         .eq('sales_staff_id', salesStaffId)
-        .gte('created_at', dateFilter);
+        .gte('transaction_date', dateFilter);
 
       if (error) throw error;
 

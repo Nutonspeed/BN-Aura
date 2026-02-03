@@ -57,12 +57,24 @@ export const AnnouncementProvider = ({ children }: { children: ReactNode }) => {
         return;
       }
       
+      if (response.status === 403) {
+        console.warn('User not authorized for announcement clinics');
+        setClinics([]);
+        return;
+      }
+      
+      if (!response.ok) {
+        console.error('HTTP error fetching clinics:', response.status, response.statusText);
+        setClinics([]);
+        return;
+      }
+      
       const data = await response.json();
       
       if (data.success) {
-        setClinics(data.data);
+        setClinics(data.data || []);
       } else {
-        console.error('Announcement clinics API error:', data.error);
+        console.error('Announcement clinics API error:', data.error, data.details);
         setClinics([]);
       }
     } catch (error) {

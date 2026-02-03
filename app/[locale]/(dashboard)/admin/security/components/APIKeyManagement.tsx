@@ -35,7 +35,46 @@ export default function APIKeyManagement() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('/api/admin/security/api-keys');
+      // Get token from localStorage the same way we did in Support/Security pages
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      const response = await fetch('/api/admin/security/api-keys', {
+        method: 'GET',
+        headers
+      });
+      
       const data = await response.json();
       if (data.success) {
         setKeys(data.data.keys);
@@ -76,9 +115,44 @@ export default function APIKeyManagement() {
     setIsProcessing(true);
     setError(null);
     try {
+      // Get token from localStorage the same way we did in fetchKeys
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch('/api/admin/security/api-keys', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           action: 'create',
           name: newKeyData.name,
@@ -107,9 +181,44 @@ export default function APIKeyManagement() {
     
     setIsProcessing(true);
     try {
+      // Get token from localStorage the same way we did in fetchKeys
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const response = await fetch('/api/admin/security/api-keys', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ action: 'revoke', id })
       });
       const data = await response.json();

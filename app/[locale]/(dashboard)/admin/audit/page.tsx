@@ -39,14 +39,55 @@ export default function AuditTrailPage() {
       setLoading(true);
       setError(null);
 
+      // Get token from localStorage the same way we did in Support/Security pages
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       // Fetch logs
-      const logsRes = await fetch(`/api/admin/audit?type=logs&timeRange=${timeRange}&limit=100`);
+      const logsRes = await fetch(`/api/admin/audit?type=logs&timeRange=${timeRange}&limit=100`, {
+        method: 'GET',
+        headers
+      });
       if (!logsRes.ok) throw new Error('Failed to fetch logs');
       const { data: logsData } = await logsRes.json();
       setLogs(logsData.logs || []);
 
       // Fetch stats
-      const statsRes = await fetch(`/api/admin/audit?type=stats&timeRange=${timeRange}`);
+      const statsRes = await fetch(`/api/admin/audit?type=stats&timeRange=${timeRange}`, {
+        method: 'GET',
+        headers
+      });
       if (!statsRes.ok) throw new Error('Failed to fetch stats');
       const { data: statsData } = await statsRes.json();
       setStats(statsData.stats || { total: 0, successful: 0, failed: 0 });
@@ -68,9 +109,44 @@ export default function AuditTrailPage() {
 
   const handleExport = async () => {
     try {
+      // Get token from localStorage the same way we did in fetchAuditData
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch('/api/admin/audit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           action: 'export',
           filters: { timeRange }
@@ -254,14 +330,24 @@ export default function AuditTrailPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
                       <User className="w-4 h-4 text-blue-400" />
-                      <span className="text-white text-sm">{log.user_name}</span>
+                      <span className="text-white text-sm">{typeof log.user_name === 'string' ? log.user_name : String(log.user_name || 'Unknown')}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className="text-white/80 text-sm">{t(`actions.${log.action}` as any) || log.action.replace('_', ' ')}</span>
+                    <span className="text-white/80 text-sm">
+                      {(() => {
+                        try {
+                          const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
+                          return t(`actions.${actionStr}` as any) || actionStr.replace('_', ' ');
+                        } catch (error) {
+                          const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
+                          return actionStr.replace('_', ' ');
+                        }
+                      })()}
+                    </span>
                   </td>
                   <td className="px-6 py-4 text-white/80 text-sm">
-                    {log.resource_name}
+                    {typeof log.resource_name === 'string' ? log.resource_name : String(log.resource_name || 'Unknown')}
                   </td>
                   <td className="px-6 py-4">
                     {log.success ? (

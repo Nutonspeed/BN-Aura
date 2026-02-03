@@ -37,7 +37,7 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
         const targetData = await targetRes.json();
 
         if (commData.success) {
-          setSummary(commData.data.summary);
+          setSummary(commData.data);
         }
         if (targetData.success) {
           setTarget(targetData.data);

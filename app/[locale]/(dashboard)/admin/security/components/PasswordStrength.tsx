@@ -11,10 +11,11 @@ interface PasswordStrengthData {
 
 interface PasswordStrengthProps {
   passwordStrength: PasswordStrengthData;
-  totalUsers: number;
 }
 
-export default function PasswordStrength({ passwordStrength, totalUsers }: PasswordStrengthProps) {
+export default function PasswordStrength({ passwordStrength }: PasswordStrengthProps) {
+  const totalPasswordUsers = passwordStrength.strong + passwordStrength.medium + passwordStrength.weak;
+  
   const categories = [
     {
       label: 'Strong',
@@ -57,7 +58,7 @@ export default function PasswordStrength({ passwordStrength, totalUsers }: Passw
             <div className="w-full bg-slate-700 rounded-full h-2">
               <div 
                 className={`${category.barColor} h-2 rounded-full`}
-                style={{ width: `${(category.count / totalUsers) * 100}%` }}
+                style={{ width: `${totalPasswordUsers > 0 ? (category.count / totalPasswordUsers) * 100 : 0}%` }}
               />
             </div>
           </div>

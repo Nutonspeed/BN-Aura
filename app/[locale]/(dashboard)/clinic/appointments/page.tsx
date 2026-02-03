@@ -154,7 +154,10 @@ export default function AppointmentPage() {
           
           <div className="flex items-center justify-between border-b border-white/5 pb-6 relative z-10">
             <h3 className="text-lg font-black text-white uppercase tracking-tight">
-              {selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
+              {typeof window !== 'undefined' 
+                ? selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })
+                : selectedDate.toLocaleString('en-US', { month: 'long', year: 'numeric' })
+              }
             </h3>
             <div className="flex gap-2">
               <motion.button 
@@ -185,12 +188,12 @@ export default function AppointmentPage() {
           </div>
           
           <div className="grid grid-cols-7 gap-2 text-center relative z-10">
-            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-              <span key={day} className="text-[10px] font-black text-muted-foreground py-2 opacity-40 uppercase tracking-widest">{day}</span>
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
+              <span key={`weekday-${day}-${index}`} className="text-[10px] font-black text-muted-foreground py-2 opacity-40 uppercase tracking-widest">{day}</span>
             ))}
             {calendarDays.map((day, i) => (
               <motion.button 
-                key={i} 
+                key={`day-${day}-${i}`} 
                 whileHover={day ? { scale: 1.1 } : {}}
                 onClick={() => {
                   if (day) {
@@ -253,7 +256,10 @@ export default function AppointmentPage() {
             <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl">
               <button onClick={() => changeDate(-1)} className="p-1 hover:text-primary transition-colors"><ChevronLeft className="w-4 h-4" /></button>
               <span className="text-xs font-black uppercase tracking-widest text-white">
-                {selectedDate.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })}
+                {typeof window !== 'undefined' 
+                  ? selectedDate.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })
+                  : selectedDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })
+                }
               </span>
               <button onClick={() => changeDate(1)} className="p-1 hover:text-primary transition-colors"><ChevronRight className="w-4 h-4" /></button>
             </div>

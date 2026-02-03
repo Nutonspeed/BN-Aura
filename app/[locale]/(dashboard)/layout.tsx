@@ -33,13 +33,12 @@ import {
   Bell
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { Link, usePathname } from '@/i18n/routing';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import NotificationCenter from "@/components/ui/NotificationCenter";
 import BranchSwitcher from "@/components/ui/BranchSwitcher";
 import HelpModal from "@/components/ui/HelpModal";
 import { useAuth } from '@/hooks/useAuth';
-import Head from 'next/head';
 
 export default function DashboardLayout({
   children,
@@ -50,8 +49,44 @@ export default function DashboardLayout({
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const pathname = usePathname();
-  const { getUserRole, getFullName, getClinicName, getClinicMetadata } = useAuth();
+  const { user, loading, getUserRole, getFullName, getClinicName, getClinicMetadata, signOut } = useAuth();
   const metadata = getClinicMetadata();
+  const router = useRouter();
+  
+  // Route protection: redirect unauthorized users
+  useEffect(() => {
+    // Don't redirect while still loading session
+    if (loading) return;
+    
+    const userRole = getUserRole();
+    
+    // Only redirect to login if no user or guest role
+    if (!user || userRole === 'guest') {
+      router.push('/th/login');
+      return;
+    }
+    
+    // Check specific route access permissions
+    if (pathname.startsWith('/th/admin') && userRole !== 'super_admin') {
+      router.push('/th/login');
+      return;
+    }
+    
+    if (pathname.startsWith('/th/clinic') && !['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(userRole)) {
+      router.push('/th/login');
+      return;
+    }
+    
+    if (pathname.startsWith('/th/sales') && userRole !== 'sales_staff') {
+      router.push('/th/login');
+      return;
+    }
+    
+    if (pathname.startsWith('/th/customer') && !['customer', 'premium_customer', 'free_customer'].includes(userRole)) {
+      router.push('/th/login');
+      return;
+    }
+  }, [user, loading, getUserRole, pathname, router]);
 
   // Handle window resize for mobile state
   useEffect(() => {
@@ -84,7 +119,7 @@ export default function DashboardLayout({
     { icon: Target, label: 'Sales Intelligence', href: '/sales', roles: ['sales_staff'] },
     { icon: CalendarDays, label: 'Appointments', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer'] },
     { icon: Sparkles, label: 'AI Skin Analysis', href: '/sales/analysis', roles: ['sales_staff'] },
-    { icon: Camera, label: 'AR Simulator', href: '/sales/analysis', roles: ['sales_staff'] },
+    { icon: Camera, label: 'AR Simulator', href: '/sales/ar-simulator', roles: ['sales_staff'] },
     {
       icon: Users,
       label: 'Staff Management',
@@ -235,7 +270,10 @@ export default function DashboardLayout({
 
         {/* Sidebar Footer */}
         <div className="p-3 border-t border-white/10 flex-shrink-0">
-          <button className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all group">
+          <button 
+            onClick={signOut}
+            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all group"
+          >
             <LogOut className="w-5 h-5 group-hover:rotate-180 transition-transform duration-300" />
             {(isSidebarOpen || (typeof window !== 'undefined' && window.innerWidth < 1024)) && <span className="font-medium text-sm">Logout Session</span>}
           </button>

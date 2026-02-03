@@ -11,16 +11,34 @@ export async function POST(request: NextRequest) {
   }
   
   try {
-    const supabase = createClient();
+    // For user-specific operations, we need to verify the JWT token
+    const { createClient } = await import('@/lib/supabase/client');
+    const { createAdminClient } = await import('@/lib/supabase/admin');
     
-    // Get authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { error: 'Unauthorized' }, 
+        { error: 'Unauthorized: No token provided' }, 
         { status: 401 }
       );
     }
+
+    const token = authHeader.substring(7);
+    
+    // Verify the JWT token and get user info using admin client
+    const adminClient = createAdminClient();
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Invalid token' }, 
+        { status: 401 }
+      );
+    }
+
+    // Create a regular client for database operations
+    const supabase = await createClient();
 
     const body = await request.json();
     const { email, fullName, role } = body;
@@ -184,17 +202,36 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient();
+    // For user-specific operations, we need to verify the JWT token
+    const { createClient } = await import('@/lib/supabase/client');
+    const { createAdminClient } = await import('@/lib/supabase/admin');
     
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { error: 'Unauthorized' }, 
+        { error: 'Unauthorized: No token provided' }, 
         { status: 401 }
       );
     }
+
+    const token = authHeader.substring(7);
+    
+    // Verify the JWT token and get user info using admin client
+    const adminClient = createAdminClient();
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    
+    if (authError || !user) {
+      return NextResponse.json(
+        { error: 'Unauthorized: Invalid token' }, 
+        { status: 401 }
+      );
+    }
+
+    // Create a regular client for database operations
+    const supabase = await createClient();
 
     // Get user's clinic_id
     const { data: profile, error: profileError } = await supabase

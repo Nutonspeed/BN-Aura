@@ -129,7 +129,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
               <div className="flex items-center gap-6 text-sm text-white/50">
                 <div className="flex items-center gap-2">
                   <Building2 className="w-4 h-4" />
-                  <span>{ticket.clinic?.name || 'Unknown Clinic'}</span>
+                  <span>{ticket.clinic_name || 'Unknown Clinic'}</span>
                 </div>
                 
                 {ticket.user && (

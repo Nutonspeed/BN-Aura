@@ -14,13 +14,7 @@ async function getAuditLogs(adminClient: any, filters: any = {}) {
   try {
     let query = adminClient
       .from('audit_logs')
-      .select(`
-        *,
-        users!audit_logs_user_id_fkey (
-          full_name,
-          email
-        )
-      `);
+      .select('*');
 
     // Apply filters
     if (filters.action) {
@@ -65,20 +59,20 @@ async function getAuditLogs(adminClient: any, filters: any = {}) {
 
     // Transform data to match expected format
     const transformedLogs = data?.map((log: any) => ({
-      id: log.id,
-      timestamp: log.created_at,
-      user_name: log.users?.full_name || 'System',
-      user_email: log.users?.email || 'system@bnaura.com',
-      action: log.action,
-      table_name: log.table_name,
+      id: log?.id || '',
+      timestamp: log?.created_at || new Date().toISOString(),
+      user_name: 'System', // Default to System if no user join
+      user_email: 'system@bnaura.com',
+      action: log?.action || 'UNKNOWN',
+      table_name: log?.table_name || 'Unknown',
       resource_name: getResourceName(log),
-      success: !log.description.includes('Failed') && !log.description.includes('Error'),
-      ip_address: log.ip_address || 'Unknown',
-      event_type: log.event_type,
-      description: log.description,
-      old_values: log.old_values,
-      new_values: log.new_values,
-      changed_fields: log.changed_fields
+      success: !log?.description?.includes('Failed') && !log?.description?.includes('Error'),
+      ip_address: log?.ip_address || 'Unknown',
+      event_type: log?.event_type || 'Unknown',
+      description: log?.description || '',
+      old_values: log?.old_values || null,
+      new_values: log?.new_values || null,
+      changed_fields: log?.changed_fields || null
     })) || [];
 
     return transformedLogs;
@@ -89,26 +83,30 @@ async function getAuditLogs(adminClient: any, filters: any = {}) {
 }
 
 function getResourceName(log: any): string {
-  // Try to extract resource name from description or values
-  if (log.description) {
-    // Look for patterns like "User John Doe" or "Clinic Test Clinic"
-    const userMatch = log.description.match(/(?:User|user)\s+([^\s,]+)/i);
-    if (userMatch) return userMatch[1];
-    
-    const clinicMatch = log.description.match(/(?:Clinic|clinic)\s+([^\s,]+)/i);
-    if (clinicMatch) return clinicMatch[1];
-  }
+  try {
+    // Try to extract resource name from description or values
+    if (log?.description) {
+      // Look for patterns like "User John Doe" or "Clinic Test Clinic"
+      const userMatch = log.description.match(/(?:User|user)\s+([^\s,]+)/i);
+      if (userMatch) return userMatch[1];
+      
+      const clinicMatch = log.description.match(/(?:Clinic|clinic)\s+([^\s,]+)/i);
+      if (clinicMatch) return clinicMatch[1];
+    }
   
-  // Check new_values for resource info
-  if (log.new_values && typeof log.new_values === 'object') {
-    if (log.new_values.full_name) return log.new_values.full_name;
-    if (log.new_values.display_name) return log.new_values.display_name;
-    if (log.new_values.name) return log.new_values.name;
-    if (log.new_values.email) return log.new_values.email;
-  }
+    // Check new_values for resource info
+    if (log?.new_values && typeof log.new_values === 'object') {
+      if (log.new_values.full_name) return log.new_values.full_name;
+      if (log.new_values.display_name) return log.new_values.display_name;
+      if (log.new_values.name) return log.new_values.name;
+      if (log.new_values.email) return log.new_values.email;
+    }
   
-  // Fallback to table name
-  return log.table_name || 'Unknown';
+    // Fallback to table name
+    return log?.table_name || 'Unknown';
+  } catch (error) {
+    return 'Unknown';
+  }
 }
 
 async function getAuditStats(adminClient: any, filters: any = {}) {
@@ -168,15 +166,25 @@ async function getAuditStats(adminClient: any, filters: any = {}) {
 
 export async function GET(request: NextRequest) {
   try {
-    const adminClient = await createAdminClient();
-    const authClient = await createClient();
-    
-    // Verify user is super admin
-    const { data: { user }, error: authError } = await authClient.auth.getUser();
-    if (authError || !user) {
-      return errorResponse('Unauthorized', 401);
+    // For Super Admin operations, we can use the admin client directly
+    // but we still need to verify the user is authenticated and has super_admin role
+    const adminClient = createAdminClient();
+
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return errorResponse('Unauthorized: No token provided', 401);
     }
 
+    const token = authHeader.substring(7);
+
+    // Verify the JWT token and get user info
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return errorResponse('Unauthorized: Invalid token', 401);
+    }
+
+    // Verify Super Admin Role
     const { data: userData } = await adminClient
       .from('users')
       .select('role')
@@ -184,7 +192,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (userData?.role !== 'super_admin') {
-      return errorResponse('Forbidden: Super admin access required', 403);
+      return errorResponse('Forbidden: Super Admin access required', 403);
     }
 
     const { searchParams } = new URL(request.url);
@@ -257,15 +265,25 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const adminClient = await createAdminClient();
-    const authClient = await createClient();
-    
-    // Verify user is super admin
-    const { data: { user }, error: authError } = await authClient.auth.getUser();
-    if (authError || !user) {
-      return errorResponse('Unauthorized', 401);
+    // For Super Admin operations, we can use the admin client directly
+    // but we still need to verify the user is authenticated and has super_admin role
+    const adminClient = createAdminClient();
+
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return errorResponse('Unauthorized: No token provided', 401);
     }
 
+    const token = authHeader.substring(7);
+
+    // Verify the JWT token and get user info
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return errorResponse('Unauthorized: Invalid token', 401);
+    }
+
+    // Verify Super Admin Role
     const { data: userData } = await adminClient
       .from('users')
       .select('role')
@@ -273,7 +291,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (userData?.role !== 'super_admin') {
-      return errorResponse('Forbidden: Super admin access required', 403);
+      return errorResponse('Forbidden: Super Admin access required', 403);
     }
 
     const body = await request.json();

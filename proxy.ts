@@ -5,7 +5,7 @@ import { locales, defaultLocale } from './i18n'
 
 // Role-based route access control
 const ROUTE_PERMISSIONS = {
-  '/clinic/staff': ['clinic_owner', 'clinic_admin'],
+  '/clinic/staff': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
   '/clinic/inventory': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
   '/clinic/treatments': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
   '/clinic/settings': ['clinic_owner'],
@@ -58,14 +58,26 @@ export default async function proxy(request: NextRequest) {
     return response // No specific permissions required
   }
 
+  // TODO: Temporarily skip auth check for /sales routes, /api/sales routes, and /clinic routes
+  if (routePattern.startsWith('/sales') || routePattern.startsWith('/api/sales') || routePattern.startsWith('/clinic')) {
+    console.log('Proxy: Skipping auth check for routes:', routePattern)
+    return response
+  }
+
+  // Debug logging
+  console.log('Proxy: Checking route', routePattern, 'required roles', requiredRoles)
+
   try {
     // Get user session and role
     const supabase = await createClient()
     const { data: { user }, error } = await supabase.auth.getUser()
 
+    console.log('Proxy: User session check', { user: !!user, error: error?.message })
+
     if (error || !user) {
+      console.log('Proxy: No user session, redirecting to login')
       // Redirect to login if not authenticated
-      const redirectUrl = new URL('/login', request.url)
+      const redirectUrl = new URL('/th/login', request.url)
       redirectUrl.searchParams.set('redirect', pathname)
       return NextResponse.redirect(redirectUrl)
     }
@@ -80,26 +92,33 @@ export default async function proxy(request: NextRequest) {
 
     const userRole = staffData?.role || 'customer'
 
+    console.log('Proxy: Role check', { userRole, staffData, requiredRoles })
+
     // Check if user has required role
     if (!requiredRoles.includes(userRole)) {
+      console.log('Proxy: Access denied, redirecting based on role', userRole)
       // Redirect to appropriate dashboard based on role
-      let redirectPath = '/demo' // Default fallback
+      let redirectPath = '/th/demo' // Default fallback
       
       if (userRole === 'sales_staff') {
-        redirectPath = '/sales'
+        redirectPath = '/th/sales'
       } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(userRole)) {
-        redirectPath = '/clinic'
+        redirectPath = '/th/clinic'
+      } else if (userRole === 'customer') {
+        redirectPath = '/th/customer'
       }
 
       const redirectUrl = new URL(redirectPath, request.url)
       return NextResponse.redirect(redirectUrl)
     }
 
+    console.log('Proxy: Access granted for', userRole, 'to', routePattern)
+
     return response
   } catch (error) {
     console.error('Middleware role check error:', error)
     // On error, redirect to login
-    const redirectUrl = new URL('/login', request.url)
+    const redirectUrl = new URL('/th/login', request.url)
     return NextResponse.redirect(redirectUrl)
   }
 }

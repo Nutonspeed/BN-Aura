@@ -16,17 +16,16 @@ async function getSupportTickets(adminClient: any, filters: any = {}) {
       .from('support_tickets')
       .select(`
         *,
-        clinic:clinic_id (
+        clinics!support_tickets_clinic_id_fkey (
           id,
-          display_name,
-          email
+          display_name
         ),
-        user:user_id (
+        users!support_tickets_user_id_fkey (
           id,
           full_name,
           email
         ),
-        assigned_user:assigned_to (
+        assigned_to_user:users!support_tickets_assigned_to_fkey (
           id,
           full_name,
           email
@@ -36,7 +35,7 @@ async function getSupportTickets(adminClient: any, filters: any = {}) {
           message,
           is_internal,
           created_at,
-          user: user_id (
+          users!ticket_replies_user_id_fkey (
             id,
             full_name,
             email,
@@ -203,9 +202,45 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
+    const path = request.url.split('/').pop()?.split('?')[0];
+    
+    // Check if this is a tickets endpoint
+    if (path === 'tickets' || searchParams.get('type') === 'tickets') {
+      // Build filters from query params
+      const filters: any = {};
+      
+      if (searchParams.get('status')) {
+        filters.status = searchParams.get('status');
+      }
+      
+      if (searchParams.get('priority')) {
+        filters.priority = searchParams.get('priority');
+      }
+      
+      if (searchParams.get('search')) {
+        filters.search = searchParams.get('search');
+      }
+      
+      if (searchParams.get('clinic_id')) {
+        filters.clinic_id = searchParams.get('clinic_id');
+      }
+      
+      if (searchParams.get('page')) {
+        filters.page = parseInt(searchParams.get('page')!);
+      }
+      
+      if (searchParams.get('limit')) {
+        filters.limit = parseInt(searchParams.get('limit')!);
+      }
+
+      const ticketsData = await getSupportTickets(adminClient, filters);
+      return successResponse(ticketsData);
+    }
+    
+    // Handle other types
     const type = searchParams.get('type') || 'tickets';
     
-    // Build filters from query params
+    // Build filters from query params for other types
     const filters: any = {};
     
     if (searchParams.get('status')) {

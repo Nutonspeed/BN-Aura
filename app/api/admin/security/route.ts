@@ -15,13 +15,13 @@ function errorResponse(message: string, status: number = 500) {
 }
 
 async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
-  // Check cache first
-  const cacheKey = `security_metrics_${timeRange}`;
-  const cached = securityCache.get(cacheKey);
-  
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
-  }
+  // Disable cache for testing - always get fresh data
+  // const cacheKey = `security_metrics_${timeRange}`;
+  // const cached = securityCache.get(cacheKey);
+  // 
+  // if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+  //   return cached.data;
+  // }
 
   // Calculate time range filter
   const timeRangeMap = {
@@ -39,29 +39,63 @@ async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
       .from('users')
       .select('*', { count: 'exact', head: true });
 
-    // Get active sessions (simulated - in real app, track sessions in database)
-    const activeSessions = Math.floor((totalUsers || 0) * 0.3);
+    // Get active sessions from audit logs (last 30 minutes)
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000).toISOString();
+    const { data: activeSessionData } = await adminClient
+      .from('audit_logs')
+      .select('user_id')
+      .eq('action', 'INSERT')
+      .gte('created_at', thirtyMinutesAgo);
+    
+    const activeSessions = activeSessionData ? [...new Set(activeSessionData.map(s => s.user_id))].length : 0;
 
     // Get failed login attempts from audit logs
     const { count: failedLogins } = await adminClient
       .from('audit_logs')
       .select('*', { count: 'exact', head: true })
-      .eq('action', 'login')
-      .eq('table_name', 'users')
-      .gte('created_at', timeFilterISO)
-      .like('description', '%Failed%');
+      .eq('action', 'UPDATE')
+      .eq('event_type', 'security_event')
+      .gte('created_at', timeFilterISO);
 
-    // Get security alerts (simulated - in real app, have dedicated alerts table)
-    const securityAlerts = 3;
+    // Get security alerts from audit logs
+    const { count: securityAlerts } = await adminClient
+      .from('audit_logs')
+      .select('*', { count: 'exact', head: true })
+      .eq('event_type', 'security_event')
+      .gte('created_at', timeFilterISO);
 
-    // Get 2FA enabled users (simulated - in real app, track in users table)
-    const twoFactorEnabled = Math.floor((totalUsers || 0) * 0.42);
+    // Get 2FA enabled users from user metadata
+    const { data: usersWith2FA } = await adminClient
+      .from('users')
+      .select('id, metadata')
+      .eq('is_active', true);
+    
+    const twoFactorEnabled = usersWith2FA ? usersWith2FA.filter(u => 
+      u.metadata?.two_factor_enabled === true
+    ).length : 0;
 
-    // Calculate password strength distribution (simulated)
+    // Get password strength from user metadata
+    const { data: usersWithPasswords } = await adminClient
+      .from('users')
+      .select('id, metadata')
+      .eq('is_active', true);
+    
+    const strongPasswords = usersWithPasswords ? usersWithPasswords.filter(u => 
+      u.metadata?.password_strength === 'strong'
+    ).length : 0;
+    
+    const mediumPasswords = usersWithPasswords ? usersWithPasswords.filter(u => 
+      u.metadata?.password_strength === 'medium'
+    ).length : 0;
+    
+    const weakPasswords = usersWithPasswords ? usersWithPasswords.filter(u => 
+      u.metadata?.password_strength === 'weak'
+    ).length : 0;
+
     const passwordStrength = {
-      strong: Math.floor((totalUsers || 0) * 0.68),
-      medium: Math.floor((totalUsers || 0) * 0.25),
-      weak: Math.floor((totalUsers || 0) * 0.07)
+      strong: strongPasswords,
+      medium: mediumPasswords,
+      weak: Math.max(0, weakPasswords)
     };
 
     // Get security incidents
@@ -72,14 +106,14 @@ async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
       .gte('created_at', timeFilterISO)
       .order('created_at', { ascending: false });
 
-    const activeIncidents = incidents?.filter((i: any) => i.description.includes('active') || i.description.includes('detected')).length || 2;
-    const resolvedIncidents = incidents?.filter((i: any) => i.description.includes('resolved')).length || 18;
+    const activeIncidents = incidents?.filter((i: any) => i.description.includes('active') || i.description.includes('detected')).length || 0;
+    const resolvedIncidents = incidents?.filter((i: any) => i.description.includes('resolved')).length || 0;
 
     const metrics = {
       totalUsers: totalUsers || 0,
       activeSessions,
       failedLogins: failedLogins || 0,
-      suspiciousActivities: 5,
+      suspiciousActivities: failedLogins || 0, // Use failed logins as suspicious activities
       securityAlerts,
       passwordStrength,
       twoFactorEnabled,
@@ -87,8 +121,8 @@ async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
       resolvedIncidents
     };
 
-    // Cache the results
-    securityCache.set(cacheKey, { data: metrics, timestamp: Date.now() });
+    // Cache disabled for testing
+    // securityCache.set(cacheKey, { data: metrics, timestamp: Date.now() });
 
     return metrics;
   } catch (error) {
@@ -199,15 +233,25 @@ async function getSecurityAlerts(adminClient: any, timeRange: string = '24h') {
 
 export async function GET(request: NextRequest) {
   try {
-    const adminClient = await createAdminClient();
-    const authClient = await createClient();
+    // For Super Admin operations, we can use the admin client directly
+    // but we still need to verify the user is authenticated and has super_admin role
+    const adminClient = createAdminClient();
     
-    // Verify user is super admin
-    const { data: { user }, error: authError } = await authClient.auth.getUser();
-    if (authError || !user) {
-      return errorResponse('Unauthorized', 401);
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return errorResponse('Unauthorized: No token provided', 401);
     }
 
+    const token = authHeader.substring(7);
+    
+    // Verify the JWT token and get user info
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return errorResponse('Unauthorized: Invalid token', 401);
+    }
+
+    // Verify Super Admin Role
     const { data: userData } = await adminClient
       .from('users')
       .select('role')
@@ -215,7 +259,7 @@ export async function GET(request: NextRequest) {
       .single();
 
     if (userData?.role !== 'super_admin') {
-      return errorResponse('Forbidden: Super admin access required', 403);
+      return errorResponse('Forbidden: Super Admin access required', 403);
     }
 
     const { searchParams } = new URL(request.url);
@@ -246,15 +290,25 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const adminClient = await createAdminClient();
-    const authClient = await createClient();
+    // For Super Admin operations, we can use the admin client directly
+    // but we still need to verify the user is authenticated and has super_admin role
+    const adminClient = createAdminClient();
     
-    // Verify user is super admin
-    const { data: { user }, error: authError } = await authClient.auth.getUser();
-    if (authError || !user) {
-      return errorResponse('Unauthorized', 401);
+    // Get the authorization header to extract the JWT token
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return errorResponse('Unauthorized: No token provided', 401);
     }
 
+    const token = authHeader.substring(7);
+    
+    // Verify the JWT token and get user info
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return errorResponse('Unauthorized: Invalid token', 401);
+    }
+
+    // Verify Super Admin Role
     const { data: userData } = await adminClient
       .from('users')
       .select('role')
@@ -262,7 +316,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (userData?.role !== 'super_admin') {
-      return errorResponse('Forbidden: Super admin access required', 403);
+      return errorResponse('Forbidden: Super Admin access required', 403);
     }
 
     const body = await request.json();

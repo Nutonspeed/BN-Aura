@@ -13,6 +13,7 @@ export interface SupportTicket {
   metadata: any;
   created_at: string;
   updated_at: string;
+  clinic_name?: string;
   clinic?: {
     id: string;
     name: string;

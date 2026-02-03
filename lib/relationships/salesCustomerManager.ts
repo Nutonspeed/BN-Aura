@@ -66,69 +66,71 @@ export class SalesCustomerManager {
   }
 
   async getCustomersForSales(salesStaffId: string): Promise<CustomerWithSales[]> {
+    // Query users table where role='free_user' and metadata.sales_staff_id matches
     const { data, error } = await this.supabase
-      .from('customers')
+      .from('users')
       .select(`
-        id, full_name, email,
-        clinic_staff!customers_assigned_sales_id_fkey (id, name)
+        id, full_name, email, metadata, created_at
       `)
-      .eq('assigned_sales_id', salesStaffId);
+      .eq('role', 'free_user')
+      .filter('metadata->>sales_staff_id', 'eq', salesStaffId)
+      .order('created_at', { ascending: false });
 
     if (error) throw error;
 
-    return (data || []).map((customer: { id: string; full_name: string; email: string; clinic_staff: { id: string; name: string }[] | null }) => {
-      const staff = customer.clinic_staff?.[0] || null;
-      return {
-        id: customer.id,
-        name: customer.full_name,
-        email: customer.email,
-        assignedSales: staff ? {
-          id: staff.id,
-          name: staff.name
-        } : null,
-        totalSpent: 0 // TODO: Calculate from commissions if needed
-      };
-    });
+    return (data || []).map((user: any) => ({
+      id: user.id,
+      name: user.full_name || 'Unknown Customer',
+      email: user.email || '',
+      phone: user.metadata?.phone || '',
+      assignedSales: {
+        id: salesStaffId,
+        name: 'Current Sales Rep',
+        email: ''
+      },
+      totalSpent: 0, // TODO: Calculate from transactions if needed
+      lastContactDate: user.created_at
+    }));
   }
 
   async getSalesRepForCustomer(customerId: string): Promise<{ id: string; name: string; email: string; phone: string } | null> {
     const { data, error } = await this.supabase
       .from('customers')
-      .select(`
-        clinic_staff!customers_assigned_sales_id_fkey (
-          id,
-          name,
-          email,
-          phone
-        )
-      `)
+      .select('assigned_sales_id')
       .eq('id', customerId)
       .single();
 
-    if (error || !data?.clinic_staff) return null;
+    if (error || !data?.assigned_sales_id) return null;
 
-    const staffArray = data.clinic_staff as { id: string; name: string; email: string; phone: string }[];
-    const staff = staffArray[0];
+    // Get sales rep info from users table
+    const { data: userData } = await this.supabase
+      .from('users')
+      .select('id, full_name, email, phone')
+      .eq('id', data.assigned_sales_id)
+      .single();
+
+    if (!userData) return null;
+
     return {
-      id: staff.id,
-      name: staff.name,
-      email: staff.email,
-      phone: staff.phone
+      id: userData.id,
+      name: userData.full_name || 'Unknown Sales Rep',
+      email: userData.email || '',
+      phone: userData.phone || ''
     };
   }
 
   async autoAssignCustomer(customerId: string, clinicId: string): Promise<string> {
     const { data: salesStaff } = await this.supabase
       .from('clinic_staff')
-      .select('id')
+      .select('user_id')
       .eq('clinic_id', clinicId)
-      .eq('role', 'sales')
+      .eq('role', 'sales_staff')
       .limit(1);
 
     if (!salesStaff?.[0]) throw new Error('No sales staff available');
 
-    await this.assignCustomerToSales(customerId, salesStaff[0].id);
-    return salesStaff[0].id;
+    await this.assignCustomerToSales(customerId, salesStaff[0].user_id);
+    return salesStaff[0].user_id;
   }
 }
 

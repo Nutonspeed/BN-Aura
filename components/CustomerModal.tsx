@@ -63,13 +63,20 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
     setError('');
 
     try {
-      const url = customer ? `/api/customers/${customer.id}` : '/api/customers';
+      const url = customer ? `/api/sales/customers/${customer.id}` : '/api/sales/customers';
       const method = customer ? 'PATCH' : 'POST';
+
+      // Clean form data - remove empty date
+      const submitData = { ...formData };
+      if (!submitData.date_of_birth) {
+        const { date_of_birth, ...cleanData } = submitData;
+        Object.assign(submitData, cleanData);
+      }
 
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       });
 
       const result = await res.json();

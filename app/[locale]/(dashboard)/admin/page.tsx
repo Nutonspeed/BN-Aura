@@ -105,30 +105,30 @@ export default function SuperAdminDashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
+      // Import APIClient
+      const { apiClient } = await import('@/lib/api/client');
+      
       // 1. Fetch clinics
-      const resClinics = await fetch('/api/admin/management?type=clinics');
-      const dataClinics = await resClinics.json();
-      if (dataClinics.success) {
-        setClinics(dataClinics.data.clinics);
+      const resClinics = await apiClient.get('/admin/management?type=clinics');
+      if (resClinics.success && resClinics.data) {
+        setClinics((resClinics.data as any).clinics || []);
       }
 
       // 2. Fetch health
-      const resHealth = await fetch('/api/admin/management?type=system_health');
-      const dataHealth = await resHealth.json();
-      if (dataHealth.success) {
-        setSystemHealth(dataHealth.data.health);
+      const resHealth = await apiClient.get('/admin/management?type=system_health');
+      if (resHealth.success && resHealth.data) {
+        setSystemHealth((resHealth.data as any).health || {});
       }
 
       // 3. Fetch stats
-      const resStats = await fetch('/api/admin/management?type=stats');
-      const dataStats = await resStats.json();
-      if (dataStats.success) {
-        const d = dataStats.data;
+      const resStats = await apiClient.get('/admin/management?type=stats');
+      if (resStats.success && resStats.data) {
+        const d = resStats.data as any;
         setGlobalStats({
-          totalClinics: d.totalClinics,
-          globalCustomers: d.globalCustomers,
-          monthlyAILoad: d.monthlyAILoad,
-          activeSessions: d.activeStaff // Using active staff as a proxy for activity
+          totalClinics: d.totalClinics || 0,
+          globalCustomers: d.globalCustomers || 0,
+          monthlyAILoad: d.monthlyAILoad || 0,
+          activeSessions: d.activeStaff || 0 // Using active staff as a proxy for activity
         });
       }
     } catch (err) {
@@ -145,17 +145,14 @@ export default function SuperAdminDashboard() {
   const handleUpdateStatus = async (clinicId: string, currentStatus: string) => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
     try {
-      const res = await fetch('/api/admin/management', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'updateStatus',
-          clinicId,
-          status: newStatus
-        })
+      const { apiClient } = await import('@/lib/api/client');
+      const res = await apiClient.post('/admin/management', {
+        action: 'updateStatus',
+        clinicId,
+        status: newStatus
       });
-      const data = await res.json();
-      if (data.success) {
+      
+      if (res.success) {
         setClinics(prev => prev.map(c => c.id === clinicId ? { ...c, status: newStatus as any } : c));
       }
     } catch (error) {
@@ -169,25 +166,21 @@ export default function SuperAdminDashboard() {
     setUserError(null);
 
     try {
-      const res = await fetch('/api/admin/management', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'createUser',
-          ...newUser,
-          password: 'BNAura2024!' // Default password
-        })
+      const { apiClient } = await import('@/lib/api/client');
+      const res = await apiClient.post('/admin/management', {
+        action: 'createUser',
+        ...newUser,
+        password: 'BNAura2024!' // Default password
       });
-      const data = await res.json();
       
-      if (data.success) {
+      if (res.success) {
         // Reset form and close modal
         setNewUser({ email: '', fullName: '', clinicId: '', role: 'clinic_owner' });
         setShowUserModal(false);
         // Refresh data
         fetchData();
       } else {
-        setUserError(data.error || 'Failed to create user');
+        setUserError(res.error?.message || 'Failed to create user');
       }
     } catch (error) {
       console.error('Error creating user:', error);
@@ -210,6 +203,9 @@ export default function SuperAdminDashboard() {
     setRegisterError(null);
 
     try {
+      // Import APIClient
+      const { apiClient } = await import('@/lib/api/client');
+      
       // Prepare metadata with all additional fields
       const metadata = {
         contact_email: newClinic.email,
@@ -248,23 +244,18 @@ export default function SuperAdminDashboard() {
         }
       };
 
-      const response = await fetch('/api/admin/management', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'createClinic',
-          name: newClinic.name,
-          email: newClinic.email,
-          phone: newClinic.phone,
-          address: newClinic.address,
-          plan: newClinic.plan,
-          metadata // Send all comprehensive data
-        }),
+      const response = await apiClient.post('/admin/management', {
+        action: 'createClinic',
+        name: newClinic.name,
+        email: newClinic.email,
+        phone: newClinic.phone,
+        address: newClinic.address,
+        plan: newClinic.plan,
+        metadata // Send all comprehensive data
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to register clinic');
+      if (!response.success) {
+        throw new Error(response.error?.message || 'Failed to register clinic');
       }
 
       // Reset form and step
@@ -366,7 +357,10 @@ export default function SuperAdminDashboard() {
           transition={{ delay: 0.3 }}
           className="flex gap-3"
         >
-          <button className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2">
+          <button 
+            onClick={() => router.push('/th/admin/network-map')}
+            className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2"
+          >
             <Globe className="w-4 h-4 text-primary" />
             Network Map
           </button>
@@ -486,7 +480,7 @@ export default function SuperAdminDashboard() {
                       {clinic.status}
                     </button>
                     <button 
-                      onClick={() => router.push(`/admin/clinics/${clinic.id}`)}
+                      onClick={() => router.push(`/th/admin/clinics/${clinic.id}`)}
                       className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-transparent hover:border-white/10 shadow-sm"
                     >
                       <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -641,6 +635,20 @@ export default function SuperAdminDashboard() {
                         {clinic.name} ({clinic.plan})
                       </option>
                     ))}
+                  </select>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-white/70">บทบาท *</label>
+                  <select
+                    value={newUser.role}
+                    onChange={(e) => setNewUser(prev => ({ ...prev, role: e.target.value }))}
+                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-green-400/50 transition-all"
+                    required
+                  >
+                    <option value="clinic_owner" className="bg-slate-800">Clinic Owner</option>
+                    <option value="clinic_admin" className="bg-slate-800">Clinic Admin</option>
+                    <option value="sales_staff" className="bg-slate-800">Sales Staff</option>
                   </select>
                 </div>
 

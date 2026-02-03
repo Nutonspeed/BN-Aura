@@ -62,6 +62,7 @@ export default async function LocaleLayout({
       </head>
       <body
         className={`${ibmPlexThai.variable} ${anuphan.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
+        suppressHydrationWarning={true}
       >
         <NextIntlClientProvider messages={messages}>
           <ReactQueryProvider>

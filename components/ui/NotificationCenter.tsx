@@ -29,32 +29,98 @@ export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const supabase = useMemo(() => createClient(), []);
 
   useEffect(() => {
-    fetchNotifications();
+    // Check if user is authenticated before fetching notifications
+    const checkAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          setIsAuthenticated(true);
+          fetchNotifications();
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.warn('Failed to check authentication:', error);
+        setIsAuthenticated(false);
+      }
+    };
+
+    checkAuth();
     
-    // Subscribe to real-time notifications
-    const channel = supabase
-      .channel('user-notifications')
-      .on('postgres_changes', { 
-        event: 'INSERT', 
-        schema: 'public', 
-        table: 'notifications' 
-      }, (payload: { new: Notification }) => {
-        setNotifications(prev => [payload.new, ...prev]);
-      })
-      .subscribe();
+    // Subscribe to real-time notifications only if authenticated
+    let channel = null;
+    if (isAuthenticated) {
+      channel = supabase
+        .channel('user-notifications')
+        .on('postgres_changes', { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'notifications' 
+        }, (payload: { new: Notification }) => {
+          setNotifications(prev => [payload.new, ...prev]);
+        })
+        .subscribe();
+    }
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
-  }, [supabase]);
+  }, [supabase, isAuthenticated]);
 
   const fetchNotifications = async () => {
+    // Don't fetch if not authenticated
+    if (!isAuthenticated) {
+      return;
+    }
+
     setLoading(true);
     try {
-      const res = await fetch('/api/notifications');
+      // Get token from localStorage the same way we did in Support/Security pages
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
+      const res = await fetch('/api/notifications', {
+        method: 'GET',
+        headers
+      });
+      
       const data = await res.json();
       if (data.success) {
         setNotifications(Array.isArray(data.data) ? data.data : (data.data?.notifications || []));
@@ -68,9 +134,44 @@ export default function NotificationCenter() {
 
   const markAsRead = async (id: string) => {
     try {
+      // Get token from localStorage the same way we did in fetchNotifications
+      let token = null;
+      
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (tokenError) {
+        console.warn('Failed to get token from localStorage:', tokenError);
+      }
+      
+      // Fallback: Try to get session from Supabase client
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (supabaseError) {
+          console.warn('Failed to get token from Supabase client:', supabaseError);
+        }
+      }
+      
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      
       const res = await fetch('/api/notifications', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({ action: 'markRead', notificationId: id })
       });
       if (res.ok) {

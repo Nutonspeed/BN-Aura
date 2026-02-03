@@ -178,7 +178,7 @@ export default function SalesDashboard() {
           transition={{ delay: 0.3 }}
           className="flex gap-3"
         >
-          <Link href="/analysis">
+          <Link href="/sales/analysis">
             <button className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2 group">
               <Sparkles className="w-4 h-4 text-primary group-hover:animate-pulse" />
               Quick AI Scan

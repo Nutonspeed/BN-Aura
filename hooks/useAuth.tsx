@@ -31,43 +31,69 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [clinicMetadata, setClinicMetadata] = useState<any>(null);
+  const [clinicMetadata, setClinicMetadata] = useState<any | null>(null);
   const supabase = createClient();
 
   const fetchUserProfile = useCallback(async (userId: string) => {
     try {
       // Fetch user profile from users table
-      const { data: userData, error } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from('users')
         .select('role, clinic_id, full_name')
         .eq('id', userId)
         .single();
       
-      // Also fetch clinic_staff role if exists
-      const { data: staffData } = await supabase
+      if (userError) {
+        console.error('Error fetching user profile:', userError);
+        // Don't throw error, just use defaults
+      }
+      
+      // Also fetch clinic_staff role if exists - get the first record when multiple exist
+      const { data: staffData, error: staffError } = await supabase
         .from('clinic_staff')
-        .select('role, clinic_id, clinics(display_name, metadata)')
+        .select('role, clinic_id')
         .eq('user_id', userId)
         .eq('is_active', true)
-        .single();
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (staffError && staffError.code !== 'PGRST116') { // Ignore not found error
+        console.error('Error fetching staff data:', staffError);
+      }
 
       // Determine effective role and clinic_id
       let effectiveRole = userData?.role || 'guest';
       let effectiveClinicId = userData?.clinic_id || null;
       let clinicName = 'Bangkok Premium Clinic';
-      let clinicMeta = null;
+      let clinicMeta: any = null;
 
       // If user is in clinic_staff, use that role for clinic access
       if (staffData) {
         effectiveRole = staffData.role;
         effectiveClinicId = staffData.clinic_id;
-        if (staffData.clinics) {
-          const clinic = staffData.clinics as any;
-          clinicName = typeof clinic.display_name === 'object' 
-            ? clinic.display_name.th || clinic.display_name.en 
-            : clinic.display_name;
-          clinicMeta = clinic.metadata;
-          setClinicMetadata(clinicMeta);
+        
+        // Fetch clinic info separately if staff record exists
+        try {
+          const { data: clinicInfo, error: clinicFetchError } = await supabase
+            .from('clinics')
+            .select('display_name, metadata')
+            .eq('id', staffData.clinic_id)
+            .single();
+          
+          if (clinicFetchError) {
+            // Silently handle errors - table might not exist or RLS blocking
+            clinicName = 'Bangkok Premium Clinic';
+          } else if (clinicInfo) {
+            clinicName = typeof clinicInfo.display_name === 'object' 
+              ? clinicInfo.display_name.th || clinicInfo.display_name.en 
+              : clinicInfo.display_name;
+            clinicMeta = clinicInfo.metadata;
+            setClinicMetadata(clinicMeta);
+          }
+        } catch (clinicError) {
+          // Handle 406 and other network errors silently
+          clinicName = 'Bangkok Premium Clinic';
         }
       }
 
@@ -93,31 +119,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // If user has clinic_id from users table but no staff record, fetch clinic info
       if (userData?.clinic_id && !staffData) {
-        const { data: clinicData } = await supabase
-          .from('clinics')
-          .select('metadata, display_name')
-          .eq('id', userData.clinic_id)
-          .single();
-        if (clinicData) {
-          setClinicMetadata(clinicData.metadata);
-          setUser(prev => {
-            if (!prev) return prev;
-            const displayName = typeof clinicData.display_name === 'object' 
-              ? (clinicData.display_name as any).th || (clinicData.display_name as any).en 
-              : clinicData.display_name;
-            return {
-              ...prev,
-              user_metadata: {
-                ...prev.user_metadata,
-                clinic_name: displayName,
-                clinic_metadata: clinicData.metadata,
-              }
-            };
-          });
+        try {
+          const { data: clinicData, error: clinicError } = await supabase
+            .from('clinics')
+            .select('metadata, display_name')
+            .eq('id', userData.clinic_id)
+            .single();
+          
+          if (clinicError) {
+            // Silently handle errors - table might not exist or RLS blocking
+          } else if (clinicData) {
+            const clinic = clinicData as any;
+            clinicName = typeof clinic.display_name === 'object' 
+              ? clinic.display_name.th || clinic.display_name.en 
+              : clinic.display_name;
+            clinicMeta = clinic.metadata;
+            setClinicMetadata(clinicMeta);
+          }
+        } catch (error) {
+          // Handle 406 and other network errors silently
         }
       }
-    } catch (err) {
-      console.error('Error fetching user profile:', err);
+    } catch (error) {
+      console.error('Error in fetchUserProfile:', error);
     }
   }, [supabase]);
 
@@ -144,13 +168,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    // Auto refresh session every 30 minutes
+    const refreshInterval = setInterval(async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (session && !error) {
+        // Check if session expires in less than 1 hour
+        const now = Math.floor(Date.now() / 1000);
+        const expiresAt = session.expires_at || 0;
+        const timeUntilExpiry = expiresAt - now;
+        
+        if (timeUntilExpiry < 3600) { // Less than 1 hour
+          console.log('Refreshing session...');
+          const { error: refreshError } = await supabase.auth.refreshSession();
+          if (refreshError) {
+            console.error('Session refresh failed:', refreshError);
+          }
+        }
+      }
+    }, 30 * 60 * 1000); // 30 minutes
+
+    return () => {
+      subscription.unsubscribe();
+      clearInterval(refreshInterval);
+    };
   }, [supabase.auth, fetchUserProfile]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
     setClinicMetadata(null);
+    // Redirect to login page after successful logout
+    if (typeof window !== 'undefined') {
+      window.location.href = '/th/login';
+    }
   };
 
   const getUserRole = (): string => {

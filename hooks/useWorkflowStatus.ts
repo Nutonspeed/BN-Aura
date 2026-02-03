@@ -40,30 +40,36 @@ export function useWorkflowState(customerId: string) {
     queryFn: async () => {
       if (!customerId) return null;
 
-      const { data, error } = await supabase
-        .from('workflow_states')
-        .select(`
-          *,
-          customers (
-            id,
-            full_name,
-            phone
-          )
-        `)
-        .eq('customer_id', customerId)
-        .order('created_at', { ascending: false })
-        .limit(1)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('workflow_states')
+          .select(`
+            *,
+            customers (
+              id,
+              full_name,
+              phone
+            )
+          `)
+          .eq('customer_id', customerId)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching workflow state:', error);
+        if (error && error.code !== 'PGRST116') {
+          // Silently handle errors - table might not exist yet
+          return null;
+        }
+
+        return data;
+      } catch (error) {
+        // Handle 406 and other network errors silently
         return null;
       }
-
-      return data;
     },
     enabled: !!customerId,
-    refetchInterval: 10000, // Refetch every 10 seconds
+    refetchInterval: false, // Disable auto-refetch to reduce errors
+    retry: false, // Don't retry failed requests
   });
 }
 

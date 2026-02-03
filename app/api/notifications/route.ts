@@ -15,13 +15,29 @@ import { notificationEngine, NotificationType, NotificationChannel } from '@/lib
  */
 
 export const GET = withErrorHandling(async (request: Request) => {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // For user-specific operations, we need to verify the JWT token
+  const { createClient } = await import('@/lib/supabase/server');
+  const { createAdminClient } = await import('@/lib/supabase/admin');
   
-  if (!user) {
+  // Get the authorization header to extract the JWT token
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return createErrorResponse(
       APIErrorCode.UNAUTHORIZED,
-      'Authentication required'
+      'Authentication required: No token provided'
+    );
+  }
+
+  const token = authHeader.substring(7);
+  
+  // Verify the JWT token and get user info using admin client
+  const adminClient = createAdminClient();
+  const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+  
+  if (authError || !user) {
+    return createErrorResponse(
+      APIErrorCode.UNAUTHORIZED,
+      'Authentication required: Invalid token'
     );
   }
 
@@ -30,6 +46,9 @@ export const GET = withErrorHandling(async (request: Request) => {
   const page = parseInt(searchParams.get('page') || '1');
   const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
 
+  // Create a regular client for database operations
+  const supabase = await createClient();
+  
   let query = supabase
     .from('notifications')
     .select('*', { count: 'exact' })
@@ -60,18 +79,37 @@ export const GET = withErrorHandling(async (request: Request) => {
 });
 
 export const POST = withErrorHandling(async (request: Request) => {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  // For user-specific operations, we need to verify the JWT token
+  const { createClient } = await import('@/lib/supabase/server');
+  const { createAdminClient } = await import('@/lib/supabase/admin');
   
-  if (!user) {
+  // Get the authorization header to extract the JWT token
+  const authHeader = request.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return createErrorResponse(
       APIErrorCode.UNAUTHORIZED,
-      'Authentication required'
+      'Authentication required: No token provided'
+    );
+  }
+
+  const token = authHeader.substring(7);
+  
+  // Verify the JWT token and get user info using admin client
+  const adminClient = createAdminClient();
+  const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+  
+  if (authError || !user) {
+    return createErrorResponse(
+      APIErrorCode.UNAUTHORIZED,
+      'Authentication required: Invalid token'
     );
   }
 
   const body = await request.json();
   const { action, notificationId, type, title, message, priority, clinicId } = body;
+
+  // Create a regular client for database operations
+  const supabase = await createClient();
 
   // Handle notification actions
   if (action === 'markRead') {

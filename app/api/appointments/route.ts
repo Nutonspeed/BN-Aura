@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { 
   createSuccessResponse, 
   createErrorResponse, 
@@ -20,29 +21,46 @@ export const GET = withErrorHandling(async (request: Request) => {
     return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
   }
 
-  // Get clinic_id for the current user
+  console.log('Appointments API - User ID:', user.id);
+
+  // Get clinic_id and role for the current user
   const { data: staffData, error: staffError } = await supabase
     .from('clinic_staff')
-    .select('clinic_id')
+    .select('clinic_id, role')
     .eq('user_id', user.id)
     .single();
 
-  if (staffError || !staffData) {
+  if (staffError) {
+    console.error('Staff Error:', staffError);
+    return createErrorResponse(APIErrorCode.FORBIDDEN, `User is not associated with a clinic: ${staffError.message}`);
+  }
+
+  if (!staffData) {
+    console.error('No staff data found for user:', user.id);
     return createErrorResponse(APIErrorCode.FORBIDDEN, 'User is not associated with a clinic');
   }
+
+  console.log('Clinic ID:', staffData.clinic_id);
+  console.log('User Role:', staffData.role);
 
   const { searchParams } = new URL(request.url);
   const date = searchParams.get('date'); // YYYY-MM-DD
   const status = searchParams.get('status');
   const customerId = searchParams.get('customerId');
 
-  let query = supabase
+  console.log('Query params:', { date, status, customerId });
+
+  // Choose client based on user role and data access needs
+  let dataClient;
+  const useAdminClient = false;
+  
+  // Use regular client with proper RLS policies
+  dataClient = supabase;
+  console.log('Using regular client with RLS policies for role:', staffData.role);
+
+  let query = dataClient
     .from('appointments')
-    .select(`
-      *,
-      customer:customers(id, full_name, nickname, phone),
-      staff:users!appointments_staff_id_fkey(id, full_name)
-    `)
+    .select('*')
     .eq('clinic_id', staffData.clinic_id)
     .order('appointment_date', { ascending: true })
     .order('start_time', { ascending: true });
@@ -59,9 +77,17 @@ export const GET = withErrorHandling(async (request: Request) => {
     query = query.eq('customer_id', customerId);
   }
 
+  console.log('Final query built for clinic:', staffData.clinic_id, 'using admin client:', useAdminClient);
+
   const { data, error } = await query;
 
-  if (error) throw error;
+  if (error) {
+    console.error('Appointments API Error:', error);
+    return createErrorResponse(APIErrorCode.INTERNAL_SERVER_ERROR, `Database error: ${error.message}`);
+  }
+
+  console.log('Appointments found:', data?.length || 0);
+  console.log('Sample appointment:', data?.[0]);
 
   return createSuccessResponse(data);
 });

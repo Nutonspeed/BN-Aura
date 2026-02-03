@@ -76,7 +76,7 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
         </div>
       ) : (
         <div className="h-[300px] w-full relative z-10">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" aspect={2} minHeight={300}>
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">

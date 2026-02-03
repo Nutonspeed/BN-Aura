@@ -79,6 +79,15 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
       });
       
       if (response.ok) {
+        const data = await response.json();
+        
+        // For E2E testing: log and alert temp password if provided
+        if (data.tempPassword) {
+          console.log('🔐 Temporary Password for E2E Testing:', data.tempPassword);
+          console.log('📧 Email:', formData.email);
+          alert(`✅ Staff created successfully!\n\n🔐 Temporary Password: ${data.tempPassword}\n📧 Email: ${formData.email}\n\n(For E2E testing purposes)`);
+        }
+        
         await fetchProfiles();
         setShowForm(false);
         setFormData({ email: '', full_name: '', role: 'clinic_staff' });

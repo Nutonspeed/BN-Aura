@@ -6,6 +6,7 @@ import { Users, Search, ExternalLink, MessageSquare, Plus } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 import { useWorkflowState } from '@/hooks/useWorkflowStatus';
 import WorkflowStatusBadge from './WorkflowStatusBadge';
+import CustomerModal from '../CustomerModal';
 
 interface Customer {
   id: string;
@@ -63,23 +64,39 @@ export default function MyCustomersSection({ salesId }: { salesId: string }) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showCustomerModal, setShowCustomerModal] = useState(false);
+
+  const fetchCustomers = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/sales/customers`);
+      const data = await res.json();
+      if (data.success) {
+        // Map API response to component format
+        const mappedCustomers = data.customers.map((customer: any) => ({
+          id: customer.id,
+          name: customer.full_name,
+          email: customer.email,
+          phone: customer.metadata?.phone || '',
+          totalSpent: 0, // TODO: Calculate from transactions
+          lastContactDate: null // TODO: Get from last interaction
+        }));
+        setCustomers(mappedCustomers);
+      }
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function fetchCustomers() {
-      try {
-        const res = await fetch(`/api/sales-customers?salesId=${salesId}`);
-        const data = await res.json();
-        if (data.success) {
-          setCustomers(data.data.customers);
-        }
-      } catch (error) {
-        console.error('Error fetching customers:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
     fetchCustomers();
   }, [salesId]);
+
+  const handleCustomerSuccess = () => {
+    fetchCustomers(); // Refresh customer list after creation
+  };
 
   const filteredCustomers = customers.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -95,7 +112,11 @@ export default function MyCustomersSection({ salesId }: { salesId: string }) {
           </div>
           <h3 className="text-xl font-bold text-white uppercase tracking-tight">My Managed Customers</h3>
         </div>
-        <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all active:scale-95">
+        <button 
+          onClick={() => setShowCustomerModal(true)}
+          className="p-2 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all active:scale-95"
+          title="Add New Customer"
+        >
           <Plus className="w-5 h-5" />
         </button>
       </div>
@@ -122,6 +143,13 @@ export default function MyCustomersSection({ salesId }: { salesId: string }) {
           ))
         )}
       </div>
+
+      {/* Customer Creation Modal */}
+      <CustomerModal
+        isOpen={showCustomerModal}
+        onClose={() => setShowCustomerModal(false)}
+        onSuccess={handleCustomerSuccess}
+      />
     </div>
   );
 }

@@ -196,9 +196,12 @@ export class WorkflowBridge {
         break;
       case 'weekly':
         start.setDate(now.getDate() - 7);
+        start.setHours(0, 0, 0, 0);
         break;
       case 'monthly':
-        start.setMonth(now.getMonth() - 1);
+        // First day of current month at 00:00:00
+        start.setDate(1);
+        start.setHours(0, 0, 0, 0);
         break;
     }
 

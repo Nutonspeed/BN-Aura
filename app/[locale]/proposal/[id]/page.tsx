@@ -2,16 +2,16 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, 
+  Sparkle, 
   ShieldCheck, 
-  CheckCircle2, 
+  CheckCircle, 
   MapPin, 
   Phone, 
   ArrowRight,
-  Loader2,
-  Zap,
-  Calendar
-} from 'lucide-react';
+  SpinnerGap,
+  Lightning,
+  CalendarDots
+} from '@phosphor-icons/react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';

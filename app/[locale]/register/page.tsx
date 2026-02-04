@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, User, Eye, EyeOff, Shield, Sparkles } from 'lucide-react';
+import { EnvelopeSimple, Lock, User, Eye, EyeSlash, Shield, Sparkle } from '@phosphor-icons/react';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({

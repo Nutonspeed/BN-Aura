@@ -2,19 +2,19 @@
 
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, 
+  Sparkle, 
   ShieldCheck, 
-  ChevronLeft,
+  CaretLeft,
   Target,
-  Activity,
-  Award,
-  CheckCircle2,
-  BriefcaseMedical,
+  Pulse,
+  Medal,
+  CheckCircle,
+  FirstAidKit,
   Clock,
   Package,
   Stethoscope,
   Plus
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';

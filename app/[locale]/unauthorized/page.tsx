@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ShieldX, ArrowLeft, LogOut } from 'lucide-react';
+import { ShieldSlash, ArrowLeft, SignOut } from '@phosphor-icons/react';
 import { useAuth } from '@/hooks/useAuth';
 
 // Simple Button component inline to avoid import issues

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Play, Pause, RotateCcw, Zap, Sparkles, Loader2, AlertCircle } from 'lucide-react';
+import { Camera, Play, Pause, ArrowCounterClockwise, Lightning, Sparkle, SpinnerGap, WarningCircle } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import AR3DSimulator from '@/components/AR3DSimulator';
 import { type Landmark } from '@/lib/mediapipe';

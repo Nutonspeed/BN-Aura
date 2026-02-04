@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Calendar, Clock, User, Phone, Mail, CreditCard, Gift, ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-react';
+import { CalendarDots, Clock, User, Phone, EnvelopeSimple, CreditCard, Gift, CaretLeft, CaretRight, Check, SpinnerGap } from '@phosphor-icons/react';
 
 interface Service {
   id: string;

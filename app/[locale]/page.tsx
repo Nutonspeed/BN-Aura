@@ -2,10 +2,10 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
-  Sparkles, Zap, Camera, Users, 
-  CheckCircle2, Cpu, TrendingUp,
-  MessageCircle, Mail, Phone
-} from 'lucide-react';
+  Sparkle, Lightning, Camera, Users, 
+  CheckCircle, Cpu, TrendUp,
+  ChatCircle, EnvelopeSimple, Phone
+} from '@phosphor-icons/react';
 import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import FloatingElements from '@/components/FloatingElements';

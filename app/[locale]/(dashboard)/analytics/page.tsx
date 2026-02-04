@@ -3,15 +3,15 @@
 import { motion } from 'framer-motion';
 import { 
   Brain, 
-  TrendingUp, 
-  AlertTriangle, 
-  MessageSquare,
-  BarChart3,
+  TrendUp, 
+  Warning, 
+  ChatCircle,
+  ChartBar,
   Users,
-  DollarSign,
-  Sparkles,
-  Loader2
-} from 'lucide-react';
+  CurrencyDollar,
+  Sparkle,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import AIAdvisorChat from '@/components/analytics/AIAdvisorChat';
 import InsightCards from '@/components/analytics/InsightCards';

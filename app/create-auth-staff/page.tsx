@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Shield, Key, Mail, User, Building, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { Users, Shield, Key, EnvelopeSimple, User, Buildings, SpinnerGap, CheckCircle, WarningCircle } from '@phosphor-icons/react';
 
 export default function CreateAuthStaffPage() {
   const [formData, setFormData] = useState({

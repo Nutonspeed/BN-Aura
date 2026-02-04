@@ -3,16 +3,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Send, 
-  MessageSquare, 
+  PaperPlaneTilt, 
+  ChatCircle, 
   User, 
   Users,
-  Search,
-  MoreVertical,
+  MagnifyingGlass,
+  DotsThreeVertical,
   Phone,
-  Video,
+  VideoCamera,
   ArrowLeft
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { createClient } from '@/lib/supabase/client';

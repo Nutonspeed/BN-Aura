@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { User, Phone, Calendar, QrCode, CheckCircle } from 'lucide-react';
+import { User, Phone, CalendarDots, QrCode, CheckCircle } from '@phosphor-icons/react';
 
 export default function KioskPage() {
   const params = useParams();

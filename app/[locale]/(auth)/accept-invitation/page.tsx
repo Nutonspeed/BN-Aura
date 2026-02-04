@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Loader2, KeyRound, User } from 'lucide-react';
+import { CheckCircle, XCircle, SpinnerGap, Key, User } from '@phosphor-icons/react';
 import Link from 'next/link';
 
 export default function AcceptInvitationPage() {

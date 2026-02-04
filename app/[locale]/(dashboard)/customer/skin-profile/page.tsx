@@ -151,7 +151,7 @@ function SkinProfileContent() {
 
         <div className="flex bg-white/5 border border-white/10 p-1 rounded-2xl">
           {[
-            { id: 'history', label: 'History', icon: History },
+            { id: 'history', label: 'History', icon: ClockCounterClockwise },
             { id: 'progress', label: 'Progress', icon: TrendUp },
             { id: 'compare', label: 'Compare', icon: Camera }
           ].map((tab) => (
@@ -242,7 +242,7 @@ function SkinProfileContent() {
             {comparisons.length > 0 && (
               <div className="space-y-8">
                 <h3 className="text-xl font-black text-white uppercase tracking-[0.2em] px-4 flex items-center gap-3">
-                  <History className="w-5 h-5 text-primary" />
+                  <ClockCounterClockwise className="w-5 h-5 text-primary" />
                   Evolution Checkpoints
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

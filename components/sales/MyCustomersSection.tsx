@@ -24,12 +24,12 @@ function CustomerCard({ customer }: { customer: Customer }) {
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-primary/20 transition-all group"
+      className="p-4 bg-secondary rounded-xl border border-border hover:border-primary/30 transition-all group"
     >
       <div className="flex justify-between items-start">
         <div className="space-y-1 flex-1">
           <div className="flex items-center gap-2">
-            <div className="text-sm font-bold text-white group-hover:text-primary transition-colors flex items-center gap-2">
+            <div className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
               {customer.name}
               <Link href={`/sales/customers/${customer.id}`}>
                 <ArrowSquareOut className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -107,17 +107,17 @@ export default function MyCustomersSection({ salesId }: { salesId?: string }) {
   );
 
   return (
-    <div className="glass-card p-6 rounded-[32px] border border-white/10 space-y-6">
+    <div className="bg-card p-6 rounded-2xl border border-border shadow-card space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <Users className="w-5 h-5" />
           </div>
-          <h3 className="text-xl font-bold text-white uppercase tracking-tight">My Managed Customers</h3>
+          <h3 className="text-lg font-semibold text-foreground">My Managed Customers</h3>
         </div>
         <button 
           onClick={() => setShowCustomerModal(true)}
-          className="p-2 bg-white/5 border border-white/10 rounded-lg text-white hover:bg-white/10 transition-all active:scale-95"
+          className="p-2 bg-secondary border border-border rounded-lg text-foreground hover:bg-accent transition-all active:scale-95"
           title="Add New Customer"
         >
           <Plus className="w-5 h-5" />
@@ -129,7 +129,7 @@ export default function MyCustomersSection({ salesId }: { salesId?: string }) {
         <input
           type="text"
           placeholder="Search your customers..."
-          className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          className="w-full bg-secondary border border-border rounded-xl py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

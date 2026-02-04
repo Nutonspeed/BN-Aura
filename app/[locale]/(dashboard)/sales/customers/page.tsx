@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Users, Plus, MagnifyingGlass, EnvelopeSimple, Phone, CalendarDots, DotsThreeVertical } from '@phosphor-icons/react';
+import { motion } from 'framer-motion';
+import { Link } from '@/i18n/routing';
+import { Users, Plus, MagnifyingGlass, EnvelopeSimple, CalendarDots, DotsThreeVertical, SpinnerGap, UserPlus, Target } from '@phosphor-icons/react';
+import { cn } from '@/lib/utils';
 
 interface Customer {
   customer_id: string;
@@ -32,7 +34,7 @@ export default function CustomersPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setCustomers(data.customers);
+        setCustomers(data.customers || []);
       } else {
         setError(data.error || 'Failed to fetch customers');
       }
@@ -44,117 +46,170 @@ export default function CustomersPage() {
   };
 
   const filteredCustomers = customers.filter(customer =>
-    customer.users.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    customer.users.email.toLowerCase().includes(searchTerm.toLowerCase())
+    customer.users?.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    customer.users?.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl">
-              <Users className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-white">ลูกค้าของฉัน</h1>
-              <p className="text-blue-200">จัดการลูกค้าทั้งหมดของคุณ</p>
-            </div>
-          </div>
-          <Link
-            href="/th/sales/customers/create"
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all"
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-10 pb-20"
+    >
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <Plus className="w-5 h-5" />
+            <Target className="w-4 h-4" />
+            Sales Intelligence
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground uppercase tracking-tight"
+          >
+            My <span className="text-primary">Customers</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm"
+          >
+            จัดการลูกค้าทั้งหมดที่อยู่ในความดูแลของคุณ
+          </motion.p>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Link
+            href="/sales/customers/create"
+            className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold uppercase tracking-wide shadow-lg hover:brightness-110 transition-all active:scale-95 text-sm"
+          >
+            <UserPlus className="w-5 h-5" />
             สร้างลูกค้าใหม่
           </Link>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* Search Bar */}
-        <div className="max-w-md mb-6">
-          <div className="relative">
-            <MagnifyingGlass className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
+      {/* Search & Stats */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-3">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="relative group"
+          >
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-lg py-3 pl-10 pr-4 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full bg-card border border-border rounded-2xl py-4 pl-14 pr-6 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all"
               placeholder="ค้นหาลูกค้า..."
             />
-          </div>
+          </motion.div>
         </div>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-card p-6 rounded-2xl border border-border flex items-center justify-between"
+        >
+          <div>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Total Customers</p>
+            <p className="text-3xl font-bold text-foreground">{customers.length}</p>
+          </div>
+          <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+            <Users className="w-7 h-7" />
+          </div>
+        </motion.div>
+      </div>
 
-        {/* Error */}
-        {error && (
-          <div className="bg-red-500/20 border border-red-500/50 rounded-lg p-4 mb-6">
-            <p className="text-red-200">{error}</p>
-          </div>
-        )}
+      {/* Error */}
+      {error && (
+        <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4">
+          <p className="text-destructive text-sm">{error}</p>
+        </div>
+      )}
 
-        {/* Customers List */}
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-blue-200">กำลังโหลด...</p>
-          </div>
-        ) : filteredCustomers.length === 0 ? (
-          <div className="text-center py-12">
-            <Users className="w-16 h-16 text-blue-300 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-white mb-2">
-              {searchTerm ? 'ไม่พบลูกค้าที่ค้นหา' : 'ยังไม่มีลูกค้า'}
-            </h3>
-            <p className="text-blue-200 mb-6">
-              {searchTerm ? 'ลองค้นหาด้วยคำอื่น' : 'สร้างลูกค้าคนแรกของคุณวันนี้'}
-            </p>
-            {!searchTerm && (
-              <Link
-                href="/th/sales/customers/create"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all"
-              >
-                <Plus className="w-5 h-5" />
-                สร้างลูกค้าใหม่
-              </Link>
-            )}
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {filteredCustomers.map((customer) => (
-              <div
-                key={customer.customer_id}
-                className="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-semibold text-lg">
-                        {customer.users.full_name.charAt(0).toUpperCase()}
+      {/* Customers List */}
+      {loading ? (
+        <div className="py-20 flex flex-col items-center justify-center space-y-4">
+          <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
+          <p className="text-muted-foreground text-xs uppercase tracking-widest">Loading customers...</p>
+        </div>
+      ) : filteredCustomers.length === 0 ? (
+        <div className="py-20 text-center">
+          <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-30" />
+          <h3 className="text-xl font-bold text-foreground mb-2">
+            {searchTerm ? 'ไม่พบลูกค้าที่ค้นหา' : 'ยังไม่มีลูกค้า'}
+          </h3>
+          <p className="text-muted-foreground mb-6">
+            {searchTerm ? 'ลองค้นหาด้วยคำอื่น' : 'สร้างลูกค้าคนแรกของคุณวันนี้'}
+          </p>
+          {!searchTerm && (
+            <Link
+              href="/sales/customers/create"
+              className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-medium hover:brightness-110 transition-all"
+            >
+              <Plus className="w-5 h-5" />
+              สร้างลูกค้าใหม่
+            </Link>
+          )}
+        </div>
+      ) : (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="grid gap-4"
+        >
+          {filteredCustomers.map((customer, i) => (
+            <motion.div
+              key={customer.customer_id}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 * i }}
+              className="bg-card p-6 rounded-2xl border border-border hover:border-primary/30 transition-all group"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-lg border border-primary/20">
+                    {customer.users?.full_name?.charAt(0)?.toUpperCase() || '?'}
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                      {customer.users?.full_name || 'Unknown'}
+                    </h3>
+                    <div className="flex items-center gap-4 mt-1">
+                      <span className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                        <EnvelopeSimple className="w-4 h-4" />
+                        {customer.users?.email}
+                      </span>
+                      <span className="flex items-center gap-1.5 text-muted-foreground text-sm">
+                        <CalendarDots className="w-4 h-4" />
+                        {new Date(customer.assigned_at).toLocaleDateString('th-TH')}
                       </span>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">
-                        {customer.users.full_name}
-                      </h3>
-                      <div className="flex items-center gap-4 mt-1">
-                        <span className="flex items-center gap-1 text-blue-200 text-sm">
-                          <EnvelopeSimple className="w-4 h-4" />
-                          {customer.users.email}
-                        </span>
-                        <span className="flex items-center gap-1 text-blue-200 text-sm">
-                          <CalendarDots className="w-4 h-4" />
-                          สร้างเมื่อ {new Date(customer.assigned_at).toLocaleDateString('th-TH')}
-                        </span>
-                      </div>
-                    </div>
                   </div>
-                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                    <DotsThreeVertical className="w-5 h-5 text-blue-300" />
-                  </button>
                 </div>
+                <button className="p-2 hover:bg-accent rounded-lg transition-colors">
+                  <DotsThreeVertical className="w-5 h-5 text-muted-foreground" />
+                </button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+            </motion.div>
+          ))}
+        </motion.div>
+      )}
+    </motion.div>
   );
 }

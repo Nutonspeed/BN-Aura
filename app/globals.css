@@ -5,83 +5,102 @@
 @layer base {
   /* Light Theme (Default) - TailAdmin Style */
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    /* Background: #F1F5F9 (slate-100) */
+    --background: 210 40% 96.1%;
+    /* Foreground: #1C2434 (TailAdmin dark) */
+    --foreground: 222 47% 15%;
 
+    /* Card: White */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 47% 15%;
 
-    --primary: 217.2 91.2% 59.8%;
+    /* Primary: #3C50E0 (TailAdmin blue) */
+    --primary: 231 70% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary: #F1F5F9 */
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222 47% 15%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted: #64748B (slate-500) */
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222 47% 15%;
 
-    --destructive: 0 84.2% 60.2%;
+    /* Destructive: #DC3545 */
+    --destructive: 354 70% 54%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142.1 76.2% 36.3%;
+    /* Success: #10B981 */
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
 
+    /* Warning: #F59E0B */
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217.2 91.2% 59.8%;
+    /* Border: #E2E8F0 (slate-200) */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 231 70% 56%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    --sidebar-bg: 222.2 84% 4.9%;
+    /* Sidebar: #1C2434 (TailAdmin dark navy) */
+    --sidebar-bg: 222 47% 15%;
     --sidebar-foreground: 210 40% 98%;
   }
 
   /* Dark Theme */
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Background: #1A222C */
+    --background: 216 26% 14%;
+    /* Foreground: #DEE4EE */
+    --foreground: 220 27% 90%;
 
-    --card: 222.2 84% 6%;
-    --card-foreground: 210 40% 98%;
+    /* Card: #24303F */
+    --card: 213 26% 20%;
+    --card-foreground: 220 27% 90%;
 
-    --popover: 222.2 84% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 213 26% 20%;
+    --popover-foreground: 220 27% 90%;
 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Primary: #3C50E0 */
+    --primary: 231 70% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    /* Secondary: #313D4A */
+    --secondary: 213 21% 24%;
+    --secondary-foreground: 220 27% 90%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    /* Muted */
+    --muted: 213 21% 24%;
+    --muted-foreground: 215 16% 57%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 213 21% 24%;
+    --accent-foreground: 220 27% 90%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 354 70% 54%;
+    --destructive-foreground: 0 0% 100%;
 
-    --success: 142.1 70.6% 45.3%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    /* Border: #313D4A */
+    --border: 213 21% 24%;
+    --input: 213 21% 24%;
+    --ring: 231 70% 56%;
 
-    --sidebar-bg: 222.2 84% 4.9%;
+    /* Sidebar: #1C2434 */
+    --sidebar-bg: 222 47% 15%;
     --sidebar-foreground: 210 40% 98%;
   }
 }
@@ -97,74 +116,107 @@
 }
 
 @layer components {
+  /* TailAdmin Card Styles */
+  .card {
+    @apply bg-card text-card-foreground rounded-xl border border-border shadow-card;
+  }
+
+  .card-hover {
+    @apply bg-card text-card-foreground rounded-xl border border-border shadow-card hover:shadow-card-hover transition-shadow;
+  }
+
+  /* Glass effects for dark mode compatibility */
   .glass-card {
-    @apply bg-gradient-to-br from-white/[0.08] to-white/[0.02] backdrop-blur-2xl border border-white/10 shadow-premium;
+    @apply bg-card/95 backdrop-blur-sm border border-border rounded-xl shadow-card;
   }
 
   .glass-premium {
-    @apply bg-gradient-to-br from-white/[0.12] to-white/[0.04] backdrop-blur-3xl border border-white/20 shadow-2xl;
+    @apply bg-card backdrop-blur-sm border border-border rounded-xl shadow-card-hover;
   }
 
-  .card-premium {
-    @apply bg-gradient-to-br from-slate-800/80 to-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl;
-  }
-
+  /* TailAdmin Stat Card */
   .card-stat {
-    @apply bg-gradient-to-br from-slate-800/60 to-slate-900/80 backdrop-blur-xl border border-white/[0.08] rounded-2xl p-6 relative overflow-hidden;
-    box-shadow: 
-      0 25px 50px -12px rgba(0, 0, 0, 0.5),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    @apply bg-card border border-border rounded-xl p-6 shadow-card;
   }
 
-  .card-stat::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  }
-
-  .aura-glow-primary {
-    @apply relative after:absolute after:inset-0 after:z-[-1] after:bg-primary/20 after:blur-[100px] after:rounded-full after:opacity-50;
-  }
-
-  .aura-glow-secondary {
-    @apply relative after:absolute after:inset-0 after:z-[-1] after:bg-blue-400/20 after:blur-[80px] after:rounded-full after:opacity-40;
-  }
-
-  .shadow-premium {
-    box-shadow: 
-      0 20px 40px -15px rgba(0, 0, 0, 0.4),
-      0 8px 16px -8px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-  }
-
-  .shadow-glow {
-    box-shadow: 
-      0 0 40px -10px rgba(99, 102, 241, 0.4),
-      0 20px 40px -15px rgba(0, 0, 0, 0.4);
-  }
-
-  .text-gradient {
-    @apply bg-gradient-to-r from-white via-white/90 to-white/70 bg-clip-text text-transparent;
-  }
-
-  .text-gradient-primary {
-    @apply bg-gradient-to-r from-primary via-blue-400 to-cyan-400 bg-clip-text text-transparent;
-  }
-
+  /* TailAdmin Buttons */
   .btn-primary {
-    @apply px-6 py-3 bg-gradient-to-r from-primary to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 bg-white/5 border border-white/10 text-white font-medium rounded-xl hover:bg-white/10 transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-secondary text-secondary-foreground font-medium rounded-lg border border-border hover:bg-accent transition-colors;
   }
 
-  .input-premium {
-    @apply bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all;
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-transparent text-foreground font-medium rounded-lg border border-border hover:bg-accent transition-colors;
+  }
+
+  /* TailAdmin Input */
+  .input-field {
+    @apply w-full bg-transparent border border-border rounded-lg px-4 py-2.5 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-colors;
+  }
+
+  /* TailAdmin Badge */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply bg-primary/10 text-primary;
+  }
+
+  .badge-success {
+    @apply bg-success/10 text-success;
+  }
+
+  .badge-warning {
+    @apply bg-warning/10 text-warning;
+  }
+
+  .badge-destructive {
+    @apply bg-destructive/10 text-destructive;
+  }
+
+  /* TailAdmin Shadows */
+  .shadow-card {
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .shadow-card-hover {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Legacy support - map to new styles */
+  .shadow-premium {
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-glow {
+    @apply text-primary;
+  }
+}
+
+/* Light mode compatibility - convert hardcoded text-white to theme-aware */
+:root:not(.dark) {
+  /* Override text-white in main content area (not sidebar) */
+  .text-white:not([class*="sidebar"]):not([class*="bg-primary"]):not([class*="bg-sidebar"]) {
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  /* Keep text-white for elements with dark backgrounds */
+  .bg-primary .text-white,
+  .bg-sidebar .text-white,
+  .bg-destructive .text-white,
+  .bg-success .text-white {
+    color: white !important;
+  }
+  
+  /* Fix glass-card backgrounds for light mode */
+  .glass-card,
+  .glass-premium {
+    background: hsl(var(--card)) !important;
+    border-color: hsl(var(--border)) !important;
   }
 }
 

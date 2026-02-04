@@ -269,7 +269,7 @@ export default function DashboardLayout({
         }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className={cn(
-          "fixed lg:relative z-[110] flex flex-col h-full bg-background/80 border-r border-white/10 backdrop-blur-2xl transition-all duration-300 lg:transition-none",
+          "fixed lg:relative z-[110] flex flex-col h-full bg-sidebar text-sidebar-foreground border-r border-border backdrop-blur-2xl transition-all duration-300 lg:transition-none",
           "lg:translate-x-0",
           !isMobileOpen && "max-lg:-translate-x-full"
         )}
@@ -289,7 +289,7 @@ export default function DashboardLayout({
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="font-heading font-bold text-xl tracking-tight text-white whitespace-nowrap uppercase"
+                className="font-heading font-bold text-xl tracking-tight text-sidebar-foreground whitespace-nowrap"
               >
                 {getClinicName()}
               </motion.span>
@@ -298,7 +298,7 @@ export default function DashboardLayout({
           {/* Mobile Close Button */}
           <button 
             onClick={() => setIsMobileOpen(false)}
-            className="ml-auto lg:hidden p-2 text-muted-foreground hover:text-white"
+            className="ml-auto lg:hidden p-2 text-sidebar-foreground/60 hover:text-sidebar-foreground"
           >
             <X className="w-5 h-5" />
           </button>
@@ -327,7 +327,7 @@ export default function DashboardLayout({
                     "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
                     hasActiveItem 
                       ? "bg-primary/10 text-primary" 
-                      : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                      : "text-sidebar-foreground/60 hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground"
                   )}
                 >
                   <group.icon className="w-5 h-5 flex-shrink-0" />
@@ -352,7 +352,7 @@ export default function DashboardLayout({
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="pl-4 mt-1 space-y-0.5 border-l-2 border-white/10 ml-5">
+                      <div className="pl-4 mt-1 space-y-0.5 border-l-2 border-sidebar-foreground/10 ml-5">
                         {visibleItems.map((item) => {
                           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                           return (
@@ -364,7 +364,7 @@ export default function DashboardLayout({
                                 "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group",
                                 isActive 
                                   ? "bg-primary text-primary-foreground shadow-lg" 
-                                  : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                                  : "text-sidebar-foreground/60 hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground"
                               )}
                             >
                               <item.icon className="w-4 h-4 flex-shrink-0" />
@@ -382,7 +382,7 @@ export default function DashboardLayout({
         </nav>
 
         {/* Sidebar Footer */}
-        <div className="p-3 border-t border-white/10 flex-shrink-0">
+        <div className="p-3 border-t border-sidebar-foreground/10 flex-shrink-0">
           <button 
             onClick={signOut}
             className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all group"
@@ -395,7 +395,7 @@ export default function DashboardLayout({
         {/* Desktop Toggle Button */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="absolute -right-3 top-24 w-6 h-6 rounded-full bg-primary border border-white/10 items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform hidden lg:flex"
+          className="absolute -right-3 top-24 w-6 h-6 rounded-full bg-primary border border-border items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform hidden lg:flex"
         >
           <CaretLeft className={cn("w-4 h-4 transition-transform duration-300", !isSidebarOpen && "rotate-180")} />
         </button>
@@ -404,18 +404,18 @@ export default function DashboardLayout({
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col relative h-screen overflow-y-auto custom-scrollbar">
         {/* Top Header */}
-        <header className="h-20 flex items-center justify-between px-4 md:px-8 border-b border-white/5 bg-background/50 backdrop-blur-md sticky top-0 z-40 flex-shrink-0">
+        <header className="h-20 flex items-center justify-between px-4 md:px-8 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-40 flex-shrink-0">
           <div className="flex items-center gap-4">
             {/* Mobile Menu Trigger */}
             <button 
               onClick={() => setIsMobileOpen(true)}
-              className="lg:hidden p-2 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-white/10 transition-all"
+              className="lg:hidden p-2 bg-secondary border border-border rounded-xl text-foreground hover:bg-accent transition-all"
             >
               <List className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
               <Buildings className="w-4 h-4 text-primary hidden sm:block" />
-              <h2 className="text-xs font-bold text-white/60 uppercase tracking-widest truncate max-w-[120px] md:max-w-none">
+              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide truncate max-w-[120px] md:max-w-none">
                 {getClinicName()}
               </h2>
             </div>
@@ -431,9 +431,9 @@ export default function DashboardLayout({
               <Question className="w-5 h-5" />
             </button>
             <NotificationCenter />
-            <div className="h-8 w-px bg-white/5 mx-1 md:mx-2" />
+            <div className="h-8 w-px bg-border mx-1 md:mx-2" />
             <div className="hidden md:flex flex-col text-right">
-              <span className="text-sm font-black text-white">{getFullName()}</span>
+              <span className="text-sm font-semibold text-foreground">{getFullName()}</span>
               <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">
                 {getUserRole().replace('_', ' ')}
               </span>

@@ -2,8 +2,8 @@
 
 import { PredictiveAnalytics } from '@/lib/customer/customerIntelligence';
 import { 
-  TrendingUp, 
-  AlertTriangle, 
+  TrendUp, 
+  Warning, 
   Lightbulb, 
   ArrowRight,
   TrendDown,

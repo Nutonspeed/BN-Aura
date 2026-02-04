@@ -6,24 +6,24 @@
 import React, { useState, useEffect } from 'react';
 import {
   Shield,
-  AlertTriangle,
-  Activity,
+  Warning,
+  Pulse,
   Users,
   Eye,
   Lock,
-  Unlock,
-  TrendingUp,
-  TrendingDown,
-  Calendar,
-  Filter,
+  LockOpen,
+  TrendUp,
+  TrendDown,
+  CalendarDots,
+  Funnel,
   Download,
-  RefreshCw,
-  AlertCircle,
+  ArrowsClockwise,
+  WarningCircle,
   CheckCircle,
   XCircle,
   Info,
-  Search
-} from 'lucide-react';
+  MagnifyingGlass
+} from '@phosphor-icons/react';
 import {
   LineChart,
   Line,

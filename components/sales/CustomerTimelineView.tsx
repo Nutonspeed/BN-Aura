@@ -2,8 +2,8 @@
 
 import { TimelineEvent } from '@/lib/customer/customerIntelligence';
 import { 
-  MessageSquare, 
-  Calendar, 
+  ChatCircle, 
+  CalendarDots, 
   ShoppingBag, 
   ArrowRight,
   CheckCircle,

@@ -93,7 +93,7 @@ export default function PaymentModal({
             animate={{ scale: 1, y: 0 }}
             exit={{ scale: 0.9, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-xl bg-[#0A0A0A] border border-white/10 rounded-[40px] p-10 shadow-2xl overflow-hidden"
+            className="w-full max-w-xl bg-card border border-border rounded-2xl p-8 shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-10">
@@ -102,7 +102,7 @@ export default function PaymentModal({
                   <CreditCard className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight">Payment Settlement</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Payment Settlement</h3>
                   <p className="text-sm text-muted-foreground italic font-light tracking-tight">Executing financial node for TXN-{transactionId.substring(0, 8)}</p>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function PaymentModal({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {/* Left: Payment Selection */}
               <div className="space-y-6">
-                <div className="p-6 bg-white/5 border border-white/5 rounded-3xl space-y-1">
+                <div className="p-5 bg-secondary border border-border rounded-xl space-y-1">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Total Outstanding</p>
                   <p className="text-4xl font-black text-primary tracking-tighter tabular-nums">฿{amount.toLocaleString()}</p>
                 </div>
@@ -133,7 +133,7 @@ export default function PaymentModal({
                         "w-full flex items-center gap-4 p-4 rounded-2xl border transition-all",
                         method === m.id 
                           ? "bg-primary/10 border-primary/40 shadow-lg" 
-                          : "bg-white/5 border-white/5 hover:border-white/10 opacity-60 grayscale hover:opacity-100 hover:grayscale-0"
+                          : "bg-secondary border-border hover:border-primary/30 opacity-70 hover:opacity-100"
                       )}
                     >
                       <div className={cn(
@@ -144,7 +144,7 @@ export default function PaymentModal({
                       </div>
                       <span className={cn(
                         "text-xs font-black uppercase tracking-widest",
-                        method === m.id ? "text-white" : "text-muted-foreground"
+                        method === m.id ? "text-foreground" : "text-muted-foreground"
                       )}>
                         {m.label}
                       </span>
@@ -154,7 +154,7 @@ export default function PaymentModal({
               </div>
 
               {/* Right: Payment View (QR or Confirmation) */}
-              <div className="flex flex-col items-center justify-center p-8 bg-white/5 border border-white/5 rounded-[32px] relative overflow-hidden">
+              <div className="flex flex-col items-center justify-center p-6 bg-secondary border border-border rounded-xl relative overflow-hidden">
                 <AnimatePresence mode="wait">
                   {method === 'PROMPTPAY' ? (
                     <motion.div
@@ -197,7 +197,7 @@ export default function PaymentModal({
                         {method === 'CASH' ? <Money className="w-10 h-10" /> : <CreditCard className="w-10 h-10" />}
                       </div>
                       <div className="space-y-2">
-                        <h4 className="text-sm font-black text-white uppercase tracking-widest">{method} Settlement</h4>
+                        <h4 className="text-sm font-semibold text-foreground">{method} Settlement</h4>
                         <p className="text-xs text-muted-foreground font-light px-4">Please verify payment completion before confirming this node.</p>
                       </div>
                     </motion.div>
@@ -210,7 +210,7 @@ export default function PaymentModal({
             <div className="mt-10 flex gap-4">
               <button
                 onClick={onClose}
-                className="px-8 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-all text-xs"
+                className="px-6 py-3 bg-secondary border border-border text-foreground rounded-xl font-medium hover:bg-accent transition-all text-sm"
               >
                 Cancel
               </button>

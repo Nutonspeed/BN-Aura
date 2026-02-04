@@ -3,24 +3,24 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Building2, 
+  Buildings, 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   User, 
-  Mail, 
+  EnvelopeSimple, 
   Phone, 
   MapPin, 
-  Edit2, 
-  Trash2, 
-  MoreVertical, 
-  Loader2,
-  CheckCircle2,
+  PencilSimple, 
+  Trash, 
+  DotsThreeVertical, 
+  SpinnerGap,
+  CheckCircle,
   Clock,
-  LayoutGrid,
+  SquaresFour,
   Truck,
   Package,
   ArrowRight
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import SupplierModal from '@/components/SupplierModal';

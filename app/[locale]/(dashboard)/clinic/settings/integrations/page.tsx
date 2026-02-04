@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, Phone, Mail, MessageCircle, Check, X, Eye, EyeOff, Save } from 'lucide-react';
+import { Gear, Phone, EnvelopeSimple, ChatCircle, Check, X, Eye, EyeSlash, FloppyDisk } from '@phosphor-icons/react';
 
 interface Integration {
   id?: string;

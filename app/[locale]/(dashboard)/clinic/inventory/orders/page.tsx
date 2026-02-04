@@ -5,22 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   Truck, 
-  DollarSign, 
-  Edit2, 
-  Trash2, 
-  MoreVertical, 
-  Loader2,
-  CheckCircle2,
+  CurrencyDollar, 
+  PencilSimple, 
+  Trash, 
+  DotsThreeVertical, 
+  SpinnerGap,
+  CheckCircle,
   Clock,
-  LayoutGrid,
-  Calendar,
-  AlertCircle,
-  ChevronLeft,
+  SquaresFour,
+  CalendarDots,
+  WarningCircle,
+  CaretLeft,
   User,
   XCircle
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter, useSearchParams } from 'next/navigation';
 import PurchaseOrderModal from '@/components/PurchaseOrderModal';

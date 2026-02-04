@@ -43,14 +43,14 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
   }, [clinicId]);
 
   return (
-    <div className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border shadow-card space-y-6 relative overflow-hidden group h-full">
       <div className="flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
             <Medal className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white uppercase tracking-tight">Staff Intelligence</h3>
+            <h3 className="text-lg font-semibold text-foreground">Staff Intelligence</h3>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Performance Leaderboard</p>
           </div>
         </div>
@@ -63,7 +63,7 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
         {loading ? (
           <div className="space-y-4 animate-pulse">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-20 bg-white/5 rounded-3xl border border-white/5" />
+              <div key={i} className="h-20 bg-muted/50 rounded-xl border border-border" />
             ))}
           </div>
         ) : staffData.length === 0 ? (
@@ -77,7 +77,7 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: idx * 0.1 }}
-              className="p-5 bg-white/5 rounded-3xl border border-white/5 hover:border-primary/30 transition-all group/item flex items-center gap-4"
+              className="p-4 bg-secondary rounded-xl border border-border hover:border-primary/30 transition-all group/item flex items-center gap-4"
             >
               <div className="relative">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 font-black">
@@ -91,7 +91,7 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
               </div>
 
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-bold text-white truncate">{staff.name}</h4>
+                <h4 className="text-sm font-semibold text-foreground truncate">{staff.name}</h4>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-tighter">{staff.role.replace('_', ' ')}</p>
               </div>
 

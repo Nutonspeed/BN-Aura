@@ -128,9 +128,9 @@ export default function CustomerDashboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Welcome, <span className="text-primary text-glow">{customerName || 'Valued Guest'}</span>
+            Welcome, <span className="text-primary">{customerName || 'Valued Guest'}</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -156,7 +156,7 @@ export default function CustomerDashboard() {
           </Link>
           <button 
             onClick={() => setIsChatOpen(true)}
-            className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2 group"
+            className="px-5 py-3 bg-secondary border border-border rounded-xl text-sm font-medium text-foreground hover:bg-accent transition-all active:scale-95 flex items-center gap-2 group"
           >
             <ChatCircle className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
             Chat Advisor
@@ -181,14 +181,14 @@ export default function CustomerDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.1 }}
                 whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                className="glass-card p-5 rounded-3xl border border-white/5 flex items-center gap-4 group"
+                className="bg-card p-5 rounded-2xl border border-border shadow-card flex items-center gap-4 group"
               >
                 <div className={`w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center ${stat.color} border border-white/5 group-hover:scale-110 transition-transform`}>
                   <stat.icon className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-black">{stat.label}</p>
-                  <p className="text-xl font-black text-white">{stat.value}</p>
+                  <p className="text-xl font-bold text-foreground">{stat.value}</p>
                 </div>
               </motion.div>
             ))}
@@ -210,7 +210,7 @@ export default function CustomerDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 min-h-[300px] relative overflow-hidden group"
+            className="bg-card p-6 rounded-2xl border border-border shadow-card min-h-[300px] relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-all duration-700">
               <Sparkle className="w-32 h-32 text-primary" />
@@ -218,7 +218,7 @@ export default function CustomerDashboard() {
             
             <div className="relative z-10 space-y-8">
               <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Latest Skin <span className="text-primary">Intelligence</span></h3>
+                <h3 className="text-xl font-semibold text-foreground">Latest Skin <span className="text-primary">Intelligence</span></h3>
                 <Link href="/customer/skin-profile">
                   <button className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-1 hover:gap-3 transition-all">
                     Full Report <CaretRight className="w-4 h-4" />
@@ -241,7 +241,7 @@ export default function CustomerDashboard() {
                     className="space-y-3"
                   >
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{item.label}</p>
-                    <p className="text-lg font-black text-white">{item.value}</p>
+                    <p className="text-lg font-semibold text-foreground">{item.value}</p>
                     <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
                       <motion.div 
                         initial={{ width: 0 }}
@@ -275,12 +275,12 @@ export default function CustomerDashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6 relative overflow-hidden group"
+            className="bg-card p-6 rounded-2xl border border-border shadow-card space-y-6 relative overflow-hidden group"
           >
             <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
             
             <div className="flex items-center justify-between relative z-10">
-              <h3 className="text-xl font-bold text-white uppercase tracking-tight">AI For <span className="text-primary">You</span></h3>
+              <h3 className="text-lg font-semibold text-foreground">AI For <span className="text-primary">You</span></h3>
               <ShieldCheck className="w-6 h-6 text-primary opacity-60" />
             </div>
 

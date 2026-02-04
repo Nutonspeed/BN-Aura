@@ -159,9 +159,9 @@ export default function SalesDashboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Sales <span className="text-primary text-glow">Intelligence</span>
+            Sales <span className="text-primary">Intelligence</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -179,7 +179,7 @@ export default function SalesDashboard() {
           className="flex gap-3"
         >
           <Link href="/sales/analysis">
-            <button className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2 group">
+            <button className="px-5 py-3 bg-secondary border border-border rounded-xl text-sm font-medium text-foreground hover:bg-accent transition-all active:scale-95 flex items-center gap-2 group">
               <Sparkle className="w-4 h-4 text-primary group-hover:animate-pulse" />
               Quick AI Scan
             </button>
@@ -224,7 +224,7 @@ export default function SalesDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 + i * 0.1 }}
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="glass-card p-6 rounded-3xl relative overflow-hidden group"
+            className="bg-card p-6 rounded-2xl border border-border shadow-card relative overflow-hidden group"
           >
             <div className="absolute -top-4 -right-4 p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-500">
               <stat.icon className="w-16 h-16 text-primary" />
@@ -233,7 +233,7 @@ export default function SalesDashboard() {
             <div className="space-y-2 relative z-10">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{stat.label}</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white tracking-tighter">{stat.value}</span>
+                <span className="text-3xl font-bold text-foreground tracking-tight">{stat.value}</span>
                 <span className={cn(
                   "text-[10px] font-bold flex items-center px-1.5 py-0.5 rounded-full bg-white/5",
                   stat.trend === 'up' ? "text-emerald-400" : "text-rose-400"
@@ -252,7 +252,7 @@ export default function SalesDashboard() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-premium p-8 rounded-[40px] border border-primary/20 bg-primary/[0.02] relative overflow-hidden"
+          className="bg-card p-6 rounded-2xl border border-primary/20 shadow-card relative overflow-hidden"
         >
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
             <div className="flex items-center gap-4">
@@ -260,13 +260,13 @@ export default function SalesDashboard() {
                 <Target className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-black text-white uppercase tracking-tight">Performance <span className="text-primary">Target</span></h3>
+                <h3 className="text-lg font-semibold text-foreground">Performance <span className="text-primary">Target</span></h3>
                 <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Monthly Revenue Goal</p>
               </div>
             </div>
             <div className="text-right">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Cycle Progress</p>
-              <p className="text-2xl font-black text-white">{Math.round(targetData.progress)}%</p>
+              <p className="text-2xl font-bold text-foreground">{Math.round(targetData.progress)}%</p>
             </div>
           </div>
 

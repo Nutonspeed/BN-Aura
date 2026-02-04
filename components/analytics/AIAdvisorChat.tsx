@@ -3,16 +3,16 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Send, 
-  Sparkles, 
-  TrendingUp, 
+  PaperPlaneTilt, 
+  Sparkle, 
+  TrendUp, 
   Users, 
-  DollarSign, 
+  CurrencyDollar, 
   Star, 
   Target,
-  BarChart3,
-  Loader2
-} from 'lucide-react';
+  ChartBar,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { BusinessInsight, QUICK_QUESTIONS } from '@/lib/ai/businessAdvisor';
 
 interface Message {

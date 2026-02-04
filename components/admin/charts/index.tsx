@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendUp, TrendDown, Minus } from '@phosphor-icons/react';
 
 interface MetricCardProps {
   title: string;

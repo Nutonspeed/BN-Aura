@@ -3,17 +3,17 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronUp,
-  ChevronDown,
-  Search,
-  Filter,
+  CaretLeft,
+  CaretRight,
+  CaretUp,
+  CaretDown,
+  MagnifyingGlass,
+  Funnel,
   Download,
-  RefreshCw,
-  Settings,
-  MoreVertical
-} from 'lucide-react';
+  ArrowsClockwise,
+  Gear,
+  DotsThreeVertical
+} from '@phosphor-icons/react';
 
 interface Column<T> {
   key: keyof T;

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, FileText, Truck, DollarSign, Loader2, Save, Plus, Trash2 } from 'lucide-react';
+import { X, FileText, Truck, CurrencyDollar, SpinnerGap, FloppyDisk, Plus, Trash } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface PurchaseOrderModalProps {

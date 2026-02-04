@@ -3,16 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  TrendingUp, 
-  TrendingDown, 
+  TrendUp, 
+  TrendDown, 
   Users, 
-  DollarSign, 
+  CurrencyDollar, 
   Target,
-  AlertCircle,
+  WarningCircle,
   CheckCircle,
   Clock,
-  Sparkles
-} from 'lucide-react';
+  Sparkle
+} from '@phosphor-icons/react';
 
 interface BusinessMetric {
   label: string;

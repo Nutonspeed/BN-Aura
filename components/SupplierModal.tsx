@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Building2, User, Mail, Phone, MapPin, Loader2, Save, Globe } from 'lucide-react';
+import { X, Buildings, User, EnvelopeSimple, Phone, MapPin, SpinnerGap, FloppyDisk, Globe } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface SupplierModalProps {

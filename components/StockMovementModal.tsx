@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowUpCircle, ArrowDownCircle, Settings2, Loader2, Save, Package } from 'lucide-react';
+import { X, ArrowCircleUp, ArrowCircleDown, GearSix, SpinnerGap, FloppyDisk, Package } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface StockMovementModalProps {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { X, Check, WarningCircle, Eye, EyeSlash } from '@phosphor-icons/react';
 
 interface FormFieldProps {
   label: string;

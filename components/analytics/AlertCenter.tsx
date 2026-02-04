@@ -3,16 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  AlertTriangle, 
-  TrendingDown, 
+  Warning, 
+  TrendDown, 
   Users, 
   Package, 
   X,
-  ExternalLink,
+  ArrowSquareOut,
   CheckCircle,
   Clock,
-  AlertCircle
-} from 'lucide-react';
+  WarningCircle
+} from '@phosphor-icons/react';
 
 interface Alert {
   type: 'revenue_drop' | 'customer_churn' | 'staff_performance' | 'inventory_low';

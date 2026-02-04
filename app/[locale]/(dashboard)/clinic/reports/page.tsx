@@ -3,17 +3,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  BarChart3, 
+  ChartBar, 
   Users, 
-  BriefcaseMedical, 
-  Calendar,
-  Download,
-  Filter,
-  Loader2,
-  ChevronRight,
-  TrendingUp,
+  FirstAidKit, 
+  CalendarDots,
+  DownloadSimple,
+  Funnel,
+  SpinnerGap,
+  CaretRight,
+  TrendUp,
   FileText
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import {
   BarChart,
@@ -73,7 +73,7 @@ export default function ReportsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-            <BarChart3 className="w-4 h-4" />
+            <ChartBar className="w-4 h-4" />
             Executive Intelligence
           </div>
           <h1 className="text-4xl font-black text-white uppercase tracking-tight">Clinical <span className="text-primary text-glow">Analytics</span></h1>
@@ -82,7 +82,7 @@ export default function ReportsPage() {
 
         <div className="flex gap-3">
           <button className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all">
-            <Download className="w-4 h-4" />
+            <DownloadSimple className="w-4 h-4" />
             Export Nodes
           </button>
         </div>
@@ -92,9 +92,9 @@ export default function ReportsPage() {
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="lg:w-64 space-y-2">
           {[
-            { id: 'sales', label: 'Sales Velocity', icon: TrendingUp },
-            { id: 'staff', label: 'Personnel Performance', icon: Users },
-            { id: 'treatments', label: 'Protocol Utilization', icon: BriefcaseMedical },
+            { id: 'sales', label: 'Sales Velocity', icon: <TrendUp /> },
+            { id: 'staff', label: 'Personnel Performance', icon: <Users /> },
+            { id: 'treatments', label: 'Protocol Utilization', icon: <FirstAidKit /> },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -106,7 +106,7 @@ export default function ReportsPage() {
                   : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:text-white"
               )}
             >
-              <tab.icon className="w-4 h-4" />
+              {tab.icon}
               <span>{tab.label}</span>
             </button>
           ))}
@@ -147,7 +147,7 @@ export default function ReportsPage() {
 
             {loading ? (
               <div className="h-[350px] flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                <SpinnerGap className="w-8 h-8 text-primary animate-spin" />
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Reconstructing Data...</p>
               </div>
             ) : data.length > 0 ? (
@@ -190,7 +190,7 @@ export default function ReportsPage() {
               </div>
             ) : (
               <div className="h-[350px] flex flex-col items-center justify-center opacity-20">
-                <BarChart3 className="w-16 h-16 mb-4" />
+                <ChartBar className="w-16 h-16 mb-4" />
                 <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Telemetry Detected</p>
               </div>
             )}

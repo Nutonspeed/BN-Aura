@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Clock, User, Phone, Bell, Check, X, Plus, Search } from 'lucide-react';
+import { Clock, User, Phone, Bell, Check, X, Plus, MagnifyingGlass } from '@phosphor-icons/react';
 
 interface WaitlistEntry {
   id: string;
@@ -115,7 +115,7 @@ export default function WaitlistPage() {
 
       <div className="flex gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
             placeholder="ค้นหา..."

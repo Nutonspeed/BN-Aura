@@ -3,17 +3,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  TrendingUp, 
-  DollarSign, 
+  TrendUp, 
+  CurrencyDollar, 
   CreditCard, 
-  Calendar,
+  CalendarDots,
   ArrowUpRight,
   ArrowDownRight,
-  Loader2,
-  LayoutGrid,
-  BarChart3,
+  SpinnerGap,
+  SquaresFour,
+  ChartBar,
   Users
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import {
   AreaChart,

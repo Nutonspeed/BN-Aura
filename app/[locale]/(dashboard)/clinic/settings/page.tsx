@@ -2,23 +2,23 @@
 
 import { motion } from 'framer-motion';
 import { 
-  Settings, 
-  Building2, 
+  Gear, 
+  Buildings, 
   Bell, 
   Shield, 
   CreditCard, 
   Palette, 
   Globe, 
-  ChevronRight,
-  Upload,
-  Save,
-  Calendar,
-  Loader2,
-  CheckCircle2,
-  Sparkles,
-  TrendingUp,
-  ListTodo
-} from 'lucide-react';
+  CaretRight,
+  UploadSimple,
+  FloppyDisk,
+  CalendarDots,
+  SpinnerGap,
+  CheckCircle,
+  Sparkle,
+  TrendUp,
+  ListChecks
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { QUOTA_PLANS } from '@/lib/quota/quotaManager';

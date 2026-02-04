@@ -3,20 +3,20 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Building2, 
+  Buildings, 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   MapPin, 
   Phone, 
-  Edit2, 
-  Trash2, 
-  MoreVertical, 
-  Loader2,
-  CheckCircle2,
+  PencilSimple, 
+  Trash, 
+  DotsThreeVertical, 
+  SpinnerGap,
+  CheckCircle,
   Clock,
-  LayoutGrid,
-  Map
-} from 'lucide-react';
+  SquaresFour,
+  MapTrifold
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import BranchModal from '@/components/BranchModal';
 

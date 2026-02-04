@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { DollarSign, Users, TrendingUp, Calendar, CheckCircle, Clock, Filter } from 'lucide-react';
+import { CurrencyDollar, Users, TrendUp, Calendar, CheckCircle, Clock, Funnel } from '@phosphor-icons/react';
 
 interface CommissionRecord {
   id: string;
@@ -60,7 +60,7 @@ export default function CommissionsPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <DollarSign className="w-7 h-7 text-green-600" /> Commission Management
+            <CurrencyDollar className="w-7 h-7 text-green-600" /> Commission Management
           </h1>
           <p className="text-gray-600">จัดการค่าคอมมิชชั่นพนักงาน</p>
         </div>
@@ -110,7 +110,7 @@ export default function CommissionsPage() {
         <div className="bg-white rounded-xl p-4 border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-purple-600" />
+              <TrendUp className="w-5 h-5 text-purple-600" />
             </div>
             <div>
               <p className="text-sm text-gray-600">Payouts</p>
@@ -139,7 +139,7 @@ export default function CommissionsPage() {
       ) : activeTab === 'payouts' ? (
         payouts.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-xl border">
-            <DollarSign className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+            <CurrencyDollar className="w-12 h-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-500">ยังไม่มีรายการจ่าย</p>
           </div>
         ) : (
@@ -215,7 +215,7 @@ export default function CommissionsPage() {
         </div>
       ) : (
         <div className="bg-white rounded-xl border p-6 text-center">
-          <TrendingUp className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <TrendUp className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500">เลือกแท็บเพื่อดูรายละเอียด</p>
         </div>
       )}

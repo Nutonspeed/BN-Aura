@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import { IBM_Plex_Sans_Thai, Anuphan, Inter } from "next/font/google";
 import "@/app/globals.css";
+import { ThemeProvider } from '@/components/ui/ThemeProvider';
 
 const ibmPlexThai = IBM_Plex_Sans_Thai({
   subsets: ["thai", "latin"],
@@ -49,10 +50,12 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href="/next.svg" />
       </head>
       <body
-        className={`${ibmPlexThai.variable} ${anuphan.variable} ${inter.variable} font-sans antialiased bg-background text-foreground`}
+        className={`${ibmPlexThai.variable} ${anuphan.variable} ${inter.variable} font-sans antialiased`}
         suppressHydrationWarning={true}
       >
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

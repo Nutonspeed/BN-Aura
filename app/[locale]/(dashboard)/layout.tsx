@@ -2,50 +2,43 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  LayoutDashboard, 
-  Users, 
-  Settings, 
+  House,
+  Users,
+  Gear,
   Stethoscope,
   Package,
   Target,
-  Zap,
-  BriefcaseMedical,
-  MessageSquare,
-  Building2,
-  CalendarDays,
-  Sparkles,
-  ChevronLeft,
-  ChevronDown,
-  LogOut,
-  ShieldCheck, 
-  Menu, 
-  X as CloseIcon, 
-  Camera,
+  Lightning,
+  FirstAidKit,
+  ChatCircle,
+  Buildings,
+  CalendarDots,
+  Sparkle,
+  CaretLeft,
+  CaretDown,
+  SignOut,
+  ShieldCheck,
+  List,
+  X,
   ShoppingCart,
-  TrendingUp,
-  BarChart3,
-  HelpCircle,
+  TrendUp,
+  ChartBar,
+  Question,
   CreditCard,
-  Activity,
   Shield,
-  Lock,
-  Headphones,
-  Megaphone,
   Bell,
   Star,
   Clock,
-  Video,
-  Mail,
+  VideoCamera,
+  EnvelopeSimple,
   Phone,
-  DollarSign,
-  AlertTriangle,
+  CurrencyDollar,
+  Warning,
   UserCheck,
-  Layers,
-  PieChart,
+  Stack,
   Wallet,
-  Inbox,
   Globe
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
@@ -53,6 +46,7 @@ import NotificationCenter from "@/components/ui/NotificationCenter";
 import BranchSwitcher from "@/components/ui/BranchSwitcher";
 import HelpModal from "@/components/ui/HelpModal";
 import { useAuth } from '@/hooks/useAuth';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
 export default function DashboardLayout({
   children,
@@ -160,11 +154,11 @@ export default function DashboardLayout({
     {
       id: 'main',
       label: 'หน้าหลัก',
-      icon: LayoutDashboard,
+      icon: House,
       roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'free_user'],
       items: [
-        { icon: LayoutDashboard, label: 'Dashboard', href: '/clinic', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: LayoutDashboard, label: 'My Skin Portal', href: '/customer', roles: ['customer', 'premium_customer', 'free_customer', 'free_user'] },
+        { icon: House, label: 'Dashboard', href: '/clinic', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: House, label: 'My Skin Portal', href: '/customer', roles: ['customer', 'premium_customer', 'free_customer', 'free_user'] },
         { icon: Target, label: 'Sales Intelligence', href: '/sales', roles: ['sales_staff'] },
         { icon: Stethoscope, label: 'Clinical Node', href: '/beautician', roles: ['clinic_staff'] },
       ]
@@ -172,14 +166,14 @@ export default function DashboardLayout({
     {
       id: 'operations',
       label: 'การดำเนินงาน',
-      icon: Layers,
+      icon: Stack,
       roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff'],
       items: [
         { icon: ShoppingCart, label: 'POS ขาย', href: '/clinic/pos', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
-        { icon: CalendarDays, label: 'นัดหมาย', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
+        { icon: CalendarDots, label: 'นัดหมาย', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
         { icon: Clock, label: 'คิว', href: '/clinic/queue', roles: ['clinic_owner', 'clinic_admin', 'clinic_staff'] },
         { icon: UserCheck, label: 'รายชื่อรอ', href: '/clinic/waitlist', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: BriefcaseMedical, label: 'ทรีทเมนต์', href: '/clinic/treatments', roles: ['clinic_owner', 'clinic_staff'] },
+        { icon: FirstAidKit, label: 'ทรีทเมนต์', href: '/clinic/treatments', roles: ['clinic_owner', 'clinic_staff'] },
       ]
     },
     {
@@ -188,10 +182,10 @@ export default function DashboardLayout({
       icon: Users,
       roles: ['clinic_owner', 'clinic_admin'],
       items: [
-        { icon: MessageSquare, label: 'แชท', href: '/shared/chat', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
+        { icon: ChatCircle, label: 'แชท', href: '/shared/chat', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
         { icon: Phone, label: 'SMS', href: '/clinic/sms', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: Mail, label: 'Email', href: '/clinic/email-campaigns', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: Video, label: 'ปรึกษาออนไลน์', href: '/clinic/consultations', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: EnvelopeSimple, label: 'Email', href: '/clinic/email-campaigns', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: VideoCamera, label: 'ปรึกษาออนไลน์', href: '/clinic/consultations', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: Star, label: 'รีวิว', href: '/clinic/reviews', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
@@ -201,9 +195,9 @@ export default function DashboardLayout({
       icon: Wallet,
       roles: ['clinic_owner', 'clinic_admin'],
       items: [
-        { icon: TrendingUp, label: 'รายได้', href: '/clinic/revenue', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: DollarSign, label: 'ค่าคอม', href: '/clinic/commissions', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: BarChart3, label: 'รายงาน', href: '/clinic/reports', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: TrendUp, label: 'รายได้', href: '/clinic/revenue', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: CurrencyDollar, label: 'ค่าคอม', href: '/clinic/commissions', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: ChartBar, label: 'รายงาน', href: '/clinic/reports', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
     {
@@ -213,20 +207,20 @@ export default function DashboardLayout({
       roles: ['clinic_owner', 'clinic_admin', 'clinic_staff'],
       items: [
         { icon: Users, label: 'พนักงาน', href: '/clinic/staff', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: Building2, label: 'สาขา', href: '/clinic/branches', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Buildings, label: 'สาขา', href: '/clinic/branches', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: Package, label: 'สินค้า', href: '/clinic/inventory', roles: ['clinic_owner', 'clinic_admin', 'clinic_staff'] },
-        { icon: AlertTriangle, label: 'แจ้งเตือน', href: '/clinic/inventory/alerts', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Warning, label: 'แจ้งเตือน', href: '/clinic/inventory/alerts', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
     {
       id: 'settings',
       label: 'ตั้งค่า',
-      icon: Settings,
+      icon: Gear,
       roles: ['clinic_owner'],
       items: [
-        { icon: Settings, label: 'ทั่วไป', href: '/clinic/settings', roles: ['clinic_owner'] },
+        { icon: Gear, label: 'ทั่วไป', href: '/clinic/settings', roles: ['clinic_owner'] },
         { icon: Globe, label: 'เชื่อมต่อ', href: '/clinic/settings/integrations', roles: ['clinic_owner'] },
-        { icon: Zap, label: 'AI Quota', href: '/clinic/quota', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Lightning, label: 'AI Quota', href: '/clinic/quota', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
     {
@@ -238,9 +232,9 @@ export default function DashboardLayout({
         { icon: ShieldCheck, label: 'Dashboard', href: '/admin', roles: ['super_admin'] },
         { icon: Users, label: 'Users', href: '/admin/users', roles: ['super_admin'] },
         { icon: Shield, label: 'Security', href: '/admin/security', roles: ['super_admin'] },
-        { icon: BarChart3, label: 'Analytics', href: '/admin/analytics', roles: ['super_admin'] },
+        { icon: ChartBar, label: 'Analytics', href: '/admin/analytics', roles: ['super_admin'] },
         { icon: CreditCard, label: 'Billing', href: '/admin/billing', roles: ['super_admin'] },
-        { icon: Settings, label: 'Settings', href: '/admin/settings', roles: ['super_admin'] },
+        { icon: Gear, label: 'Settings', href: '/admin/settings', roles: ['super_admin'] },
       ]
     },
   ];
@@ -286,7 +280,7 @@ export default function DashboardLayout({
             {metadata?.logo_url ? (
               <img src={metadata.logo_url} alt="Logo" className="w-full h-full object-cover" />
             ) : (
-              <Sparkles className="w-6 h-6" />
+              <Sparkle weight="fill" className="w-6 h-6" />
             )}
           </div>
           <AnimatePresence>
@@ -306,7 +300,7 @@ export default function DashboardLayout({
             onClick={() => setIsMobileOpen(false)}
             className="ml-auto lg:hidden p-2 text-muted-foreground hover:text-white"
           >
-            <CloseIcon className="w-5 h-5" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
@@ -340,7 +334,7 @@ export default function DashboardLayout({
                   {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && (
                     <>
                       <span className="font-semibold text-sm flex-1 text-left">{group.label}</span>
-                      <ChevronDown className={cn(
+                      <CaretDown className={cn(
                         "w-4 h-4 transition-transform duration-200",
                         isExpanded ? "rotate-180" : ""
                       )} />
@@ -393,7 +387,7 @@ export default function DashboardLayout({
             onClick={signOut}
             className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all group"
           >
-            <LogOut className="w-5 h-5 group-hover:rotate-180 transition-transform duration-300" />
+            <SignOut className="w-5 h-5 group-hover:rotate-180 transition-transform duration-300" />
             {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && <span className="font-medium text-sm">Logout Session</span>}
           </button>
         </div>
@@ -403,7 +397,7 @@ export default function DashboardLayout({
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
           className="absolute -right-3 top-24 w-6 h-6 rounded-full bg-primary border border-white/10 items-center justify-center text-primary-foreground shadow-lg hover:scale-110 transition-transform hidden lg:flex"
         >
-          <ChevronLeft className={cn("w-4 h-4 transition-transform duration-300", !isSidebarOpen && "rotate-180")} />
+          <CaretLeft className={cn("w-4 h-4 transition-transform duration-300", !isSidebarOpen && "rotate-180")} />
         </button>
       </motion.aside>
 
@@ -417,10 +411,10 @@ export default function DashboardLayout({
               onClick={() => setIsMobileOpen(true)}
               className="lg:hidden p-2 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-white/10 transition-all"
             >
-              <Menu className="w-5 h-5" />
+              <List className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-primary hidden sm:block" />
+              <Buildings className="w-4 h-4 text-primary hidden sm:block" />
               <h2 className="text-xs font-bold text-white/60 uppercase tracking-widest truncate max-w-[120px] md:max-w-none">
                 {getClinicName()}
               </h2>
@@ -429,11 +423,12 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-2 md:gap-4">
             {['clinic_owner', 'clinic_admin'].includes(getUserRole()) && <BranchSwitcher />}
+            <ThemeToggle />
             <button 
               onClick={() => setIsHelpOpen(true)}
-              className="p-2 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-primary transition-all"
+              className="p-2 bg-gray-100 dark:bg-white/5 border border-border rounded-xl text-muted-foreground hover:text-primary transition-all"
             >
-              <HelpCircle className="w-5 h-5" />
+              <Question className="w-5 h-5" />
             </button>
             <NotificationCenter />
             <div className="h-8 w-px bg-white/5 mx-1 md:mx-2" />

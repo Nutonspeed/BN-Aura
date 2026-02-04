@@ -2,22 +2,20 @@
 
 import { motion } from 'framer-motion';
 import { 
-  TrendingUp, 
+  TrendUp, 
   Users, 
-  Sparkles, 
-  Calendar,
-  Zap,
+  Sparkle, 
+  CalendarDots,
   ArrowUpRight,
   ArrowDownRight,
-  ShieldCheck, 
-  Activity,
-  Loader2,
+  Pulse,
+  SpinnerGap,
   ShoppingCart,
-  BarChart3,
+  ChartBar,
   ArrowRight,
   Package,
-  CheckCircle2
-} from 'lucide-react';
+  CheckCircle
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -26,6 +24,8 @@ import RevenueChart from '@/components/analytics/RevenueChart';
 import StaffIntelligence from '@/components/analytics/StaffIntelligence';
 import StrategicForecast from '@/components/analytics/StrategicForecast';
 import { useEffect, useState, useMemo } from 'react';
+import { StatCard, StatCardSkeleton } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 
 export default function ClinicDashboard() {
   const router = useRouter();
@@ -69,10 +69,10 @@ export default function ClinicDashboard() {
             if (result.success) {
               const d = result.data;
               setStats([
-                { label: 'Monthly Revenue', value: `฿${Number(d.monthlyRevenue).toLocaleString()}`, change: '+12.5%', trend: 'up', icon: TrendingUp },
-                { label: 'Total Scans', value: d.totalScans.toLocaleString(), change: '+18.2%', trend: 'up', icon: Sparkles },
+                { label: 'Monthly Revenue', value: `฿${Number(d.monthlyRevenue).toLocaleString()}`, change: '+12.5%', trend: 'up', icon: TrendUp },
+                { label: 'Total Scans', value: d.totalScans.toLocaleString(), change: '+18.2%', trend: 'up', icon: Sparkle },
                 { label: 'Active Customers', value: d.activeCustomers.toLocaleString(), change: '+5.4%', trend: 'up', icon: Users },
-                { label: 'Today Appointments', value: d.todayAppointments.toString(), change: '-2.1%', trend: 'down', icon: Calendar },
+                { label: 'Today Appointments', value: d.todayAppointments.toString(), change: '-2.1%', trend: 'down', icon: CalendarDots },
               ]);
             }
 
@@ -93,7 +93,7 @@ export default function ClinicDashboard() {
   if (loading) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Synchronizing Executive Node...</p>
       </div>
     );
@@ -113,7 +113,7 @@ export default function ClinicDashboard() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <Activity className="w-4 h-4" />
+            <Pulse className="w-4 h-4" />
             Executive Oversight
           </motion.div>
           <h1 className="text-4xl font-heading font-bold text-white uppercase tracking-tight">Executive <span className="text-primary text-glow">Intelligence</span></h1>
@@ -136,7 +136,7 @@ export default function ClinicDashboard() {
             onClick={() => router.push('/clinic/reports')}
             className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2"
           >
-            <BarChart3 className="w-4 h-4 text-primary" />
+            <ChartBar className="w-4 h-4 text-primary" />
             Reports
           </button>
         </motion.div>
@@ -234,7 +234,7 @@ export default function ClinicDashboard() {
               ))}
               {stockAlerts.length === 0 && (
                 <div className="py-10 text-center opacity-30">
-                  <CheckCircle2 className="w-12 h-12 mx-auto mb-2 stroke-[1px]" />
+                  <CheckCircle className="w-12 h-12 mx-auto mb-2" />
                   <p className="text-xs font-black uppercase tracking-widest">Stock Nodes Nominal</p>
                 </div>
               )}
@@ -258,7 +258,7 @@ export default function ClinicDashboard() {
             
             <div className="flex items-center justify-between relative z-10">
               <h3 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
-                <Sparkles className="w-6 h-6 text-primary" />
+                <Sparkle weight="fill" className="w-6 h-6 text-primary" />
                 Strategic Insights
               </h3>
             </div>

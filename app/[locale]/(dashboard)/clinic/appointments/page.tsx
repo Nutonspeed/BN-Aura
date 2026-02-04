@@ -118,9 +118,9 @@ export default function AppointmentPage() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Appointment <span className="text-primary text-glow">Calendar</span>
+            Appointment <span className="text-primary">Calendar</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -148,12 +148,12 @@ export default function AppointmentPage() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="glass-premium p-8 rounded-[40px] border border-white/10 space-y-8 h-fit relative overflow-hidden group"
+          className="bg-card p-6 rounded-2xl border border-border shadow-card space-y-6 h-fit relative overflow-hidden group"
         >
           <div className="absolute -top-12 -left-12 w-32 h-32 bg-primary/10 blur-[50px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
           
           <div className="flex items-center justify-between border-b border-white/5 pb-6 relative z-10">
-            <h3 className="text-lg font-black text-white uppercase tracking-tight">
+            <h3 className="text-lg font-semibold text-foreground">
               {typeof window !== 'undefined' 
                 ? selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })
                 : selectedDate.toLocaleString('en-US', { month: 'long', year: 'numeric' })
@@ -168,7 +168,7 @@ export default function AppointmentPage() {
                   d.setMonth(d.getMonth() - 1);
                   setSelectedDate(d);
                 }}
-                className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"
+                className="p-2 bg-secondary border border-border rounded-lg text-muted-foreground hover:text-foreground transition-all"
               >
                 <CaretLeft className="w-4 h-4" />
               </motion.button>
@@ -180,7 +180,7 @@ export default function AppointmentPage() {
                   d.setMonth(d.getMonth() + 1);
                   setSelectedDate(d);
                 }}
-                className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"
+                className="p-2 bg-secondary border border-border rounded-lg text-muted-foreground hover:text-foreground transition-all"
               >
                 <CaretRight className="w-4 h-4" />
               </motion.button>
@@ -207,7 +207,7 @@ export default function AppointmentPage() {
                   day === selectedDate.getDate() 
                     ? "bg-primary text-primary-foreground border-primary shadow-[0_0_15px_rgba(var(--primary),0.4)]" 
                     : day 
-                      ? "text-white/60 border-transparent hover:bg-white/5 hover:border-white/10"
+                      ? "text-muted-foreground border-transparent hover:bg-accent hover:border-border"
                       : "opacity-0 pointer-events-none"
                 )}
               >
@@ -219,10 +219,10 @@ export default function AppointmentPage() {
           <div className="pt-8 border-t border-white/5 space-y-6 relative z-10">
             <h4 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Daily Summary</h4>
             <div className="space-y-3">
-              <div className="flex items-center justify-between px-4 py-3 bg-white/5 rounded-2xl border border-white/5">
+              <div className="flex items-center justify-between px-4 py-3 bg-secondary rounded-xl border border-border">
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary" />
-                  <span className="text-[11px] font-black text-white uppercase tracking-widest">Appointments</span>
+                  <span className="text-xs font-semibold text-foreground">Appointments</span>
                 </div>
                 <span className="text-[9px] font-bold text-primary">{appointments.length} Nodes</span>
               </div>

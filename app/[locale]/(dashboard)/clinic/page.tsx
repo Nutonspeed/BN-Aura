@@ -116,7 +116,7 @@ export default function ClinicDashboard() {
             <Pulse className="w-4 h-4" />
             Executive Oversight
           </motion.div>
-          <h1 className="text-4xl font-heading font-bold text-white uppercase tracking-tight">Executive <span className="text-primary text-glow">Intelligence</span></h1>
+          <h1 className="text-4xl font-heading font-bold text-foreground tracking-tight">Executive <span className="text-primary">Intelligence</span></h1>
           <p className="text-muted-foreground font-light text-sm italic">Comprehensive clinic oversight & growth analytics.</p>
         </div>
         <motion.div 
@@ -134,7 +134,7 @@ export default function ClinicDashboard() {
           </button>
           <button 
             onClick={() => router.push('/clinic/reports')}
-            className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2"
+            className="px-6 py-3 bg-secondary border border-border rounded-2xl text-sm font-bold text-foreground hover:bg-accent transition-all active:scale-95 flex items-center gap-2"
           >
             <ChartBar className="w-4 h-4 text-primary" />
             Reports
@@ -160,7 +160,7 @@ export default function ClinicDashboard() {
             <div className="space-y-2 relative z-10">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{stat.label}</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white tracking-tighter tabular-nums">{stat.value}</span>
+                <span className="text-3xl font-black text-foreground tracking-tighter tabular-nums">{stat.value}</span>
                 <span className={cn(
                   "text-[10px] font-bold flex items-center px-1.5 py-0.5 rounded-full bg-white/5",
                   stat.trend === 'up' ? "text-emerald-400" : "text-rose-400"
@@ -205,10 +205,10 @@ export default function ClinicDashboard() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6 relative overflow-hidden group"
+            className="bg-card p-8 rounded-2xl border border-border shadow-card space-y-6 relative overflow-hidden group"
           >
             <div className="flex items-center justify-between relative z-10">
-              <h3 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-3">
                 <Package className="w-6 h-6 text-primary" />
                 Asset Alerts
               </h3>
@@ -221,7 +221,7 @@ export default function ClinicDashboard() {
               {stockAlerts.map((item, i) => (
                 <div key={i} className="p-4 bg-white/5 rounded-2xl border border-rose-500/20 flex justify-between items-center group/item hover:bg-white/[0.08] transition-all">
                   <div className="space-y-0.5">
-                    <p className="text-sm font-bold text-white group-hover/item:text-primary transition-colors">{item.name}</p>
+                    <p className="text-sm font-semibold text-foreground group-hover/item:text-primary transition-colors">{item.name}</p>
                     <p className="text-[10px] text-muted-foreground uppercase font-black">Stock: {item.stock_quantity} / {item.min_stock_level}</p>
                   </div>
                   <button 
@@ -240,7 +240,7 @@ export default function ClinicDashboard() {
               )}
               <button 
                 onClick={() => router.push('/clinic/inventory')}
-                className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 transition-all active:scale-95"
+                className="w-full py-3 bg-secondary border border-border rounded-xl text-xs font-medium text-foreground hover:bg-accent transition-all active:scale-95"
               >
                 Manage Inventory
               </button>
@@ -252,12 +252,12 @@ export default function ClinicDashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6 relative overflow-hidden group"
+            className="bg-card p-8 rounded-2xl border border-border shadow-card space-y-6 relative overflow-hidden group"
           >
             <div className="absolute -top-12 -left-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
             
             <div className="flex items-center justify-between relative z-10">
-              <h3 className="text-xl font-bold text-white uppercase tracking-tight flex items-center gap-3">
+              <h3 className="text-lg font-semibold text-foreground flex items-center gap-3">
                 <Sparkle weight="fill" className="w-6 h-6 text-primary" />
                 Strategic Insights
               </h3>
@@ -274,7 +274,7 @@ export default function ClinicDashboard() {
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + i * 0.1 }}
-                  className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-white/10 transition-all hover:bg-white/[0.08]"
+                  className="p-4 bg-secondary rounded-xl border border-border hover:border-primary/30 transition-all"
                 >
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">{item.title}</p>
                   <p className={cn("text-sm font-bold", item.color)}>{item.desc}</p>
@@ -284,7 +284,7 @@ export default function ClinicDashboard() {
 
             <button 
               onClick={() => router.push('/clinic/reports')}
-              className="w-full mt-2 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-white hover:bg-white/10 transition-all active:scale-95 relative z-10"
+              className="w-full mt-2 py-3 bg-secondary border border-border rounded-xl text-xs font-medium text-foreground hover:bg-accent transition-all active:scale-95 relative z-10"
             >
               Full Strategic Analysis
             </button>

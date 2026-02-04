@@ -6,7 +6,7 @@ import {
   ArrowLeft, 
   Globe, 
   HardDrives, 
-  Wifi, 
+  WifiHigh, 
   WifiSlash, 
   Warning,
   CheckCircle,
@@ -20,7 +20,7 @@ import {
   CaretLeft,
   CaretRight,
   ArrowsClockwise,
-  Wifi as WifiIcon
+  WifiHigh as WifiIcon
 } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import NetworkTopology from '@/components/NetworkTopology';

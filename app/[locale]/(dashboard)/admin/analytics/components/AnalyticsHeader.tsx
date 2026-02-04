@@ -1,6 +1,6 @@
 'use client';
 
-import { BarChart3, RefreshCw, Download } from 'lucide-react';
+import { ChartBar, ArrowsClockwise, DownloadSimple } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 
 interface AnalyticsHeaderProps {

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { DollarSign, Building2, Users, Zap, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { CurrencyDollar, Buildings, Users, Lightning, TrendUp, ArrowUpRight, ArrowDownRight } from '@phosphor-icons/react';
 
 interface MetricsData {
   revenue: {

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { DollarSign } from 'lucide-react';
+import { CurrencyDollar } from '@phosphor-icons/react';
 
 interface RevenueChartProps {
   data: { plan: string; amount: number; count: number }[];

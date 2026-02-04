@@ -2,12 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { 
-  ClipboardList, 
+  ClipboardText, 
   Clock, 
   User, 
   PlayCircle,
-  Loader2
-} from 'lucide-react';
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { useBeauticianTasks } from '@/hooks/useBeauticianTasks';
 import { cn } from '@/lib/utils';
 
@@ -24,7 +24,7 @@ export default function TaskQueue({
   return (
     <div className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-        <ClipboardList className="w-24 h-24 text-primary" />
+        <ClipboardText className="w-24 h-24 text-primary" />
       </div>
 
       <div className="flex items-center justify-between relative z-10">
@@ -121,7 +121,7 @@ export default function TaskQueue({
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
-            <Loader2 className="w-3 h-3 animate-spin" />
+            <SpinnerGap className="w-3 h-3 animate-spin" />
             Refreshing...
           </span>
         ) : (

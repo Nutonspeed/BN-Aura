@@ -3,16 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, 
+  Sparkle, 
   Dna, 
   Info, 
   CheckSquare, 
-  ShieldAlert,
-  ChevronDown,
-  ChevronUp,
+  ShieldWarning,
+  CaretDown,
+  CaretUp,
   Clock,
-  ClipboardList
-} from 'lucide-react';
+  ClipboardText
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 import { createClient } from '@/lib/supabase/client';
@@ -168,7 +168,7 @@ export default function ProtocolInsights({ customerId, journeyId }: { customerId
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-              <ClipboardList className="w-6 h-6" />
+              <ClipboardText className="w-6 h-6" />
             </div>
             <div>
               <h3 className="text-xl font-black text-white uppercase tracking-tight">Execution <span className="text-primary">Protocol</span></h3>
@@ -220,7 +220,7 @@ export default function ProtocolInsights({ customerId, journeyId }: { customerId
                     </p>
                     {step.isCritical && (
                       <div className="pt-2 flex items-center gap-2 text-rose-400">
-                        <ShieldAlert className="w-3 h-3" />
+                        <ShieldWarning className="w-3 h-3" />
                         <span className="text-[8px] font-black uppercase tracking-widest">Safety Critical Step</span>
                       </div>
                     )}
@@ -241,7 +241,7 @@ export default function ProtocolInsights({ customerId, journeyId }: { customerId
         <div className="flex items-center justify-between relative z-10">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-              <Sparkles className="w-6 h-6" />
+              <Sparkle className="w-6 h-6" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-white uppercase tracking-tight">AI Insights</h3>

@@ -4,17 +4,17 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
-  History, 
-  MessageSquare, 
-  Loader2,
+  ClockCounterClockwise, 
+  ChatCircle, 
+  SpinnerGap,
   Stethoscope,
-  CheckCircle2,
-  ClipboardList,
-  Activity,
-  Zap,
+  CheckCircle,
+  ClipboardText,
+  Pulse,
+  Lightning,
   Camera,
-  ListTodo
-} from 'lucide-react';
+  ListChecks
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import TaskQueue from '@/components/beautician/TaskQueue';
 import ProtocolInsights from '@/components/beautician/ProtocolInsights';
@@ -181,7 +181,7 @@ export default function BeauticianDashboard() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
           Syncing Protocol Node...
         </p>
@@ -285,7 +285,7 @@ export default function BeauticianDashboard() {
                 className="glass-premium p-8 rounded-[40px] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group"
               >
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                  <Activity className="w-32 h-32 text-primary" />
+                  <Pulse className="w-32 h-32 text-primary" />
                 </div>
 
                 <div className="flex items-center gap-6 relative z-10">
@@ -312,7 +312,7 @@ export default function BeauticianDashboard() {
                       ? "bg-rose-500/20 text-rose-400 border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.2)]" 
                       : "bg-white/5 text-white border-white/10"
                   )}>
-                    <Zap className={cn("w-3 h-3", activeCase.priority === 'high' ? "animate-pulse" : "")} /> 
+                    <Lightning className={cn("w-3 h-3", activeCase.priority === 'high' ? "animate-pulse" : "")} /> 
                     {activeCase.priority || 'Normal'} Priority
                   </span>
                 </div>
@@ -325,7 +325,7 @@ export default function BeauticianDashboard() {
                 className="glass-card p-16 rounded-[40px] border border-white/5 text-center flex flex-col items-center justify-center space-y-6"
               >
                 <div className="w-20 h-20 rounded-[30px] bg-white/5 border border-white/5 flex items-center justify-center text-muted-foreground opacity-20 animate-float">
-                  <ClipboardList className="w-10 h-10" />
+                  <ClockCounterClockwise className="w-10 h-10" />
                 </div>
                 <div className="space-y-2">
                   <h4 className="text-xl font-bold text-white/40 uppercase tracking-widest">Awaiting Case Assignment</h4>
@@ -347,7 +347,7 @@ export default function BeauticianDashboard() {
                 <div className="flex items-center justify-between relative z-10">
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                      <ListTodo className="w-6 h-6" />
+                      <ListChecks className="w-6 h-6" />
                     </div>
                     <div>
                       <h3 className="text-xl font-black text-white uppercase tracking-tight">Active <span className="text-primary">Checklist</span></h3>
@@ -378,7 +378,7 @@ export default function BeauticianDashboard() {
                         "w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black border transition-all",
                         step.completed ? "bg-emerald-500 text-white border-emerald-400" : "bg-white/10 border-white/10"
                       )}>
-                        {step.completed ? <CheckCircle2 className="w-4 h-4" /> : step.step}
+                        {step.completed ? <CheckCircle className="w-4 h-4" /> : step.step}
                       </div>
                       <div className="flex-1">
                         <p className={cn(
@@ -414,7 +414,7 @@ export default function BeauticianDashboard() {
                 >
                   <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/[0.03] transition-colors" />
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.1)] border border-emerald-500/20">
-                    <CheckCircle2 className="w-6 h-6" />
+                    <CheckCircle className="w-6 h-6" />
                   </div>
                   <span className="text-[10px] font-black text-white uppercase tracking-[0.25em] group-hover:text-emerald-400 transition-colors">Mark Session Complete</span>
                 </button>
@@ -433,7 +433,7 @@ export default function BeauticianDashboard() {
                 <button className="p-8 glass-premium rounded-[40px] border border-white/5 hover:border-rose-500/40 transition-all group text-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/[0.03] transition-colors" />
                   <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-400 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(244,63,94,0.1)] border border-rose-500/20">
-                    <MessageSquare className="w-6 h-6" />
+                    <ChatCircle className="w-6 h-6" />
                   </div>
                   <span className="text-[10px] font-black text-white uppercase tracking-[0.25em] group-hover:text-rose-400 transition-colors">Consult Sales Lead</span>
                 </button>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera, ArrowRight, Loader2, Save, Sparkles, ImageIcon } from 'lucide-react';
+import { X, Camera, ArrowRight, SpinnerGap, FloppyDisk, Sparkle, Image } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
 
@@ -147,13 +147,13 @@ export default function ComparisonModal({ isOpen, onClose, onSuccess, customerId
 
             {fetching ? (
               <div className="py-20 flex flex-col items-center justify-center gap-4">
-                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
                 <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Accessing Neural Archive...</p>
               </div>
             ) : analyses.length < 2 ? (
               <div className="py-20 text-center space-y-6">
                 <div className="w-20 h-20 rounded-[32px] bg-white/5 border border-white/5 flex items-center justify-center mx-auto text-muted-foreground opacity-20">
-                  <ImageIcon className="w-10 h-10" />
+                  <Image className="w-10 h-10" />
                 </div>
                 <div className="space-y-2">
                   <p className="text-xl font-black text-white/40 uppercase tracking-widest">Insufficient Data Nodes</p>
@@ -253,7 +253,7 @@ export default function ComparisonModal({ isOpen, onClose, onSuccess, customerId
                     disabled={loading || !selectedBefore || !selectedAfter || selectedBefore === selectedAfter}
                     className="flex-[2] px-8 py-5 bg-primary text-primary-foreground rounded-[24px] font-black uppercase tracking-[0.2em] shadow-premium hover:brightness-110 transition-all disabled:opacity-20 flex items-center justify-center gap-3 text-xs"
                   >
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                    {loading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <Sparkle className="w-4 h-4" />}
                     {selectedBefore === selectedAfter ? 'Distinct Nodes Required' : 'Generate Evolution Report'}
                   </button>
                 </div>

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Key, Plus, Trash2, Copy, Check, Eye, EyeOff, Shield, Clock, AlertCircle, RefreshCw, Loader2 } from 'lucide-react';
+import { Key, Plus, Trash, Copy, Check, Eye, EyeSlash, Shield, Clock, WarningCircle, ArrowsClockwise, SpinnerGap } from '@phosphor-icons/react';
 
 interface APIKey {
   id: string;

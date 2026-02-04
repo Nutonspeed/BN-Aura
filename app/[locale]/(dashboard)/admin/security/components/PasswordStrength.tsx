@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Lock } from 'lucide-react';
+import { Lock } from '@phosphor-icons/react';
 
 interface PasswordStrengthData {
   strong: number;

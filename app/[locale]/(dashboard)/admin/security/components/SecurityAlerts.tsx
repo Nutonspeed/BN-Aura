@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, XCircle } from 'lucide-react';
+import { Warning, XCircle } from '@phosphor-icons/react';
 
 interface SecurityAlert {
   id: string;

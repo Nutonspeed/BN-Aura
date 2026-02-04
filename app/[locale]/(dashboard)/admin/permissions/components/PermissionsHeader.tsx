@@ -1,6 +1,6 @@
 'use client';
 
-import { Lock, Plus } from 'lucide-react';
+import { Lock, Plus } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 
 interface PermissionsHeaderProps {

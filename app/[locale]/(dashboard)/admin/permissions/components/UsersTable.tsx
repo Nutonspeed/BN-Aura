@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Users, Building2, Settings, BarChart3, Lock, Edit, Eye, X } from 'lucide-react';
+import { Shield, Users, Buildings, Gear, ChartBar, Lock, PencilSimple, Eye, X } from '@phosphor-icons/react';
 import { usePermissionsContext } from '../context';
 
 interface User {

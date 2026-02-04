@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Users, XCircle, Shield, Smartphone, TrendingUp, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Users, XCircle, Shield, DeviceMobile, TrendUp, CheckCircle, Warning } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 
 interface SecurityMetrics {

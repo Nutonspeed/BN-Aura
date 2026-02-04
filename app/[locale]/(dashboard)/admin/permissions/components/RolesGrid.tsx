@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Shield, Users, Building2, Settings, BarChart3, Lock, Edit, Trash2, Search } from 'lucide-react';
+import { Shield, Users, Buildings, Gear, ChartBar, Lock, PencilSimple, Trash, MagnifyingGlass } from '@phosphor-icons/react';
 import { usePermissionsContext } from '../context';
 import { Role } from '../types';
 
@@ -15,10 +15,10 @@ export default function RolesGrid({ onEditRole }: RolesGridProps) {
   const getRoleIcon = (roleId: string) => {
     switch (roleId) {
       case 'super_admin': return <Shield className="w-5 h-5 text-red-400" />;
-      case 'clinic_owner': return <Building2 className="w-5 h-5 text-purple-400" />;
+      case 'clinic_owner': return <Buildings className="w-5 h-5 text-purple-400" />;
       case 'clinic_admin': return <Users className="w-5 h-5 text-blue-400" />;
-      case 'clinic_staff': return <Settings className="w-5 h-5 text-green-400" />;
-      case 'sales_staff': return <BarChart3 className="w-5 h-5 text-amber-400" />;
+      case 'clinic_staff': return <Gear className="w-5 h-5 text-green-400" />;
+      case 'sales_staff': return <ChartBar className="w-5 h-5 text-amber-400" />;
       default: return <Lock className="w-5 h-5 text-gray-400" />;
     }
   };
@@ -36,7 +36,7 @@ export default function RolesGrid({ onEditRole }: RolesGridProps) {
     >
       {/* Search Bar */}
       <div className="relative">
-        <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" />
+        <MagnifyingGlass className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" />
         <input
           type="text"
           placeholder="Search roles..."
@@ -72,10 +72,10 @@ export default function RolesGrid({ onEditRole }: RolesGridProps) {
                     onClick={() => onEditRole(role)}
                     className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
                   >
-                    <Edit className="w-4 h-4" />
+                    <PencilSimple className="w-4 h-4" />
                   </button>
                   <button className="p-1.5 text-white/60 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
-                    <Trash2 className="w-4 h-4" />
+                    <Trash className="w-4 h-4" />
                   </button>
                 </div>
               )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Activity, CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import { Pulse, CheckCircle, XCircle, Warning } from '@phosphor-icons/react';
 
 interface SecurityEvent {
   id: string;

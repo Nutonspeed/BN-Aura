@@ -1,6 +1,6 @@
 'use client';
 
-import { Shield, Users, Lock } from 'lucide-react';
+import { Shield, Users, Lock } from '@phosphor-icons/react';
 import { usePermissionsContext } from '../context';
 import { useTranslations } from 'next-intl';
 

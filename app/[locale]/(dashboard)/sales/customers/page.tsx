@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Users, Plus, Search, Mail, Phone, Calendar, MoreVertical } from 'lucide-react';
+import { Users, Plus, MagnifyingGlass, EnvelopeSimple, Phone, CalendarDots, DotsThreeVertical } from '@phosphor-icons/react';
 
 interface Customer {
   customer_id: string;
@@ -74,7 +74,7 @@ export default function CustomersPage() {
         {/* Search Bar */}
         <div className="max-w-md mb-6">
           <div className="relative">
-            <Search className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
+            <MagnifyingGlass className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
             <input
               type="text"
               value={searchTerm}
@@ -136,18 +136,18 @@ export default function CustomersPage() {
                       </h3>
                       <div className="flex items-center gap-4 mt-1">
                         <span className="flex items-center gap-1 text-blue-200 text-sm">
-                          <Mail className="w-4 h-4" />
+                          <EnvelopeSimple className="w-4 h-4" />
                           {customer.users.email}
                         </span>
                         <span className="flex items-center gap-1 text-blue-200 text-sm">
-                          <Calendar className="w-4 h-4" />
+                          <CalendarDots className="w-4 h-4" />
                           สร้างเมื่อ {new Date(customer.assigned_at).toLocaleDateString('th-TH')}
                         </span>
                       </div>
                     </div>
                   </div>
                   <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                    <MoreVertical className="w-5 h-5 text-blue-300" />
+                    <DotsThreeVertical className="w-5 h-5 text-blue-300" />
                   </button>
                 </div>
               </div>

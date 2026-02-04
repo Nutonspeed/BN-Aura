@@ -3,20 +3,20 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, 
-  Trash2, 
-  Sparkles,
-  ChevronLeft,
-  CheckCircle2,
-  BriefcaseMedical,
-  DollarSign,
-  Loader2,
+  Trash, 
+  Sparkle,
+  CaretLeft,
+  CheckCircle,
+  FirstAidKit,
+  CurrencyDollar,
+  SpinnerGap,
   Package,
   ShoppingBag,
   ArrowRight,
   FileText,
   User,
   Brain
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';

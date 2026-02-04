@@ -6,18 +6,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
   Phone, 
-  Mail, 
-  Calendar, 
+  EnvelopeSimple, 
+  CalendarDots, 
   Clock, 
   ArrowRight, 
   CheckCircle,
-  AlertCircle,
+  WarningCircle,
   FileText,
   CreditCard,
   Scissors,
-  MessageSquare,
-  ChevronLeft
-} from 'lucide-react';
+  ChatCircle,
+  CaretLeft
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import { useWorkflow } from '@/hooks/useWorkflow';
 import { WorkflowState, WorkflowStage } from '@/lib/workflow/workflowEngine';

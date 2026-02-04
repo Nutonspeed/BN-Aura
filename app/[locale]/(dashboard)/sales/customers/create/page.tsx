@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Mail, Lock, User, Phone, Eye, EyeOff, ArrowLeft, Users, Shield } from 'lucide-react';
+import { EnvelopeSimple, Lock, User, Phone, Eye, EyeSlash, ArrowLeft, Users, Shield } from '@phosphor-icons/react';
 
 export default function CreateCustomerPage() {
   const [formData, setFormData] = useState({

@@ -8,21 +8,21 @@ import {
 
   Plus, 
 
-  Search, 
+  MagnifyingGlass, 
 
-  MoreHorizontal, 
+  DotsThree, 
 
   Clock,
 
-  Sparkles,
+  Sparkle,
 
   Target,
 
-  LayoutGrid,
+  SquaresFour,
 
   List as ListIcon
 
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 import { createClient } from '@/lib/supabase/client';
 
@@ -350,7 +350,7 @@ export default function LeadsKanbanPage() {
 
             >
 
-              <LayoutGrid className="w-4 h-4" />
+              <SquaresFour className="w-4 h-4" />
 
             </button>
 
@@ -374,7 +374,7 @@ export default function LeadsKanbanPage() {
 
             <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
 
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" />
 
             <input 
 
@@ -436,7 +436,7 @@ export default function LeadsKanbanPage() {
 
             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
 
-            <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
+            <Sparkle className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
 
           </div>
 
@@ -682,7 +682,7 @@ function DraggableLeadCard({ lead, idx }: { lead: Lead; idx: number }) {
 
         <button className="p-1.5 hover:bg-white/10 rounded-lg text-muted-foreground hover:text-white">
 
-          <MoreHorizontal className="w-4 h-4" />
+          <DotsThree className="w-4 h-4" />
 
         </button>
 
@@ -732,7 +732,7 @@ function DraggableLeadCard({ lead, idx }: { lead: Lead; idx: number }) {
 
             <button className="p-2 rounded-xl bg-primary text-primary-foreground hover:brightness-110 transition-all shadow-[0_0_15px_rgba(var(--primary),0.3)]">
 
-              <Sparkles className="w-3.5 h-3.5 stroke-[2.5px]" />
+              <Sparkle className="w-3.5 h-3.5 stroke-[2.5px]" />
 
             </button>
 

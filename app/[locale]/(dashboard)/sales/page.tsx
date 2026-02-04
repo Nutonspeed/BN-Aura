@@ -4,15 +4,15 @@ import { motion } from 'framer-motion';
 import { 
   Users, 
   Target, 
-  TrendingUp, 
+  TrendUp, 
   Clock, 
   ArrowUpRight, 
   ArrowDownRight,
   UserPlus,
-  Zap,
-  Sparkles,
-  Loader2
-} from 'lucide-react';
+  Lightning,
+  Sparkle,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { Link } from '@/i18n/routing';
 import { useEffect, useState, useMemo } from 'react';
@@ -90,8 +90,8 @@ export default function SalesDashboard() {
   const stats: Stat[] = salesStats ? [
     { label: 'New Leads', value: salesStats.newLeads.toString(), change: '+15%', trend: 'up', icon: UserPlus },
     { label: 'Conversion Rate', value: `${salesStats.conversionRate.toFixed(1)}%`, change: '+4.2%', trend: 'up', icon: Target },
-    { label: 'Monthly Sales', value: targetData ? `฿${targetData.actualSales.toLocaleString()}` : '฿0', change: '+12%', trend: 'up', icon: TrendingUp },
-    { label: 'AI Proposals Sent', value: salesStats.proposalsSent.toString(), change: '+28%', trend: 'up', icon: Zap },
+    { label: 'Monthly Sales', value: targetData ? `฿${targetData.actualSales.toLocaleString()}` : '฿0', change: '+12%', trend: 'up', icon: TrendUp },
+    { label: 'AI Proposals Sent', value: salesStats.proposalsSent.toString(), change: '+28%', trend: 'up', icon: Lightning },
   ] : [];
 
   // Process hot leads
@@ -114,7 +114,7 @@ export default function SalesDashboard() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">Loading Sales Intel...</p>
       </div>
     );
@@ -152,7 +152,7 @@ export default function SalesDashboard() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <Zap className="w-4 h-4" />
+            <Lightning className="w-4 h-4" />
             Active Intelligence
           </motion.div>
           <motion.h1 
@@ -180,7 +180,7 @@ export default function SalesDashboard() {
         >
           <Link href="/sales/analysis">
             <button className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2 group">
-              <Sparkles className="w-4 h-4 text-primary group-hover:animate-pulse" />
+              <Sparkle className="w-4 h-4 text-primary group-hover:animate-pulse" />
               Quick AI Scan
             </button>
           </Link>
@@ -204,7 +204,7 @@ export default function SalesDashboard() {
             }}
             className="px-6 py-3 bg-primary/20 border border-primary/30 rounded-2xl text-sm font-bold text-primary hover:bg-primary/30 transition-all active:scale-95 flex items-center gap-2 group"
           >
-            <Sparkles className="w-4 h-4 group-hover:animate-spin" />
+            <Sparkle className="w-4 h-4 group-hover:animate-spin" />
             AI Coach Demo
           </button>
           <Link href="/sales/leads">

@@ -4,16 +4,16 @@ import { motion } from 'framer-motion';
 import { 
   FileText, 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   Eye, 
-  Download, 
-  DollarSign,
+  DownloadSimple, 
+  CurrencyDollar,
   Clock,
-  Activity,
-  MoreVertical,
-  Send,
+  Pulse,
+  DotsThreeVertical,
+  PaperPlaneTilt,
   User
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';

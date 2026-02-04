@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Brain, Clock, Sparkles, RotateCcw, CheckCircle2, User, ChevronRight, Play, Pause, Zap, Target, AlertTriangle, FileText, ShieldCheck } from 'lucide-react';
+import { Camera, Brain, Clock, Sparkle, ArrowCounterClockwise, CheckCircle, User, CaretRight, Play, Pause, Lightning, Target, Warning, FileText, ShieldCheck } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import AR3DSimulator from '@/components/AR3DSimulator';

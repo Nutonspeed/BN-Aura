@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Star, MessageSquare, ThumbsUp, Filter } from 'lucide-react';
+import { Star, ChatCircle, ThumbsUp, Funnel } from '@phosphor-icons/react';
 
 interface Review {
   id: string;
@@ -112,7 +112,7 @@ export default function ReviewsPage() {
         </div>
       ) : reviews.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border">
-          <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <ChatCircle className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500">ยังไม่มีรีวิว</p>
         </div>
       ) : (

@@ -2,13 +2,13 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Send, 
-  Sparkles, 
+  PaperPlaneTilt, 
+  Sparkle, 
   User, 
-  Bot,
-  History,
+  Robot,
+  ClockCounterClockwise,
   Info
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useState, useEffect, SVGProps } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -58,7 +58,7 @@ export default function ChatAdvisor() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-            <Bot className="w-8 h-8" />
+            <Robot className="w-8 h-8" />
           </div>
           <div className="space-y-1">
             <motion.div 
@@ -66,7 +66,7 @@ export default function ChatAdvisor() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
             >
-              <Sparkles className="w-3 h-3 animate-glow-pulse" />
+              <Sparkle className="w-3 h-3 animate-glow-pulse" />
               Cognitive Reasoning Node
             </motion.div>
             <h1 className="text-3xl font-heading font-bold text-white uppercase tracking-tight">AI Chat <span className="text-primary text-glow">Advisor</span></h1>
@@ -78,7 +78,7 @@ export default function ChatAdvisor() {
             whileTap={{ scale: 0.95 }}
             className="p-3 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all shadow-sm group"
           >
-            <History className="w-5 h-5 group-hover:rotate-[-10deg] transition-transform" />
+            <ClockCounterClockwise className="w-5 h-5 group-hover:rotate-[-10deg] transition-transform" />
           </motion.button>
           <motion.button 
             whileHover={{ scale: 1.05 }}
@@ -119,7 +119,7 @@ export default function ChatAdvisor() {
                         ? "bg-primary text-primary-foreground border-primary/20" 
                         : "bg-white/5 text-primary border-white/10"
                     )}>
-                      {msg.role === 'user' ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+                      {msg.role === 'user' ? <User className="w-5 h-5" /> : <Robot className="w-5 h-5" />}
                     </div>
                     <div className={cn(
                       "p-5 rounded-[28px] text-sm leading-relaxed shadow-lg backdrop-blur-md transition-all duration-500",
@@ -160,7 +160,7 @@ export default function ChatAdvisor() {
                 disabled={!input.trim()}
                 className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-premium hover:brightness-110 disabled:opacity-30 disabled:grayscale transition-all z-20"
               >
-                <Send className="w-5 h-5 stroke-[3px]" />
+                <PaperPlaneTilt className="w-5 h-5 stroke-[3px]" />
               </motion.button>
             </div>
             <div className="mt-4 flex items-center justify-center gap-3 opacity-40">

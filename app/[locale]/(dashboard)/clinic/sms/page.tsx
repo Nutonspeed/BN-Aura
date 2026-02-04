@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MessageSquare, Send, User, Clock, Search, Plus } from 'lucide-react';
+import { ChatCircle, PaperPlaneTilt, User, Clock, MagnifyingGlass, Plus } from '@phosphor-icons/react';
 
 interface Conversation {
   id: string;
@@ -51,12 +51,12 @@ export default function SMSPage() {
         <div className="p-4 border-b">
           <div className="flex justify-between items-center mb-3">
             <h1 className="text-lg font-bold flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-indigo-600" /> SMS
+              <ChatCircle className="w-5 h-5 text-indigo-600" /> SMS
             </h1>
             <button className="p-2 bg-indigo-600 text-white rounded-lg"><Plus className="w-4 h-4" /></button>
           </div>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input type="text" placeholder="ค้นหา..." className="w-full pl-9 pr-3 py-2 border rounded-lg text-sm" />
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function SMSPage() {
                   className="flex-1 px-4 py-2 border rounded-lg"
                 />
                 <button onClick={sendMessage} className="px-4 py-2 bg-indigo-600 text-white rounded-lg">
-                  <Send className="w-5 h-5" />
+                  <PaperPlaneTilt className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -133,7 +133,7 @@ export default function SMSPage() {
         ) : (
           <div className="flex-1 flex items-center justify-center text-gray-500">
             <div className="text-center">
-              <MessageSquare className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+              <ChatCircle className="w-12 h-12 mx-auto mb-2 text-gray-300" />
               <p>เลือกการสนทนาเพื่อเริ่มแชท</p>
             </div>
           </div>

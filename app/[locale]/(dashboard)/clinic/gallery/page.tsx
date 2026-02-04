@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Image as ImageIcon, Plus, Grid, List, Filter, Eye, Share2, Trash2 } from 'lucide-react';
+import { Image as ImageIcon, Plus, SquaresFour, List, Funnel, Eye, ShareNetwork, Trash } from '@phosphor-icons/react';
 
 interface Photo {
   id: string;
@@ -137,7 +137,7 @@ export default function GalleryPage() {
         <div className="flex items-center gap-3">
           {activeTab === 'photos' && (
             <div className="flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-500" />
+              <Funnel className="w-4 h-4 text-gray-500" />
               <select
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
@@ -155,7 +155,7 @@ export default function GalleryPage() {
               onClick={() => setViewMode('grid')}
               className={`p-2 ${viewMode === 'grid' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500'}`}
             >
-              <Grid className="w-4 h-4" />
+              <SquaresFour className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
@@ -219,10 +219,10 @@ export default function GalleryPage() {
                       <Eye className="w-5 h-5 text-gray-700" />
                     </button>
                     <button className="p-2 bg-white rounded-full hover:bg-gray-100">
-                      <Share2 className="w-5 h-5 text-gray-700" />
+                      <ShareNetwork className="w-5 h-5 text-gray-700" />
                     </button>
                     <button className="p-2 bg-white rounded-full hover:bg-gray-100">
-                      <Trash2 className="w-5 h-5 text-red-500" />
+                      <Trash className="w-5 h-5 text-red-500" />
                     </button>
                   </div>
                 </div>

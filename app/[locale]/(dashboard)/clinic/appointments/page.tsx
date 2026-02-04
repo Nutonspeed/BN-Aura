@@ -2,16 +2,16 @@
 
 import { motion } from 'framer-motion';
 import { 
-  ChevronLeft, 
-  ChevronRight, 
+  CaretLeft, 
+  CaretRight, 
   Plus, 
   Clock, 
   User,
-  MoreHorizontal,
-  Calendar as CalendarIcon,
-  Loader2,
-  AlertTriangle
-} from 'lucide-react';
+  DotsThree,
+  CalendarDots,
+  SpinnerGap,
+  Warning
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useCallback } from 'react';
 import AppointmentModal from '@/components/AppointmentModal';
@@ -111,7 +111,7 @@ export default function AppointmentPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <CalendarIcon className="w-4 h-4" />
+            <CalendarDots className="w-4 h-4" />
             Temporal Orchestration
           </motion.div>
           <motion.h1 
@@ -170,7 +170,7 @@ export default function AppointmentPage() {
                 }}
                 className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"
               >
-                <ChevronLeft className="w-4 h-4" />
+                <CaretLeft className="w-4 h-4" />
               </motion.button>
               <motion.button 
                 whileHover={{ scale: 1.1 }} 
@@ -182,7 +182,7 @@ export default function AppointmentPage() {
                 }}
                 className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"
               >
-                <ChevronRight className="w-4 h-4" />
+                <CaretRight className="w-4 h-4" />
               </motion.button>
             </div>
           </div>
@@ -254,26 +254,26 @@ export default function AppointmentPage() {
               ))}
             </div>
             <div className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl">
-              <button onClick={() => changeDate(-1)} className="p-1 hover:text-primary transition-colors"><ChevronLeft className="w-4 h-4" /></button>
+              <button onClick={() => changeDate(-1)} className="p-1 hover:text-primary transition-colors"><CaretLeft className="w-4 h-4" /></button>
               <span className="text-xs font-black uppercase tracking-widest text-white">
                 {typeof window !== 'undefined' 
                   ? selectedDate.toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' })
                   : selectedDate.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short' })
                 }
               </span>
-              <button onClick={() => changeDate(1)} className="p-1 hover:text-primary transition-colors"><ChevronRight className="w-4 h-4" /></button>
+              <button onClick={() => changeDate(1)} className="p-1 hover:text-primary transition-colors"><CaretRight className="w-4 h-4" /></button>
             </div>
           </motion.div>
 
           <div className="space-y-5">
             {loading ? (
               <div className="py-20 flex flex-col items-center gap-4">
-                <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
                 <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em]">Accessing Temporal Data...</p>
               </div>
             ) : appointments.length === 0 ? (
               <div className="py-20 flex flex-col items-center gap-4 opacity-40">
-                <CalendarIcon className="w-12 h-12" />
+                <CalendarDots className="w-12 h-12" />
                 <p className="text-xs font-black uppercase tracking-widest">No Active Nodes for this Period</p>
               </div>
             ) : (
@@ -343,7 +343,7 @@ export default function AppointmentPage() {
                       onClick={() => handleEditAppointment(apt)}
                       className="p-3 bg-white/5 border border-white/5 rounded-2xl text-white/40 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all shadow-sm group/btn"
                     >
-                      <MoreHorizontal className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                      <DotsThree className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                     </motion.button>
                   </div>
                 </motion.div>

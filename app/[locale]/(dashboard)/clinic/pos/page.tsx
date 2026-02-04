@@ -4,16 +4,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShoppingCart, 
-  Search, 
+  MagnifyingGlass, 
   User, 
-  Loader2, 
-  LayoutGrid,
-  History,
-  CheckCircle2,
+  SpinnerGap, 
+  SquaresFour,
+  ClockCounterClockwise,
+  CheckCircle,
   XCircle,
   Clock,
-  ChevronLeft
-} from 'lucide-react';
+  CaretLeft
+} from '@phosphor-icons/react';
+import type { Icon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import POSProductGrid from '@/components/pos/POSProductGrid';
@@ -201,7 +202,7 @@ export default function POSPage() {
   if (loading) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Sales Interface...</p>
       </div>
     );
@@ -223,7 +224,7 @@ export default function POSPage() {
         <div className="flex items-center justify-between mb-8">
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <LayoutGrid className="w-4 h-4" />
+              <SquaresFour className="w-4 h-4" />
               Sales Orchestration
             </div>
             <h1 className="text-4xl font-black text-white uppercase tracking-tight">Point of <span className="text-primary text-glow">Sale</span></h1>
@@ -248,7 +249,7 @@ export default function POSPage() {
               onClick={() => router.push('/clinic/pos/history')}
               className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all"
             >
-              <History className="w-4 h-4" />
+              <ClockCounterClockwise className="w-4 h-4" />
               Recent Logs
             </button>
           </div>
@@ -313,7 +314,7 @@ export default function POSPage() {
               </div>
 
               <div className="relative mb-6">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
                 <input 
                   type="text"
                   placeholder="Search by name, phone, or alias..."
@@ -348,7 +349,7 @@ export default function POSPage() {
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{customer.phone || 'No Phone'}</p>
                       </div>
                     </div>
-                    {selectedCustomer?.id === customer.id && <CheckCircle2 className="w-5 h-5 text-primary" />}
+                    {selectedCustomer?.id === customer.id && <CheckCircle className="w-5 h-5 text-primary" />}
                   </button>
                 ))}
                 {filteredCustomers.length === 0 && (
@@ -379,7 +380,7 @@ export default function POSPage() {
                   animate={{ scale: 1, opacity: 1 }}
                   className="bg-emerald-500/20 border border-emerald-500/30 px-6 py-2 rounded-full flex items-center gap-3"
                 >
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <CheckCircle className="w-5 h-5 text-emerald-400" />
                   <span className="text-xs font-black text-white uppercase tracking-widest">Transaction Validated</span>
                 </motion.div>
               </div>

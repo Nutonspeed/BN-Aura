@@ -4,14 +4,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Package, 
   Plus, 
-  Search, 
-  AlertTriangle, 
-  TrendingUp, 
-  Edit2, 
-  Trash2,
-  BarChart3,
-  Loader2
-} from 'lucide-react';
+  MagnifyingGlass, 
+  Warning, 
+  TrendUp, 
+  PencilSimple, 
+  Trash,
+  ChartBar,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState, useCallback } from 'react';
 import ProductModal from '@/components/ProductModal';
@@ -163,9 +163,9 @@ export default function InventoryManagement() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: 'Asset Inventory', value: products.length.toString(), icon: Package, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-          { label: 'Low Stock Nodes', value: lowStockProducts.length.toString(), icon: AlertTriangle, color: lowStockProducts.length > 0 ? 'text-rose-400' : 'text-emerald-400', bg: lowStockProducts.length > 0 ? 'bg-rose-500/10' : 'bg-emerald-500/10' },
-          { label: 'Consolidated Value', value: '฿' + totalValue.toLocaleString(), icon: BarChart3, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-          { label: 'Categories', value: (categories.length - 1).toString(), icon: TrendingUp, color: 'text-purple-400', bg: 'bg-purple-500/10' },
+          { label: 'Low Stock Nodes', value: lowStockProducts.length.toString(), icon: Warning, color: lowStockProducts.length > 0 ? 'text-rose-400' : 'text-emerald-400', bg: lowStockProducts.length > 0 ? 'bg-rose-500/10' : 'bg-emerald-500/10' },
+          { label: 'Consolidated Value', value: '฿' + totalValue.toLocaleString(), icon: ChartBar, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+          { label: 'Categories', value: (categories.length - 1).toString(), icon: TrendUp, color: 'text-purple-400', bg: 'bg-purple-500/10' },
         ].map((stat, i) => (
           <motion.div 
             key={i} 
@@ -201,7 +201,7 @@ export default function InventoryManagement() {
             <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 via-transparent to-transparent" />
             <div className="flex items-start gap-6 relative z-10">
               <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/20 flex items-center justify-center text-rose-400 shadow-lg">
-                <AlertTriangle className="w-6 h-6 animate-pulse" />
+                <Warning className="w-6 h-6 animate-pulse" />
               </div>
               <div className="flex-1 space-y-4">
                 <div>
@@ -235,7 +235,7 @@ export default function InventoryManagement() {
         )}
       </AnimatePresence>
 
-      {/* Search & Filters */}
+      {/* MagnifyingGlass & Filters */}
       <div className="flex flex-col lg:flex-row gap-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -244,7 +244,7 @@ export default function InventoryManagement() {
           className="relative flex-1 group"
         >
           <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+          <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
           <input 
             type="text" 
             placeholder="Search products by name, SKU, or category..."
@@ -273,7 +273,7 @@ export default function InventoryManagement() {
           </select>
           
           <button className="p-4 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all group">
-            <BarChart3 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            <ChartBar className="w-5 h-5 group-hover:scale-110 transition-transform" />
           </button>
         </motion.div>
       </div>
@@ -345,7 +345,7 @@ export default function InventoryManagement() {
                               <span className={cn("text-lg font-black tracking-tighter tabular-nums", isLowStock ? "text-rose-400" : "text-white")}>
                                 {product.stock_quantity}
                               </span>
-                              {isLowStock && <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }}><AlertTriangle className="w-4 h-4 text-rose-400" /></motion.div>}
+                              {isLowStock && <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }}><Warning className="w-4 h-4 text-rose-400" /></motion.div>}
                             </div>
                             <div className="flex items-center gap-2">
                               <div className="flex-1 h-1 w-16 bg-white/5 rounded-full overflow-hidden">
@@ -373,7 +373,7 @@ export default function InventoryManagement() {
                               className="p-3 text-primary/30 hover:text-primary transition-all rounded-xl hover:bg-primary/10 border border-transparent hover:border-primary/10 shadow-sm"
                               title="Adjust Stock"
                             >
-                              <TrendingUp className="w-4 h-4" />
+                              <TrendUp className="w-4 h-4" />
                             </motion.button>
                             <motion.button 
                               whileHover={{ scale: 1.1 }}
@@ -382,7 +382,7 @@ export default function InventoryManagement() {
                               className="p-3 text-white/30 hover:text-white transition-all rounded-xl hover:bg-white/10 border border-transparent hover:border-white/5 shadow-sm"
                               title="Edit Asset"
                             >
-                              <Edit2 className="w-4 h-4" />
+                              <PencilSimple className="w-4 h-4" />
                             </motion.button>
                             <motion.button 
                               whileHover={{ scale: 1.1, rotate: 5 }}
@@ -391,7 +391,7 @@ export default function InventoryManagement() {
                               className="p-3 text-rose-500/30 hover:text-rose-400 transition-all rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/10 shadow-sm"
                               title="Terminate Asset"
                             >
-                              <Trash2 className="w-4 h-4" />
+                              <Trash className="w-4 h-4" />
                             </motion.button>
                           </div>
                         </td>

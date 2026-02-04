@@ -5,19 +5,19 @@ import { motion } from 'framer-motion';
 import { 
   X, 
   Globe, 
-  Server, 
+  HardDrives, 
   Database, 
   Cloud, 
   Shield, 
-  Building2,
-  Activity,
+  Buildings,
+  Pulse,
   Clock,
-  Zap,
+  Lightning,
   HardDrive,
   Users,
-  TrendingUp,
-  AlertCircle
-} from 'lucide-react';
+  TrendUp,
+  WarningCircle
+} from '@phosphor-icons/react';
 import { NetworkNode } from '@/app/[locale]/(dashboard)/admin/network-map/page';
 
 interface NetworkNodeDetailPanelProps {

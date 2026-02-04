@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Bell, AlertTriangle, CheckCircle, Info, XCircle } from 'lucide-react';
+import { Bell, Warning, CheckCircle, Info, XCircle } from '@phosphor-icons/react';
 
 interface Alert {
   id: string;

@@ -24,18 +24,18 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { 
-  Server, 
+  HardDrives, 
   Database, 
   Cloud, 
   Shield, 
   HardDrive, 
-  Building2,
-  WifiOff,
-  AlertTriangle,
+  Buildings,
+  WifiSlash,
+  Warning,
   CheckCircle,
-  Activity,
+  Pulse,
   Globe
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 interface NetworkNodeData extends Record<string, unknown> {
   label: string;

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Calendar, Clock, User, BriefcaseMedical, MapPin, Tag, Loader2, Save } from 'lucide-react';
+import { X, CalendarDots, Clock, User, FirstAidKit, MapPin, Tag, SpinnerGap, FloppyDisk } from '@phosphor-icons/react';
 
 interface AppointmentModalProps {
   isOpen: boolean;

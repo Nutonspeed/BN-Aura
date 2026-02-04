@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, BriefcaseMedical, Tag, DollarSign, Loader2, Save, Sparkles, Languages, ListTodo, Plus, Trash2 } from 'lucide-react';
+import { X, FirstAidKit, Tag, CurrencyDollar, SpinnerGap, FloppyDisk, Sparkle, Translate, ListChecks, Plus, Trash } from '@phosphor-icons/react';
 
 interface ProtocolStep {
   step: number;

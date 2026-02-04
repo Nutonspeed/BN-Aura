@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, Mail, Phone, Calendar, MapPin, Tag, Loader2, Save } from 'lucide-react';
+import { X, User, EnvelopeSimple, Phone, CalendarDots, MapPin, Tag, SpinnerGap, FloppyDisk } from '@phosphor-icons/react';
 
 interface CustomerModalProps {
   isOpen: boolean;

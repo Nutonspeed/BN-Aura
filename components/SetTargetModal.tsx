@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Target, DollarSign, Loader2, Save, Calendar } from 'lucide-react';
+import { X, Target, CurrencyDollar, SpinnerGap, FloppyDisk, CalendarDots } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface SetTargetModalProps {

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mail, UserPlus, Shield, Loader2 } from 'lucide-react';
+import { X, EnvelopeSimple, UserPlus, Shield, SpinnerGap } from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 
 interface InviteStaffModalProps {

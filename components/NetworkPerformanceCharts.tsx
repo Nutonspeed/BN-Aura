@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown, Zap, HardDrive, Clock } from 'lucide-react';
+import { TrendUp, TrendDown, Lightning, HardDrive, Clock } from '@phosphor-icons/react';
 import { NetworkNode } from '@/app/[locale]/(dashboard)/admin/network-map/page';
 
 interface NetworkPerformanceChartsProps {

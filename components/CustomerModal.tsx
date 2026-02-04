@@ -115,7 +115,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-[32px] p-8 shadow-2xl my-8"
+            className="w-full max-w-2xl bg-card border border-border rounded-2xl p-6 shadow-2xl my-8"
           >
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
@@ -124,7 +124,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   <User className="w-6 h-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight">
+                  <h3 className="text-lg font-semibold text-foreground">
                     {customer ? 'Edit Patient Node' : 'Register New Patient'}
                   </h3>
                   <p className="text-sm text-muted-foreground italic font-light">
@@ -155,7 +155,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       required
                       value={formData.full_name}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
                       placeholder="Neural ID Name"
                     />
                   </div>
@@ -171,7 +171,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     name="nickname"
                     value={formData.nickname}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all"
+                    className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
                     placeholder="Short Identifier"
                   />
                 </div>
@@ -188,7 +188,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
                       placeholder="address@network.com"
                     />
                   </div>
@@ -206,7 +206,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all"
+                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
                       placeholder="+66 00-000-0000"
                     />
                   </div>
@@ -224,7 +224,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       name="date_of_birth"
                       value={formData.date_of_birth}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all [color-scheme:dark]"
+                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all"
                     />
                   </div>
                 </div>
@@ -238,7 +238,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     name="gender"
                     value={formData.gender}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
+                    className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all appearance-none"
                   >
                     <option value="male" className="bg-[#0A0A0A]">Male</option>
                     <option value="female" className="bg-[#0A0A0A]">Female</option>
@@ -257,7 +257,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       name="customer_type"
                       value={formData.customer_type}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
+                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all appearance-none"
                     >
                       <option value="regular" className="bg-[#0A0A0A]">REGULAR</option>
                       <option value="premium" className="bg-[#0A0A0A]">PREMIUM</option>
@@ -275,7 +275,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     name="source"
                     value={formData.source}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
+                    className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all appearance-none"
                   >
                     <option value="walk_in" className="bg-[#0A0A0A]">Walk-in</option>
                     <option value="social_media" className="bg-[#0A0A0A]">Social Media</option>
@@ -295,7 +295,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all resize-none"
+                  className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all resize-none"
                   placeholder="Additional patient telemetry..."
                 />
               </div>
@@ -317,7 +317,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   type="button"
                   onClick={onClose}
                   disabled={loading}
-                  className="flex-1 px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-all disabled:opacity-50 text-xs"
+                  className="flex-1 px-5 py-3 bg-secondary border border-border text-foreground rounded-xl font-medium hover:bg-accent transition-all disabled:opacity-50 text-sm"
                 >
                   Cancel
                 </button>

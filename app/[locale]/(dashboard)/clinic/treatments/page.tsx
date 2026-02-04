@@ -2,19 +2,19 @@
 
 import { motion } from 'framer-motion';
 import { 
-  BriefcaseMedical, 
+  FirstAidKit, 
   Plus, 
-  Search, 
+  MagnifyingGlass, 
   Tag, 
-  DollarSign, 
-  Zap, 
-  Layers,
-  Edit2, 
-  Trash2,
-  MoreHorizontal,
-  Sparkles,
-  Loader2
-} from 'lucide-react';
+  CurrencyDollar, 
+  Lightning, 
+  Stack,
+  PencilSimple, 
+  Trash,
+  DotsThree,
+  Sparkle,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState, useCallback } from 'react';
 import TreatmentModal from '@/components/TreatmentModal';
@@ -108,7 +108,7 @@ export default function TreatmentCatalog() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <BriefcaseMedical className="w-4 h-4" />
+            <FirstAidKit className="w-4 h-4" />
             Medical Excellence Catalog
           </motion.div>
           <motion.h1 
@@ -142,9 +142,9 @@ export default function TreatmentCatalog() {
       {/* Stats Summary */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
-          { label: 'Clinical Portfolio', value: treatments.length.toString(), icon: Layers, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-          { label: 'Operational Nodes', value: treatments.filter(t => t.is_active).length.toString(), icon: Zap, color: 'text-primary', bg: 'bg-primary/10' },
-          { label: 'Unit Economics (Avg)', value: '฿' + (treatments.length ? Math.round(treatments.reduce((acc, curr) => acc + Number(curr.price_min), 0) / treatments.length).toLocaleString() : '0'), icon: DollarSign, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+          { label: 'Clinical Portfolio', value: treatments.length.toString(), Icon: Stack, color: 'text-blue-400', bg: 'bg-blue-500/10' },
+          { label: 'Operational Nodes', value: treatments.filter(t => t.is_active).length.toString(), Icon: Lightning, color: 'text-primary', bg: 'bg-primary/10' },
+          { label: 'Unit Economics (Avg)', value: '฿' + (treatments.length ? Math.round(treatments.reduce((acc, curr) => acc + Number(curr.price_min), 0) / treatments.length).toLocaleString() : '0'), Icon: CurrencyDollar, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
         ].map((stat, i) => (
           <motion.div 
             key={i} 
@@ -155,10 +155,10 @@ export default function TreatmentCatalog() {
             className="glass-card p-6 rounded-3xl border border-white/5 flex items-center gap-5 group overflow-hidden relative"
           >
             <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-              <stat.icon className="w-16 h-16 text-white" />
+              <stat.Icon className="w-16 h-16 text-white" />
             </div>
             <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform", stat.bg, stat.color)}>
-              <stat.icon className="w-7 h-7" />
+              <stat.Icon className="w-7 h-7" />
             </div>
             <div className="relative z-10">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{stat.label}</p>
@@ -176,7 +176,7 @@ export default function TreatmentCatalog() {
         className="relative group"
       >
         <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+        <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
         <input 
           type="text" 
           placeholder="Filter treatments by clinical designation or category..."
@@ -191,7 +191,7 @@ export default function TreatmentCatalog() {
         <div className="py-32 flex flex-col items-center justify-center space-y-6">
           <div className="relative">
             <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <BriefcaseMedical className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
+            <FirstAidKit className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
           </div>
           <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Clinical Knowledge Base...</p>
         </div>
@@ -208,13 +208,13 @@ export default function TreatmentCatalog() {
                 className="glass-premium p-8 rounded-[40px] border border-white/10 flex flex-col justify-between group hover:border-primary/40 transition-all duration-500 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-5 transition-opacity duration-700 pointer-events-none">
-                  <Sparkles className="w-24 h-24 text-primary" />
+                  <Sparkle className="w-24 h-24 text-primary" />
                 </div>
 
                 <div className="space-y-6 relative z-10">
                   <div className="flex justify-between items-start">
                     <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-all duration-500 shadow-sm">
-                      <BriefcaseMedical className="w-7 h-7" />
+                      <FirstAidKit className="w-7 h-7" />
                     </div>
                     <div className="flex gap-2">
                       <motion.button 
@@ -223,7 +223,7 @@ export default function TreatmentCatalog() {
                         onClick={() => handleEditTreatment(item)}
                         className="p-2.5 bg-white/5 rounded-xl text-white/30 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10 shadow-sm"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </motion.button>
                       <motion.button 
                         whileHover={{ scale: 1.1, rotate: 5 }} 
@@ -231,7 +231,7 @@ export default function TreatmentCatalog() {
                         onClick={() => handleDeleteTreatment(item.id)}
                         className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/10 shadow-sm"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash className="w-4 h-4" />
                       </motion.button>
                     </div>
                   </div>
@@ -272,7 +272,7 @@ export default function TreatmentCatalog() {
                     whileTap={{ scale: 0.9 }}
                     className="p-3 bg-white/5 rounded-2xl text-white/40 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all border border-transparent shadow-sm group/more"
                   >
-                    <MoreHorizontal className="w-5 h-5 group-hover/more:scale-110 transition-transform" />
+                    <DotsThree className="w-5 h-5 group-hover/more:scale-110 transition-transform" />
                   </motion.button>
                 </div>
               </motion.div>
@@ -282,7 +282,7 @@ export default function TreatmentCatalog() {
               <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
               <div className="flex flex-col items-center justify-center space-y-6 relative z-10">
                 <div className="w-20 h-20 rounded-[32px] bg-white/5 border border-white/5 flex items-center justify-center text-white/10 animate-float">
-                  <BriefcaseMedical className="w-10 h-10" />
+                  <FirstAidKit className="w-10 h-10" />
                 </div>
                 <div className="space-y-2">
                   <p className="text-xl font-black text-white/40 uppercase tracking-widest">Protocol Vault Empty</p>

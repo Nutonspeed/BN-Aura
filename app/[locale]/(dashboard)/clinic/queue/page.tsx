@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Users, Bell, CheckCircle, Clock, Phone, RefreshCw } from 'lucide-react';
+import { Users, Bell, CheckCircle, Clock, Phone, ArrowsClockwise } from '@phosphor-icons/react';
 
 interface CheckIn {
   id: string;
@@ -83,7 +83,7 @@ export default function QueuePage() {
           <p className="text-gray-600">จัดการคิวลูกค้า</p>
         </div>
         <button onClick={fetchQueue} className="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200">
-          <RefreshCw className="w-5 h-5" /> รีเฟรช
+          <ArrowsClockwise className="w-5 h-5" /> รีเฟรช
         </button>
       </div>
 

@@ -3,16 +3,16 @@
 import { motion } from 'framer-motion';
 import { 
   Users, 
-  Search, 
-  Filter, 
-  MoreVertical, 
-  Mail, 
+  MagnifyingGlass, 
+  Funnel, 
+  DotsThreeVertical, 
+  EnvelopeSimple, 
   Phone,
   UserPlus,
-  Sparkles,
-  Loader2,
+  Sparkle,
+  SpinnerGap,
   Plus
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -154,7 +154,7 @@ function CustomerManagementContent() {
             className="relative flex-1 group"
           >
             <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by identity, digital mail, or neural ID..."
@@ -169,7 +169,7 @@ function CustomerManagementContent() {
             transition={{ delay: 0.4 }}
             className="flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all backdrop-blur-md"
           >
-            <Filter className="w-4 h-4 text-primary" />
+            <Funnel className="w-4 h-4 text-primary" />
             <span>Advanced Filters</span>
           </motion.button>
         </div>
@@ -216,7 +216,7 @@ function CustomerManagementContent() {
                 <tr>
                   <td colSpan={5} className="px-8 py-20 text-center">
                     <div className="flex flex-col items-center gap-4">
-                      <Loader2 className="w-10 h-10 text-primary animate-spin" />
+                      <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
                       <p className="text-sm text-muted-foreground animate-pulse font-black uppercase tracking-widest">Accessing Neural Database...</p>
                     </div>
                   </td>
@@ -256,7 +256,7 @@ function CustomerManagementContent() {
                               </span>
                             </Link>
                             <div className="flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground font-medium italic">
-                              <span className="flex items-center gap-1.5"><Mail className="w-3 h-3 text-primary/60" /> {customer.email || 'No Email'}</span>
+                              <span className="flex items-center gap-1.5"><EnvelopeSimple className="w-3 h-3 text-primary/60" /> {customer.email || 'No Email'}</span>
                               <div className="w-1 h-1 rounded-full bg-white/10" />
                               <span className="flex items-center gap-1.5"><Phone className="w-3 h-3 text-primary/60" /> {customer.phone || 'No Phone'}</span>
                             </div>
@@ -297,7 +297,7 @@ function CustomerManagementContent() {
                       <td className="px-8 py-6">
                         <div className="flex flex-col space-y-1.5">
                           <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                            <Sparkles className="w-3 h-3 animate-pulse" /> AI Validated
+                            <Sparkle className="w-3 h-3 animate-pulse" /> AI Validated
                           </span>
                           <span className="text-xs text-white/60 font-medium tabular-nums">
                             {new Date(lastScan).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -311,7 +311,7 @@ function CustomerManagementContent() {
                           onClick={() => handleEditCustomer(customer)}
                           className="p-3 text-white/30 hover:text-white transition-all rounded-xl hover:bg-white/10 border border-transparent hover:border-white/5 shadow-sm group/btn"
                         >
-                          <MoreVertical className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                          <DotsThreeVertical className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                         </motion.button>
                       </td>
                     </motion.tr>
@@ -330,7 +330,7 @@ export default function CustomerManagement() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Customer Interface...</p>
       </div>
     }>

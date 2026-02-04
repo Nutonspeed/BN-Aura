@@ -337,9 +337,9 @@ export default function SuperAdminDashboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Super Admin <span className="text-primary text-glow">Console</span>
+            Super Admin <span className="text-primary">Console</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -359,7 +359,7 @@ export default function SuperAdminDashboard() {
         >
           <button 
             onClick={() => router.push('/th/admin/network-map')}
-            className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2"
+            className="px-6 py-3 bg-secondary border border-border rounded-2xl text-sm font-bold text-foreground hover:bg-accent transition-all active:scale-95 flex items-center gap-2"
           >
             <Globe className="w-4 h-4 text-primary" />
             Network Map
@@ -390,14 +390,14 @@ export default function SuperAdminDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 + i * 0.1 }}
             whileHover={{ y: -5 }}
-            className="glass-card p-6 rounded-3xl border border-white/5 relative overflow-hidden group"
+            className="bg-card p-6 rounded-2xl border border-border shadow-card relative overflow-hidden group"
           >
             <div className="absolute -top-4 -right-4 p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-500">
               <stat.icon className="w-16 h-16 text-primary" />
             </div>
             <div className="space-y-2 relative z-10">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{stat.label}</p>
-              <p className="text-3xl font-black text-white tracking-tighter">{stat.value}</p>
+              <p className="text-3xl font-black text-foreground tracking-tighter">{stat.value}</p>
             </div>
           </motion.div>
         ))}
@@ -417,7 +417,7 @@ export default function SuperAdminDashboard() {
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-4">
+              <h3 className="text-xl font-semibold text-foreground flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
                   <Buildings className="w-6 h-6" />
                 </div>
@@ -429,7 +429,7 @@ export default function SuperAdminDashboard() {
                 <input 
                   type="text" 
                   placeholder="Search clinics..." 
-                  className="bg-white/5 border border-white/10 rounded-2xl py-3 pl-12 pr-6 text-sm text-white focus:outline-none focus:border-primary/50 transition-all w-full md:w-72 backdrop-blur-md relative z-10 shadow-inner"
+                  className="bg-secondary border border-border rounded-xl py-3 pl-12 pr-6 text-sm text-foreground focus:outline-none focus:border-primary transition-all w-full md:w-72 relative z-10"
                 />
               </div>
             </div>
@@ -441,14 +441,14 @@ export default function SuperAdminDashboard() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7 + idx * 0.05 }}
-                  className="p-6 bg-white/5 rounded-[32px] border border-white/5 hover:border-primary/30 transition-all group flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-white/[0.08]"
+                  className="p-5 bg-secondary rounded-xl border border-border hover:border-primary/30 transition-all group flex flex-col md:flex-row md:items-center justify-between gap-5"
                 >
                   <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/5 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-all duration-500 shadow-sm">
+                    <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-foreground border border-border group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-all duration-500">
                       <Buildings className="w-7 h-7" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-lg font-black text-white group-hover:text-primary transition-colors tracking-tight">{clinic.name}</h4>
+                      <h4 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">{clinic.name}</h4>
                       <div className="flex items-center gap-4">
                         <span className="text-[10px] text-primary font-black uppercase tracking-widest">{clinic.plan}</span>
                         <div className="w-1 h-1 rounded-full bg-white/20" />
@@ -461,11 +461,11 @@ export default function SuperAdminDashboard() {
 
                   <div className="flex flex-wrap items-center gap-6 md:gap-10">
                     <div className="text-center min-w-[60px]">
-                      <p className="text-lg font-black text-white">{clinic.customerCount}</p>
+                      <p className="text-lg font-bold text-foreground">{clinic.customerCount}</p>
                       <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Users</p>
                     </div>
                     <div className="text-center min-w-[60px]">
-                      <p className="text-lg font-black text-white">{clinic.staffCount}</p>
+                      <p className="text-lg font-bold text-foreground">{clinic.staffCount}</p>
                       <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Staff</p>
                     </div>
                     <button 
@@ -490,7 +490,7 @@ export default function SuperAdminDashboard() {
               ))}
             </div>
 
-            <button className="w-full py-5 bg-white/5 border border-white/10 rounded-[28px] text-[10px] font-black uppercase tracking-[0.3em] text-white hover:bg-white/10 transition-all active:scale-95 shadow-sm">
+            <button className="w-full py-3 bg-secondary border border-border rounded-xl text-xs font-medium text-foreground hover:bg-accent transition-all active:scale-95">
               Load Additional Clinic Nodes
             </button>
           </motion.div>

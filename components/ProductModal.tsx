@@ -191,7 +191,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }: Pr
                     Current Stock Nodes
                   </label>
                   <div className="relative">
-                    <Layers className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <Stack className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="number"
                       name="stock_quantity"

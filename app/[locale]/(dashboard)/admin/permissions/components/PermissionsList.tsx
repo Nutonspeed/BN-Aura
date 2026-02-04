@@ -11,7 +11,7 @@ export default function PermissionsList() {
     switch (category) {
       case 'Clinic': return <Buildings className="w-4 h-4 text-blue-400" />;
       case 'Staff': return <Users className="w-4 h-4 text-green-400" />;
-      case 'Appointments': return <CalendarDotsDots className="w-4 h-4 text-purple-400" />;
+      case 'Appointments': return <CalendarDots className="w-4 h-4 text-purple-400" />;
       case 'Reports': return <ChartBar className="w-4 h-4 text-amber-400" />;
       case 'AI': return <Lightning className="w-4 h-4 text-orange-400" />;
       case 'Sales': return <Shield className="w-4 h-4 text-cyan-400" />;

@@ -171,9 +171,9 @@ export default function EmailTemplates({ onSettingsChange }: EmailTemplatesProps
   const [showTestDialog, setShowTestDialog] = useState(false);
 
   const categories = [
-    { value: 'transactional', label: 'Transactional', icon: DollarSign, color: 'text-blue-400' },
-    { value: 'marketing', label: 'Marketing', icon: Mail, color: 'text-purple-400' },
-    { value: 'notification', label: 'Notification', icon: AlertCircle, color: 'text-yellow-400' },
+    { value: 'transactional', label: 'Transactional', icon: CurrencyDollar, color: 'text-blue-400' },
+    { value: 'marketing', label: 'Marketing', icon: EnvelopeSimple, color: 'text-purple-400' },
+    { value: 'notification', label: 'Notification', icon: WarningCircle, color: 'text-yellow-400' },
     { value: 'system', label: 'System', icon: Code, color: 'text-green-400' }
   ];
 

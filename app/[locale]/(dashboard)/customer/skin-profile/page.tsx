@@ -152,7 +152,7 @@ function SkinProfileContent() {
         <div className="flex bg-white/5 border border-white/10 p-1 rounded-2xl">
           {[
             { id: 'history', label: 'History', icon: History },
-            { id: 'progress', label: 'Progress', icon: TrendingUp },
+            { id: 'progress', label: 'Progress', icon: TrendUp },
             { id: 'compare', label: 'Compare', icon: Camera }
           ].map((tab) => (
             <button

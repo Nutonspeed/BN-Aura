@@ -125,7 +125,7 @@ function CustomerBookingContent() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-            <CalendarDotsIcon className="w-4 h-4" />
+            <CalendarDots className="w-4 h-4" />
             Clinical Orchestration
           </div>
           <h1 className="text-4xl font-black text-white uppercase tracking-tight">Book your <span className="text-primary text-glow">Transformation</span></h1>
@@ -218,7 +218,7 @@ function CustomerBookingContent() {
             <div className="lg:col-span-2 space-y-8">
               <div className="glass-premium p-10 rounded-[48px] border border-white/10">
                 <h3 className="text-xl font-black text-white uppercase tracking-tight mb-8 flex items-center gap-3">
-                  <CalendarDotsIcon className="w-6 h-6 text-primary" />
+                  <CalendarDots className="w-6 h-6 text-primary" />
                   Select Temporal Node
                 </h3>
                 <input 
@@ -270,7 +270,7 @@ function CustomerBookingContent() {
                   {selectedDate && (
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">
-                        <CalendarDotsIcon className="w-5 h-5" />
+                        <CalendarDots className="w-5 h-5" />
                       </div>
                       <div>
                         <p className="text-[10px] text-muted-foreground font-black uppercase">Date</p>

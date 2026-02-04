@@ -179,7 +179,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
                 }}
                 className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
               >
-                <Edit className="w-4 h-4" />
+                <PencilSimple className="w-4 h-4" />
               </button>
             </div>
           </div>

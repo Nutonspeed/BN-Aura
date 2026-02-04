@@ -22,7 +22,7 @@ export default function ContactPortalPage() {
         {/* Navigation Tabs */}
         <div className="flex space-x-1 bg-white/5 rounded-xl p-1">
           {[
-            { id: 'messages', label: 'Messages', icon: MessageSquare },
+            { id: 'messages', label: 'Messages', icon: ChatCircle },
             { id: 'contacts', label: 'Contacts', icon: Users },
             { id: 'support', label: 'Support', icon: Phone }
           ].map((tab) => {

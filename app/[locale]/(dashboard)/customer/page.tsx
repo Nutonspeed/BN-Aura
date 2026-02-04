@@ -171,9 +171,9 @@ export default function CustomerDashboard() {
           {/* Quick Stats */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { label: 'Skin Health Score', value: `${overview.skinScore}/100`, icon: TrendingUp, color: 'text-emerald-400' },
-              { label: 'Active Treatments', value: overview.activeTreatments.toString(), icon: Zap, color: 'text-primary' },
-              { label: 'Next Session', value: overview.nextSessionDate ? new Date(overview.nextSessionDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'None', icon: Calendar, color: 'text-amber-400' }
+              { label: 'Skin Health Score', value: `${overview.skinScore}/100`, icon: TrendUp, color: 'text-emerald-400' },
+              { label: 'Active Treatments', value: overview.activeTreatments.toString(), icon: Lightning, color: 'text-primary' },
+              { label: 'Next Session', value: overview.nextSessionDate ? new Date(overview.nextSessionDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : 'None', icon: CalendarDots, color: 'text-amber-400' }
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}

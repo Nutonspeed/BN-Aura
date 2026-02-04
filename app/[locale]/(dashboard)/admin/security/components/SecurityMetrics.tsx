@@ -52,7 +52,7 @@ export default function SecurityMetrics({ metrics, timeRange = '24h' }: Security
       value: metrics.twoFactorEnabled,
       trend: '42% of users',
       trendColor: 'text-emerald-400',
-      icon: Smartphone,
+      icon: DeviceMobile,
       iconColor: 'text-emerald-400',
       delay: 0.4
     }

@@ -34,9 +34,9 @@ export default function SentimentBadge({
   }
 
   const SentimentIcon = 
-    sentiment.overall_sentiment === 'positive' ? SmilePlus :
-    sentiment.overall_sentiment === 'negative' ? Frown :
-    Meh;
+    sentiment.overall_sentiment === 'positive' ? SmileyWink :
+    sentiment.overall_sentiment === 'negative' ? SmileyXEyes :
+    SmileyMeh;
 
   const satisfactionLevel = getSatisfactionLevel(sentiment.satisfaction_score);
 

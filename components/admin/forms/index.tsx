@@ -283,7 +283,7 @@ export function FormModal({
   children,
   onSubmit,
   loading = false,
-  submitText = 'Save',
+  submitText = 'FloppyDisk',
   cancelText = 'Cancel',
   size = 'md',
   className = ''

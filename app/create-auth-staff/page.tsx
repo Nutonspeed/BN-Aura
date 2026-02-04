@@ -126,7 +126,7 @@ export default function CreateAuthStaffPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  <Building className="w-4 h-4 inline mr-2" />
+                  <Buildings className="w-4 h-4 inline mr-2" />
                   Clinic ID
                 </label>
                 <input

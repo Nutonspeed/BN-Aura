@@ -167,7 +167,7 @@ function PurchaseOrderManagementContent() {
         </div>
         <div className="glass-premium p-6 rounded-3xl border border-white/5 flex items-center justify-between group overflow-hidden relative">
           <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-            <LayoutGrid className="w-16 h-16 text-white" />
+            <SquaresFour className="w-16 h-16 text-white" />
           </div>
           <div>
             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Total Cycles</p>

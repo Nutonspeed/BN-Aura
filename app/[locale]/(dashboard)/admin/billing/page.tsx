@@ -75,7 +75,7 @@ export default function BillingManagementPage() {
             Refresh
           </button>
           <button className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2">
-            <Download className="w-4 h-4" />
+            <DownloadSimple className="w-4 h-4" />
             Export Report
           </button>
         </div>

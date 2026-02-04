@@ -140,7 +140,7 @@ export default function CustomersPage() {
                           {customer.users.email}
                         </span>
                         <span className="flex items-center gap-1 text-blue-200 text-sm">
-                          <CalendarDotsDots className="w-4 h-4" />
+                          <CalendarDots className="w-4 h-4" />
                           สร้างเมื่อ {new Date(customer.assigned_at).toLocaleDateString('th-TH')}
                         </span>
                       </div>

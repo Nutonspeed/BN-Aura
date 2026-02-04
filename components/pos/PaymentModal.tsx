@@ -123,7 +123,7 @@ export default function PaymentModal({
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Select Method</p>
                   {[
                     { id: 'PROMPTPAY', label: 'QR PromptPay', icon: QrCode, color: 'text-blue-400' },
-                    { id: 'CASH', label: 'Physical Cash', icon: Banknote, color: 'text-emerald-400' },
+                    { id: 'CASH', label: 'Physical Cash', icon: Money, color: 'text-emerald-400' },
                     { id: 'CARD', label: 'Credit / Debit', icon: CreditCard, color: 'text-amber-400' },
                   ].map((m) => (
                     <button

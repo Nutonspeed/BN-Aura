@@ -32,13 +32,13 @@ export default function SettingsPage() {
   const [upgrading, setUpgrading] = useState<string | null>(null);
 
   const sections = [
-    { id: 'general', label: 'Clinic Information', icon: Building2 },
+    { id: 'general', label: 'Clinic Information', icon: Buildings },
     { id: 'appearance', label: 'Brand & Appearance', icon: Palette },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'security', label: 'Security & RLS', icon: Shield },
     { id: 'billing', label: 'Subscription & Billing', icon: CreditCard },
-    { id: 'loyalty', label: 'Loyalty Program', icon: Sparkles },
-    { id: 'i18n', label: 'Languages', icon: Globe },
+    { id: 'loyalty', label: 'Loyalty Program', icon: Sparkle },
+    { id: 'i18n', label: 'Translate', icon: Globe },
   ];
 
   const currentPlan = useMemo(() => {
@@ -227,7 +227,7 @@ export default function SettingsPage() {
                       whileHover={{ scale: 1.05 }}
                       className="w-28 h-24 rounded-[32px] bg-white/5 border-2 border-dashed border-white/10 flex flex-col items-center justify-center text-muted-foreground group-hover/logo:border-primary/50 group-hover/logo:text-primary transition-all cursor-pointer relative overflow-hidden backdrop-blur-md"
                     >
-                      <Upload className="w-6 h-6 mb-1.5" />
+                      <UploadSimple className="w-6 h-6 mb-1.5" />
                       <span className="text-[9px] font-black uppercase tracking-[0.2em]">Upload</span>
                     </motion.div>
                   </div>

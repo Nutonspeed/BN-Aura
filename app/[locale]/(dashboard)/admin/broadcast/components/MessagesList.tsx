@@ -117,7 +117,7 @@ export default function MessagesList() {
                 
                 {message.scheduled_at && (
                   <div className="flex items-center gap-2">
-                    <CalendarDotsDots className="w-4 h-4" />
+                    <CalendarDots className="w-4 h-4" />
                     <span>
                       {message.status === 'scheduled' ? 'Scheduled for' : 'Sent at'} {formatDate(message.scheduled_at)}
                     </span>

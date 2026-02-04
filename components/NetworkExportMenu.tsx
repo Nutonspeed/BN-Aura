@@ -152,7 +152,7 @@ ${node.name} (${node.type})
             className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/10 rounded-lg transition-all text-left group"
           >
             <div className="p-2 bg-emerald-500/20 rounded-lg group-hover:bg-emerald-500/30 transition-all">
-              <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
+              <FileXls className="w-4 h-4 text-emerald-400" />
             </div>
             <div>
               <p className="text-white text-sm font-medium">Export as CSV</p>
@@ -165,7 +165,7 @@ ${node.name} (${node.type})
             className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-white/10 rounded-lg transition-all text-left group"
           >
             <div className="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-all">
-              <FileJson className="w-4 h-4 text-blue-400" />
+              <FileJs className="w-4 h-4 text-blue-400" />
             </div>
             <div>
               <p className="text-white text-sm font-medium">Export as JSON</p>

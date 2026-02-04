@@ -17,7 +17,7 @@ const navigationSections = [
   {
     id: 'company',
     label: 'Company Info',
-    icon: Building2,
+    icon: Buildings,
     description: 'Basic company information and branding'
   },
   {
@@ -29,7 +29,7 @@ const navigationSections = [
   {
     id: 'features',
     label: 'Feature Flags',
-    icon: Zap,
+    icon: Lightning,
     description: 'Enable or disable system features'
   },
   {
@@ -41,7 +41,7 @@ const navigationSections = [
   {
     id: 'email',
     label: 'Email Settings',
-    icon: Mail,
+    icon: EnvelopeSimple,
     description: 'SMTP configuration and templates'
   },
   {

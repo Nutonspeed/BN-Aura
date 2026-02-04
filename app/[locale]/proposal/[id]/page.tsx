@@ -264,8 +264,8 @@ export default function ProposalPreviewPage() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-10 pt-20 border-t border-white/5">
           {[
             { icon: ShieldCheck, title: "Clinical Security", desc: "Highest enterprise medical standards applied to all neural data nodes.", color: "text-primary" },
-            { icon: Sparkles, title: "AI Calibration", desc: "Results synthesized via Gemini 2.5 Pro optimized for your unique profile.", color: "text-emerald-400" },
-            { icon: Calendar, title: "Priority Protocol", desc: "Guaranteed access to premium treatment windows and clinical specialist.", color: "text-amber-400" }
+            { icon: Sparkle, title: "AI Calibration", desc: "Results synthesized via Gemini 2.5 Pro optimized for your unique profile.", color: "text-emerald-400" },
+            { icon: CalendarDots, title: "Priority Protocol", desc: "Guaranteed access to premium treatment windows and clinical specialist.", color: "text-amber-400" }
           ].map((benefit, i) => (
             <motion.div 
               key={i}

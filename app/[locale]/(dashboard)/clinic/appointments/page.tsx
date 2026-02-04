@@ -111,7 +111,7 @@ export default function AppointmentPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <CalendarDotsDots className="w-4 h-4" />
+            <CalendarDots className="w-4 h-4" />
             Temporal Orchestration
           </motion.div>
           <motion.h1 
@@ -273,7 +273,7 @@ export default function AppointmentPage() {
               </div>
             ) : appointments.length === 0 ? (
               <div className="py-20 flex flex-col items-center gap-4 opacity-40">
-                <CalendarDotsDots className="w-12 h-12" />
+                <CalendarDots className="w-12 h-12" />
                 <p className="text-xs font-black uppercase tracking-widest">No Active Nodes for this Period</p>
               </div>
             ) : (

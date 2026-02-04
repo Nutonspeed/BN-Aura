@@ -118,9 +118,9 @@ export default function RevenueDashboard() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: 'Consolidated Revenue', value: `฿${stats?.totalRevenue.toLocaleString()}`, icon: DollarSign, trend: '+12.5%', color: 'text-primary' },
+          { label: 'Consolidated Revenue', value: `฿${stats?.totalRevenue.toLocaleString()}`, icon: CurrencyDollar, trend: '+12.5%', color: 'text-primary' },
           { label: 'Transaction Cycles', value: stats?.transactionCount.toLocaleString(), icon: CreditCard, trend: '+8.2%', color: 'text-blue-400' },
-          { label: 'Average Ticket Node', value: `฿${stats?.transactionCount ? Math.round(stats.totalRevenue / stats.transactionCount).toLocaleString() : '0'}`, icon: BarChart3, trend: '-2.1%', color: 'text-emerald-400' },
+          { label: 'Average Ticket Node', value: `฿${stats?.transactionCount ? Math.round(stats.totalRevenue / stats.transactionCount).toLocaleString() : '0'}`, icon: ChartBar, trend: '-2.1%', color: 'text-emerald-400' },
         ].map((stat, i) => (
           <motion.div
             key={i}

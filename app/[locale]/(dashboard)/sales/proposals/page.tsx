@@ -118,9 +118,9 @@ export default function ProposalsPage() {
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { label: 'Pipeline Value', value: '฿1.2M', icon: DollarSign, color: 'text-emerald-400' },
-          { label: 'Dispatched Today', value: '12', icon: Send, color: 'text-primary' },
-          { label: 'Conversion Intel', value: '24%', icon: Activity, color: 'text-purple-400' },
+          { label: 'Pipeline Value', value: '฿1.2M', icon: CurrencyDollar, color: 'text-emerald-400' },
+          { label: 'Dispatched Today', value: '12', icon: PaperPlaneTilt, color: 'text-primary' },
+          { label: 'Conversion Intel', value: '24%', icon: Pulse, color: 'text-purple-400' },
         ].map((stat, i) => (
           <motion.div 
             key={i} 
@@ -219,7 +219,7 @@ export default function ProposalsPage() {
                         <Eye className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                       </button>
                       <button className="p-3 bg-white/5 border border-white/5 rounded-2xl text-white/40 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all shadow-sm group/btn">
-                        <Download className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                        <DownloadSimple className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                       </button>
                       <button className="p-3 bg-white/5 border border-white/5 rounded-2xl text-white/40 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all shadow-sm group/btn">
                         <DotsThreeVertical className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />

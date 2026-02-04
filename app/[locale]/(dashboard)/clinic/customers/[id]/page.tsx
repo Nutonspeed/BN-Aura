@@ -229,9 +229,9 @@ function CustomerDetailPageContent() {
           {/* Section Navigation */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
             {[
-              { id: 'overview', label: 'Clinical Overview', icon: LayoutGrid },
+              { id: 'overview', label: 'Clinical Overview', icon: SquaresFour },
               { id: 'journey', label: 'Treatment Cycles', icon: History },
-              { id: 'analysis', label: 'Neural Diagnostics', icon: Sparkles },
+              { id: 'analysis', label: 'Neural Diagnostics', icon: Sparkle },
               { id: 'transactions', label: 'Fiscal Node', icon: CreditCard },
             ].map((tab) => (
               <button
@@ -262,7 +262,7 @@ function CustomerDetailPageContent() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
-                    { label: 'Latest Score', value: '84/100', icon: Sparkles, color: 'text-primary' },
+                    { label: 'Latest Score', value: '84/100', icon: Sparkle, color: 'text-primary' },
                     { label: 'Total Nodes', value: customer.sales_commissions.length.toString(), icon: History, color: 'text-blue-400' },
                     { label: 'Fiscal Value', value: `฿${customer.sales_commissions.reduce((acc, c) => acc + Number(c.base_amount), 0).toLocaleString()}`, icon: CreditCard, color: 'text-emerald-400' },
                   ].map((stat, i) => (

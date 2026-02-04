@@ -7,7 +7,8 @@ import {
   User, 
   Robot,
   ClockCounterClockwise,
-  Info
+  Info,
+  Pulse
 } from '@phosphor-icons/react';
 import { useState, useEffect, SVGProps } from 'react';
 import { cn } from '@/lib/utils';

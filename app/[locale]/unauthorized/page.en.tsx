@@ -58,7 +58,7 @@ export default function UnauthorizedPage() {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="w-20 h-20 bg-destructive/10 rounded-full flex items-center justify-center mx-auto"
           >
-            <ShieldX className="w-10 h-10 text-destructive" />
+            <ShieldSlash className="w-10 h-10 text-destructive" />
           </motion.div>
 
           {/* Content */}
@@ -86,7 +86,7 @@ export default function UnauthorizedPage() {
               onClick={handleLogout}
               className="w-full"
             >
-              <LogOut className="w-4 h-4 mr-2" />
+              <SignOut className="w-4 h-4 mr-2" />
               Sign Out
             </Button>
           </div>

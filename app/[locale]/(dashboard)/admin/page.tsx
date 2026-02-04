@@ -310,10 +310,10 @@ export default function SuperAdminDashboard() {
   }
 
   const stats = [
-    { label: 'Total Clinics', value: globalStats.totalClinics.toString(), icon: Building2, color: 'text-primary' },
+    { label: 'Total Clinics', value: globalStats.totalClinics.toString(), icon: Buildings, color: 'text-primary' },
     { label: 'Global Customers', value: globalStats.globalCustomers.toLocaleString(), icon: Users, color: 'text-emerald-400' },
-    { label: 'Monthly AI Load', value: `${(globalStats.monthlyAILoad / 1000).toFixed(1)}k`, icon: Zap, color: 'text-amber-400' },
-    { label: 'Active Personnel', value: globalStats.activeSessions.toLocaleString(), icon: Activity, color: 'text-rose-400' },
+    { label: 'Monthly AI Load', value: `${(globalStats.monthlyAILoad / 1000).toFixed(1)}k`, icon: Lightning, color: 'text-amber-400' },
+    { label: 'Active Personnel', value: globalStats.activeSessions.toLocaleString(), icon: Pulse, color: 'text-rose-400' },
   ];
 
   return (
@@ -483,7 +483,7 @@ export default function SuperAdminDashboard() {
                       onClick={() => router.push(`/th/admin/clinics/${clinic.id}`)}
                       className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-transparent hover:border-white/10 shadow-sm"
                     >
-                      <ChvvrononRight className="w-5 h-5 text-muted-foreground" />
+                      <CaretRight className="w-5 h-5 text-muted-foreground" />
                     </button>
                   </div>
                 </motion.div>
@@ -552,15 +552,15 @@ export default function SuperAdminDashboard() {
             <div className="grid grid-cols-1 gap-4 relative z-10">
               {[
                 { title: "Database Backup", sub: "Last: 4h ago", icon: ShieldCheck },
-                { title: "Clear Global Cache", sub: "Redis & AI Gateway", icon: Zap },
-                { title: "API Keys Audit", sub: "3 keys expiring", icon: Activity }
+                { title: "Clear Global Cache", sub: "Redis & AI Gateway", icon: Lightning },
+                { title: "API Keys Audit", sub: "3 keys expiring", icon: Pulse }
               ].map((tool, i) => (
                 <button key={i} className="flex items-center justify-between p-5 bg-white/5 border border-white/5 rounded-3xl hover:bg-white/10 hover:border-white/10 transition-all text-left group">
                   <div className="space-y-1">
                     <p className="text-xs font-black text-white uppercase tracking-widest group-hover:text-primary transition-colors">{tool.title}</p>
                     <p className="text-[9px] text-muted-foreground italic font-medium">{tool.sub}</p>
                   </div>
-                  <ChvvrononRight className="w-4 h-4 text-muted-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  <CaretRight className="w-4 h-4 text-muted-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </button>
               ))}
             </div>

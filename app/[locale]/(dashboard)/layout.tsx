@@ -234,7 +234,7 @@ export default function DashboardLayout({
         { icon: Shield, label: 'Security', href: '/admin/security', roles: ['super_admin'] },
         { icon: ChartBar, label: 'Analytics', href: '/admin/analytics', roles: ['super_admin'] },
         { icon: CreditCard, label: 'Billing', href: '/admin/billing', roles: ['super_admin'] },
-        { icon: Gear, label: 'Settings', href: '/admin/settings', roles: ['super_admin'] },
+        { icon: Gear, label: 'Gear', href: '/admin/settings', roles: ['super_admin'] },
       ]
     },
   ];

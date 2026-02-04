@@ -34,7 +34,7 @@ export default function AnalyticsDashboard() {
     {
       id: 'overview' as const,
       label: 'ภาพรวม',
-      icon: BarChart3,
+      icon: ChartBar,
       badge: null
     },
     {
@@ -46,7 +46,7 @@ export default function AnalyticsDashboard() {
     {
       id: 'alerts' as const,
       label: 'การแจ้งเตือน',
-      icon: AlertTriangle,
+      icon: Warning,
       badge: criticalCount + highCount > 0 ? criticalCount + highCount : null
     }
   ];

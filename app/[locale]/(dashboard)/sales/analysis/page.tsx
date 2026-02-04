@@ -453,7 +453,7 @@ export default function MagicScanPage() {
               onClick={() => router.back()}
               className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2"
             >
-              <RotateCcw className="w-4 h-4 text-muted-foreground" />
+              <ArrowCounterClockwise className="w-4 h-4 text-muted-foreground" />
               Cancel Scan
             </button>
           </motion.div>
@@ -794,7 +794,7 @@ export default function MagicScanPage() {
                         { label: 'Skin Age', value: analysisResult.skinAge, icon: Clock, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
                         { label: 'Biological Age', value: customerInfo.age, icon: User, color: 'text-blue-400', bg: 'bg-blue-500/10' },
                         { label: 'System Confidence', value: '94.2%', icon: ShieldCheck, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-                        { label: 'Data Nodes', value: '468+', icon: Zap, color: 'text-primary', bg: 'bg-primary/10' }
+                        { label: 'Data Nodes', value: '468+', icon: Lightning, color: 'text-primary', bg: 'bg-primary/10' }
                       ].map((item, i) => (
                         <motion.div 
                           key={item.label}

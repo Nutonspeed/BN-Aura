@@ -17,10 +17,10 @@ export default function AnalyticsPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   const tabs = [
-    { id: 'overview', label: t('overview'), icon: BarChart3 },
-    { id: 'revenue', label: t('revenue'), icon: DollarSign },
-    { id: 'ai', label: t('ai_usage'), icon: Zap },
-    { id: 'clinics', label: t('clinics'), icon: Building2 }
+    { id: 'overview', label: t('overview'), icon: ChartBar },
+    { id: 'revenue', label: t('revenue'), icon: CurrencyDollar },
+    { id: 'ai', label: t('ai_usage'), icon: Lightning },
+    { id: 'clinics', label: t('clinics'), icon: Buildings }
   ];
 
   const handleRefresh = async () => {

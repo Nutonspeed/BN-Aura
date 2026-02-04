@@ -30,7 +30,7 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
     {
       title: "AI Skin Intelligence",
       desc: "How to use neural mapping, AR simulation, and evolution deltas.",
-      icon: Zap,
+      icon: Lightning,
       color: "text-amber-400"
     },
     {

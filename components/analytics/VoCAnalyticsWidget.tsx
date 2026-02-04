@@ -68,12 +68,12 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
             <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Positive</p>
           </div>
           <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-center">
-            <SmileyyMeh className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+            <SmileyMeh className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
             <p className="text-2xl font-black text-white">{getPercentage(data.sentimentDistribution.neutral)}%</p>
             <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Neutral</p>
           </div>
           <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
-            <SmileyyXEyes className="w-8 h-8 text-red-400 mx-auto mb-2" />
+            <SmileyXEyes className="w-8 h-8 text-red-400 mx-auto mb-2" />
             <p className="text-2xl font-black text-white">{getPercentage(data.sentimentDistribution.negative)}%</p>
             <p className="text-xs font-bold text-red-400 uppercase tracking-wider">Negative</p>
           </div>

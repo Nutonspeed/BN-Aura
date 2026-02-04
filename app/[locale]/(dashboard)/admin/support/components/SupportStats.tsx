@@ -27,7 +27,7 @@ export default function SupportStats() {
     {
       title: 'In Progress',
       value: stats.in_progress,
-      icon: AlertTriangle,
+      icon: Warning,
       color: 'text-orange-400',
       bgColor: 'bg-orange-500/20'
     },

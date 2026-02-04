@@ -328,7 +328,7 @@ export default function LandingPage() {
                 step: "03",
                 title: "จำลอง AR",
                 desc: "ให้ลูกค้าเห็นผลลัพธ์ก่อนรักษาด้วย AR Simulator",
-                icon: TrendingUp
+                icon: TrendUp
               }
             ].map((step, i) => (
               <motion.div
@@ -583,8 +583,8 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: MessageCircle, title: "LINE Official", value: "@bn-aura", link: "https://line.me/ti/p/~@bn-aura" },
-              { icon: Mail, title: "Email", value: "contact@bn-aura.com", link: "mailto:contact@bn-aura.com" },
+              { icon: ChatCircle, title: "LINE Official", value: "@bn-aura", link: "https://line.me/ti/p/~@bn-aura" },
+              { icon: EnvelopeSimple, title: "Email", value: "contact@bn-aura.com", link: "mailto:contact@bn-aura.com" },
               { icon: Phone, title: "โทรศัพท์", value: "02-XXX-XXXX", link: "tel:02XXXXXXX" }
             ].map((contact, i) => (
               <motion.a

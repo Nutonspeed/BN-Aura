@@ -172,7 +172,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                 <div className="space-y-4 md:col-span-2">
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                      <Languages className="w-3 h-3" /> Designated Name (Thai) *
+                      <Translate className="w-3 h-3" /> Designated Name (Thai) *
                     </label>
                     <input
                       type="text"
@@ -185,7 +185,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
-                      <Languages className="w-3 h-3" /> Designated Name (English)
+                      <Translate className="w-3 h-3" /> Designated Name (English)
                     </label>
                     <input
                       type="text"
@@ -273,7 +273,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
               <div className="space-y-4 pt-4 border-t border-white/5">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1 flex items-center gap-2">
-                    <ListTodo className="w-3 h-3" /> Execution Protocols
+                    <ListChecks className="w-3 h-3" /> Execution Protocols
                   </label>
                   <button
                     type="button"

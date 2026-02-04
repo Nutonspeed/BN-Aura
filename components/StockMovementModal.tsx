@@ -100,7 +100,7 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                 )}>
                   {formData.movement_type === 'IN' ? <ArrowCircleUp className="w-6 h-6" /> :
                    formData.movement_type === 'OUT' ? <ArrowCircleDown className="w-6 h-6" /> :
-                   <Gear2 className="w-6 h-6" />}
+                   <GearSix className="w-6 h-6" />}
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight">Stock Adjustment</h3>
@@ -131,9 +131,9 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                 </label>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { id: 'IN', label: 'Restock', icon: ArrowUpCircle, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
-                    { id: 'OUT', label: 'Removal', icon: ArrowDownCircle, color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20' },
-                    { id: 'ADJUST', label: 'Correction', icon: Settings2, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+                    { id: 'IN', label: 'Restock', icon: ArrowCircleUp, color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' },
+                    { id: 'OUT', label: 'Removal', icon: ArrowCircleDown, color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20' },
+                    { id: 'ADJUST', label: 'Correction', icon: GearSix, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
                   ].map((type) => (
                     <button
                       key={type.id}

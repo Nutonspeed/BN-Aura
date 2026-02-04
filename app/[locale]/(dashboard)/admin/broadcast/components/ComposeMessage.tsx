@@ -233,7 +233,7 @@ export default function ComposeMessage() {
         {/* Schedule */}
         <div>
           <label className="block text-white/80 text-sm font-medium mb-2">
-            <CalendarDotsDots className="w-4 h-4 inline mr-2" />
+            <CalendarDots className="w-4 h-4 inline mr-2" />
             Schedule (Optional)
           </label>
           <input

@@ -135,7 +135,7 @@ export default function AnnouncementsList() {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <CalendarDotsDots className="w-4 h-4" />
+                  <CalendarDots className="w-4 h-4" />
                   <span>
                     {new Date(announcement.start_date) > new Date() 
                       ? `Starts ${formatDate(announcement.start_date)}`
@@ -184,7 +184,7 @@ export default function AnnouncementsList() {
               
               <button
                 className="p-2 text-white/60 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
-                title="Edit"
+                title="PencilSimple"
               >
                 <PencilSimple className="w-4 h-4" />
               </button>

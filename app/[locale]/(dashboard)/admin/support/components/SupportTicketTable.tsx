@@ -238,7 +238,7 @@ export default function SupportTicketTable({
                       }}
                       className="text-green-600 hover:text-green-900"
                     >
-                      <Edit className="w-4 h-4" />
+                      <PencilSimple className="w-4 h-4" />
                     </button>
                     <button
                       onClick={(e) => {

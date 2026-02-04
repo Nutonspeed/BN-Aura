@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, TrendingUp, MessageCircle, Lightbulb, Target, AlertCircle } from 'lucide-react';
+import { Sparkle, TrendUp, ChatCircle, Lightbulb, Target, WarningCircle } from '@phosphor-icons/react';
 import { CustomerContext, SalesCoachResponse } from '@/lib/ai/salesCoach';
 import { conversationManager } from '@/lib/conversations/conversationManager';
 import { createClient } from '@/lib/supabase/client';

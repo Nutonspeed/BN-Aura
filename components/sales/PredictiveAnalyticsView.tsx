@@ -6,9 +6,9 @@ import {
   AlertTriangle, 
   Lightbulb, 
   ArrowRight,
-  TrendingDown,
-  Activity
-} from 'lucide-react';
+  TrendDown,
+  Pulse
+} from '@phosphor-icons/react';
 
 interface PredictiveAnalyticsViewProps {
   data: PredictiveAnalytics;

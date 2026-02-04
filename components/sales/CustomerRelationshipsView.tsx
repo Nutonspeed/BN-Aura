@@ -1,7 +1,7 @@
 'use client';
 
 import { CustomerRelationships } from '@/lib/customer/customerIntelligence';
-import { Users, UserCheck, Share2, ArrowRight } from 'lucide-react';
+import { Users, UserCheck, ShareNetwork, ArrowRight } from '@phosphor-icons/react';
 
 interface CustomerRelationshipsViewProps {
   data: CustomerRelationships;

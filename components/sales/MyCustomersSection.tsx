@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Users, Search, ExternalLink, MessageSquare, Plus } from 'lucide-react';
+import { Users, MagnifyingGlass, ArrowSquareOut, ChatCircle, Plus } from '@phosphor-icons/react';
 import { Link } from '@/i18n/routing';
 import { useWorkflowState } from '@/hooks/useWorkflowStatus';
 import WorkflowStatusBadge from './WorkflowStatusBadge';

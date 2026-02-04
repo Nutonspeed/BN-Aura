@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Wallet, Clock, ArrowUpRight, BarChart3 } from 'lucide-react';
+import { Wallet, Clock, ArrowUpRight, ChartBar } from '@phosphor-icons/react';
 
 interface CommissionSummary {
   totalCommission: number;

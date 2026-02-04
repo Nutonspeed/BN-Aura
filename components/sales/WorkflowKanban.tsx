@@ -13,14 +13,14 @@ import { useWorkflowEvents } from '@/hooks/useWorkflowEvents';
 import { workflowBridge, WorkflowData } from '@/lib/workflow/workflowBridge';
 import { 
   User, 
-  Calendar, 
-  DollarSign, 
-  MessageCircle, 
+  CalendarDots, 
+  CurrencyDollar, 
+  ChatCircle, 
   Clock,
   CheckCircle,
-  AlertCircle,
+  WarningCircle,
   ArrowRight
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 const workflowStages = [
   { id: 'lead_created', label: 'Lead Created', color: 'bg-blue-500' },

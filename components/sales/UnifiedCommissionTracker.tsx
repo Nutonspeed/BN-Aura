@@ -12,15 +12,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { useWorkflowEvents } from '@/hooks/useWorkflowEvents';
 import { workflowBridge } from '@/lib/workflow/workflowBridge';
 import { 
-  DollarSign, 
-  TrendingUp, 
-  Calendar, 
+  CurrencyDollar, 
+  TrendUp, 
+  CalendarDots, 
   Clock, 
   CheckCircle,
-  AlertCircle,
+  WarningCircle,
   Download,
-  Filter
-} from 'lucide-react';
+  Funnel
+} from '@phosphor-icons/react';
 
 interface CommissionRecord {
   id: string;

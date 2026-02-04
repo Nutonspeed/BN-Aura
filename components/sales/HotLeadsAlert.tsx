@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, TrendingUp, Phone, Mail, Clock, X } from 'lucide-react';
+import { Fire, TrendUp, Phone, EnvelopeSimple, Clock, X } from '@phosphor-icons/react';
 import { PrioritizedLead } from '@/lib/ai/leadPrioritizer';
 
 export default function HotLeadsAlert() {

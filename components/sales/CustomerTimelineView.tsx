@@ -6,9 +6,9 @@ import {
   Calendar, 
   ShoppingBag, 
   ArrowRight,
-  CheckCircle2,
-  AlertCircle
-} from 'lucide-react';
+  CheckCircle,
+  WarningCircle
+} from '@phosphor-icons/react';
 import { format } from 'date-fns';
 import { th } from 'date-fns/locale';
 

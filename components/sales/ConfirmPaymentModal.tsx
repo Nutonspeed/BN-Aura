@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, Calendar, User, DollarSign, Loader2 } from 'lucide-react';
+import { X, CreditCard, CalendarDots, User, CurrencyDollar, SpinnerGap } from '@phosphor-icons/react';
 import { useConfirmPayment } from '@/hooks/useWorkflowStatus';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';

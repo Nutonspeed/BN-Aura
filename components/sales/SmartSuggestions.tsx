@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShoppingBag, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { ShoppingBag, Clock, Warning, CheckCircle } from '@phosphor-icons/react';
 import { CustomerContext } from '@/lib/ai/salesCoach';
 
 interface SmartSuggestionsProps {

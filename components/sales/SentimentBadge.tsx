@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SmilePlus, Meh, Frown, Loader2 } from 'lucide-react';
+import { SmileyWink, SmileyMeh, SmileyXEyes, SpinnerGap } from '@phosphor-icons/react';
 import { SentimentAnalysis, getSentimentColor, getSatisfactionLevel } from '@/lib/ai/sentimentAnalyzer';
 import { cn } from '@/lib/utils';
 

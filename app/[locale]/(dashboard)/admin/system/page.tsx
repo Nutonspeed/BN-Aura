@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Activity, Server, CheckCircle, Cpu, HardDrive, Users, RefreshCw, Loader2,
-  AlertTriangle, Database, Wifi, WifiOff, Clock
-} from 'lucide-react';
+  Pulse, HardDrives, CheckCircle, Cpu, HardDrive, Users, ArrowsClockwise, SpinnerGap,
+  Warning, Database, WifiHigh, WifiSlash, Clock
+} from '@phosphor-icons/react';
 import { SystemMonitoringProvider, useSystemMonitoringContext } from './context';
 
 function SystemMonitoringContent() {

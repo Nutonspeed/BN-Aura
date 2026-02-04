@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Globe } from 'lucide-react';
+import { Globe } from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 
 interface RegionalSettingsProps {

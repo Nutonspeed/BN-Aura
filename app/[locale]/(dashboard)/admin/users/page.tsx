@@ -4,17 +4,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   Users,
-  Search,
+  MagnifyingGlass,
   Plus,
-  AlertCircle,
+  WarningCircle,
   CheckCircle,
-  Loader2,
+  SpinnerGap,
   X,
   Crown,
   UserCheck,
   UserMinus,
-  Edit2
-} from 'lucide-react';
+  PencilSimple
+} from '@phosphor-icons/react';
 
 interface User {
   id: string;

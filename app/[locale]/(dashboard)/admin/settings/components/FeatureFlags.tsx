@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Check, X } from 'lucide-react';
+import { Lightning, Check, X } from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 
 interface FeatureFlagsProps {

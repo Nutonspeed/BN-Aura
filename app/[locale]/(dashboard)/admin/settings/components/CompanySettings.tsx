@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Building2, Upload, X } from 'lucide-react';
+import { Buildings, Upload, X } from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 
 interface CompanySettingsProps {

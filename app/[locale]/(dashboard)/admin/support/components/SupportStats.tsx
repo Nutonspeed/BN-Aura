@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Ticket, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Ticket, Clock, CheckCircle, Warning } from '@phosphor-icons/react';
 import { useSupportContext } from '../context';
 
 export default function SupportStats() {

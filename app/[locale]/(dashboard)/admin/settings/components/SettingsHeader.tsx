@@ -1,6 +1,6 @@
 'use client';
 
-import { Settings, Save, RefreshCw } from 'lucide-react';
+import { Gear, FloppyDisk, ArrowsClockwise } from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 
 interface SettingsHeaderProps {

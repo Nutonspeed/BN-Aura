@@ -1,6 +1,6 @@
 'use client';
 
-import { Search, Filter } from 'lucide-react';
+import { MagnifyingGlass, Funnel } from '@phosphor-icons/react';
 import { useSupportContext } from '../context';
 
 export default function TicketFilters() {

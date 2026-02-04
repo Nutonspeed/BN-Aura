@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Eye, Send, Plus, Trash2, Edit2, Mail, Code, FileText, User, Calendar, DollarSign, AlertCircle } from 'lucide-react';
+import { FloppyDisk, Eye, PaperPlaneTilt, Plus, Trash, PencilSimple, EnvelopeSimple, Code, FileText, User, CalendarDots, CurrencyDollar, WarningCircle } from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 
 interface EmailTemplate {

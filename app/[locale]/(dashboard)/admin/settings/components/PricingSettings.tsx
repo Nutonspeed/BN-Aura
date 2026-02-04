@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, Edit2, DollarSign, Users, Zap, Package, Percent, Clock } from 'lucide-react';
+import { FloppyDisk, Plus, Trash, PencilSimple, CurrencyDollar, Users, Lightning, Package, Percent, Clock } from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 import { SystemSettings } from '../types';
 

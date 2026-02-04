@@ -2,15 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { 
-  Building2, 
+  Buildings, 
   Globe, 
-  Zap, 
-  Mail, 
+  Lightning, 
+  EnvelopeSimple, 
   Shield, 
   CreditCard, 
   Palette,
   Database
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 
 const navigationSections = [

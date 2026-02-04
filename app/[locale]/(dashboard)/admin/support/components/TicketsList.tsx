@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Clock, User, Building2, MessageSquare, Eye, Edit } from 'lucide-react';
+import { Clock, User, Buildings, ChatCircle, Eye, PencilSimple } from '@phosphor-icons/react';
 import { useSupportContext } from '../context';
 import { SupportTicket } from '../types';
 

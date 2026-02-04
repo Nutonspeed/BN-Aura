@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, Plus, Eye, Edit, Trash2, Clock, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { MagnifyingGlass, Funnel, Plus, Eye, PencilSimple, Trash, Clock, WarningCircle, CheckCircle, XCircle } from '@phosphor-icons/react';
 import { SupportTicket } from '../types';
 
 interface SupportTicketTableProps {

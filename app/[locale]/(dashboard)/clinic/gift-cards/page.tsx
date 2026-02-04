@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Gift, Plus, Search, Copy, Mail, Download, Eye, MoreHorizontal } from 'lucide-react';
+import { Gift, Plus, MagnifyingGlass, Copy, EnvelopeSimple, DownloadSimple, Eye, DotsThree } from '@phosphor-icons/react';
 
 interface GiftCard {
   id: string;
@@ -118,7 +118,7 @@ export default function GiftCardsPage() {
       {/* Filters & Search */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
             type="text"
             placeholder="ค้นหาด้วยรหัสหรือชื่อผู้รับ..."
@@ -183,7 +183,7 @@ export default function GiftCardsPage() {
                   </span>
                 </div>
                 <button className="text-gray-400 hover:text-gray-600">
-                  <MoreHorizontal className="w-5 h-5" />
+                  <DotsThree className="w-5 h-5" />
                 </button>
               </div>
 
@@ -216,10 +216,10 @@ export default function GiftCardsPage() {
                     <Eye className="w-4 h-4" />
                   </button>
                   <button className="hover:text-indigo-600">
-                    <Mail className="w-4 h-4" />
+                    <EnvelopeSimple className="w-4 h-4" />
                   </button>
                   <button className="hover:text-indigo-600">
-                    <Download className="w-4 h-4" />
+                    <DownloadSimple className="w-4 h-4" />
                   </button>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Mail, Plus, Send, Clock, Eye, Users, TrendingUp } from 'lucide-react';
+import { EnvelopeSimple, Plus, PaperPlaneTilt, Clock, Eye, Users, TrendUp } from '@phosphor-icons/react';
 
 interface Campaign {
   id: string;
@@ -53,7 +53,7 @@ export default function EmailCampaignsPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Mail className="w-7 h-7 text-indigo-600" /> Email Campaigns
+            <EnvelopeSimple className="w-7 h-7 text-indigo-600" /> Email Campaigns
           </h1>
           <p className="text-gray-600">สร้างและจัดการแคมเปญอีเมล</p>
         </div>
@@ -66,7 +66,7 @@ export default function EmailCampaignsPage() {
         <div className="bg-white rounded-xl p-4 border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <Mail className="w-5 h-5 text-indigo-600" />
+              <EnvelopeSimple className="w-5 h-5 text-indigo-600" />
             </div>
             <div>
               <p className="text-sm text-gray-600">แคมเปญทั้งหมด</p>
@@ -77,7 +77,7 @@ export default function EmailCampaignsPage() {
         <div className="bg-white rounded-xl p-4 border">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-              <Send className="w-5 h-5 text-green-600" />
+              <PaperPlaneTilt className="w-5 h-5 text-green-600" />
             </div>
             <div>
               <p className="text-sm text-gray-600">ส่งแล้ว</p>
@@ -115,7 +115,7 @@ export default function EmailCampaignsPage() {
         </div>
       ) : campaigns.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border">
-          <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <EnvelopeSimple className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500">ยังไม่มีแคมเปญ</p>
           <button onClick={() => setShowCreate(true)} className="mt-4 text-indigo-600 hover:underline">
             สร้างแคมเปญแรก

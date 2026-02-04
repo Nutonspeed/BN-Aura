@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Video, Calendar, Plus, ExternalLink, Clock, User } from 'lucide-react';
+import { VideoCamera, CalendarDots, Plus, ArrowSquareOut, Clock, User } from '@phosphor-icons/react';
 
 interface Consultation {
   id: string;
@@ -101,7 +101,7 @@ export default function ConsultationsPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Video className="w-7 h-7 text-indigo-600" /> Virtual Consultations
+            <VideoCamera className="w-7 h-7 text-indigo-600" /> Virtual Consultations
           </h1>
           <p className="text-gray-600">ปรึกษาออนไลน์ผ่านวิดีโอคอล</p>
         </div>
@@ -134,7 +134,7 @@ export default function ConsultationsPage() {
         </div>
       ) : consultations.length === 0 ? (
         <div className="text-center py-12 bg-white rounded-xl border">
-          <Video className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <VideoCamera className="w-12 h-12 text-gray-300 mx-auto mb-3" />
           <p className="text-gray-500">ยังไม่มีการปรึกษาออนไลน์</p>
         </div>
       ) : (
@@ -144,7 +144,7 @@ export default function ConsultationsPage() {
               <div className="flex justify-between items-start">
                 <div className="flex gap-4">
                   <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <Video className="w-6 h-6 text-indigo-600" />
+                    <VideoCamera className="w-6 h-6 text-indigo-600" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
@@ -168,7 +168,7 @@ export default function ConsultationsPage() {
                         rel="noopener noreferrer"
                         className="flex items-center gap-1 px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
                       >
-                        <ExternalLink className="w-4 h-4" /> เข้าห้อง
+                        <ArrowSquareOut className="w-4 h-4" /> เข้าห้อง
                       </a>
                       <button
                         onClick={() => updateStatus(c.id, 'in_progress')}

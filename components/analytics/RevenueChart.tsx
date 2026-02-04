@@ -41,19 +41,19 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
   }, [clinicId, period]);
 
   return (
-    <div className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group h-full">
+    <div className="bg-card p-6 rounded-2xl border border-border shadow-card space-y-6 relative overflow-hidden group h-full">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
             <TrendUp className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white uppercase tracking-tight">Revenue Intelligence</h3>
+            <h3 className="text-lg font-semibold text-foreground">Revenue Intelligence</h3>
             <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Growth Analytics & Trends</p>
           </div>
         </div>
 
-        <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
+        <div className="flex bg-secondary p-1 rounded-xl border border-border">
           {(['daily', 'weekly', 'monthly'] as const).map((p) => (
             <button
               key={p}
@@ -61,7 +61,7 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
               className={`px-4 py-2 text-[10px] font-bold uppercase tracking-tighter rounded-lg transition-all ${
                 period === p 
                   ? 'bg-primary text-primary-foreground shadow-lg' 
-                  : 'text-muted-foreground hover:text-white'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {p}
@@ -117,19 +117,21 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
                 strokeWidth={3}
                 fillOpacity={1} 
                 fill="url(#colorRevenue)" 
+                isAnimationActive={true}
                 animationDuration={1500}
+                animationEasing="ease-out"
               />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       )}
 
-      <div className="pt-4 border-t border-white/5 flex items-center justify-between text-[10px] uppercase tracking-widest font-bold text-muted-foreground relative z-10">
+      <div className="pt-4 border-t border-border flex items-center justify-between text-[10px] uppercase tracking-widest font-medium text-muted-foreground relative z-10">
         <div className="flex items-center gap-2">
           <CalendarDots className="w-3 h-3" />
           Data updated in real-time
         </div>
-        <button className="flex items-center gap-2 hover:text-white transition-colors">
+        <button className="flex items-center gap-2 hover:text-foreground transition-colors">
           <Funnel className="w-3 h-3" />
           Filter Advanced
         </button>

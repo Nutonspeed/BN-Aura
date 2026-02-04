@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Users, Mail, Phone, Clock, Filter, Search, ArrowUpRight } from 'lucide-react';
+import { ChatCircle, Users, EnvelopeSimple, Phone, Clock, Funnel, MagnifyingGlass, ArrowUpRight } from '@phosphor-icons/react';
 
 export default function ContactPortalPage() {
   const [activeTab, setActiveTab] = useState('messages');

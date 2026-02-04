@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { SpinnerGap } from '@phosphor-icons/react';
 import { PermissionsProvider, usePermissionsContext } from './context';
 import PermissionsHeader from './components/PermissionsHeader';
 import NavigationTabs from './components/NavigationTabs';

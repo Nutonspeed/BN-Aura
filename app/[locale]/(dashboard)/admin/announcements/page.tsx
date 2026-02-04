@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Megaphone } from 'lucide-react';
+import { Plus, Megaphone } from '@phosphor-icons/react';
 import { AnnouncementProvider, useAnnouncementContext } from './context';
 import AnnouncementsHeader from './components/AnnouncementsHeader';
 import AnnouncementForm from './components/AnnouncementForm';

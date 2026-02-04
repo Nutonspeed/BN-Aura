@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { SpinnerGap } from '@phosphor-icons/react';
 import { SettingsProvider, useSettingsContext } from './context';
 import SettingsHeader from './components/SettingsHeader';
 import SettingsNavigation from './components/SettingsNavigation';

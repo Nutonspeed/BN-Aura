@@ -5,23 +5,23 @@ import { motion } from 'framer-motion';
 import { 
   ArrowLeft, 
   Globe, 
-  Server, 
+  HardDrives, 
   Wifi, 
-  WifiOff, 
-  AlertTriangle,
+  WifiSlash, 
+  Warning,
   CheckCircle,
   Clock,
-  Activity,
-  Building2,
+  Pulse,
+  Buildings,
   Users,
   Database,
   Cloud,
   Shield,
-  ChevronLeft,
-  ChevronRight,
-  RefreshCw,
+  CaretLeft,
+  CaretRight,
+  ArrowsClockwise,
   Wifi as WifiIcon
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import NetworkTopology from '@/components/NetworkTopology';
 import NetworkHeatMap from '@/components/NetworkHeatMap';

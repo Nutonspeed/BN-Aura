@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CreditCard, RefreshCw, Download, Loader2, Package, FileText } from 'lucide-react';
+import { CreditCard, ArrowsClockwise, DownloadSimple, SpinnerGap, Package, FileText } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useBillingData } from './hooks/useBillingData';
 import BillingStatsCards from './components/BillingStatsCards';

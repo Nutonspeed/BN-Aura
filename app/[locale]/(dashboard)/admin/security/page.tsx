@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, XCircle } from 'lucide-react';
+import { Shield, XCircle } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import SecurityMetrics from './components/SecurityMetrics';
 import SecurityAlerts from './components/SecurityAlerts';

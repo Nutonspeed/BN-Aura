@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, AlertCircle, BarChart3, DollarSign, Zap, Building2 } from 'lucide-react';
+import { SpinnerGap, WarningCircle, ChartBar, CurrencyDollar, Lightning, Buildings } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 

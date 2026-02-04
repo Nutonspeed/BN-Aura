@@ -3,3 +3,8 @@ export { Card, CardHeader, CardContent, CardFooter } from './Card';
 export { Badge, StatusBadge } from './Badge';
 export { ProgressBar, CircularProgress } from './ProgressBar';
 export { Button, IconButton } from './Button';
+export { DataTable } from './DataTable';
+export type { Column } from './DataTable';
+export { Input, Textarea } from './Input';
+export { Select, Checkbox, RadioGroup } from './Select';
+export { Modal, ModalFooter, ConfirmModal } from './Modal';

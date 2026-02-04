@@ -46,29 +46,29 @@ export default function POSCart({
   const displayPrice = formatPrice || defaultFormatPrice;
 
   return (
-    <div className="flex flex-col h-full bg-[#0A0A0A] border-l border-white/10 w-full max-w-[400px]">
+    <div className="flex flex-col h-full bg-card border-l border-border w-full max-w-[400px]">
       {/* Header */}
-      <div className="p-6 border-b border-white/10 flex items-center justify-between">
+      <div className="p-6 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
             <ShoppingCart className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-black text-white uppercase tracking-tight text-glow">Current Bill</h3>
+          <h3 className="text-lg font-semibold text-foreground">Current Bill</h3>
         </div>
-        <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+        <span className="px-3 py-1 rounded-full bg-secondary border border-border text-xs font-medium text-muted-foreground">
           {items.length} Items
         </span>
       </div>
 
       {/* Customer Selection */}
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-border">
         <button 
           onClick={onSelectCustomer}
           className={cn(
             "w-full flex items-center justify-between p-4 rounded-[24px] border transition-all",
             customer 
               ? "bg-primary/10 border-primary/30 group hover:border-primary/50" 
-              : "bg-white/5 border-white/10 hover:border-white/20 border-dashed"
+              : "bg-secondary border-border hover:border-primary/30 border-dashed"
           )}
         >
           <div className="flex items-center gap-4">
@@ -85,7 +85,7 @@ export default function POSCart({
               )}>
                 Patient Identity
               </p>
-              <p className="text-sm font-bold text-white truncate max-w-[180px]">
+              <p className="text-sm font-semibold text-foreground truncate max-w-[180px]">
                 {customer ? customer.full_name : 'Select or Link Patient'}
               </p>
             </div>
@@ -105,11 +105,11 @@ export default function POSCart({
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="group relative bg-white/5 border border-white/5 rounded-2xl p-4 hover:border-white/10 transition-all"
+                  className="group relative bg-secondary border border-border rounded-xl p-4 hover:border-primary/30 transition-all"
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="space-y-0.5 max-w-[70%]">
-                      <h4 className="text-xs font-black text-white line-clamp-1 uppercase tracking-tight">{item.item_name}</h4>
+                      <h4 className="text-sm font-semibold text-foreground line-clamp-1">{item.item_name}</h4>
                       <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest">{item.item_type}</p>
                     </div>
                     <button 
@@ -128,7 +128,7 @@ export default function POSCart({
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="w-8 text-center text-xs font-black text-white tabular-nums">{item.quantity}</span>
+                      <span className="w-8 text-center text-xs font-bold text-foreground tabular-nums">{item.quantity}</span>
                       <button 
                         onClick={() => onUpdateQuantity(item.id, 1)}
                         className="p-1.5 hover:text-primary transition-colors text-white/40"
@@ -136,7 +136,7 @@ export default function POSCart({
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
-                    <p className="text-sm font-black text-white tracking-tighter tabular-nums">
+                    <p className="text-sm font-bold text-foreground tabular-nums">
                       {displayPrice(item.total)}
                     </p>
                   </div>

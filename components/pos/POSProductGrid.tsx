@@ -40,12 +40,12 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
     <div className="flex flex-col h-full space-y-6">
       {/* Tabs & Search */}
       <div className="space-y-4">
-        <div className="flex p-1 bg-white/5 border border-white/10 rounded-2xl">
+        <div className="flex p-1 bg-secondary border border-border rounded-xl">
           <button
             onClick={() => { setActiveTab('TREATMENT'); setSelectedCategory('all'); }}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-              activeTab === 'TREATMENT' ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-white"
+              activeTab === 'TREATMENT' ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
             )}
           >
             <FirstAidKit className="w-4 h-4" />
@@ -55,7 +55,7 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
             onClick={() => { setActiveTab('PRODUCT'); setSelectedCategory('all'); }}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all",
-              activeTab === 'PRODUCT' ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-white"
+              activeTab === 'PRODUCT' ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
             )}
           >
             <Package className="w-4 h-4" />
@@ -71,13 +71,13 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
               placeholder={`Search ${activeTab.toLowerCase()}s...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl py-3 pl-11 pr-4 text-sm text-white focus:outline-none focus:border-primary/50 transition-all backdrop-blur-md"
+              className="w-full bg-secondary border border-border rounded-xl py-3 pl-11 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
             />
           </div>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-2xl px-4 py-2 text-xs font-bold text-white focus:outline-none focus:border-primary/50 appearance-none min-w-[120px]"
+            className="bg-secondary border border-border rounded-xl px-4 py-2 text-xs font-medium text-foreground focus:outline-none focus:border-primary appearance-none min-w-[120px]"
           >
             {categories.map(cat => (
               <option key={cat} value={cat} className="bg-[#0A0A0A]">{cat.toUpperCase()}</option>
@@ -95,7 +95,7 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => onSelectItem(item, activeTab)}
-              className="group relative flex flex-col p-4 bg-white/5 border border-white/10 rounded-3xl hover:border-primary/40 transition-all text-left overflow-hidden"
+              className="group relative flex flex-col p-4 bg-card border border-border rounded-xl hover:border-primary/40 transition-all text-left overflow-hidden shadow-card"
             >
               <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
@@ -104,13 +104,13 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
               </div>
 
               <div className="mb-4">
-                <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
+                <div className="w-10 h-10 rounded-xl bg-secondary border border-border flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
                   {activeTab === 'TREATMENT' ? <FirstAidKit className="w-5 h-5" /> : <Package className="w-5 h-5" />}
                 </div>
               </div>
 
               <div className="flex-1 space-y-1">
-                <h4 className="text-sm font-black text-white group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                   {activeTab === 'TREATMENT' 
                     ? (typeof item.names === 'object' ? (item.names.th || item.names.en) : item.names)
                     : item.name}
@@ -128,8 +128,8 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
                 </div>
               </div>
 
-              <div className="mt-4 pt-3 border-t border-white/5">
-                <p className="text-lg font-black text-white tracking-tighter tabular-nums">
+              <div className="mt-4 pt-3 border-t border-border">
+                <p className="text-lg font-bold text-foreground tabular-nums">
                   {displayPrice(activeTab === 'TREATMENT' ? item.price_min : item.sale_price)}
                 </p>
               </div>

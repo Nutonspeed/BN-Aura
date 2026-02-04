@@ -227,18 +227,18 @@ export default function POSPage() {
               <SquaresFour className="w-4 h-4" />
               Sales Orchestration
             </div>
-            <h1 className="text-4xl font-black text-white uppercase tracking-tight">Point of <span className="text-primary text-glow">Sale</span></h1>
+            <h1 className="text-4xl font-heading font-bold text-foreground tracking-tight">Point of <span className="text-primary">Sale</span></h1>
           </div>
           
           <div className="flex items-center gap-4">
-            <div className="flex bg-white/5 border border-white/10 p-1 rounded-2xl mr-2">
+            <div className="flex bg-secondary border border-border p-1 rounded-xl mr-2">
               {(['THB', 'USD'] as const).map((curr) => (
                 <button
                   key={curr}
                   onClick={() => setCurrency(curr)}
                   className={cn(
                     "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                    currency === curr ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-white"
+                    currency === curr ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {curr}
@@ -247,7 +247,7 @@ export default function POSPage() {
             </div>
             <button 
               onClick={() => router.push('/clinic/pos/history')}
-              className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all"
+              className="flex items-center gap-2 px-5 py-3 bg-secondary border border-border rounded-xl text-xs font-medium text-foreground hover:bg-accent transition-all"
             >
               <ClockCounterClockwise className="w-4 h-4" />
               Recent Logs
@@ -296,7 +296,7 @@ export default function POSPage() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg bg-[#0A0A0A] border border-white/10 rounded-[40px] p-10 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="w-full max-w-lg bg-card border border-border rounded-2xl p-8 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
             >
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
@@ -304,7 +304,7 @@ export default function POSPage() {
                     <User className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-white uppercase tracking-tight">Select Patient</h3>
+                    <h3 className="text-lg font-semibold text-foreground">Select Patient</h3>
                     <p className="text-sm text-muted-foreground italic font-light">Linking transaction to identity</p>
                   </div>
                 </div>
@@ -321,7 +321,7 @@ export default function POSPage() {
                   value={customerSearch}
                   onChange={(e) => setCustomerSearch(e.target.value)}
                   autoFocus
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm text-white focus:outline-none focus:border-primary/50 transition-all"
+                  className="w-full bg-secondary border border-border rounded-xl py-3 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
                 />
               </div>
 
@@ -337,7 +337,7 @@ export default function POSPage() {
                       "w-full flex items-center justify-between p-4 rounded-2xl border transition-all",
                       selectedCustomer?.id === customer.id 
                         ? "bg-primary/20 border-primary/40" 
-                        : "bg-white/5 border-white/5 hover:border-white/10 hover:bg-white/[0.08]"
+                        : "bg-secondary border-border hover:border-primary/30"
                     )}
                   >
                     <div className="flex items-center gap-4">
@@ -345,7 +345,7 @@ export default function POSPage() {
                         {customer.full_name.charAt(0)}
                       </div>
                       <div className="text-left">
-                        <p className="text-sm font-bold text-white">{customer.full_name}</p>
+                        <p className="text-sm font-semibold text-foreground">{customer.full_name}</p>
                         <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{customer.phone || 'No Phone'}</p>
                       </div>
                     </div>
@@ -400,7 +400,7 @@ export default function POSPage() {
               <div className="mt-8 flex justify-center print:hidden">
                 <button
                   onClick={() => setTransactionSuccessData(null)}
-                  className="px-12 py-4 bg-white/5 border border-white/10 text-white rounded-[24px] font-black uppercase tracking-widest hover:bg-white/10 transition-all text-xs"
+                  className="px-10 py-3 bg-secondary border border-border text-foreground rounded-xl font-medium hover:bg-accent transition-all text-sm"
                 >
                   Close & New Sale
                 </button>

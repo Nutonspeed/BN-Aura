@@ -44,45 +44,45 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="glass-card p-6 rounded-2xl border border-white/10">
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-purple-500/10 rounded-xl">
               <Lightning className="w-6 h-6 text-purple-400" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">Total Suggestions</p>
-              <h4 className="text-2xl font-black text-white">{data.suggestionsMade}</h4>
+              <h4 className="text-2xl font-bold text-foreground">{data.suggestionsMade}</h4>
             </div>
           </div>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl border border-white/10">
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-emerald-500/10 rounded-xl">
               <ThumbsUp className="w-6 h-6 text-emerald-400" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">Accepted</p>
-              <h4 className="text-2xl font-black text-white">{data.suggestionsAccepted}</h4>
+              <h4 className="text-2xl font-bold text-foreground">{data.suggestionsAccepted}</h4>
             </div>
           </div>
           <p className="text-sm text-emerald-400 font-medium">{data.acceptanceRate}% Rate</p>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl border border-white/10">
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-blue-500/10 rounded-xl">
               <TrendUp className="w-6 h-6 text-blue-400" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">Deal Prob. Lift</p>
-              <h4 className="text-2xl font-black text-white">+{data.avgDealProbabilityImprovement}%</h4>
+              <h4 className="text-2xl font-bold text-foreground">+{data.avgDealProbabilityImprovement}%</h4>
             </div>
           </div>
           <p className="text-sm text-blue-400 font-medium">Impact on deals</p>
         </div>
 
-        <div className="glass-card p-6 rounded-2xl border border-white/10">
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-pink-500/10 rounded-xl">
               <Sparkle className="w-6 h-6 text-pink-400" />
@@ -102,8 +102,8 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Usage Trend Chart */}
-        <div className="lg:col-span-2 glass-card p-6 rounded-2xl border border-white/10">
-          <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+        <div className="lg:col-span-2 bg-card p-6 rounded-2xl border border-border shadow-card">
+          <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
             <ChatCircle className="w-5 h-5 text-primary" />
             AI Usage & Acceptance Trend
           </h3>
@@ -150,8 +150,8 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
         </div>
 
         {/* Top Prompts */}
-        <div className="glass-card p-6 rounded-2xl border border-white/10">
-          <h3 className="text-lg font-bold text-white mb-6">Top Performing Prompts</h3>
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card">
+          <h3 className="text-lg font-semibold text-foreground mb-6">Top Performing Prompts</h3>
           <div className="space-y-4">
             {data.topPerformingPrompts.map((item, i) => (
               <div key={i} className="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">

@@ -22,6 +22,7 @@ import {
   MapPin,
   Shield
 } from '@phosphor-icons/react';
+import AnimatedNumber from '@/components/ui/premium/AnimatedNumber';
 
 interface Clinic {
   id: string;
@@ -310,10 +311,10 @@ export default function SuperAdminDashboard() {
   }
 
   const stats = [
-    { label: 'Total Clinics', value: globalStats.totalClinics.toString(), icon: Buildings, color: 'text-primary' },
-    { label: 'Global Customers', value: globalStats.globalCustomers.toLocaleString(), icon: Users, color: 'text-emerald-400' },
-    { label: 'Monthly AI Load', value: `${(globalStats.monthlyAILoad / 1000).toFixed(1)}k`, icon: Lightning, color: 'text-amber-400' },
-    { label: 'Active Personnel', value: globalStats.activeSessions.toLocaleString(), icon: Pulse, color: 'text-rose-400' },
+    { label: 'Total Clinics', value: globalStats.totalClinics, icon: Buildings, color: 'text-primary', suffix: '' },
+    { label: 'Global Customers', value: globalStats.globalCustomers, icon: Users, color: 'text-emerald-400', suffix: '' },
+    { label: 'Monthly AI Load', value: globalStats.monthlyAILoad / 1000, icon: Lightning, color: 'text-amber-400', suffix: 'k', decimals: 1 },
+    { label: 'Active Personnel', value: globalStats.activeSessions, icon: Pulse, color: 'text-rose-400', suffix: '' },
   ];
 
   return (
@@ -397,7 +398,9 @@ export default function SuperAdminDashboard() {
             </div>
             <div className="space-y-2 relative z-10">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{stat.label}</p>
-              <p className="text-3xl font-black text-foreground tracking-tighter">{stat.value}</p>
+              <p className="text-3xl font-bold text-foreground tracking-tight">
+                <AnimatedNumber value={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} duration={1.5} />
+              </p>
             </div>
           </motion.div>
         ))}

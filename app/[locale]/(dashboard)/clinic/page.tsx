@@ -25,6 +25,7 @@ import StaffIntelligence from '@/components/analytics/StaffIntelligence';
 import StrategicForecast from '@/components/analytics/StrategicForecast';
 import { useEffect, useState, useMemo } from 'react';
 import { StatCard, StatCardSkeleton } from '@/components/ui/StatCard';
+import AnimatedNumber from '@/components/ui/premium/AnimatedNumber';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 
 export default function ClinicDashboard() {
@@ -151,7 +152,7 @@ export default function ClinicDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 + i * 0.1 }}
             whileHover={{ y: -5, transition: { duration: 0.2 } }}
-            className="glass-card p-6 rounded-3xl relative overflow-hidden group"
+            className="bg-card p-6 rounded-2xl border border-border shadow-card relative overflow-hidden group"
           >
             <div className="absolute -top-4 -right-4 p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-500">
               <stat.icon className="w-16 h-16 text-primary" />
@@ -160,7 +161,7 @@ export default function ClinicDashboard() {
             <div className="space-y-2 relative z-10">
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">{stat.label}</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-foreground tracking-tighter tabular-nums">{stat.value}</span>
+                <span className="text-3xl font-bold text-foreground tracking-tight tabular-nums">{stat.value}</span>
                 <span className={cn(
                   "text-[10px] font-bold flex items-center px-1.5 py-0.5 rounded-full bg-white/5",
                   stat.trend === 'up' ? "text-emerald-400" : "text-rose-400"

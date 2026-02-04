@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Download, XCircle } from 'lucide-react';
+import { FileText, DownloadSimple, XCircle } from '@phosphor-icons/react';
 
 interface InvoiceModalProps {
   invoice: {
@@ -67,7 +67,7 @@ export default function InvoiceModal({ invoice, onClose, onDownload, formatCurre
                   onClick={() => onDownload(invoice.id)}
                   className="flex-1 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2"
                 >
-                  <Download className="w-4 h-4 stroke-[3px]" />
+                  <DownloadSimple className="w-4 h-4 stroke-[3px]" />
                   Download PDF
                 </button>
                 <button

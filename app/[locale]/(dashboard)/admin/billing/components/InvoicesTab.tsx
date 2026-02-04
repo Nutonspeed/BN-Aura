@@ -1,4 +1,4 @@
-import { FileText, Download, ExternalLink } from 'lucide-react';
+import { FileText, DownloadSimple, ArrowSquareOut } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 
 interface InvoicesTabProps {
@@ -65,7 +65,7 @@ export default function InvoicesTab({ formatCurrency, onDownload, onViewInvoice 
                         onClick={() => onDownload(`INV-2026-00${i}`)}
                         className="p-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all shadow-sm"
                       >
-                        <Download className="w-4 h-4" />
+                        <DownloadSimple className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => onViewInvoice({ 
@@ -76,7 +76,7 @@ export default function InvoicesTab({ formatCurrency, onDownload, onViewInvoice 
                         })}
                         className="p-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all shadow-sm"
                       >
-                        <ExternalLink className="w-4 h-4" />
+                        <ArrowSquareOut className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

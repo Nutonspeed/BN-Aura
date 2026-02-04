@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Trash2, Edit2, Eye, EyeOff, Calendar, Target, Monitor, Flag, Users, BarChart3 } from 'lucide-react';
+import { Trash, PencilSimple, Eye, EyeSlash, CalendarDots, Target, Monitor, Flag, Users, ChartBar } from '@phosphor-icons/react';
 import { useAnnouncementContext } from '../context';
 import { Announcement } from '../types';
 
@@ -116,7 +116,7 @@ export default function AnnouncementsList() {
                 <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1 ${
                   announcement.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'
                 }`}>
-                  {announcement.is_active ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                  {announcement.is_active ? <Eye className="w-3 h-3" /> : <EyeSlash className="w-3 h-3" />}
                   {announcement.is_active ? 'Active' : 'Inactive'}
                 </span>
                 <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-white/10 text-white/60 flex items-center gap-1">
@@ -135,7 +135,7 @@ export default function AnnouncementsList() {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
+                  <CalendarDots className="w-4 h-4" />
                   <span>
                     {new Date(announcement.start_date) > new Date() 
                       ? `Starts ${formatDate(announcement.start_date)}`
@@ -150,7 +150,7 @@ export default function AnnouncementsList() {
 
                 {announcement.read_count !== undefined && (
                   <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4" />
+                    <ChartBar className="w-4 h-4" />
                     <span>{announcement.read_count} views</span>
                   </div>
                 )}
@@ -179,14 +179,14 @@ export default function AnnouncementsList() {
                 className="p-2 text-white/60 hover:text-yellow-400 hover:bg-yellow-400/10 rounded-lg transition-all"
                 title={announcement.is_active ? 'Deactivate' : 'Activate'}
               >
-                {announcement.is_active ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {announcement.is_active ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
               
               <button
                 className="p-2 text-white/60 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                 title="Edit"
               >
-                <Edit2 className="w-4 h-4" />
+                <PencilSimple className="w-4 h-4" />
               </button>
               
               <button
@@ -194,7 +194,7 @@ export default function AnnouncementsList() {
                 className="p-2 text-white/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                 title="Delete"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash className="w-4 h-4" />
               </button>
             </div>
           </div>

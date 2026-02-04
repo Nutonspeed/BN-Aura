@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Eye, Edit, Clock, Building2 } from 'lucide-react';
+import { MagnifyingGlass, Eye, PencilSimple, Clock, Buildings } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import { Subscription } from '../hooks/useBillingData';
 
@@ -69,7 +69,7 @@ export default function SubscriptionsTab({ subscriptions, formatCurrency }: Subs
             </select>
           </div>
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder={tCommon('search')} 
@@ -121,7 +121,7 @@ export default function SubscriptionsTab({ subscriptions, formatCurrency }: Subs
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shadow-sm">
-                        <Building2 className="w-5 h-5 text-blue-400" />
+                        <Buildings className="w-5 h-5 text-blue-400" />
                       </div>
                       <div>
                         <p className="font-bold text-white tracking-tight">{subscription.clinic_name}</p>
@@ -157,7 +157,7 @@ export default function SubscriptionsTab({ subscriptions, formatCurrency }: Subs
                         <Eye className="w-4 h-4" />
                       </button>
                       <button className="p-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all shadow-sm">
-                        <Edit className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

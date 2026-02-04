@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { DollarSign, Package, AlertTriangle, TrendingUp } from 'lucide-react';
+import { CurrencyDollar, Package, Warning, TrendUp } from '@phosphor-icons/react';
 import { BillingStats } from '../hooks/useBillingData';
 
 interface BillingStatsCardsProps {
@@ -18,7 +18,7 @@ export default function BillingStatsCards({ stats, formatCurrency }: BillingStat
       >
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-emerald-500/20 rounded-xl">
-            <DollarSign className="w-6 h-6 text-emerald-400" />
+            <CurrencyDollar className="w-6 h-6 text-emerald-400" />
           </div>
         </div>
         <div>
@@ -52,7 +52,7 @@ export default function BillingStatsCards({ stats, formatCurrency }: BillingStat
       >
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-amber-500/20 rounded-xl">
-            <AlertTriangle className="w-6 h-6 text-amber-400" />
+            <Warning className="w-6 h-6 text-amber-400" />
           </div>
         </div>
         <div>
@@ -69,7 +69,7 @@ export default function BillingStatsCards({ stats, formatCurrency }: BillingStat
       >
         <div className="flex items-center justify-between mb-4">
           <div className="p-3 bg-red-500/20 rounded-xl">
-            <TrendingUp className="w-6 h-6 text-red-400" />
+            <TrendUp className="w-6 h-6 text-red-400" />
           </div>
         </div>
         <div>

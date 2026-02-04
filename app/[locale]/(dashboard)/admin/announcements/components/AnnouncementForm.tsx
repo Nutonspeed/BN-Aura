@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Eye, Calendar, Target, Monitor, Flag, Bell } from 'lucide-react';
+import { FloppyDisk, Eye, CalendarDots, Target, Monitor, Flag, Bell } from '@phosphor-icons/react';
 import { useAnnouncementContext } from '../context';
 import { AnnouncementFormData } from '../types';
 

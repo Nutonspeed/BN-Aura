@@ -143,20 +143,20 @@ export default function NetworkMapPage() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'online': return <CheckCircle className="w-3 h-3" />;
-      case 'offline': return <WifiOff className="w-3 h-3" />;
-      case 'warning': return <AlertTriangle className="w-3 h-3" />;
+      case 'offline': return <WifiSlash className="w-3 h-3" />;
+      case 'warning': return <Warning className="w-3 h-3" />;
       default: return <Clock className="w-3 h-3" />;
     }
   };
 
   const getNodeIcon = useCallback((type: string) => {
     switch (type) {
-      case 'server': return <Server className="w-5 h-5" />;
+      case 'server': return <HardDrives className="w-5 h-5" />;
       case 'database': return <Database className="w-5 h-5" />;
       case 'api': return <Cloud className="w-5 h-5" />;
       case 'auth': return <Shield className="w-5 h-5" />;
       case 'storage': return <Database className="w-5 h-5" />;
-      case 'clinic': return <Building2 className="w-5 h-5" />;
+      case 'clinic': return <Buildings className="w-5 h-5" />;
       default: return <Globe className="w-5 h-5" />;
     }
   }, []);
@@ -256,7 +256,7 @@ export default function NetworkMapPage() {
               onClick={refresh}
               className="p-3 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105"
             >
-              <RefreshCw className={`w-5 h-5 text-white/80 ${realTimeLoading ? 'animate-spin' : ''}`} />
+              <ArrowsClockwise className={`w-5 h-5 text-white/80 ${realTimeLoading ? 'animate-spin' : ''}`} />
             </button>
             
             <div className="flex gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-1">
@@ -299,7 +299,7 @@ export default function NetworkMapPage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 hover:scale-105">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-emerald-500/20 rounded-lg">
-                <Building2 className="w-5 h-5 text-emerald-400" />
+                <Buildings className="w-5 h-5 text-emerald-400" />
               </div>
               <div>
                 <p className="text-white/60 text-sm font-medium">Clinics</p>
@@ -310,7 +310,7 @@ export default function NetworkMapPage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 hover:scale-105">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-purple-500/20 rounded-lg">
-                <Server className="w-5 h-5 text-purple-400" />
+                <HardDrives className="w-5 h-5 text-purple-400" />
               </div>
               <div>
                 <p className="text-white/60 text-sm font-medium">Services</p>
@@ -321,7 +321,7 @@ export default function NetworkMapPage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 hover:scale-105">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-amber-500/20 rounded-lg">
-                <AlertTriangle className="w-5 h-5 text-amber-400" />
+                <Warning className="w-5 h-5 text-amber-400" />
               </div>
               <div>
                 <p className="text-white/60 text-sm font-medium">Warnings</p>
@@ -332,7 +332,7 @@ export default function NetworkMapPage() {
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-all duration-300 hover:scale-105">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-rose-500/20 rounded-lg">
-                <WifiOff className="w-5 h-5 text-rose-400" />
+                <WifiSlash className="w-5 h-5 text-rose-400" />
               </div>
               <div>
                 <p className="text-white/60 text-sm font-medium">Offline</p>
@@ -363,7 +363,7 @@ export default function NetworkMapPage() {
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/20 focus:bg-white/10 transition-all duration-300"
                 />
                 <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                  <Activity className="w-5 h-5 text-white/40" />
+                  <Pulse className="w-5 h-5 text-white/40" />
                 </div>
               </div>
             </div>
@@ -574,7 +574,7 @@ export default function NetworkMapPage() {
                   disabled={currentPage === 1}
                   className="p-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <CaretLeft className="w-4 h-4" />
                 </button>
                 <span className="text-white/60 text-sm px-3">
                   Page {currentPage} of {totalPages}
@@ -584,7 +584,7 @@ export default function NetworkMapPage() {
                   disabled={currentPage === totalPages}
                   className="p-2 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <CaretRight className="w-4 h-4" />
                 </button>
               </div>
             )}

@@ -35,7 +35,7 @@ export default function MetricsCards({ data, formatCurrency, formatNumber, forma
       title: 'Monthly Revenue',
       value: formatCurrency(data.revenue.monthly),
       growth: data.revenue.growth,
-      icon: DollarSign,
+      icon: CurrencyDollar,
       color: 'text-emerald-400',
       bgColor: 'bg-emerald-500/20'
     },
@@ -43,7 +43,7 @@ export default function MetricsCards({ data, formatCurrency, formatNumber, forma
       title: 'Active Clinics',
       value: formatNumber(data.clinics.active),
       growth: data.clinics.growth,
-      icon: Building2,
+      icon: Buildings,
       color: 'text-blue-400',
       bgColor: 'bg-blue-500/20'
     },
@@ -59,7 +59,7 @@ export default function MetricsCards({ data, formatCurrency, formatNumber, forma
       title: 'Monthly AI Scans',
       value: formatNumber(data.aiUsage.monthlyScans),
       growth: data.aiUsage.growth,
-      icon: Zap,
+      icon: Lightning,
       color: 'text-amber-400',
       bgColor: 'bg-amber-500/20'
     }

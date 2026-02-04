@@ -24,7 +24,7 @@ export default function RevenueChart({ data, formatCurrency }: RevenueChartProps
       className="glass-card p-8 rounded-3xl border border-white/10"
     >
       <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-        <DollarSign className="w-5 h-5 text-primary" />
+        <CurrencyDollar className="w-5 h-5 text-primary" />
         Revenue by Plan
       </h2>
       

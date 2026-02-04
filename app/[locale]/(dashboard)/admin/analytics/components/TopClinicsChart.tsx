@@ -19,7 +19,7 @@ export default function TopClinicsChart({ data, formatNumber }: TopClinicsChartP
       className="glass-card p-8 rounded-3xl border border-white/10"
     >
       <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-        <Zap className="w-5 h-5 text-primary" />
+        <Lightning className="w-5 h-5 text-primary" />
         Top AI Usage Clinics
       </h2>
       
@@ -38,7 +38,7 @@ export default function TopClinicsChart({ data, formatNumber }: TopClinicsChartP
                   {index + 1}
                 </div>
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-blue-400" />
+                  <Buildings className="w-4 h-4 text-blue-400" />
                   <span className="text-white font-medium">{item.clinic}</span>
                 </div>
               </div>
@@ -63,7 +63,7 @@ export default function TopClinicsChart({ data, formatNumber }: TopClinicsChartP
         </div>
       ) : (
         <div className="text-center py-8">
-          <Zap className="w-12 h-12 text-white/20 mx-auto mb-3" />
+          <Lightning className="w-12 h-12 text-white/20 mx-auto mb-3" />
           <p className="text-white/40">No AI usage data available</p>
         </div>
       )}

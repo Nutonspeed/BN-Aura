@@ -12,12 +12,12 @@ import {
   Line
 } from 'recharts';
 import { 
-  Zap, 
+  Lightning, 
   ThumbsUp, 
-  TrendingUp, 
-  MessageSquare,
-  Sparkles
-} from 'lucide-react';
+  TrendUp, 
+  ChatCircle,
+  Sparkle
+} from '@phosphor-icons/react';
 
 interface AIPerformanceData {
   suggestionsMade: number;

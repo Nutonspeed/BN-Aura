@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Activity, 
-  CheckCircle2, 
+  Pulse, 
+  CheckCircle, 
   Circle, 
-  Calendar, 
-  Sparkles,
+  CalendarDots, 
+  Sparkle,
   ArrowRight
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 import { createClient } from '@/lib/supabase/client';
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Phone, Mail, MessageSquare, BadgeCheck, ShieldCheck } from 'lucide-react';
+import { User, Phone, EnvelopeSimple, ChatCircle, SealCheck, ShieldCheck } from '@phosphor-icons/react';
 
 interface SalesRep {
   id: string;

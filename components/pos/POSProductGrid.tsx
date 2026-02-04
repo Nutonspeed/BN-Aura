@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Package, BriefcaseMedical, Tag, Plus, Filter } from 'lucide-react';
+import { MagnifyingGlass, Package, FirstAidKit, Tag, Plus, Funnel } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface POSProductGridProps {

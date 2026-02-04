@@ -9,7 +9,7 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import { Users, Calendar } from 'lucide-react';
+import { Users, CalendarDots } from '@phosphor-icons/react';
 
 interface CohortData {
   cohort: string; // "Jan 2025"

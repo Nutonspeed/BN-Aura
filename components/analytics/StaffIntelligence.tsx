@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Award, 
-  TrendingUp, 
+  Medal, 
+  TrendUp, 
   Star, 
-  ChevronRight,
+  CaretRight,
   Target
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 interface StaffMetric {
   id: string;

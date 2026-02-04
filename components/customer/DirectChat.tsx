@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MessageSquare, 
-  Send, 
+  ChatCircle, 
+  PaperPlaneTilt, 
   X, 
   User, 
-  Sparkles,
+  Sparkle,
   Circle,
-  Loader2
-} from 'lucide-react';
+  SpinnerGap
+} from '@phosphor-icons/react';
 
 interface Message {
   id: string;

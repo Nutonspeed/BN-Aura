@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Trash2, User, ChevronRight, Minus, Plus, CreditCard, Receipt } from 'lucide-react';
+import { ShoppingCart, Trash, User, CaretRight, Minus, Plus, CreditCard, Receipt } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 export interface CartItem {

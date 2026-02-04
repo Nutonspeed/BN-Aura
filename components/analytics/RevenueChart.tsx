@@ -10,7 +10,7 @@ import {
   Tooltip, 
   ResponsiveContainer
 } from 'recharts';
-import { TrendingUp, Calendar, Filter } from 'lucide-react';
+import { TrendUp, CalendarDots, Funnel } from '@phosphor-icons/react';
 
 interface RevenueData {
   name: string;

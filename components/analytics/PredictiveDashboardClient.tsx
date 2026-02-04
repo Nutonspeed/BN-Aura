@@ -15,7 +15,7 @@ import {
   Line
 } from 'recharts';
 import { motion } from 'framer-motion';
-import { Target, TrendingUp, Users, AlertCircle } from 'lucide-react';
+import { Target, TrendUp, Users, WarningCircle } from '@phosphor-icons/react';
 
 export default function PredictiveDashboardClient() {
   // Mock Data for Win Probability Heat Map (Leads)

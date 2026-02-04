@@ -2,16 +2,16 @@
 
 import { motion } from 'framer-motion';
 import { 
-  MessageCircle, 
+  ChatCircle, 
   ThumbsUp, 
   ThumbsDown, 
-  AlertTriangle,
+  Warning,
   Lightbulb,
-  Smile,
-  Meh,
-  Frown,
-  TrendingUp
-} from 'lucide-react';
+  Smiley,
+  SmileyMeh,
+  SmileyXEyes,
+  TrendUp
+} from '@phosphor-icons/react';
 import { 
   BarChart, 
   Bar, 

@@ -3,14 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  TrendingUp, 
+  TrendUp, 
   Package, 
-  ChevronRight,
-  Sparkles,
+  CaretRight,
+  Sparkle,
   ArrowUpRight,
-  Activity,
-  BarChart3
-} from 'lucide-react';
+  Pulse,
+  ChartBar
+} from '@phosphor-icons/react';
 
 interface PredictiveData {
   revenueForecast: {

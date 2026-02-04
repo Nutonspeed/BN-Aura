@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Printer, Download, Share2, CheckCircle2, Building2, MapPin, Phone, User } from 'lucide-react';
+import { Printer, Download, ShareNetwork, CheckCircle, Buildings, MapPin, Phone, User } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';

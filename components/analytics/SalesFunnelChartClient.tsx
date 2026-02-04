@@ -11,7 +11,7 @@ import {
   Cell 
 } from 'recharts';
 import { motion } from 'framer-motion';
-import { Filter } from 'lucide-react';
+import { Funnel } from '@phosphor-icons/react';
 
 const COLORS = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe'];
 

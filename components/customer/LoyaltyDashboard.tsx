@@ -7,17 +7,17 @@ import {
   Crown, 
   Star, 
   Gift, 
-  TrendingUp, 
-  Calendar, 
+  TrendUp, 
+  CalendarDots, 
   Users, 
-  Award,
-  Sparkles,
-  ChevronRight,
+  Medal,
+  Sparkle,
+  CaretRight,
   Trophy,
-  Zap,
+  Lightning,
   Copy,
   Check
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { LoyaltyProfile, LoyaltyTier, Achievement, PointTransaction } from '@/lib/customer/loyaltySystem';
 

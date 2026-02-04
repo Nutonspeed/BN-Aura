@@ -22,18 +22,18 @@ import {
   AreaChart
 } from 'recharts';
 import {
-  TrendingUp,
-  TrendingDown,
+  TrendUp,
+  TrendDown,
   Users,
-  DollarSign,
-  Calendar,
-  Activity,
+  CurrencyDollar,
+  CalendarDots,
+  Pulse,
   Eye,
-  MousePointer,
+  Cursor,
   Clock,
-  AlertCircle,
+  WarningCircle,
   CheckCircle
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useNotifications } from '@/hooks/use-notifications';
 
 interface AnalyticsData {

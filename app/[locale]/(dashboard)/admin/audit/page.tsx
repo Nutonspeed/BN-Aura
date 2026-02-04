@@ -3,8 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
-  Shield, User, CheckCircle, XCircle, Search, RefreshCw, Download, Loader2
-} from 'lucide-react';
+  Shield, User, CheckCircle, XCircle, MagnifyingGlass, ArrowsClockwise, DownloadSimple, SpinnerGap
+} from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 
 interface AuditLog {

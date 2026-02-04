@@ -4,25 +4,25 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import {
-  Building2,
-  Search,
+  Buildings,
+  MagnifyingGlass,
   Plus,
   Shield,
-  Mail,
+  EnvelopeSimple,
   Phone,
   MapPin,
-  Calendar,
+  CalendarDots,
   Users,
   CheckCircle,
   XCircle,
-  Loader2,
-  Edit2,
+  SpinnerGap,
+  PencilSimple,
   Eye,
-  Settings,
-  Activity,
-  DollarSign,
-  AlertCircle
-} from 'lucide-react';
+  Gear,
+  Pulse,
+  CurrencyDollar,
+  WarningCircle
+} from '@phosphor-icons/react';
 
 interface Clinic {
   id: string;

@@ -4,24 +4,24 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Building2, 
+  Buildings, 
   Users, 
-  Activity, 
+  Pulse, 
   ShieldCheck, 
-  Settings, 
-  Zap, 
+  Gear, 
+  Lightning, 
   Globe, 
-  Search,
+  MagnifyingGlass,
   Plus,
-  Loader2,
-  ChevronRight,
-  AlertCircle,
+  SpinnerGap,
+  CaretRight,
+  WarningCircle,
   X,
-  Mail,
+  EnvelopeSimple,
   Phone,
   MapPin,
   Shield
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 
 interface Clinic {
   id: string;

@@ -170,7 +170,7 @@ function BranchManagementContent() {
               className="glass-premium p-8 rounded-[40px] border border-white/10 flex flex-col justify-between group hover:border-primary/40 transition-all duration-500 relative overflow-hidden"
             >
               <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none">
-                <Map className="w-24 h-24 text-primary" />
+                <MapTrifold className="w-24 h-24 text-primary" />
               </div>
 
               <div className="space-y-6 relative z-10">

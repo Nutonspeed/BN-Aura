@@ -88,7 +88,7 @@ export default function DashboardLayout({
       const isSharedRoute = sharedRoutes.some(route => pathname.startsWith(route));
       
       if (isSharedRoute) {
-        let allowedRoles = ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff'];
+        const allowedRoles = ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff'];
         // Appointments and Chat also allow customers
         if (pathname.startsWith('/th/clinic/appointments') || pathname.startsWith('/th/clinic/chat')) {
           allowedRoles.push('customer', 'premium_customer', 'free_customer');

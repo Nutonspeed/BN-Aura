@@ -302,7 +302,7 @@ function CustomerDetailPageContent() {
                     ))}
                     {customer.sales_commissions.length === 0 && (
                       <div className="py-10 text-center opacity-20">
-                        <History className="w-12 h-12 mx-auto mb-4 stroke-[1px]" />
+                        <ClockCounterClockwise className="w-12 h-12 mx-auto mb-4 stroke-[1px]" />
                         <p className="text-xs font-black uppercase tracking-widest">No Activity Records</p>
                       </div>
                     )}
@@ -323,7 +323,7 @@ function CustomerDetailPageContent() {
                 {customer.comparisons && customer.comparisons.length > 0 && (
                   <div className="space-y-6">
                     <h3 className="text-xl font-black text-white uppercase tracking-[0.2em] px-4 flex items-center gap-3">
-                      <History className="w-5 h-5 text-primary" />
+                      <ClockCounterClockwise className="w-5 h-5 text-primary" />
                       Evolution Deltas
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -416,7 +416,7 @@ function CustomerDetailPageContent() {
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                          <History className="w-6 h-6" />
+                          <ClockCounterClockwise className="w-6 h-6" />
                         </div>
                         <div>
                           <h4 className="text-sm font-bold text-white uppercase tracking-widest">
@@ -436,7 +436,7 @@ function CustomerDetailPageContent() {
                 ))}
                 {(!customer.customer_treatment_journeys || customer.customer_treatment_journeys.length === 0) && (
                   <div className="py-20 text-center glass-card rounded-[40px] border border-white/5 opacity-20">
-                    <History className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
+                    <ClockCounterClockwise className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
                     <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Cycle History Detected</p>
                   </div>
                 )}

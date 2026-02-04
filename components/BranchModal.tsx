@@ -185,7 +185,7 @@ export default function BranchModal({ isOpen, onClose, onSuccess, branch }: Bran
                     City Node *
                   </label>
                   <div className="relative">
-                    <Map className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <MapTrifold className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="text"
                       name="city"

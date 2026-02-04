@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AlertTriangle, Package, Check, Bell, Filter } from 'lucide-react';
+import { Warning, Package, Check, Bell, Funnel } from '@phosphor-icons/react';
 
 interface Alert {
   id: string;

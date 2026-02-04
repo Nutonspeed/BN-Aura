@@ -3,21 +3,21 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BarChart3, 
-  TrendingUp, 
-  Zap, 
+  ChartBar, 
+  TrendUp, 
+  Lightning, 
   CreditCard, 
   ArrowUpRight,
   Package,
-  Sparkles,
+  Sparkle,
   Target,
   Clock,
-  CheckCircle2,
-  Loader2,
-  Activity,
+  CheckCircle,
+  SpinnerGap,
+  Pulse,
   X,
   Brain
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { QUOTA_PLANS, type QuotaConfig } from '@/lib/quota/quotaManager';

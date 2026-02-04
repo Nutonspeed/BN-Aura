@@ -4,22 +4,22 @@ import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
-  Mail, 
+  EnvelopeSimple, 
   Phone, 
-  Calendar, 
-  History, 
-  Sparkles, 
+  CalendarDots, 
+  ClockCounterClockwise, 
+  Sparkle, 
   CreditCard, 
   ShieldCheck, 
-  ChevronLeft,
-  Loader2,
-  Edit2,
-  MessageCircle,
+  CaretLeft,
+  SpinnerGap,
+  PencilSimple,
+  ChatCircle,
   Tag,
   Clock,
   ArrowRight,
-  LayoutGrid
-} from 'lucide-react';
+  SquaresFour
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter, useParams } from 'next/navigation';
 import { Link } from '@/i18n/routing';

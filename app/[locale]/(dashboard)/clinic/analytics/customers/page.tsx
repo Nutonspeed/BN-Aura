@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Users, TrendingUp, AlertTriangle, Star, DollarSign, Calendar } from 'lucide-react';
+import { Users, TrendUp, Warning, Star, CurrencyDollar, CalendarDots } from '@phosphor-icons/react';
 
 interface CustomerAnalytics {
   id: string;
@@ -66,7 +66,7 @@ export default function CustomerAnalyticsPage() {
     <div className="p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <TrendingUp className="w-7 h-7 text-indigo-600" /> Customer Analytics
+          <TrendUp className="w-7 h-7 text-indigo-600" /> Customer Analytics
         </h1>
         <p className="text-gray-600">วิเคราะห์ลูกค้าและ Customer Lifetime Value (CLV)</p>
       </div>

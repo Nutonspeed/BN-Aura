@@ -3,22 +3,22 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  History, 
-  Search, 
-  Calendar, 
-  Filter, 
-  ChevronRight, 
-  Loader2, 
+  ClockCounterClockwise, 
+  MagnifyingGlass, 
+  CalendarDots, 
+  Funnel, 
+  CaretRight, 
+  SpinnerGap, 
   ArrowLeft,
   CreditCard,
   ShoppingCart,
   User,
-  CheckCircle2,
+  CheckCircle,
   XCircle,
   Clock,
   Printer,
-  Download
-} from 'lucide-react';
+  DownloadSimple
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
@@ -92,7 +92,7 @@ function POSHistoryContent() {
           </button>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <History className="w-4 h-4" />
+              <ClockCounterClockwise className="w-4 h-4" />
               Audit Log Node
             </div>
             <h1 className="text-4xl font-black text-white uppercase tracking-tight">Sales <span className="text-primary text-glow">History</span></h1>
@@ -101,7 +101,7 @@ function POSHistoryContent() {
 
         <div className="flex bg-white/5 border border-white/10 p-1 rounded-2xl">
           <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by TXN or Patient..."
@@ -118,7 +118,7 @@ function POSHistoryContent() {
         <div className="lg:col-span-2 space-y-4">
           {loading ? (
             <div className="py-20 flex flex-col items-center gap-4">
-              <Loader2 className="w-10 h-10 text-primary animate-spin" />
+              <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
               <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em]">Syncing Audit Stream...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
@@ -186,7 +186,7 @@ function POSHistoryContent() {
                   <h3 className="text-lg font-black text-white uppercase tracking-tight">Receipt Data</h3>
                   <div className="flex gap-2">
                     <button className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"><Printer className="w-4 h-4" /></button>
-                    <button className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"><Download className="w-4 h-4" /></button>
+                    <button className="p-2.5 bg-white/5 border border-white/10 rounded-xl text-muted-foreground hover:text-white transition-all"><DownloadSimple className="w-4 h-4" /></button>
                   </div>
                 </div>
 
@@ -246,7 +246,7 @@ function POSHistoryContent() {
                 className="h-[400px] flex flex-col items-center justify-center glass-card rounded-[40px] border border-white/5 opacity-20 text-center p-10"
               >
                 <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-center mb-6 animate-float">
-                  <History className="w-8 h-8" />
+                  <ClockCounterClockwise className="w-8 h-8" />
                 </div>
                 <p className="text-xs font-black uppercase tracking-widest">Select Node to Inspect Payload</p>
               </motion.div>
@@ -262,7 +262,7 @@ export default function POSHistoryPage() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Accessing Audit Cluster...</p>
       </div>
     }>

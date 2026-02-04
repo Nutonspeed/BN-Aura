@@ -51,16 +51,19 @@ function CustomerCard({ customer }: { customer: Customer }) {
         <span className="text-[10px] text-muted-foreground italic">
           Last contact: {customer.lastContactDate ? new Date(customer.lastContactDate).toLocaleDateString() : 'Never'}
         </span>
-        <button className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors">
+        <Link
+          href={`/sales/chat?customerId=${encodeURIComponent(customer.id)}`}
+          className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors"
+        >
           <MessageSquare className="w-3 h-3" />
           Chat
-        </button>
+        </Link>
       </div>
     </motion.div>
   );
 }
 
-export default function MyCustomersSection({ salesId }: { salesId: string }) {
+export default function MyCustomersSection({ salesId }: { salesId?: string }) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -77,7 +80,7 @@ export default function MyCustomersSection({ salesId }: { salesId: string }) {
           id: customer.id,
           name: customer.full_name,
           email: customer.email,
-          phone: customer.metadata?.phone || '',
+          phone: customer.phone || customer.metadata?.phone || '',
           totalSpent: 0, // TODO: Calculate from transactions
           lastContactDate: null // TODO: Get from last interaction
         }));
@@ -92,7 +95,7 @@ export default function MyCustomersSection({ salesId }: { salesId: string }) {
 
   useEffect(() => {
     fetchCustomers();
-  }, [salesId]);
+  }, []);
 
   const handleCustomerSuccess = () => {
     fetchCustomers(); // Refresh customer list after creation

@@ -15,28 +15,34 @@ export async function POST(request: NextRequest) {
 
     const supabase = await createClient();
     const adminClient = createAdminClient();
-    
-    // TODO: Temporarily skip auth check
-    // const { data: { user }, error: authError } = await supabase.auth.getUser();
-    // 
-    // if (authError || !user) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
 
-    // TODO: Temporarily use hardcoded staff data
-    // const { data: staffData, error: staffError } = await supabase
-    //   .from('clinic_staff')
-    //   .select('role, clinic_id')
-    //   .eq('user_id', user.id)
-    //   .single();
+    const { data: authDataUser, error: authError } = await supabase.auth.getUser();
+    if (authError || !authDataUser?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    // if (staffError || staffData?.role !== 'sales_staff') {
-    //   return NextResponse.json({ error: 'Access denied' }, { status: 403 });
-    // }
+    const user = authDataUser.user;
 
-    // Use hardcoded values for testing
-    const user_id = 'a0411cca-cee3-4a78-976a-56adbce70595'; // sales staff ID
-    const clinic_id = 'd1e8ce74-3beb-4502-85c9-169fa0909647'; // clinic ID
+    const { data: staffData, error: staffError } = await supabase
+      .from('clinic_staff')
+      .select('role, clinic_id')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (staffError) {
+      console.error('Staff lookup error:', staffError);
+      return NextResponse.json({ error: 'Failed to verify staff role' }, { status: 500 });
+    }
+
+    if (!staffData || staffData.role !== 'sales_staff') {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+
+    const user_id = user.id;
+    const clinic_id = staffData.clinic_id;
 
     // Check if email already exists
     const { data: existingUser } = await supabase
@@ -112,21 +118,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create customer relationship (use adminClient to bypass RLS)
-    const { error: relationError } = await adminClient
-      .from('customer_sales_staff')
+    // Create CRM customer record as source of truth for ownership
+    const { error: customerInsertError } = await adminClient
+      .from('customers')
       .insert({
-        customer_id: authData.user.id,
-        sales_staff_id: user_id,
+        user_id: authData.user.id,
         clinic_id: clinic_id,
-        assigned_at: new Date().toISOString(),
-        is_active: true
+        assigned_sales_id: user_id,
+        full_name: full_name,
+        email,
+        phone: phone || null,
+        metadata: {
+          nickname: nickname || null,
+          date_of_birth: date_of_birth || null,
+          gender: gender || 'other',
+          customer_type: customer_type || 'regular',
+          source: source || 'walk_in',
+          notes: notes || null
+        }
       });
 
-    if (relationError) {
-      console.error('Customer relation error:', relationError);
-      // Don't fail, just log - table might not exist yet
+    if (customerInsertError) {
+      console.error('Customer insert error:', customerInsertError);
+      // Cleanup auth user + profile record
+      await adminClient.auth.admin.deleteUser(authData.user.id);
+      await adminClient.from('users').delete().eq('id', authData.user.id);
+      return NextResponse.json(
+        { error: 'Failed to create customer record' },
+        { status: 500 }
+      );
     }
+
+    // Note: ownership is enforced via customers.assigned_sales_id (production source of truth)
 
     // Create lead record (use adminClient to bypass RLS)
     const { error: leadError } = await adminClient
@@ -172,35 +195,40 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
-    
-    // TODO: Temporarily skip auth check
-    // const { data: { user }, error: authError } = await supabase.auth.getUser();
-    // 
-    // if (authError || !user) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
 
-    // TODO: Temporarily skip staff verification
-    // const { data: staffData, error: staffError } = await supabase
-    //   .from('clinic_staff')
-    //   .select('role, clinic_id')
-    //   .eq('user_id', user.id)
-    //   .single();
-    //
-    // if (staffError || staffData?.role !== 'sales_staff') {
-    //   return NextResponse.json({ error: 'Access denied' }, { status: 403 });
-    // }
+    const { data: authDataUser, error: authError } = await supabase.auth.getUser();
+    if (authError || !authDataUser?.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-    // Use hardcoded values for testing
-    const user_id = 'a0411cca-cee3-4a78-976a-56adbce70595'; // sales staff ID
-    const clinic_id = 'd1e8ce74-3beb-4502-85c9-169fa0909647'; // clinic ID
+    const user = authDataUser.user;
 
-    // Get customers from users table directly (filter by metadata.sales_staff_id)
+    const { data: staffData, error: staffError } = await supabase
+      .from('clinic_staff')
+      .select('role, clinic_id')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (staffError) {
+      console.error('Staff lookup error:', staffError);
+      return NextResponse.json({ error: 'Failed to verify staff role' }, { status: 500 });
+    }
+
+    if (!staffData || staffData.role !== 'sales_staff') {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+    }
+
+    const user_id = user.id;
+    const clinic_id = staffData.clinic_id;
+
     const { data: customers, error } = await supabase
-      .from('users')
-      .select('id, email, full_name, created_at, metadata')
-      .eq('role', 'free_user')
+      .from('customers')
+      .select('id, user_id, full_name, email, phone, assigned_sales_id, created_at, metadata')
       .eq('clinic_id', clinic_id)
+      .eq('assigned_sales_id', user_id)
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -208,15 +236,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch customers' }, { status: 500 });
     }
 
-    // Filter customers by sales_staff_id in metadata
-    const filteredCustomers = customers?.filter(customer => 
-      customer.metadata?.sales_staff_id === user_id
-    ) || [];
-
     return NextResponse.json({
       success: true,
-      customers: filteredCustomers,
-      total: filteredCustomers.length
+      customers: customers || [],
+      total: customers?.length || 0
     });
 
   } catch (error) {

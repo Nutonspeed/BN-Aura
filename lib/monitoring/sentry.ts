@@ -91,12 +91,6 @@ export const serverConfig = {
   // Server-specific integrations
   integrations: [
     ...commonConfig.integrations,
-    Sentry.httpIntegration({
-      tracing: true,
-      captureBreadcrumbs: true
-    }),
-    Sentry.redisIntegration(),
-    Sentry.postgresIntegration(),
   ],
   
   // Custom server-side context
@@ -117,29 +111,6 @@ export const clientConfig = {
   // Client-specific integrations
   integrations: [
     ...commonConfig.integrations,
-    Sentry.replayIntegration({
-      maskAllText: false,
-      blockAllMedia: false,
-      maskInputOptions: {
-        color: false,
-        date: false,
-        datetime: false,
-        email: true,
-        month: false,
-        number: false,
-        range: false,
-        search: false,
-        tel: true,
-        text: false,
-        time: false,
-        url: true,
-        week: false
-      }
-    }),
-    Sentry.browserTracingIntegration({
-      // Track navigation and user interactions
-      routingInstrumentation: Sentry.reactRouterV6BrowserTracingIntegration()
-    })
   ],
   
   // User feedback

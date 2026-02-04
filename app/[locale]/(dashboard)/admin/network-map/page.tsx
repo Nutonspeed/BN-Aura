@@ -466,7 +466,7 @@ export default function NetworkMapPage() {
                 {activeTab === 'heatmap' && (
                   <NetworkHeatMap 
                     nodes={nodes}
-                    trafficData={[]}
+                    trafficData={{} as Record<string, number>}
                     width={isMobile ? width - 64 : isTablet ? width - 120 : 900}
                     height={isMobile ? 350 : isTablet ? 450 : 480}
                   />
@@ -474,7 +474,7 @@ export default function NetworkMapPage() {
                 {activeTab === 'traffic' && (
                   <TrafficFlowVisualization 
                     nodes={nodes}
-                    trafficData={[]}
+                    trafficData={{} as Record<string, number>}
                     width={isMobile ? width - 64 : isTablet ? width - 120 : 900}
                     height={isMobile ? 350 : isTablet ? 450 : 480}
                   />

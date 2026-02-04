@@ -110,20 +110,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Create invitation
+    // Generate unique token for invitation
+    const invitationToken = crypto.randomUUID();
+    
     const { data: invitation, error: inviteError } = await supabase
       .from('invitations')
       .insert({
         email: email.toLowerCase().trim(),
-        role,
+        invited_role: role,
         clinic_id: profile.clinic_id,
+        token: invitationToken,
         invited_by: user.id,
         status: 'pending',
-        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
-        metadata: {
-          full_name: fullName.trim(),
-          invited_at: new Date().toISOString(),
-          invited_by_name: user.user_metadata?.full_name || user.email
-        }
+        expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() // 7 days
       })
       .select()
       .single();
@@ -167,15 +166,15 @@ export async function POST(request: NextRequest) {
         email: invitation.email,
         clinicName,
         inviterName,
-        role: invitation.role,
-        invitationUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/accept-invitation?token=${invitation.invitation_token}`,
+        role: invitation.invited_role,
+        invitationUrl: `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/auth/accept-invitation?token=${invitation.token}`,
         expiresAt: invitation.expires_at
       });
       
       console.log('✅ Invitation email sent successfully:', {
         id: invitation.id,
         email: invitation.email,
-        role: invitation.role
+        role: invitation.invited_role
       });
     } catch (emailError) {
       console.warn('⚠️ Email sending failed, but invitation was created:', emailError);
@@ -188,7 +187,7 @@ export async function POST(request: NextRequest) {
       invitation: {
         id: invitation.id,
         email: invitation.email,
-        role: invitation.role,
+        role: invitation.invited_role,
         status: invitation.status
       }
     });
@@ -253,11 +252,11 @@ export async function GET(request: NextRequest) {
       .select(`
         id,
         email,
-        role,
+        invited_role,
         status,
         created_at,
         expires_at,
-        metadata
+        token
       `)
       .eq('clinic_id', profile.clinic_id)
       .order('created_at', { ascending: false });

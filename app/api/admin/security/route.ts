@@ -47,7 +47,7 @@ async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
       .eq('action', 'INSERT')
       .gte('created_at', thirtyMinutesAgo);
     
-    const activeSessions = activeSessionData ? [...new Set(activeSessionData.map(s => s.user_id))].length : 0;
+    const activeSessions = activeSessionData ? [...new Set(activeSessionData.map((s: { user_id: string }) => s.user_id))].length : 0;
 
     // Get failed login attempts from audit logs
     const { count: failedLogins } = await adminClient
@@ -70,7 +70,7 @@ async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
       .select('id, metadata')
       .eq('is_active', true);
     
-    const twoFactorEnabled = usersWith2FA ? usersWith2FA.filter(u => 
+    const twoFactorEnabled = usersWith2FA ? usersWith2FA.filter((u: { metadata?: { two_factor_enabled?: boolean } }) => 
       u.metadata?.two_factor_enabled === true
     ).length : 0;
 
@@ -80,15 +80,15 @@ async function getSecurityMetrics(adminClient: any, timeRange: string = '24h') {
       .select('id, metadata')
       .eq('is_active', true);
     
-    const strongPasswords = usersWithPasswords ? usersWithPasswords.filter(u => 
+    const strongPasswords = usersWithPasswords ? usersWithPasswords.filter((u: { metadata?: { password_strength?: string } }) => 
       u.metadata?.password_strength === 'strong'
     ).length : 0;
     
-    const mediumPasswords = usersWithPasswords ? usersWithPasswords.filter(u => 
+    const mediumPasswords = usersWithPasswords ? usersWithPasswords.filter((u: { metadata?: { password_strength?: string } }) => 
       u.metadata?.password_strength === 'medium'
     ).length : 0;
     
-    const weakPasswords = usersWithPasswords ? usersWithPasswords.filter(u => 
+    const weakPasswords = usersWithPasswords ? usersWithPasswords.filter((u: { metadata?: { password_strength?: string } }) => 
       u.metadata?.password_strength === 'weak'
     ).length : 0;
 

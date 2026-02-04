@@ -15,26 +15,33 @@ import { APIErrorCode } from '@/lib/api/contracts';
 export const GET = withErrorHandling(async (request: Request) => {
   const supabase = await createClient();
   
-  // TODO: Temporarily skip auth check for testing
-  // const { data: { user } } = await supabase.auth.getUser();
-  // 
-  // if (!user) {
-  //   return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
-  // }
+  const { data: { user } } = await supabase.auth.getUser();
   
-  // Use hardcoded user for testing (sales2.test@bntest.com)
-  const user = { id: 'f2d3667d-7ca9-454e-b483-83dffb7e5981' };
+  if (!user) {
+    return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
+  }
 
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get('userId') || user.id;
   const month = parseInt(searchParams.get('month') || (new Date().getMonth() + 1).toString());
   const year = parseInt(searchParams.get('year') || new Date().getFullYear().toString());
 
-  // TODO: Use hardcoded clinic_id for testing
-  const staffData = { 
-    clinic_id: 'd1e8ce74-3beb-4502-85c9-169fa0909647',
-    role: 'sales_staff'
-  };
+  // Get staff data from database
+  const { data: staffData } = await supabase
+    .from('clinic_staff')
+    .select('clinic_id, role')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .maybeSingle();
+  
+  // If no staff data, return empty target (user might be new)
+  if (!staffData) {
+    return createSuccessResponse({
+      target: { target_amount: 0, period_month: month, period_year: year },
+      actualSales: 0,
+      progress: 0
+    });
+  }
 
   // If asking for someone else's target, must be admin/owner
   if (userId !== user.id && !['clinic_owner', 'clinic_admin'].includes(staffData.role)) {

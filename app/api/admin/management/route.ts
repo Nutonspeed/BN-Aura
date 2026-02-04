@@ -110,25 +110,14 @@ export async function GET(request: Request) {
           clinic_id,
           is_active,
           created_at,
-          metadata,
-          clinics!users_clinic_id_fkey(
-            display_name,
-            clinic_code
-          )
+          metadata
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      // Transform data to include clinic name
-      const transformedUsers = users.map((user: any) => ({
-        ...user,
-        clinic_name: user.clinics ? 
-          (typeof user.clinics.display_name === 'object' ? 
-            user.clinics.display_name.th || user.clinics.display_name.en : 
-            user.clinics.display_name) : 
-          null
-      }));
+      // Transform data - keep simple for now
+      const transformedUsers = users;
 
       return successResponse({ users: transformedUsers });
     }

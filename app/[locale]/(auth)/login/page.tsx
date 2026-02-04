@@ -35,38 +35,68 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Get user role from users table
-        const { data: userData } = await supabase
-          .from('users')
-          .select('role, clinic_id')
-          .eq('id', data.user.id)
-          .single();
-
-        // Check if super_admin
-        if (userData?.role === 'super_admin') {
-          router.push('/admin');
-        } else {
-          // For staff, check clinic_staff table for actual role - get first record when multiple exist
-          const { data: staffData, error: staffError } = await supabase
-            .from('clinic_staff')
+        console.log('Login: Authentication successful, checking user role');
+        
+        try {
+          // Get user role from users table with timeout
+          const { data: userData, error: userError } = await supabase
+            .from('users')
             .select('role, clinic_id')
-            .eq('user_id', data.user.id)
-            .eq('is_active', true)
-            .order('created_at', { ascending: true })
-            .limit(1)
-            .maybeSingle();
+            .eq('id', data.user.id)
+            .single();
 
-          console.log('Login: Staff data check', { staffData, staffError });
-
-          if (staffData?.role === 'sales_staff') {
-            router.push('/th/sales');
-          } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) {
-            router.push('/th/clinic');
-          } else {
-            // Customer or free user - redirect to customer dashboard
-            console.log('Login: No staff role found, redirecting to customer');
-            router.push('/th/customer');
+          if (userError) {
+            console.log('Login: User data error:', userError);
+            // Fallback to customer dashboard if user query fails
+            window.location.href = '/th/customer';
+            return;
           }
+
+          console.log('Login: User data retrieved:', userData);
+
+          // Check if super_admin
+          if (userData?.role === 'super_admin') {
+            console.log('Login: Super admin detected, redirecting to /admin');
+            window.location.href = '/th/admin';
+            return;
+          }
+
+          // For non-super-admin, check clinic_staff table
+          try {
+            const { data: staffData, error: staffError } = await supabase
+              .from('clinic_staff')
+              .select('role, clinic_id')
+              .eq('user_id', data.user.id)
+              .eq('is_active', true)
+              .order('created_at', { ascending: true })
+              .limit(1)
+              .maybeSingle();
+
+            console.log('Login: Staff data check result:', { staffData, staffError });
+
+            if (staffError) {
+              console.log('Login: Staff query error, defaulting to customer');
+              window.location.href = '/th/customer';
+              return;
+            }
+
+            if (staffData?.role === 'sales_staff') {
+              console.log('Login: Sales staff detected, redirecting to /sales');
+              window.location.href = '/th/sales';
+            } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) {
+              console.log('Login: Clinic staff detected, redirecting to /clinic');
+              window.location.href = '/th/clinic';
+            } else {
+              console.log('Login: No staff role found, redirecting to customer dashboard');
+              window.location.href = '/th/customer';
+            }
+          } catch (staffQueryError) {
+            console.error('Login: Staff query exception:', staffQueryError);
+            window.location.href = '/th/customer';
+          }
+        } catch (userQueryError) {
+          console.error('Login: User query exception:', userQueryError);
+          window.location.href = '/th/customer';
         }
       }
     } catch (err) {
@@ -167,10 +197,8 @@ export default function LoginPage() {
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground font-light">
-              {t('no_account')}{' '}
-              <Link href="/register" className="text-primary font-medium hover:underline">
-                {t('signup_now')}
-              </Link>
+              ยังไม่มีบัญชีใช่ไหม?{' '}
+              <span className="text-white/50">ติดต่อผู้ดูแลเพื่อรับคำเชิญ</span>
             </p>
           </div>
         </div>

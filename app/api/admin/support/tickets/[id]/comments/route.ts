@@ -10,8 +10,9 @@ function errorResponse(message: string, status: number = 500) {
   return NextResponse.json({ success: false, error: message }, { status });
 }
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -35,7 +36,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         *,
         users(email, full_name, role)
       `)
-      .eq('ticket_id', params.id)
+      .eq('ticket_id', id)
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -49,8 +50,9 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -74,7 +76,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { data: comment, error } = await adminClient
       .from('support_ticket_comments')
       .insert({
-        ticket_id: params.id,
+        ticket_id: id,
         user_id: user.id,
         content,
         is_internal: is_internal || false

@@ -359,7 +359,7 @@ class InputValidator {
     
     // SQL injection patterns
     const sqlPatterns = [
-      /(\'|(\')|(;)|(\-\-)|(\s+(or|and)\s+.*(=|like))/gi,
+      /('|;|--|(\s+(or|and)\s+.*(=|like)))/gi,
       /\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b/gi,
       /(\b(UNION|SELECT|INSERT|UPDATE|DELETE|FROM|WHERE|JOIN|INNER|OUTER|LEFT|RIGHT|GROUP|ORDER|BY|HAVING|LIMIT|OFFSET)\b)/gi
     ];

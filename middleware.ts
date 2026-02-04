@@ -5,6 +5,21 @@ import { locales, defaultLocale } from './i18n'
 
 // Role-based route access control
 const ROUTE_PERMISSIONS = {
+  '/admin': ['super_admin'],
+  '/admin/analytics': ['super_admin'],
+  '/admin/announcements': ['super_admin'],
+  '/admin/audit': ['super_admin'],
+  '/admin/billing': ['super_admin'],
+  '/admin/broadcast': ['super_admin'],
+  '/admin/clinics': ['super_admin'],
+  '/admin/contact-portal': ['super_admin'],
+  '/admin/network-map': ['super_admin'],
+  '/admin/permissions': ['super_admin'],
+  '/admin/security': ['super_admin'],
+  '/admin/settings': ['super_admin'],
+  '/admin/support': ['super_admin'],
+  '/admin/system': ['super_admin'],
+  '/admin/users': ['super_admin'],
   '/clinic/staff': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
   '/clinic/inventory': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
   '/clinic/treatments': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
@@ -28,6 +43,8 @@ function getLocale(request: NextRequest): string {
 }
 
 export default async function proxy(request: NextRequest) {
+  console.log('Middleware: Processing request:', request.nextUrl.pathname)
+  
   // First, update the Supabase session
   const response = await updateSession(request)
   
@@ -76,23 +93,46 @@ export default async function proxy(request: NextRequest) {
 
     if (error || !user) {
       console.log('Proxy: No user session, redirecting to login')
-      // Redirect to login if not authenticated
-      const redirectUrl = new URL('/th/login', request.url)
+      // Redirect to login if not authenticated - use relative path to avoid double locale
+      const locale = getLocale(request)
+      const redirectUrl = new URL(`/${locale}/login`, request.url)
       redirectUrl.searchParams.set('redirect', pathname)
       return NextResponse.redirect(redirectUrl)
     }
 
-    // Get user's clinic role
-    const { data: staffData } = await supabase
-      .from('clinic_staff')
-      .select('role, is_active')
-      .eq('user_id', user.id)
-      .eq('is_active', true)
+    // Check if user is super_admin from users table first
+    const { data: userData } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
       .single()
 
-    const userRole = staffData?.role || 'customer'
+    let userRole = 'customer'
+    let staffData = null // Declare staffData in outer scope
+    
+    if (userData?.role === 'super_admin') {
+      userRole = 'super_admin'
+    } else {
+      // Get user's clinic role for non-super-admin
+      const { data: staffDataResult } = await supabase
+        .from('clinic_staff')
+        .select('role, is_active')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .single()
 
-    console.log('Proxy: Role check', { userRole, staffData, requiredRoles })
+      staffData = staffDataResult // Assign to outer scope variable
+      userRole = staffData?.role || 'customer'
+    }
+
+    console.log('Proxy: Role check', { 
+      userId: user.id, 
+      userRole, 
+      userData: userData?.role, 
+      staffData: staffData?.role, 
+      requiredRoles,
+      routePattern 
+    })
 
     // Check if user has required role
     if (!requiredRoles.includes(userRole)) {
@@ -125,5 +165,5 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   // Match only internationalized pathnames and exclude internal Next.js paths
-  matcher: ['/', '/(th|en)/:path*', '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)']
+  matcher: ['/', '/(th|en)/:path*', '/((?!_next/static|_next/image|favicon.ico|manifest.json|.*\\.(?:svg|png|jpg|jpeg|gif|webp|json)$).*)']
 }

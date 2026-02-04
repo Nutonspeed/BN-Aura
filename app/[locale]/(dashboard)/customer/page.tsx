@@ -43,27 +43,25 @@ export default function CustomerDashboard() {
           // Fetch customer specific data using the Auth User ID (user_id)
           const { data: customer } = await supabase
             .from('customers')
-            .select(`
-              id, 
-              full_name, 
-              assigned_sales_id, 
-              sales_rep:users!customers_assigned_sales_id_fkey(
-                id, 
-                full_name
-              )
-            `)
+            .select('id, full_name, assigned_sales_id')
             .eq('user_id', user.id)
             .single();
           
           if (customer) {
             setCustomerName(customer.full_name);
             setRealCustomerId(customer.id);
-            if (customer.sales_rep) {
-              const staff = Array.isArray(customer.sales_rep) ? customer.sales_rep[0] : customer.sales_rep;
-              if (staff) {
+            
+            // Fetch sales rep info separately if assigned
+            if (customer.assigned_sales_id) {
+              const { data: salesUser } = await supabase
+                .from('users')
+                .select('id, full_name')
+                .eq('id', customer.assigned_sales_id)
+                .single();
+              if (salesUser) {
                 setSalesRep({
-                  id: (staff as any).id,
-                  name: (staff as any).full_name
+                  id: salesUser.id,
+                  name: salesUser.full_name
                 });
               }
             }

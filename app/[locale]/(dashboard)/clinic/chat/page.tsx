@@ -9,14 +9,27 @@ import {
   History,
   Info
 } from 'lucide-react';
-import { useState, SVGProps } from 'react';
+import { useState, useEffect, SVGProps } from 'react';
 import { cn } from '@/lib/utils';
 
+// Format time consistently to avoid hydration mismatch
+function formatTime(timestamp: number): string {
+  const date = new Date(timestamp);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 export default function ChatAdvisor() {
+  const [isClient, setIsClient] = useState(false);
   const [messages, setMessages] = useState([
     { id: 1, role: 'assistant', content: 'สวัสดีครับ ผม BN-Aura AI Advisor ยินดีที่ได้บริการครับ วันนี้มีเคสลูกค้าท่านไหนให้ผมช่วยวิเคราะห์ข้อมูลหรือแนะนำโปรแกรมการรักษาไหมครับ?' },
   ]);
   const [input, setInput] = useState('');
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -119,7 +132,7 @@ export default function ChatAdvisor() {
                         "text-[9px] mt-2 opacity-40 font-bold uppercase tracking-widest",
                         msg.role === 'user' ? "text-right" : "text-left"
                       )}>
-                        {new Date(msg.id).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {isClient ? formatTime(msg.id) : '--:--'}
                       </p>
                     </div>
                   </div>

@@ -4,7 +4,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Bell, X, Check, CheckCircle, Info, AlertTriangle, AlertCircle, Settings } from 'lucide-react';
+import { Bell, X, Check, CheckCircle, Info, Warning, WarningCircle, Gear } from '@phosphor-icons/react';
 import { useNotifications } from '@/hooks/use-notifications';
 import { NotificationPayload } from '@/lib/services/websocket-service';
 

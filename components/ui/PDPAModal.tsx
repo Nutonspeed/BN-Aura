@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Lock, Check } from 'lucide-react';
+import { ShieldCheck, Lock, Check } from '@phosphor-icons/react';
 
 export default function PDPAModal() {
   const [isOpen, setIsOpen] = useState(false);

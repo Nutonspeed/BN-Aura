@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, HelpCircle, Book, MessageCircle, PlayCircle, ChevronRight, Zap, Shield, Search, ShoppingCart } from 'lucide-react';
+import { X, Question, Book, ChatCircle, PlayCircle, CaretRight, Lightning, Shield, MagnifyingGlass, ShoppingCart } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface HelpModalProps {

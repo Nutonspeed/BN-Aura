@@ -5,13 +5,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bell, 
   X, 
-  Zap, 
+  Lightning, 
   UserPlus, 
-  MessageSquare, 
-  Activity, 
+  ChatCircle, 
+  Pulse, 
   ShieldCheck,
   Clock
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 

@@ -5,16 +5,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
   Plus, 
-  Trash2, 
-  Mail, 
-  Search,
+  Trash, 
+  EnvelopeSimple, 
+  MagnifyingGlass,
   Users,
   Shield,
-  Loader2,
+  SpinnerGap,
   Clock,
   ShieldCheck,
   UserCheck
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 /**

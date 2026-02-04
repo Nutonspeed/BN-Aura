@@ -217,9 +217,9 @@ export default function BeauticianDashboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Systems <span className="text-primary text-glow">Active</span>, {staffName || 'Operator'}
+            Systems <span className="text-primary">Active</span>, {staffName || 'Operator'}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -237,7 +237,7 @@ export default function BeauticianDashboard() {
           transition={{ delay: 0.3 }}
           className="flex gap-3"
         >
-          <div className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-6 backdrop-blur-md">
+          <div className="px-5 py-3 bg-card border border-border rounded-xl flex items-center gap-6">
             <div className="flex flex-col">
               <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Shift Status</span>
               <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase">
@@ -248,7 +248,7 @@ export default function BeauticianDashboard() {
             <div className="h-8 w-px bg-white/10" />
             <div className="flex flex-col">
               <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Throughput</span>
-              <span className="text-xs font-bold text-white uppercase tabular-nums">{throughput.completed}/{throughput.total} Cases</span>
+              <span className="text-xs font-bold text-foreground uppercase tabular-nums">{throughput.completed}/{throughput.total} Cases</span>
             </div>
           </div>
         </motion.div>
@@ -282,7 +282,7 @@ export default function BeauticianDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="glass-premium p-8 rounded-[40px] border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group"
+                className="bg-card p-6 rounded-2xl border border-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group"
               >
                 <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                   <Pulse className="w-32 h-32 text-primary" />
@@ -293,7 +293,7 @@ export default function BeauticianDashboard() {
                     <User className="w-8 h-8" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-2xl font-black text-white uppercase tracking-tight">
+                    <h3 className="text-xl font-semibold text-foreground">
                       {activeCase.customers?.name || 'Customer'}
                     </h3>
                     <div className="flex items-center gap-3">

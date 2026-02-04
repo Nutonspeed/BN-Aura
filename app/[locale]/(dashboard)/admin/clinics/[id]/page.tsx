@@ -5,28 +5,28 @@ import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import {
   ArrowLeft,
-  Building2,
+  Buildings,
   Users,
-  Mail,
+  EnvelopeSimple,
   Phone,
   MapPin,
   Globe,
-  Calendar,
+  CalendarDots,
   CreditCard,
   Target,
-  Settings,
+  Gear,
   Shield,
-  Edit,
-  Save,
+  PencilSimple,
+  FloppyDisk,
   X,
-  Loader2,
-  AlertCircle,
+  SpinnerGap,
+  WarningCircle,
   CheckCircle,
-  DollarSign,
-  TrendingUp,
-  Activity,
+  CurrencyDollar,
+  TrendUp,
+  Pulse,
   Package
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 
 interface ClinicDetail {
@@ -202,7 +202,7 @@ export default function ClinicDetailPage() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -233,7 +233,7 @@ export default function ClinicDetailPage() {
     {
       label: 'Monthly AI Scans',
       value: stats.monthlyScans.toLocaleString(),
-      icon: Activity,
+      icon: Pulse,
       color: 'text-amber-400',
       bgColor: 'bg-amber-500/10'
     },
@@ -287,9 +287,9 @@ export default function ClinicDetailPage() {
                 className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
               >
                 {saving ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <SpinnerGap className="w-4 h-4 animate-spin" />
                 ) : (
-                  <Save className="w-4 h-4" />
+                  <FloppyDisk className="w-4 h-4" />
                 )}
                 Save Changes
               </button>
@@ -299,7 +299,7 @@ export default function ClinicDetailPage() {
               onClick={() => setIsEditing(true)}
               className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2"
             >
-              <Edit className="w-4 h-4" />
+              <PencilSimple className="w-4 h-4" />
               Edit Clinic
             </button>
           )}
@@ -332,7 +332,7 @@ export default function ClinicDetailPage() {
       {/* Alerts */}
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400" />
+          <WarningCircle className="w-5 h-5 text-red-400" />
           <p className="text-red-400">{error}</p>
         </div>
       )}
@@ -350,7 +350,7 @@ export default function ClinicDetailPage() {
         <div className="lg:col-span-2 space-y-6">
           <div className="glass-card p-8 rounded-3xl border border-white/10">
             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-              <Building2 className="w-5 h-5 text-primary" />
+              <Buildings className="w-5 h-5 text-primary" />
               Basic Information
             </h2>
 
@@ -392,7 +392,7 @@ export default function ClinicDetailPage() {
               <div>
                 <label className="text-sm text-white/60">Contact Email</label>
                 <p className="text-white mt-1 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-white/40" />
+                  <EnvelopeSimple className="w-4 h-4 text-white/40" />
                   {clinic.metadata.contact_email}
                 </p>
               </div>
@@ -427,7 +427,7 @@ export default function ClinicDetailPage() {
           {clinic.metadata.business_info && (
             <div className="glass-card p-8 rounded-3xl border border-white/10">
               <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <Settings className="w-5 h-5 text-primary" />
+                <Gear className="w-5 h-5 text-primary" />
                 Business Information
               </h2>
 
@@ -491,7 +491,7 @@ export default function ClinicDetailPage() {
           {clinic.metadata.financial && (
             <div className="glass-card p-8 rounded-3xl border border-white/10">
               <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <DollarSign className="w-5 h-5 text-primary" />
+                <CurrencyDollar className="w-5 h-5 text-primary" />
                 Financial Information
               </h2>
 
@@ -575,7 +575,7 @@ export default function ClinicDetailPage() {
           {clinic.metadata.technical && (
             <div className="glass-card p-8 rounded-3xl border border-white/10">
               <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <Settings className="w-5 h-5 text-primary" />
+                <Gear className="w-5 h-5 text-primary" />
                 Technical Information
               </h2>
 

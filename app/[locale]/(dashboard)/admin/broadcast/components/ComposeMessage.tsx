@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Send, TestTube2, Calendar, Users, Building2 } from 'lucide-react';
+import { PaperPlaneTilt, TestTube, CalendarDots, Users, Buildings } from '@phosphor-icons/react';
 import { useBroadcastContext } from '../context';
 import { BroadcastFormData } from '../types';
 
@@ -64,7 +64,7 @@ export default function ComposeMessage() {
       className="glass-card p-8 rounded-2xl border border-white/10"
     >
       <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-        <Send className="w-6 h-6 text-primary" />
+        <PaperPlaneTilt className="w-6 h-6 text-primary" />
         Compose New Message
       </h2>
 
@@ -141,7 +141,7 @@ export default function ComposeMessage() {
           <div className="grid grid-cols-3 gap-4 mb-4">
             {[
               { value: 'all', label: 'All Clinics', icon: Users },
-              { value: 'plan', label: 'By Plan', icon: Building2 },
+              { value: 'plan', label: 'By Plan', icon: Buildings },
               { value: 'specific', label: 'Specific Clinics', icon: Users }
             ].map((target) => (
               <label
@@ -233,7 +233,7 @@ export default function ComposeMessage() {
         {/* Schedule */}
         <div>
           <label className="block text-white/80 text-sm font-medium mb-2">
-            <Calendar className="w-4 h-4 inline mr-2" />
+            <CalendarDots className="w-4 h-4 inline mr-2" />
             Schedule (Optional)
           </label>
           <input
@@ -252,7 +252,7 @@ export default function ComposeMessage() {
             disabled={creating || !formData.title || !formData.content}
             className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <Send className="w-4 h-4" />
+            <PaperPlaneTilt className="w-4 h-4" />
             {creating ? 'Sending...' : 'Send Message'}
           </button>
 
@@ -262,7 +262,7 @@ export default function ComposeMessage() {
             disabled={creating || !formData.title || !formData.content}
             className="px-6 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <TestTube2 className="w-4 h-4" />
+            <TestTube className="w-4 h-4" />
             Send Test
           </button>
         </div>

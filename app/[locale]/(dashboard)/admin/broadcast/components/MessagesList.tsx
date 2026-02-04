@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Trash2, Clock, CheckCircle, XCircle, AlertCircle, Users, Calendar } from 'lucide-react';
+import { Trash, Clock, CheckCircle, XCircle, WarningCircle, Users, CalendarDots } from '@phosphor-icons/react';
 import { useBroadcastContext } from '../context';
 import { BroadcastMessage } from '../types';
 
@@ -17,7 +17,7 @@ export default function MessagesList() {
       case 'scheduled':
         return <Clock className="w-4 h-4 text-amber-400" />;
       default:
-        return <AlertCircle className="w-4 h-4 text-gray-400" />;
+        return <WarningCircle className="w-4 h-4 text-gray-400" />;
     }
   };
 
@@ -73,7 +73,7 @@ export default function MessagesList() {
   if (messages.length === 0) {
     return (
       <div className="glass-card p-12 rounded-2xl border border-white/10 text-center">
-        <AlertCircle className="w-16 h-16 text-white/20 mx-auto mb-4" />
+        <WarningCircle className="w-16 h-16 text-white/20 mx-auto mb-4" />
         <h3 className="text-xl font-bold text-white mb-2">No messages sent yet</h3>
         <p className="text-white/60">Your broadcast history will appear here</p>
       </div>
@@ -117,7 +117,7 @@ export default function MessagesList() {
                 
                 {message.scheduled_at && (
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
+                    <CalendarDots className="w-4 h-4" />
                     <span>
                       {message.status === 'scheduled' ? 'Scheduled for' : 'Sent at'} {formatDate(message.scheduled_at)}
                     </span>
@@ -154,7 +154,7 @@ export default function MessagesList() {
               onClick={() => handleDelete(message.id)}
               className="ml-4 p-2 text-white/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash className="w-4 h-4" />
             </button>
           </div>
         </motion.div>

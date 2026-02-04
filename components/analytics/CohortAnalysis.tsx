@@ -42,10 +42,10 @@ export default function CohortAnalysis({ data }: CohortAnalysisProps) {
   };
 
   return (
-    <div className="glass-card p-6 rounded-2xl border border-white/10 overflow-hidden">
+    <div className="bg-card p-6 rounded-2xl border border-border shadow-card overflow-hidden">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
             <Users className="w-5 h-5 text-primary" />
             Customer Retention Cohorts
           </h3>
@@ -64,7 +64,7 @@ export default function CohortAnalysis({ data }: CohortAnalysisProps) {
       <div className="overflow-x-auto">
         <table className="w-full text-sm text-left">
           <thead>
-            <tr className="text-muted-foreground border-b border-white/10">
+            <tr className="text-muted-foreground border-b border-border">
               <th className="px-4 py-3 font-medium min-w-[120px]">Cohort</th>
               <th className="px-4 py-3 font-medium">Users</th>
               <th className="px-4 py-3 font-medium text-center">Month 1</th>
@@ -75,9 +75,9 @@ export default function CohortAnalysis({ data }: CohortAnalysisProps) {
               <th className="px-4 py-3 font-medium text-right">LTV</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-border">
             {data.map((row, i) => (
-              <tr key={i} className="hover:bg-white/5 transition-colors">
+              <tr key={i} className="hover:bg-accent transition-colors">
                 <td className="px-4 py-3 font-medium text-white flex items-center gap-2">
                   <CalendarDots className="w-4 h-4 text-muted-foreground" />
                   {row.cohort}

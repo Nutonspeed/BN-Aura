@@ -52,9 +52,9 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Sentiment Overview */}
-      <div className="glass-card p-6 rounded-2xl border border-white/10 lg:col-span-2">
+      <div className="bg-card p-6 rounded-2xl border border-border shadow-card lg:col-span-2">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
             <ChatCircle className="w-5 h-5 text-primary" />
             Sentiment Analysis
           </h3>
@@ -109,8 +109,8 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
       {/* Top Concerns & Insights */}
       <div className="space-y-6">
         {/* Concerns */}
-        <div className="glass-card p-6 rounded-2xl border border-white/10">
-          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Warning className="w-5 h-5 text-orange-400" />
             Top Concerns
           </h3>
@@ -125,8 +125,8 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
         </div>
 
         {/* Recent Feedback Highlights */}
-        <div className="glass-card p-6 rounded-2xl border border-white/10 max-h-[300px] overflow-y-auto custom-scrollbar">
-          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+        <div className="bg-card p-6 rounded-2xl border border-border shadow-card max-h-[300px] overflow-y-auto custom-scrollbar">
+          <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-purple-400" />
             Recent Insights
           </h3>

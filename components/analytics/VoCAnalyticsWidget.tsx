@@ -55,7 +55,7 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
       <div className="glass-card p-6 rounded-2xl border border-white/10 lg:col-span-2">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-primary" />
+            <ChatCircle className="w-5 h-5 text-primary" />
             Sentiment Analysis
           </h3>
           <span className="text-xs text-muted-foreground bg-white/5 px-2 py-1 rounded-lg">Last 30 Days</span>
@@ -63,17 +63,17 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-center">
-            <Smile className="w-8 h-8 text-green-400 mx-auto mb-2" />
+            <Smiley className="w-8 h-8 text-green-400 mx-auto mb-2" />
             <p className="text-2xl font-black text-white">{getPercentage(data.sentimentDistribution.positive)}%</p>
             <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Positive</p>
           </div>
           <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-center">
-            <Meh className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
+            <SmileyyMeh className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
             <p className="text-2xl font-black text-white">{getPercentage(data.sentimentDistribution.neutral)}%</p>
             <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Neutral</p>
           </div>
           <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
-            <Frown className="w-8 h-8 text-red-400 mx-auto mb-2" />
+            <SmileyyXEyes className="w-8 h-8 text-red-400 mx-auto mb-2" />
             <p className="text-2xl font-black text-white">{getPercentage(data.sentimentDistribution.negative)}%</p>
             <p className="text-xs font-bold text-red-400 uppercase tracking-wider">Negative</p>
           </div>
@@ -81,7 +81,7 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
 
         <div className="space-y-4">
           <h4 className="text-sm font-bold text-white flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-blue-400" />
+            <TrendUp className="w-4 h-4 text-blue-400" />
             Satisfaction Trend (Avg Score)
           </h4>
           <div className="h-[200px] w-full">
@@ -111,7 +111,7 @@ export default function VoCAnalyticsWidget({ data }: VoCAnalyticsWidgetProps) {
         {/* Concerns */}
         <div className="glass-card p-6 rounded-2xl border border-white/10">
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-orange-400" />
+            <Warning className="w-5 h-5 text-orange-400" />
             Top Concerns
           </h3>
           <div className="space-y-3">

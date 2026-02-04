@@ -72,7 +72,7 @@ export default function HotLeadsAlert() {
                 }}
                 className="p-3 bg-red-500/20 rounded-xl"
               >
-                <Flame className="w-6 h-6 text-red-500" />
+                <Fire className="w-6 h-6 text-red-500" />
               </motion.div>
               <div>
                 <h3 className="font-bold text-lg text-foreground">{message}</h3>
@@ -112,7 +112,7 @@ export default function HotLeadsAlert() {
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       {lead.email && (
                         <div className="flex items-center gap-1">
-                          <Mail className="w-3 h-3" />
+                          <EnvelopeSimple className="w-3 h-3" />
                           <span className="text-xs">{lead.email}</span>
                         </div>
                       )}
@@ -140,7 +140,7 @@ export default function HotLeadsAlert() {
 
                     {/* Recommended Action */}
                     <div className="flex items-start gap-2 p-2 bg-primary/5 border border-primary/20 rounded-lg">
-                      <TrendingUp className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                      <TrendUp className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
                       <p className="text-xs text-foreground/80">{lead.recommendedAction}</p>
                     </div>
 
@@ -159,7 +159,7 @@ export default function HotLeadsAlert() {
                       <Phone className="w-4 h-4" />
                     </button>
                     <button className="p-2 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors">
-                      <Mail className="w-4 h-4" />
+                      <EnvelopeSimple className="w-4 h-4" />
                     </button>
                   </div>
                 </div>

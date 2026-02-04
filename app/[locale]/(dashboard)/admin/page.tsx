@@ -301,7 +301,7 @@ export default function SuperAdminDashboard() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
           Accessing Global Control Node...
         </p>
@@ -413,19 +413,19 @@ export default function SuperAdminDashboard() {
             className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden"
           >
             <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-              <Building2 className="w-48 h-48 text-primary" />
+              <Buildings className="w-48 h-48 text-primary" />
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                  <Building2 className="w-6 h-6" />
+                  <Buildings className="w-6 h-6" />
                 </div>
                 Global Clinic Registry
               </h3>
               <div className="relative group">
                 <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" />
+                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" />
                 <input 
                   type="text" 
                   placeholder="Search clinics..." 
@@ -445,7 +445,7 @@ export default function SuperAdminDashboard() {
                 >
                   <div className="flex items-center gap-6">
                     <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white border border-white/5 group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-all duration-500 shadow-sm">
-                      <Building2 className="w-7 h-7" />
+                      <Buildings className="w-7 h-7" />
                     </div>
                     <div className="space-y-1">
                       <h4 className="text-lg font-black text-white group-hover:text-primary transition-colors tracking-tight">{clinic.name}</h4>
@@ -483,7 +483,7 @@ export default function SuperAdminDashboard() {
                       onClick={() => router.push(`/th/admin/clinics/${clinic.id}`)}
                       className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-transparent hover:border-white/10 shadow-sm"
                     >
-                      <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                      <ChvvrononRight className="w-5 h-5 text-muted-foreground" />
                     </button>
                   </div>
                 </motion.div>
@@ -527,7 +527,7 @@ export default function SuperAdminDashboard() {
             </div>
 
             <div className="p-5 bg-primary/5 rounded-[32px] border border-primary/10 flex gap-4 relative z-10 backdrop-blur-md">
-              <AlertCircle className="w-6 h-6 text-primary flex-shrink-0" />
+              <WarningCircle className="w-6 h-6 text-primary flex-shrink-0" />
               <p className="text-[11px] text-muted-foreground font-light leading-relaxed">
                 <span className="text-primary font-black uppercase tracking-tighter mr-1.5">Node Alert:</span>
                 Higher than average latency detected in Asia-Pacific vision processing clusters. Optimization required.
@@ -545,7 +545,7 @@ export default function SuperAdminDashboard() {
             <div className="absolute -top-12 -left-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full" />
             
             <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3 relative z-10">
-              <Settings className="w-4 h-4 text-primary" />
+              <Gear className="w-4 h-4 text-primary" />
               Global Operations
             </h3>
             
@@ -560,7 +560,7 @@ export default function SuperAdminDashboard() {
                     <p className="text-xs font-black text-white uppercase tracking-widest group-hover:text-primary transition-colors">{tool.title}</p>
                     <p className="text-[9px] text-muted-foreground italic font-medium">{tool.sub}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  <ChvvrononRight className="w-4 h-4 text-muted-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
                 </button>
               ))}
             </div>
@@ -588,7 +588,7 @@ export default function SuperAdminDashboard() {
               
               {userError && (
                 <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
+                  <WarningCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
                   <span className="text-red-300 text-sm">{userError}</span>
                 </div>
               )}
@@ -597,7 +597,7 @@ export default function SuperAdminDashboard() {
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-white/70">อีเมล *</label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-3 w-4 h-4 text-white/30" />
+                    <EnvelopeSimple className="absolute left-4 top-3 w-4 h-4 text-white/30" />
                     <input
                       type="email"
                       value={newUser.email}
@@ -676,7 +676,7 @@ export default function SuperAdminDashboard() {
                     disabled={creatingUser}
                     className="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    {creatingUser ? <Loader2 className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" />}
+                    {creatingUser ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" />}
                     สร้าง User
                   </button>
                 </div>
@@ -705,7 +705,7 @@ export default function SuperAdminDashboard() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <Building2 className="w-6 h-6 text-primary" />
+                  <Buildings className="w-6 h-6 text-primary" />
                   Register New Clinic
                 </h2>
                 <button 
@@ -718,7 +718,7 @@ export default function SuperAdminDashboard() {
 
               {registerError && (
                 <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-400" />
+                  <WarningCircle className="w-5 h-5 text-red-400" />
                   <p className="text-sm text-red-400">{registerError}</p>
                 </div>
               )}
@@ -1117,7 +1117,7 @@ export default function SuperAdminDashboard() {
                       className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-semibold shadow-premium hover:brightness-110 transition-all flex items-center justify-center gap-2"
                     >
                       ถัดไป
-                      <ChevronRight className="w-4 h-4" />
+                      <CaretRight className="w-4 h-4" />
                     </button>
                   ) : (
                     <>
@@ -1135,7 +1135,7 @@ export default function SuperAdminDashboard() {
                       >
                         {registering ? (
                           <>
-                            <Loader2 className="w-4 h-4 animate-spin" />
+                            <SpinnerGap className="w-4 h-4 animate-spin" />
                             กำลังสร้าง...
                           </>
                         ) : (

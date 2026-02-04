@@ -233,8 +233,8 @@ const SecurityDashboard: React.FC = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'active': return <AlertCircle className="w-4 h-4 text-red-500" />;
-      case 'investigating': return <Search className="w-4 h-4 text-yellow-500" />;
+      case 'active': return <WarningCircle className="w-4 h-4 text-red-500" />;
+      case 'investigating': return <MagnifyingGlass className="w-4 h-4 text-yellow-500" />;
       case 'resolved': return <CheckCircle className="w-4 h-4 text-green-500" />;
       default: return <Info className="w-4 h-4 text-gray-500" />;
     }
@@ -295,7 +295,7 @@ const SecurityDashboard: React.FC = () => {
                 : 'bg-gray-50 border-gray-300 text-gray-700'
             }`}
           >
-            <RefreshCw className={`w-4 h-4 mr-2 ${autoRefresh ? 'animate-spin' : ''}`} />
+            <ArrowsClockwise className={`w-4 h-4 mr-2 ${autoRefresh ? 'animate-spin' : ''}`} />
             Auto Refresh
           </button>
           
@@ -316,9 +316,9 @@ const SecurityDashboard: React.FC = () => {
                 <p className="text-2xl font-bold mt-1">{metric.value}</p>
                 <div className="flex items-center mt-2 text-sm">
                   {metric.trend === 'up' ? (
-                    <TrendingUp className="w-4 h-4 text-red-500 mr-1" />
+                    <TrendUp className="w-4 h-4 text-red-500 mr-1" />
                   ) : metric.trend === 'down' ? (
-                    <TrendingDown className="w-4 h-4 text-green-500 mr-1" />
+                    <TrendDown className="w-4 h-4 text-green-500 mr-1" />
                   ) : null}
                   <span className={metric.change > 0 ? 'text-red-600' : 'text-green-600'}>
                     {metric.change > 0 ? '+' : ''}{metric.change}%
@@ -326,9 +326,9 @@ const SecurityDashboard: React.FC = () => {
                 </div>
               </div>
               <div className="p-3 rounded-lg bg-white/50">
-                {metric.severity === 'critical' && <AlertTriangle className="w-6 h-6 text-red-600" />}
+                {metric.severity === 'critical' && <Warning className="w-6 h-6 text-red-600" />}
                 {metric.severity === 'high' && <Shield className="w-6 h-6 text-orange-600" />}
-                {metric.severity === 'medium' && <AlertCircle className="w-6 h-6 text-yellow-600" />}
+                {metric.severity === 'medium' && <WarningCircle className="w-6 h-6 text-yellow-600" />}
                 {metric.severity === 'low' && <CheckCircle className="w-6 h-6 text-green-600" />}
               </div>
             </div>
@@ -411,7 +411,7 @@ const SecurityDashboard: React.FC = () => {
             <h3 className="text-lg font-semibold">Security Events</h3>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <MagnifyingGlass className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search events..."

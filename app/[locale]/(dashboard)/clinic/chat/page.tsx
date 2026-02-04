@@ -183,7 +183,7 @@ export default function ChatAdvisor() {
             <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all" />
             
             <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3 relative z-10">
-              <Activity className="w-4 h-4 text-primary" />
+              <Pulse className="w-4 h-4 text-primary" />
               Active Context
             </h3>
             

@@ -79,7 +79,7 @@ function SettingsContent() {
   if (loading && !settings) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }

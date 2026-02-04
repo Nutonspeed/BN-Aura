@@ -118,7 +118,7 @@ export default function PredictiveDashboardClient() {
         className="glass-card p-6 rounded-2xl border border-white/10"
       >
         <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-emerald-400" />
+          <TrendUp className="w-5 h-5 text-emerald-400" />
           Pipeline Forecast (30 Days)
         </h3>
         <div className="h-[300px]">
@@ -183,7 +183,7 @@ export default function PredictiveDashboardClient() {
               </div>
               {staff.status === 'declining' && (
                 <div title="Needs Coaching">
-                  <AlertCircle className="w-4 h-4 text-red-400" />
+                  <WarningCircle className="w-4 h-4 text-red-400" />
                 </div>
               )}
             </div>

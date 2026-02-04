@@ -156,7 +156,7 @@ export default function AICoachPanel({
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <Sparkles className="w-6 h-6" />
+        <Sparkle className="w-6 h-6" />
       </motion.button>
     );
   }
@@ -173,7 +173,7 @@ export default function AICoachPanel({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-primary/20 rounded-lg">
-              <Sparkles className="w-5 h-5 text-primary" />
+              <Sparkle className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h3 className="font-bold text-foreground">AI Sales Coach</h3>
@@ -245,7 +245,7 @@ export default function AICoachPanel({
                   </div>
                 </div>
                 <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                  <TrendingUp className="w-3 h-3" />
+                  <TrendUp className="w-3 h-3" />
                   <span>ความมั่นใจ: {advice.confidence}%</span>
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function AICoachPanel({
               {/* Talking Points */}
               <div className="space-y-2">
                 <h4 className="font-semibold text-sm text-foreground flex items-center gap-2">
-                  <MessageCircle className="w-4 h-4 text-primary" />
+                  <ChatCircle className="w-4 h-4 text-primary" />
                   จุดขายสำคัญ
                 </h4>
                 {advice.talkingPoints.map((point, index) => (
@@ -285,7 +285,7 @@ export default function AICoachPanel({
           </AnimatePresence>
         ) : (
           <div className="text-center py-8 text-muted-foreground">
-            <Sparkles className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <Sparkle className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p className="text-sm">เริ่มสนทนากับลูกค้าเพื่อรับคำแนะนำจาก AI</p>
           </div>
         )}
@@ -298,7 +298,7 @@ export default function AICoachPanel({
           disabled={loading}
           className="w-full py-2 px-4 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          <Sparkles className="w-4 h-4" />
+          <Sparkle className="w-4 h-4" />
           {loading ? 'กำลังวิเคราะห์...' : 'รับคำแนะนำใหม่'}
         </button>
       </div>

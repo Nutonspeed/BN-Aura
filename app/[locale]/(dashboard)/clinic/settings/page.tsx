@@ -130,7 +130,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Syncing Configuration Cluster...</p>
       </div>
     );
@@ -150,7 +150,7 @@ export default function SettingsPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            <Settings className="w-4 h-4" />
+            <Gear className="w-4 h-4" />
             Workspace Configuration
           </motion.div>
           <motion.h1 
@@ -177,7 +177,7 @@ export default function SettingsPage() {
           disabled={saving}
           className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs disabled:opacity-50"
         >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : (success ? <CheckCircle2 className="w-4 h-4" /> : <Save className="w-4 h-4 stroke-[3px]" />)}
+          {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : (success ? <CheckCircle className="w-4 h-4" /> : <FloppyDisk className="w-4 h-4 stroke-[3px]" />)}
           <span>{saving ? 'Syncing...' : (success ? 'Saved' : 'Commit Changes')}</span>
         </motion.button>
       </div>
@@ -217,7 +217,7 @@ export default function SettingsPage() {
               className="glass-premium p-10 rounded-[48px] border border-white/10 space-y-10 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity duration-700">
-                <Building2 className="w-48 h-48 text-primary" />
+                <Buildings className="w-48 h-48 text-primary" />
               </div>
 
               <div className="relative z-10 space-y-8">
@@ -300,13 +300,13 @@ export default function SettingsPage() {
               className="glass-premium p-10 rounded-[48px] border border-white/10 space-y-10 relative overflow-hidden group"
             >
               <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity duration-700">
-                <Sparkles className="w-48 h-48 text-primary" />
+                <Sparkle className="w-48 h-48 text-primary" />
               </div>
 
               <div className="relative z-10 space-y-8">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                    <Sparkles className="w-6 h-6" />
+                    <Sparkle className="w-6 h-6" />
                   </div>
                   <div>
                     <h3 className="text-xl font-black text-white uppercase tracking-tight">Loyalty <span className="text-primary">Engine</span></h3>
@@ -317,7 +317,7 @@ export default function SettingsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                   <div className="space-y-3">
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1 flex items-center gap-2">
-                      <TrendingUp className="w-3 h-3" /> Earning Velocity
+                      <TrendUp className="w-3 h-3" /> Earning Velocity
                     </label>
                     <div className="relative">
                       <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-bold text-white/40">1 POINT /</div>
@@ -473,8 +473,8 @@ export default function SettingsPage() {
                                 : "bg-white/5 text-white hover:bg-primary hover:text-primary-foreground shadow-premium"
                             )}
                           >
-                            {isUpgrading ? <Loader2 className="w-4 h-4 animate-spin" /> : 
-                             isCurrent ? <CheckCircle2 className="w-4 h-4" /> : null}
+                            {isUpgrading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : 
+                             isCurrent ? <CheckCircle className="w-4 h-4" /> : null}
                             {isCurrent ? 'Active Infrastructure' : 'Deploy Tier'}
                           </button>
                         </div>

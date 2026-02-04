@@ -80,7 +80,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
   if (tickets.length === 0) {
     return (
       <div className="glass-card p-12 rounded-2xl border border-white/10 text-center">
-        <MessageSquare className="w-16 h-16 text-white/20 mx-auto mb-4" />
+        <ChatCircle className="w-16 h-16 text-white/20 mx-auto mb-4" />
         <h3 className="text-xl font-bold text-white mb-2">No tickets found</h3>
         <p className="text-white/60">No support tickets match your current filters.</p>
       </div>
@@ -128,7 +128,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
 
               <div className="flex items-center gap-6 text-sm text-white/50">
                 <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4" />
+                  <Buildings className="w-4 h-4" />
                   <span>{ticket.clinic_name || 'Unknown Clinic'}</span>
                 </div>
                 
@@ -146,7 +146,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
 
                 {ticket.replies && (
                   <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4" />
+                    <ChatCircle className="w-4 h-4" />
                     <span>{ticket.replies.length} replies</span>
                   </div>
                 )}

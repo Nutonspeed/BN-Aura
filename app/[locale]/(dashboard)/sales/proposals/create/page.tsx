@@ -198,7 +198,7 @@ export default function CreateProposalPage() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4 font-sans">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-sm uppercase tracking-widest font-heading">Initialising Builder...</p>
       </div>
     );
@@ -219,7 +219,7 @@ export default function CreateProposalPage() {
             onClick={() => router.back()}
             className="p-3 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all shadow-sm"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <CaretLeft className="w-6 h-6" />
           </motion.button>
           <div className="space-y-1">
             <motion.div 
@@ -241,7 +241,7 @@ export default function CreateProposalPage() {
           disabled={saving || !selectedLead || selectedItems.length === 0 || !proposalTitle}
           className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.2em] text-xs shadow-premium hover:brightness-110 transition-all active:scale-95 disabled:opacity-30 disabled:grayscale"
         >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4 stroke-[3px]" />}
+          {saving ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4 stroke-[3px]" />}
           <span>Authorize & Dispatch</span>
         </motion.button>
       </div>
@@ -294,7 +294,7 @@ export default function CreateProposalPage() {
                   </div>
                   {selectedLead?.id === lead.id && (
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
-                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                      <CheckCircle className="w-5 h-5 text-primary" />
                     </motion.div>
                   )}
                 </motion.div>
@@ -320,7 +320,7 @@ export default function CreateProposalPage() {
               <div className="space-y-5">
                 <div className="flex items-center justify-between">
                   <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] flex items-center gap-3">
-                    <BriefcaseMedical className="w-4 h-4 text-primary" /> Clinical Protocols
+                    <FirstAidKit className="w-4 h-4 text-primary" /> Clinical Protocols
                   </h3>
                   <span className="text-[9px] font-bold text-white/20 uppercase tracking-widest">{treatments.length} Available</span>
                 </div>
@@ -376,7 +376,7 @@ export default function CreateProposalPage() {
                 >
                   <div className="flex items-center gap-3 text-primary">
                     <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Sparkles className="w-4 h-4 animate-glow-pulse" />
+                      <Sparkle className="w-4 h-4 animate-glow-pulse" />
                     </div>
                     <h3 className="text-xs font-black uppercase tracking-[0.3em]">Cognitive Neural Mapping</h3>
                   </div>
@@ -392,7 +392,7 @@ export default function CreateProposalPage() {
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                            <BriefcaseMedical className="w-5 h-5" />
+                            <FirstAidKit className="w-5 h-5" />
                           </div>
                           <div>
                             <p className="text-sm font-black text-white">{rec.program}</p>
@@ -470,7 +470,7 @@ export default function CreateProposalPage() {
                         "w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-sm",
                         item.type === 'treatment' ? "bg-primary/10 text-primary border border-primary/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
                       )}>
-                        {item.type === 'treatment' ? <BriefcaseMedical className="w-7 h-7" /> : <Package className="w-7 h-7" />}
+                        {item.type === 'treatment' ? <FirstAidKit className="w-7 h-7" /> : <Package className="w-7 h-7" />}
                       </div>
                       <div>
                         <h4 className="text-lg font-black text-white tracking-tight">{item.type === 'treatment' ? (typeof item.names === 'object' ? item.names.en : item.names) : item.name}</h4>
@@ -506,7 +506,7 @@ export default function CreateProposalPage() {
                         onClick={() => removeItem(item.id, item.type)} 
                         className="p-3 text-rose-500/40 hover:text-rose-500 hover:bg-rose-500/10 rounded-2xl transition-all"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash className="w-5 h-5" />
                       </motion.button>
                     </div>
                   </motion.div>
@@ -542,7 +542,7 @@ export default function CreateProposalPage() {
             className="glass-premium p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
-              <Sparkles className="w-24 h-24 text-primary" />
+              <Sparkle className="w-24 h-24 text-primary" />
             </div>
             
             <div className="flex items-center gap-4 relative z-10">
@@ -581,7 +581,7 @@ export default function CreateProposalPage() {
             ) : (
               <div className="py-10 text-center space-y-4 relative z-10">
                 <div className="w-16 h-16 rounded-full border border-dashed border-white/20 flex items-center justify-center mx-auto">
-                  <Loader2 className="w-6 h-6 text-white/10 animate-spin" />
+                  <SpinnerGap className="w-6 h-6 text-white/10 animate-spin" />
                 </div>
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-light">No cutaneous scan found.</p>
@@ -632,7 +632,7 @@ export default function CreateProposalPage() {
                   <p className="text-4xl font-black text-white tracking-tighter tabular-nums">฿{calculateTotal().toLocaleString()}</p>
                 </div>
                 <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                  <DollarSign className="w-8 h-8" />
+                  <CurrencyDollar className="w-8 h-8" />
                 </div>
               </div>
             </div>
@@ -640,13 +640,13 @@ export default function CreateProposalPage() {
             <div className="space-y-4 pt-4 relative z-10">
               <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 group hover:border-emerald-500/20 transition-all">
                 <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle className="w-4 h-4" />
                 </div>
                 <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest group-hover:text-emerald-400 transition-colors">3D Genomic Visualization Included</p>
               </div>
               <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5 group hover:border-emerald-500/20 transition-all">
                 <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                  <CheckCircle2 className="w-4 h-4" />
+                  <CheckCircle className="w-4 h-4" />
                 </div>
                 <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest group-hover:text-emerald-400 transition-colors">AI Personalized Diagnostics Active</p>
               </div>

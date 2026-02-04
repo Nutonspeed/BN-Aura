@@ -53,7 +53,7 @@ export default function SecurityAlerts({ alerts, onAlertClick }: SecurityAlertsP
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5" />
+          <Warning className="w-5 h-5" />
           Security Alerts
         </h3>
         <span className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm">

@@ -102,7 +102,7 @@ export default function QuotaManagement() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest">Loading Quota Data...</p>
       </div>
     );
@@ -122,7 +122,7 @@ export default function QuotaManagement() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <Zap className="w-4 h-4" />
+            <Lightning className="w-4 h-4" />
             Computational Resource Node
           </motion.div>
           <motion.h1 
@@ -178,13 +178,13 @@ export default function QuotaManagement() {
             className="glass-premium p-10 rounded-[48px] border border-white/10 space-y-10 relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity duration-700">
-              <BarChart3 className="w-48 h-48 text-primary" />
+              <ChartBar className="w-48 h-48 text-primary" />
             </div>
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                  <Activity className="w-7 h-7" />
+                  <Pulse className="w-7 h-7" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-black text-white uppercase tracking-tight">System <span className="text-primary">Utilization</span></h2>
@@ -320,7 +320,7 @@ export default function QuotaManagement() {
                           <div key={key} className="flex items-center gap-3">
                             {enabled ? (
                               <div className="w-4 h-4 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center">
-                                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" />
+                                <CheckCircle className="w-2.5 h-2.5 text-emerald-400" />
                               </div>
                             ) : (
                               <div className="w-4 h-4 rounded-full border border-white/10 flex items-center justify-center">
@@ -368,7 +368,7 @@ export default function QuotaManagement() {
             className="glass-premium p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:scale-110 transition-transform duration-700">
-              <Sparkles className="w-24 h-24 text-primary" />
+              <Sparkle className="w-24 h-24 text-primary" />
             </div>
             
             <div className="flex items-center gap-4 relative z-10">
@@ -394,7 +394,7 @@ export default function QuotaManagement() {
                     <div key={key} className="flex items-center justify-between p-3.5 bg-black/20 rounded-2xl border border-white/5 group hover:border-white/10 transition-all">
                       <span className="text-[10px] font-bold text-white uppercase tracking-widest">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
                       {enabled ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <CheckCircle className="w-4 h-4 text-emerald-400" />
                       ) : (
                         <div className="w-4 h-4 rounded-full border border-white/10" />
                       )}
@@ -418,7 +418,7 @@ export default function QuotaManagement() {
                 
                 <div className="flex items-center gap-4 relative z-10">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-lg">
-                    <TrendingUp className="w-6 h-6" />
+                    <TrendUp className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-black text-white uppercase tracking-tight">Growth <span className="text-emerald-400">Optimization</span></h3>
                 </div>

@@ -21,7 +21,7 @@ export default function CustomerTimelineView({ events }: CustomerTimelineViewPro
     return (
       <div className="text-center py-12">
         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
-          <Calendar className="w-6 h-6 text-muted-foreground" />
+          <CalendarDots className="w-6 h-6 text-muted-foreground" />
         </div>
         <p className="text-muted-foreground">No timeline events found</p>
       </div>
@@ -31,15 +31,15 @@ export default function CustomerTimelineView({ events }: CustomerTimelineViewPro
   const getIcon = (type: string) => {
     switch (type) {
       case 'conversation':
-        return <MessageSquare className="w-4 h-4 text-blue-400" />;
+        return <ChatCircle className="w-4 h-4 text-blue-400" />;
       case 'appointment':
-        return <Calendar className="w-4 h-4 text-purple-400" />;
+        return <CalendarDots className="w-4 h-4 text-purple-400" />;
       case 'purchase':
         return <ShoppingBag className="w-4 h-4 text-emerald-400" />;
       case 'status_change':
         return <ArrowRight className="w-4 h-4 text-yellow-400" />;
       default:
-        return <CheckCircle2 className="w-4 h-4 text-gray-400" />;
+        return <CheckCircle className="w-4 h-4 text-gray-400" />;
     }
   };
 

@@ -90,7 +90,7 @@ export default function POSCart({
               </p>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          <CaretRight className="w-4 h-4 text-muted-foreground" />
         </button>
       </div>
 
@@ -116,7 +116,7 @@ export default function POSCart({
                       onClick={() => onRemoveItem(item.id)}
                       className="p-2 opacity-0 group-hover:opacity-100 transition-opacity text-rose-500/40 hover:text-rose-500 hover:bg-rose-500/10 rounded-lg"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash className="w-3.5 h-3.5" />
                     </button>
                   </div>
 

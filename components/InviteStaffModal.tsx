@@ -165,7 +165,7 @@ export default function InviteStaffModal({ isOpen, onClose, onSuccess }: InviteS
                   Email Address *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                  <EnvelopeSimple className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
                   <input
                     type="email"
                     value={email}
@@ -243,12 +243,12 @@ export default function InviteStaffModal({ isOpen, onClose, onSuccess }: InviteS
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Sending...
                     </>
                   ) : (
                     <>
-                      <Mail className="w-4 h-4" />
+                      <EnvelopeSimple className="w-4 h-4" />
                       Send Invitation
                     </>
                   )}

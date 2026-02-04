@@ -127,7 +127,7 @@ function PurchaseOrderManagementContent() {
             onClick={() => router.back()}
             className="p-4 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <CaretLeft className="w-5 h-5" />
           </button>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
@@ -155,7 +155,7 @@ function PurchaseOrderManagementContent() {
         <div className="lg:col-span-3">
           <div className="relative group">
             <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by PO number, supplier node, or metadata..."
@@ -182,7 +182,7 @@ function PurchaseOrderManagementContent() {
       {/* Orders Grid */}
       {loading ? (
         <div className="py-32 flex flex-col items-center justify-center space-y-6">
-          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
           <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Procurement Grid...</p>
         </div>
       ) : (
@@ -212,7 +212,7 @@ function PurchaseOrderManagementContent() {
                       onClick={() => handleEditOrder(order)}
                       className="p-2.5 bg-white/5 rounded-xl text-white/30 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <PencilSimple className="w-4 h-4" />
                     </motion.button>
                     <motion.button 
                       whileHover={{ scale: 1.1, rotate: 5 }} 
@@ -220,7 +220,7 @@ function PurchaseOrderManagementContent() {
                       onClick={() => handleDeleteOrder(order.id)}
                       className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/10"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </motion.button>
                   </div>
                 </div>
@@ -235,10 +235,10 @@ function PurchaseOrderManagementContent() {
                       order.status === 'cancelled' ? "bg-rose-500/10 border-rose-500/20 text-rose-400" :
                       "bg-white/5 border-white/10 text-white/40"
                     )}>
-                      {order.status === 'received' ? <CheckCircle2 className="w-3 h-3" /> : 
+                      {order.status === 'received' ? <CheckCircle className="w-3 h-3" /> : 
                        order.status === 'ordered' ? <Clock className="w-3 h-3" /> :
                        order.status === 'cancelled' ? <XCircle className="w-3 h-3" /> :
-                       <AlertCircle className="w-3 h-3" />}
+                       <WarningCircle className="w-3 h-3" />}
                       {order.status}
                     </span>
                   </div>
@@ -250,12 +250,12 @@ function PurchaseOrderManagementContent() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <DollarSign className="w-4 h-4 text-primary/60 shrink-0" />
+                      <CurrencyDollar className="w-4 h-4 text-primary/60 shrink-0" />
                       <p className="text-lg font-black text-white tabular-nums">฿{Number(order.total_amount).toLocaleString()}</p>
                     </div>
                     {order.received_at && (
                       <div className="flex items-center gap-2 text-emerald-400">
-                        <CheckCircle2 className="w-3 h-3" />
+                        <CheckCircle className="w-3 h-3" />
                         <span className="text-[8px] font-black uppercase tracking-widest">Received</span>
                       </div>
                     )}
@@ -271,7 +271,7 @@ function PurchaseOrderManagementContent() {
 
               <div className="mt-10 pt-8 border-t border-white/5 flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                  <CalendarDots className="w-3.5 h-3.5 text-muted-foreground" />
                   <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">
                     Cycle Date: {new Date(order.created_at).toLocaleDateString()}
                   </span>
@@ -304,7 +304,7 @@ export default function PurchaseOrderManagementPage() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Procurement Interface...</p>
       </div>
     }>

@@ -103,7 +103,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center text-primary">
-                  <Building2 className="w-6 h-6" />
+                  <Buildings className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight">
@@ -130,7 +130,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                     Company Designation *
                   </label>
                   <div className="relative">
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <Buildings className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="text"
                       name="name"
@@ -167,7 +167,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                     Digital Mail
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <EnvelopeSimple className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="email"
                       name="email"
@@ -260,12 +260,12 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Syncing...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4" />
+                      <FloppyDisk className="w-4 h-4" />
                       {supplier ? 'Commit Changes' : 'Initialize Supplier'}
                     </>
                   )}

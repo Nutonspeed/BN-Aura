@@ -153,7 +153,7 @@ export default function ProposalsPage() {
           className="relative group"
         >
           <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+          <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
           <input 
             type="text" 
             placeholder="Search by title or customer name..."
@@ -222,7 +222,7 @@ export default function ProposalsPage() {
                         <Download className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                       </button>
                       <button className="p-3 bg-white/5 border border-white/5 rounded-2xl text-white/40 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all shadow-sm group/btn">
-                        <MoreVertical className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                        <DotsThreeVertical className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                       </button>
                     </div>
                   </div>

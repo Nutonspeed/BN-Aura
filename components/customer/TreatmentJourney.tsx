@@ -95,13 +95,13 @@ export default function TreatmentJourney({ customerId }: { customerId: string })
   return (
     <div className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group">
       <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-        <Activity className="w-24 h-24 text-primary" />
+        <Pulse className="w-24 h-24 text-primary" />
       </div>
 
       <div className="flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-            <Sparkles className="w-6 h-6" />
+            <Sparkle className="w-6 h-6" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-white uppercase tracking-tight">Your Skin Journey</h3>
@@ -138,7 +138,7 @@ export default function TreatmentJourney({ customerId }: { customerId: string })
               <div className="relative z-10 mt-1">
                 {step.isCompleted ? (
                   <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center shadow-[0_0_15px_rgba(16,185,129,0.5)]">
-                    <CheckCircle2 className="w-4 h-4 text-white" />
+                    <CheckCircle className="w-4 h-4 text-white" />
                   </div>
                 ) : step.isCurrent ? (
                   <div className="w-6 h-6 rounded-full bg-primary flex items-center justify-center shadow-[0_0_15px_rgba(var(--primary),0.5)] animate-pulse">
@@ -165,7 +165,7 @@ export default function TreatmentJourney({ customerId }: { customerId: string })
                     {step.title}
                   </h4>
                   <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-light">
-                    <Calendar className="w-3 h-3" />
+                    <CalendarDots className="w-3 h-3" />
                     {new Date(step.date).toLocaleDateString()}
                   </div>
                 </div>

@@ -63,7 +63,7 @@ export default function RegisterPage() {
         {/* Logo/Brand */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full mb-4">
-            <Sparkles className="w-8 h-8 text-white" />
+            <Sparkle className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">BN-Aura</h1>
           <p className="text-blue-200">สมัครสมาชิกเพื่อเริ่มต้นการดูแลความงาม</p>
@@ -102,7 +102,7 @@ export default function RegisterPage() {
                 อีเมล
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
+                <EnvelopeSimple className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
                 <input
                   type="email"
                   required
@@ -152,7 +152,7 @@ export default function RegisterPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-3 text-blue-300 hover:text-white"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>

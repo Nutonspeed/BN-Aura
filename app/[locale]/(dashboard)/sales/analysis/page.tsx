@@ -422,7 +422,7 @@ export default function MagicScanPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
             >
-              <Sparkles className="w-4 h-4" />
+              <Sparkle className="w-4 h-4" />
               Clinical Protocol
             </motion.div>
             <motion.h1 
@@ -485,7 +485,7 @@ export default function MagicScanPage() {
                         )}
                       >
                         {isCompleted ? (
-                          <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+                          <CheckCircle className="w-7 h-7 text-emerald-400" />
                         ) : (
                           <StepIcon className={cn("w-7 h-7 transition-colors duration-500", isActive ? "text-primary" : "text-muted-foreground")} />
                         )}
@@ -595,7 +595,7 @@ export default function MagicScanPage() {
                     className="w-full py-5 bg-primary text-primary-foreground rounded-[28px] font-black uppercase tracking-[0.2em] text-xs shadow-premium hover:brightness-110 transition-all disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed flex items-center justify-center gap-3 mt-4"
                   >
                     Authorize & Begin Scan
-                    <ChevronRight className="w-4 h-4 stroke-[3px]" />
+                    <CaretRight className="w-4 h-4 stroke-[3px]" />
                   </motion.button>
                 </div>
               </div>
@@ -691,7 +691,7 @@ export default function MagicScanPage() {
                               transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
                               className="w-32 h-32 border-4 border-primary/10 border-t-primary rounded-full mx-auto"
                             />
-                            <Sparkles className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
+                            <Sparkle className="absolute inset-0 m-auto w-10 h-10 text-primary animate-pulse" />
                           </div>
                           <div className="space-y-3">
                             <h3 className="text-2xl font-black text-white uppercase tracking-[0.3em]">AI Processing</h3>
@@ -747,7 +747,7 @@ export default function MagicScanPage() {
                       className="flex-1 py-5 bg-primary text-primary-foreground rounded-[28px] font-black uppercase tracking-[0.3em] text-[10px] shadow-premium hover:brightness-110 transition-all disabled:opacity-30 disabled:grayscale flex items-center justify-center gap-3 relative overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 italic" />
-                      <Zap className="w-4 h-4 stroke-[3px]" />
+                      <Lightning className="w-4 h-4 stroke-[3px]" />
                       Execute Neural Diagnostic
                     </button>
                   </div>
@@ -784,7 +784,7 @@ export default function MagicScanPage() {
                         </div>
                         <div className="h-12 w-px bg-white/10" />
                         <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary flex items-center justify-center shadow-[0_0_20px_rgba(var(--primary),0.3)]">
-                          <CheckCircle2 className="w-8 h-8 text-primary" />
+                          <CheckCircle className="w-8 h-8 text-primary" />
                         </div>
                       </div>
                     </div>
@@ -864,7 +864,7 @@ export default function MagicScanPage() {
                   <div className="glass-premium p-10 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-                        <Sparkles className="w-6 h-6" />
+                        <Sparkle className="w-6 h-6" />
                       </div>
                       <h3 className="text-xl font-bold text-white uppercase tracking-tight">AI Cognitive <span className="text-primary">Insights</span></h3>
                     </div>
@@ -905,7 +905,7 @@ export default function MagicScanPage() {
                           className="p-6 border border-white/5 rounded-[32px] bg-white/5 hover:border-primary/40 transition-all group/rec cursor-pointer hover:bg-white/[0.08] relative overflow-hidden"
                         >
                           <div className="absolute top-0 right-0 p-4 opacity-0 group-hover/rec:opacity-10 transition-opacity">
-                            <Sparkles className="w-12 h-12 text-primary" />
+                            <Sparkle className="w-12 h-12 text-primary" />
                           </div>
                           
                           <div className="flex items-start justify-between mb-3 relative z-10">
@@ -930,7 +930,7 @@ export default function MagicScanPage() {
                     </div>
 
                     <div className="p-5 bg-rose-500/5 rounded-3xl border border-rose-500/10 flex gap-4">
-                      <AlertTriangle className="w-5 h-5 text-rose-400 flex-shrink-0" />
+                      <Warning className="w-5 h-5 text-rose-400 flex-shrink-0" />
                       <div className="space-y-1">
                         <p className="text-[10px] font-black text-rose-400 uppercase tracking-widest">Risk Mitigation</p>
                         <p className="text-[9px] text-muted-foreground font-light leading-relaxed">System detected slight sensitivity in epidermal layer. Advisor supervision required for laser intensity.</p>
@@ -979,7 +979,7 @@ export default function MagicScanPage() {
                     transition={{ type: "spring", stiffness: 200, damping: 10, delay: 0.2 }}
                     className="w-24 h-24 rounded-[32px] bg-emerald-500/20 border border-emerald-500/20 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.2)]"
                   >
-                    <CheckCircle2 className="w-12 h-12 text-emerald-400" />
+                    <CheckCircle className="w-12 h-12 text-emerald-400" />
                   </motion.div>
 
                   <div className="space-y-4">

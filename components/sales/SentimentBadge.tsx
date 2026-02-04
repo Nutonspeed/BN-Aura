@@ -21,7 +21,7 @@ export default function SentimentBadge({
   if (loading) {
     return (
       <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-full">
-        <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+        <SpinnerGap className="w-4 h-4 animate-spin text-muted-foreground" />
         {!compact && (
           <span className="text-xs text-muted-foreground">Analyzing...</span>
         )}

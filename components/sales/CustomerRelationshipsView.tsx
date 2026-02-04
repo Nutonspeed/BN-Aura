@@ -73,7 +73,7 @@ export default function CustomerRelationshipsView({ data }: CustomerRelationship
         {/* Referrals */}
         <div className="space-y-4">
           <div className="flex items-center gap-2 mb-2">
-            <Share2 className="w-5 h-5 text-purple-400" />
+            <ShareNetwork className="w-5 h-5 text-purple-400" />
             <h3 className="font-bold text-white">Referral Network</h3>
           </div>
           

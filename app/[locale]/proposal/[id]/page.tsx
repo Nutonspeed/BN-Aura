@@ -88,7 +88,7 @@ export default function ProposalPreviewPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse font-display uppercase tracking-widest text-xs">Preparing your personal aura plan...</p>
       </div>
     );
@@ -120,7 +120,7 @@ export default function ProposalPreviewPage() {
           transition={{ type: "spring", stiffness: 200, damping: 15 }}
           className="mx-auto w-20 h-20 rounded-3xl bg-primary/20 border border-primary/20 flex items-center justify-center text-primary shadow-[0_0_30px_rgba(var(--primary),0.2)] backdrop-blur-xl"
         >
-          <Sparkles className="w-10 h-10 animate-glow-pulse" />
+          <Sparkle className="w-10 h-10 animate-glow-pulse" />
         </motion.div>
         
         <div className="space-y-4">
@@ -195,7 +195,7 @@ export default function ProposalPreviewPage() {
             className="flex items-center gap-4 text-primary"
           >
             <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-              <Zap className="w-6 h-6 animate-pulse" />
+              <Lightning className="w-6 h-6 animate-pulse" />
             </div>
             <div className="space-y-1">
               <h3 className="text-2xl font-black text-white uppercase tracking-tight font-heading">Neural <span className="text-primary">Optimized</span> Protocols</h3>
@@ -217,7 +217,7 @@ export default function ProposalPreviewPage() {
                 
                 <div className="flex items-center gap-8">
                   <div className="w-16 h-16 rounded-[24px] bg-white/5 border border-white/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-500 shadow-lg">
-                    <CheckCircle2 className="w-8 h-8 stroke-[2.5px]" />
+                    <CheckCircle className="w-8 h-8 stroke-[2.5px]" />
                   </div>
                   <div className="space-y-1.5">
                     <h4 className="text-xl font-black text-white group-hover:text-primary transition-colors tracking-tight uppercase">{item.name}</h4>

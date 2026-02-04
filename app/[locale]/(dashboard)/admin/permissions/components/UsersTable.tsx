@@ -27,10 +27,10 @@ export default function UsersTable() {
   const getRoleIcon = (roleId: string) => {
     switch (roleId) {
       case 'super_admin': return <Shield className="w-4 h-4 text-red-400" />;
-      case 'clinic_owner': return <Building2 className="w-4 h-4 text-purple-400" />;
+      case 'clinic_owner': return <Buildings className="w-4 h-4 text-purple-400" />;
       case 'clinic_admin': return <Users className="w-4 h-4 text-blue-400" />;
-      case 'clinic_staff': return <Settings className="w-4 h-4 text-green-400" />;
-      case 'sales_staff': return <BarChart3 className="w-4 h-4 text-amber-400" />;
+      case 'clinic_staff': return <Gear className="w-4 h-4 text-green-400" />;
+      case 'sales_staff': return <ChartBar className="w-4 h-4 text-amber-400" />;
       default: return <Lock className="w-4 h-4 text-gray-400" />;
     }
   };

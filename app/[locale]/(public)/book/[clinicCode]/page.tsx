@@ -222,7 +222,7 @@ export default function PublicBookingPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <SpinnerGap className="w-8 h-8 animate-spin text-indigo-600" />
       </div>
     );
   }
@@ -364,7 +364,7 @@ export default function PublicBookingPage() {
               {/* Date Selection */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <Calendar className="w-4 h-4 inline mr-1" />
+                  <CalendarDots className="w-4 h-4 inline mr-1" />
                   {locale === 'th' ? 'วันที่' : 'Date'}
                 </label>
                 <div className="flex gap-2 overflow-x-auto pb-2">
@@ -399,7 +399,7 @@ export default function PublicBookingPage() {
                   </label>
                   {loadingSlots ? (
                     <div className="flex justify-center py-8">
-                      <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+                      <SpinnerGap className="w-6 h-6 animate-spin text-indigo-600" />
                     </div>
                   ) : (
                     <div className="grid grid-cols-4 gap-2">
@@ -430,7 +430,7 @@ export default function PublicBookingPage() {
                   onClick={() => setStep(1)}
                   className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <CaretLeft className="w-4 h-4" />
                   {locale === 'th' ? 'ย้อนกลับ' : 'Back'}
                 </button>
                 <button
@@ -439,7 +439,7 @@ export default function PublicBookingPage() {
                   className="flex items-center gap-1 bg-indigo-600 text-white px-6 py-2 rounded-lg disabled:opacity-50"
                 >
                   {locale === 'th' ? 'ถัดไป' : 'Next'}
-                  <ChevronRight className="w-4 h-4" />
+                  <CaretRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -483,7 +483,7 @@ export default function PublicBookingPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    <Mail className="w-4 h-4 inline mr-1" />
+                    <EnvelopeSimple className="w-4 h-4 inline mr-1" />
                     {locale === 'th' ? 'อีเมล' : 'Email'}
                   </label>
                   <input
@@ -513,7 +513,7 @@ export default function PublicBookingPage() {
                   onClick={() => setStep(2)}
                   className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <CaretLeft className="w-4 h-4" />
                   {locale === 'th' ? 'ย้อนกลับ' : 'Back'}
                 </button>
                 <button
@@ -522,7 +522,7 @@ export default function PublicBookingPage() {
                   className="flex items-center gap-1 bg-indigo-600 text-white px-6 py-2 rounded-lg disabled:opacity-50"
                 >
                   {locale === 'th' ? 'ถัดไป' : 'Next'}
-                  <ChevronRight className="w-4 h-4" />
+                  <CaretRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -625,7 +625,7 @@ export default function PublicBookingPage() {
                   onClick={() => setStep(3)}
                   className="flex items-center gap-1 text-gray-600 hover:text-gray-900"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <CaretLeft className="w-4 h-4" />
                   {locale === 'th' ? 'ย้อนกลับ' : 'Back'}
                 </button>
                 <button
@@ -634,7 +634,7 @@ export default function PublicBookingPage() {
                   className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 disabled:opacity-50"
                 >
                   {submitting ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <SpinnerGap className="w-5 h-5 animate-spin" />
                   ) : (
                     <CreditCard className="w-5 h-5" />
                   )}

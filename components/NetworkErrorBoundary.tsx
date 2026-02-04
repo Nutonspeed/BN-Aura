@@ -37,7 +37,7 @@ export default class NetworkErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-8 text-center">
             <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-400" />
+              <Warning className="w-8 h-8 text-red-400" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">Something went wrong</h2>
             <p className="text-white/60 mb-6">
@@ -47,7 +47,7 @@ export default class NetworkErrorBoundary extends Component<Props, State> {
               onClick={this.handleReset}
               className="flex items-center gap-2 px-6 py-3 bg-blue-500/20 hover:bg-blue-500/30 border border-blue-400/20 rounded-xl text-blue-400 font-medium transition-all mx-auto"
             >
-              <RefreshCw className="w-4 h-4" />
+              <ArrowsClockwise className="w-4 h-4" />
               Reload Page
             </button>
           </div>

@@ -25,9 +25,9 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
 
   const getRiskIcon = (level: string) => {
     switch (level) {
-      case 'high': return <AlertTriangle className="w-5 h-5" />;
-      case 'medium': return <Activity className="w-5 h-5" />;
-      default: return <TrendingUp className="w-5 h-5" />;
+      case 'high': return <Warning className="w-5 h-5" />;
+      case 'medium': return <Pulse className="w-5 h-5" />;
+      default: return <TrendUp className="w-5 h-5" />;
     }
   };
 
@@ -76,7 +76,7 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
         <div className="p-4 rounded-xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 text-emerald-400">
-              <TrendingUp className="w-5 h-5" />
+              <TrendUp className="w-5 h-5" />
               <h3 className="font-bold">Lifetime Value</h3>
             </div>
             <div className="text-right">

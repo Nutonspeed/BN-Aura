@@ -72,7 +72,7 @@ export default function MySalesRep({ customerId }: { customerId: string }) {
         <div className="space-y-1">
           <h3 className="text-lg font-bold text-white uppercase tracking-tight">Your Personal Advisor</h3>
           <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
-            <BadgeCheck className="w-3 h-3" />
+            <SealCheck className="w-3 h-3" />
             Verified Professional
           </div>
         </div>
@@ -98,14 +98,14 @@ export default function MySalesRep({ customerId }: { customerId: string }) {
           Call
         </a>
         <button className="flex items-center justify-center gap-2 p-3 bg-primary text-primary-foreground rounded-xl text-xs font-bold shadow-premium hover:brightness-110 transition-all active:scale-95">
-          <MessageSquare className="w-4 h-4" />
+          <ChatCircle className="w-4 h-4" />
           Message
         </button>
       </div>
 
       <div className="pt-4 border-t border-white/5 flex items-center justify-center gap-4 text-muted-foreground">
         <div className="flex items-center gap-1.5">
-          <Mail className="w-3.5 h-3.5" />
+          <EnvelopeSimple className="w-3.5 h-3.5" />
           <span className="text-[10px] font-light">{salesRep.email}</span>
         </div>
       </div>

@@ -119,7 +119,7 @@ function SkinProfileContent() {
   if (loading && analyses.length === 0) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Accessing Neural Archive...</p>
       </div>
     );
@@ -142,7 +142,7 @@ function SkinProfileContent() {
           </button>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <Sparkles className="w-4 h-4" />
+              <Sparkle className="w-4 h-4" />
               Aesthetic Intelligence Profile
             </div>
             <h1 className="text-4xl font-black text-white uppercase tracking-tight">Skin <span className="text-primary text-glow">Evolution</span></h1>
@@ -411,7 +411,7 @@ function SkinProfileContent() {
                   className="group flex items-center gap-3 px-12 py-5 bg-primary text-primary-foreground rounded-[24px] font-black uppercase tracking-[0.2em] shadow-premium hover:brightness-110 disabled:opacity-20 transition-all"
                 >
                   {selectedBefore && selectedAfter && selectedBefore.id === selectedAfter.id ? 'Select Distinct Nodes' : 'Synthesize Evolution'}
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  <CaretRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
@@ -452,7 +452,7 @@ export default function SkinProfilePage() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Interface node...</p>
       </div>
     }>

@@ -32,7 +32,7 @@ function CustomerCard({ customer }: { customer: Customer }) {
             <div className="text-sm font-bold text-white group-hover:text-primary transition-colors flex items-center gap-2">
               {customer.name}
               <Link href={`/sales/customers/${customer.id}`}>
-                <ExternalLink className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ArrowSquareOut className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             </div>
             {workflowState && (
@@ -55,7 +55,7 @@ function CustomerCard({ customer }: { customer: Customer }) {
           href={`/sales/chat?customerId=${encodeURIComponent(customer.id)}`}
           className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors"
         >
-          <MessageSquare className="w-3 h-3" />
+          <ChatCircle className="w-3 h-3" />
           Chat
         </Link>
       </div>
@@ -125,7 +125,7 @@ export default function MyCustomersSection({ salesId }: { salesId?: string }) {
       </div>
 
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <input
           type="text"
           placeholder="Search your customers..."

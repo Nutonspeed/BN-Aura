@@ -87,7 +87,7 @@ export default function IntegrationsPage() {
     <div className="p-6 max-w-4xl">
       <div className="mb-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">
-          <Settings className="w-7 h-7 text-indigo-600" /> Integrations
+          <Gear className="w-7 h-7 text-indigo-600" /> Integrations
         </h1>
         <p className="text-gray-600">เชื่อมต่อบริการภายนอก (SMS, Email, LINE)</p>
       </div>
@@ -136,7 +136,7 @@ export default function IntegrationsPage() {
                   placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                 />
                 <button onClick={() => toggleSecret('twilioAuth')} className="absolute right-3 top-2.5 text-gray-400">
-                  {showSecrets.twilioAuth ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showSecrets.twilioAuth ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -156,7 +156,7 @@ export default function IntegrationsPage() {
                 disabled={saving === 'twilio' || !twilioConfig.accountSid}
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50"
               >
-                <Save className="w-4 h-4" /> {saving === 'twilio' ? 'กำลังบันทึก...' : 'บันทึก'}
+                <FloppyDisk className="w-4 h-4" /> {saving === 'twilio' ? 'กำลังบันทึก...' : 'บันทึก'}
               </button>
               {isConnected('twilio') && (
                 <button onClick={() => disconnectIntegration('twilio')} className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">
@@ -172,7 +172,7 @@ export default function IntegrationsPage() {
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <Mail className="w-6 h-6 text-blue-600" />
+                <EnvelopeSimple className="w-6 h-6 text-blue-600" />
               </div>
               <div>
                 <h3 className="font-bold">SendGrid Email</h3>
@@ -200,7 +200,7 @@ export default function IntegrationsPage() {
                   placeholder="SG.xxxxxxxxxxxxxxxxxxxxxxxx"
                 />
                 <button onClick={() => toggleSecret('sendgridKey')} className="absolute right-3 top-2.5 text-gray-400">
-                  {showSecrets.sendgridKey ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showSecrets.sendgridKey ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -232,7 +232,7 @@ export default function IntegrationsPage() {
                 disabled={saving === 'sendgrid' || !sendgridConfig.apiKey}
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50"
               >
-                <Save className="w-4 h-4" /> {saving === 'sendgrid' ? 'กำลังบันทึก...' : 'บันทึก'}
+                <FloppyDisk className="w-4 h-4" /> {saving === 'sendgrid' ? 'กำลังบันทึก...' : 'บันทึก'}
               </button>
               {isConnected('sendgrid') && (
                 <button onClick={() => disconnectIntegration('sendgrid')} className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">
@@ -248,7 +248,7 @@ export default function IntegrationsPage() {
           <div className="flex justify-between items-start mb-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-green-600" />
+                <ChatCircle className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <h3 className="font-bold">LINE Official Account</h3>
@@ -276,7 +276,7 @@ export default function IntegrationsPage() {
                   placeholder="Long-lived channel access token"
                 />
                 <button onClick={() => toggleSecret('lineToken')} className="absolute right-3 top-2.5 text-gray-400">
-                  {showSecrets.lineToken ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showSecrets.lineToken ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -291,7 +291,7 @@ export default function IntegrationsPage() {
                   placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                 />
                 <button onClick={() => toggleSecret('lineSecret')} className="absolute right-3 top-2.5 text-gray-400">
-                  {showSecrets.lineSecret ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showSecrets.lineSecret ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -305,7 +305,7 @@ export default function IntegrationsPage() {
                 disabled={saving === 'line' || !lineConfig.channelAccessToken}
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg disabled:opacity-50"
               >
-                <Save className="w-4 h-4" /> {saving === 'line' ? 'กำลังบันทึก...' : 'บันทึก'}
+                <FloppyDisk className="w-4 h-4" /> {saving === 'line' ? 'กำลังบันทึก...' : 'บันทึก'}
               </button>
               {isConnected('line') && (
                 <button onClick={() => disconnectIntegration('line')} className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">

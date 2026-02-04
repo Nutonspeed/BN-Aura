@@ -146,7 +146,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
         <div className="lg:col-span-2">
           <div className="relative group">
             <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by name, email, or role..."
@@ -185,7 +185,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
       {/* Staff Grid */}
       {loading ? (
         <div className="py-32 flex flex-col items-center justify-center space-y-6">
-          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
           <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Synchronizing Personnel Data...</p>
         </div>
       ) : (
@@ -217,7 +217,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
                         className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-white/10"
                         title="TERMINATE NODE"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash className="w-4 h-4" />
                       </motion.button>
                     </div>
                   </div>
@@ -241,7 +241,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
 
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-primary/60 shrink-0" />
+                      <EnvelopeSimple className="w-4 h-4 text-primary/60 shrink-0" />
                       <p className="text-xs text-muted-foreground font-light leading-relaxed truncate italic">{profile.users?.email}</p>
                     </div>
                   </div>
@@ -317,7 +317,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
                       Email Designation *
                     </label>
                     <div className="relative group/input">
-                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within/input:text-primary transition-colors" />
+                      <EnvelopeSimple className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within/input:text-primary transition-colors" />
                       <input
                         type="email"
                         placeholder="e.g. node.alpha@clinic.com"

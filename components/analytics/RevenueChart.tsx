@@ -45,7 +45,7 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-            <TrendingUp className="w-6 h-6" />
+            <TrendUp className="w-6 h-6" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-white uppercase tracking-tight">Revenue Intelligence</h3>
@@ -126,11 +126,11 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
 
       <div className="pt-4 border-t border-white/5 flex items-center justify-between text-[10px] uppercase tracking-widest font-bold text-muted-foreground relative z-10">
         <div className="flex items-center gap-2">
-          <Calendar className="w-3 h-3" />
+          <CalendarDots className="w-3 h-3" />
           Data updated in real-time
         </div>
         <button className="flex items-center gap-2 hover:text-white transition-colors">
-          <Filter className="w-3 h-3" />
+          <Funnel className="w-3 h-3" />
           Filter Advanced
         </button>
       </div>

@@ -73,7 +73,7 @@ export default function ContactPortalPage() {
             <div className="bg-white/5 rounded-xl border border-white/10 min-h-[500px] flex items-center justify-center">
               <div className="text-center space-y-4">
                 <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
-                  <MessageSquare className="w-8 h-8 text-primary" />
+                  <ChatCircle className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-semibold text-white">Contact Portal</h3>
                 <p className="text-muted-foreground max-w-sm">

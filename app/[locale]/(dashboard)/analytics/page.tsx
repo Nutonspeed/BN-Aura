@@ -196,7 +196,7 @@ export default function AnalyticsDashboard() {
             {/* Business Metrics Cards */}
             <section>
               <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-primary" />
+                <ChartBar className="w-5 h-5 text-primary" />
                 ข้อมูลสำคัญ
               </h2>
               <InsightCards />
@@ -206,7 +206,7 @@ export default function AnalyticsDashboard() {
             {alerts.length > 0 && (
               <section>
                 <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                  <AlertTriangle className="w-5 h-5 text-orange-500" />
+                  <Warning className="w-5 h-5 text-orange-500" />
                   การแจ้งเตือนล่าสุด
                 </h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -223,7 +223,7 @@ export default function AnalyticsDashboard() {
                       }`}
                     >
                       <div className="flex items-start gap-3">
-                        <AlertTriangle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                        <Warning className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
                           alert.severity === 'critical' ? 'text-red-500' :
                           alert.severity === 'high' ? 'text-orange-500' :
                           'text-yellow-500'
@@ -256,7 +256,7 @@ export default function AnalyticsDashboard() {
             {/* Quick Access Actions */}
             <section>
               <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
+                <Sparkle className="w-5 h-5 text-primary" />
                 การดำเนินการด่วน
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -267,7 +267,7 @@ export default function AnalyticsDashboard() {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-2 bg-primary/20 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                      <MessageSquare className="w-5 h-5" />
+                      <ChatCircle className="w-5 h-5" />
                     </div>
                     <h3 className="font-semibold text-foreground">ถาม AI Advisor</h3>
                   </div>
@@ -282,7 +282,7 @@ export default function AnalyticsDashboard() {
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="p-2 bg-green-500/20 rounded-lg text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors">
-                      <TrendingUp className="w-5 h-5" />
+                      <TrendUp className="w-5 h-5" />
                     </div>
                     <h3 className="font-semibold text-foreground">ดูรายงาน</h3>
                   </div>

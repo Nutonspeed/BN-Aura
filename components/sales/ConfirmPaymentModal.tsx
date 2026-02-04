@@ -139,7 +139,7 @@ export default function ConfirmPaymentModal({
             {/* Amount */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                <DollarSign className="w-4 h-4 inline mr-1" />
+                <CurrencyDollar className="w-4 h-4 inline mr-1" />
                 Payment Amount *
               </label>
               <input
@@ -210,7 +210,7 @@ export default function ConfirmPaymentModal({
             {/* Scheduled Time */}
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                <Calendar className="w-4 h-4 inline mr-1" />
+                <CalendarDots className="w-4 h-4 inline mr-1" />
                 Scheduled Time *
               </label>
               <input
@@ -239,7 +239,7 @@ export default function ConfirmPaymentModal({
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <SpinnerGap className="w-4 h-4 animate-spin" />
                     Processing...
                   </>
                 ) : (

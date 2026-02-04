@@ -219,7 +219,7 @@ export default function CustomerDetailPage() {
           onClick={() => router.back()}
           className="p-2 bg-white/5 rounded-xl hover:bg-white/10 transition-colors"
         >
-          <ChevronLeft className="w-5 h-5 text-gray-400" />
+          <CaretLeft className="w-5 h-5 text-gray-400" />
         </button>
         <div>
           <h1 className="text-2xl font-bold text-white">{customer.full_name}</h1>
@@ -229,7 +229,7 @@ export default function CustomerDetailPage() {
             </span>
             {customer.email && (
               <span className="flex items-center gap-1">
-                <Mail className="w-3 h-3" /> {customer.email}
+                <EnvelopeSimple className="w-3 h-3" /> {customer.email}
               </span>
             )}
           </div>
@@ -302,7 +302,7 @@ export default function CustomerDetailPage() {
                     onClick={openSchedule}
                     className="p-4 bg-white/5 border border-white/10 rounded-xl hover:border-primary/50 transition-all text-left group"
                   >
-                    <Calendar className="w-6 h-6 text-orange-400 mb-2 group-hover:scale-110 transition-transform" />
+                    <CalendarDots className="w-6 h-6 text-orange-400 mb-2 group-hover:scale-110 transition-transform" />
                     <h3 className="font-bold text-white">Schedule Treatment</h3>
                     <p className="text-xs text-gray-400 mt-1">Assign beautician and time</p>
                   </button>
@@ -322,7 +322,7 @@ export default function CustomerDetailPage() {
                     onClick={() => handleAction('send_follow_up')}
                     className="p-4 bg-white/5 border border-white/10 rounded-xl hover:border-primary/50 transition-all text-left group"
                   >
-                    <MessageSquare className="w-6 h-6 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" />
+                    <ChatCircle className="w-6 h-6 text-yellow-400 mb-2 group-hover:scale-110 transition-transform" />
                     <h3 className="font-bold text-white">Send Follow-up</h3>
                     <p className="text-xs text-gray-400 mt-1">Check satisfaction & instructions</p>
                   </button>
@@ -356,15 +356,15 @@ export default function CustomerDetailPage() {
             <div className="space-y-2">
               <button className="w-full py-3 px-4 bg-white/5 rounded-lg text-sm font-medium text-left hover:bg-white/10 transition-colors flex items-center justify-between group">
                 <span>Edit Profile</span>
-                <ChevronLeft className="w-4 h-4 rotate-180 text-gray-500 group-hover:text-white transition-colors" />
+                <CaretLeft className="w-4 h-4 rotate-180 text-gray-500 group-hover:text-white transition-colors" />
               </button>
               <button className="w-full py-3 px-4 bg-white/5 rounded-lg text-sm font-medium text-left hover:bg-white/10 transition-colors flex items-center justify-between group">
                 <span>View Scan History</span>
-                <ChevronLeft className="w-4 h-4 rotate-180 text-gray-500 group-hover:text-white transition-colors" />
+                <CaretLeft className="w-4 h-4 rotate-180 text-gray-500 group-hover:text-white transition-colors" />
               </button>
               <button className="w-full py-3 px-4 bg-white/5 rounded-lg text-sm font-medium text-left hover:bg-white/10 transition-colors flex items-center justify-between group">
                 <span>Contact History</span>
-                <ChevronLeft className="w-4 h-4 rotate-180 text-gray-500 group-hover:text-white transition-colors" />
+                <CaretLeft className="w-4 h-4 rotate-180 text-gray-500 group-hover:text-white transition-colors" />
               </button>
             </div>
           </div>

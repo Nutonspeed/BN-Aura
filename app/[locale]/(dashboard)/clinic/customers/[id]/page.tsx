@@ -88,7 +88,7 @@ function CustomerDetailPageContent() {
   if (loading) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Syncing Patient Identity Node...</p>
       </div>
     );
@@ -124,7 +124,7 @@ function CustomerDetailPageContent() {
             onClick={() => router.back()}
             className="p-4 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <CaretLeft className="w-5 h-5" />
           </button>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
@@ -140,11 +140,11 @@ function CustomerDetailPageContent() {
             onClick={() => setIsEditModalOpen(true)}
             className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all"
           >
-            <Edit2 className="w-4 h-4" />
+            <PencilSimple className="w-4 h-4" />
             Modify Protocol
           </button>
           <button className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium hover:brightness-110 transition-all">
-            <MessageCircle className="w-4 h-4" />
+            <ChatCircle className="w-4 h-4" />
             Direct Link
           </button>
         </div>
@@ -169,7 +169,7 @@ function CustomerDetailPageContent() {
                 <div className="space-y-1">
                   <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]">Temporal Node</p>
                   <div className="flex items-center gap-3 text-white font-bold">
-                    <Calendar className="w-4 h-4 text-primary/60" />
+                    <CalendarDots className="w-4 h-4 text-primary/60" />
                     <span>{customer.date_of_birth ? new Date(customer.date_of_birth).toLocaleDateString() : 'Undefined'}</span>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ function CustomerDetailPageContent() {
                 <div className="space-y-1">
                   <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]">Neural Address</p>
                   <div className="flex items-center gap-3 text-white font-bold">
-                    <Mail className="w-4 h-4 text-primary/60" />
+                    <EnvelopeSimple className="w-4 h-4 text-primary/60" />
                     <span className="truncate">{customer.email || 'None'}</span>
                   </div>
                 </div>
@@ -360,7 +360,7 @@ function CustomerDetailPageContent() {
                       <div className="flex justify-between items-start">
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                            <Sparkles className="w-6 h-6" />
+                            <Sparkle className="w-6 h-6" />
                           </div>
                           <div>
                             <h4 className="text-sm font-bold text-white uppercase tracking-widest">Diagnostic Node</h4>
@@ -396,7 +396,7 @@ function CustomerDetailPageContent() {
                 </div>
                 {customer.skin_analyses.length === 0 && (
                   <div className="col-span-full py-20 text-center glass-card rounded-[40px] border border-white/5 opacity-20">
-                    <Sparkles className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
+                    <Sparkle className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
                     <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Diagnostic Data Detected</p>
                   </div>
                 )}
@@ -497,7 +497,7 @@ export default function CustomerDetailPage() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Interface node...</p>
       </div>
     }>

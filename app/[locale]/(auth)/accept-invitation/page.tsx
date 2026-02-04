@@ -85,7 +85,7 @@ export default function AcceptInvitationPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <SpinnerGap className="w-8 h-8 animate-spin text-blue-600" />
       </div>
     );
   }
@@ -179,7 +179,7 @@ export default function AcceptInvitationPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
-              <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="password"
                 value={password}
@@ -195,7 +195,7 @@ export default function AcceptInvitationPage() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
             <div className="relative">
-              <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="password"
                 value={confirmPassword}
@@ -221,7 +221,7 @@ export default function AcceptInvitationPage() {
           >
             {submitting ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <SpinnerGap className="w-5 h-5 animate-spin" />
                 Creating Account...
               </>
             ) : (

@@ -81,7 +81,7 @@ export default function SupportStats() {
           {/* Priority indicator for high priority tickets */}
           {stat.title === 'Total Tickets' && stats.high_priority > 0 && (
             <div className="mt-4 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-400" />
+              <Warning className="w-4 h-4 text-red-400" />
               <span className="text-sm text-red-400">
                 {stats.high_priority} high priority
               </span>

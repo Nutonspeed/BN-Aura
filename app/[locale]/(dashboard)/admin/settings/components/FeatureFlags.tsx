@@ -94,7 +94,7 @@ export default function FeatureFlags({ onSettingsChange }: FeatureFlagsProps) {
       className="glass-card p-8 rounded-2xl border border-white/10"
     >
       <div className="flex items-center gap-3 mb-8">
-        <Zap className="w-6 h-6 text-primary" />
+        <Lightning className="w-6 h-6 text-primary" />
         <div>
           <h2 className="text-2xl font-bold text-white">Feature Flags</h2>
           <p className="text-white/60">Enable or disable system features globally</p>

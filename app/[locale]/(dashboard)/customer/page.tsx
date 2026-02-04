@@ -99,7 +99,7 @@ export default function CustomerDashboard() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
           Loading Your Aesthetic Profile...
         </p>
@@ -121,7 +121,7 @@ export default function CustomerDashboard() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkle className="w-4 h-4" />
             Elite Aura Member
           </motion.div>
           <motion.h1 
@@ -150,7 +150,7 @@ export default function CustomerDashboard() {
         >
           <Link href="/customer/booking">
             <button className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-premium hover:brightness-110 transition-all active:scale-95 flex items-center gap-2">
-              <Calendar className="w-4 h-4" />
+              <CalendarDots className="w-4 h-4" />
               Book Treatment
             </button>
           </Link>
@@ -158,7 +158,7 @@ export default function CustomerDashboard() {
             onClick={() => setIsChatOpen(true)}
             className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white hover:bg-white/10 transition-all active:scale-95 flex items-center gap-2 group"
           >
-            <MessageSquare className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
+            <ChatCircle className="w-4 h-4 text-primary group-hover:scale-110 transition-transform" />
             Chat Advisor
           </button>
         </motion.div>
@@ -213,7 +213,7 @@ export default function CustomerDashboard() {
             className="glass-card p-8 rounded-[40px] border border-white/10 min-h-[300px] relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-all duration-700">
-              <Sparkles className="w-32 h-32 text-primary" />
+              <Sparkle className="w-32 h-32 text-primary" />
             </div>
             
             <div className="relative z-10 space-y-8">
@@ -221,7 +221,7 @@ export default function CustomerDashboard() {
                 <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Latest Skin <span className="text-primary">Intelligence</span></h3>
                 <Link href="/customer/skin-profile">
                   <button className="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-1 hover:gap-3 transition-all">
-                    Full Report <ChevronRight className="w-4 h-4" />
+                    Full Report <CaretRight className="w-4 h-4" />
                   </button>
                 </Link>
               </div>

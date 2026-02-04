@@ -133,7 +133,7 @@ export function DataTable<T>({
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <RefreshCw className="w-8 h-8 text-primary animate-spin" />
+        <ArrowsClockwise className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
@@ -145,7 +145,7 @@ export function DataTable<T>({
         <div className="flex items-center gap-4 flex-1">
           {searchable && (
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <input
                 type="text"
                 placeholder="Search..."
@@ -158,7 +158,7 @@ export function DataTable<T>({
           
           {filterable && (
             <button className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all">
-              <Filter className="w-4 h-4" />
+              <Funnel className="w-4 h-4" />
             </button>
           )}
         </div>
@@ -178,12 +178,12 @@ export function DataTable<T>({
               onClick={onRefresh}
               className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
             >
-              <RefreshCw className="w-4 h-4" />
+              <ArrowsClockwise className="w-4 h-4" />
             </button>
           )}
           
           <button className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all">
-            <Settings className="w-4 h-4" />
+            <Gear className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -215,9 +215,9 @@ export function DataTable<T>({
                       {column.label}
                       {column.sortable && sortConfig?.key === column.key && (
                         sortConfig.direction === 'asc' ? (
-                          <ChevronUp className="w-3 h-3" />
+                          <CaretUp className="w-3 h-3" />
                         ) : (
-                          <ChevronDown className="w-3 h-3" />
+                          <CaretDown className="w-3 h-3" />
                         )
                       )}
                     </div>
@@ -268,7 +268,7 @@ export function DataTable<T>({
                     ))}
                     <td className="px-4 py-3 text-right">
                       <button className="p-1 text-white/60 hover:text-white hover:bg-white/10 rounded transition-all">
-                        <MoreVertical className="w-4 h-4" />
+                        <DotsThreeVertical className="w-4 h-4" />
                       </button>
                     </td>
                   </motion.tr>
@@ -293,7 +293,7 @@ export function DataTable<T>({
               disabled={currentPage === 1}
               className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <CaretLeft className="w-4 h-4" />
             </button>
             
             <div className="flex items-center gap-1">
@@ -322,7 +322,7 @@ export function DataTable<T>({
               disabled={currentPage === totalPages}
               className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <ChevronRight className="w-4 h-4" />
+              <CaretRight className="w-4 h-4" />
             </button>
           </div>
         </div>

@@ -106,7 +106,7 @@ export default function BranchModal({ isOpen, onClose, onSuccess, branch }: Bran
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center text-primary">
-                  <Building2 className="w-6 h-6" />
+                  <Buildings className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight">
@@ -133,7 +133,7 @@ export default function BranchModal({ isOpen, onClose, onSuccess, branch }: Bran
                     Branch Designation *
                   </label>
                   <div className="relative">
-                    <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <Buildings className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="text"
                       name="branch_name"
@@ -278,12 +278,12 @@ export default function BranchModal({ isOpen, onClose, onSuccess, branch }: Bran
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Syncing...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4" />
+                      <FloppyDisk className="w-4 h-4" />
                       {branch ? 'Commit Changes' : 'Initialize Node'}
                     </>
                   )}

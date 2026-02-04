@@ -98,9 +98,9 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                   formData.movement_type === 'OUT' ? "bg-rose-500/20 border-rose-500/20 text-rose-400" :
                   "bg-blue-500/20 border-blue-500/20 text-blue-400"
                 )}>
-                  {formData.movement_type === 'IN' ? <ArrowUpCircle className="w-6 h-6" /> :
-                   formData.movement_type === 'OUT' ? <ArrowDownCircle className="w-6 h-6" /> :
-                   <Settings2 className="w-6 h-6" />}
+                  {formData.movement_type === 'IN' ? <ArrowCircleUp className="w-6 h-6" /> :
+                   formData.movement_type === 'OUT' ? <ArrowCircleDown className="w-6 h-6" /> :
+                   <Gear2 className="w-6 h-6" />}
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight">Stock Adjustment</h3>
@@ -211,7 +211,7 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                   disabled={loading || formData.quantity < 1}
                   className="flex-1 px-6 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-xs shadow-premium"
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {loading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
                   Record Movement
                 </button>
               </div>

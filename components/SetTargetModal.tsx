@@ -158,7 +158,7 @@ export default function SetTargetModal({ isOpen, onClose, onSuccess, staffId, st
                   Revenue Target (THB) *
                 </label>
                 <div className="relative">
-                  <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <CurrencyDollar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                   <input
                     type="number"
                     name="targetAmount"
@@ -207,7 +207,7 @@ export default function SetTargetModal({ isOpen, onClose, onSuccess, staffId, st
                   disabled={loading || formData.targetAmount <= 0}
                   className="flex-1 px-6 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-xs shadow-premium"
                 >
-                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  {loading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <FloppyDisk className="w-4 h-4" />}
                   Deploy Target
                 </button>
               </div>

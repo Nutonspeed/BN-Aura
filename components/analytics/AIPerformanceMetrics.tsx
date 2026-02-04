@@ -47,7 +47,7 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
         <div className="glass-card p-6 rounded-2xl border border-white/10">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-purple-500/10 rounded-xl">
-              <Zap className="w-6 h-6 text-purple-400" />
+              <Lightning className="w-6 h-6 text-purple-400" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">Total Suggestions</p>
@@ -72,7 +72,7 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
         <div className="glass-card p-6 rounded-2xl border border-white/10">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-blue-500/10 rounded-xl">
-              <TrendingUp className="w-6 h-6 text-blue-400" />
+              <TrendUp className="w-6 h-6 text-blue-400" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">Deal Prob. Lift</p>
@@ -85,7 +85,7 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
         <div className="glass-card p-6 rounded-2xl border border-white/10">
           <div className="flex items-center gap-3 mb-4">
             <div className="p-3 bg-pink-500/10 rounded-xl">
-              <Sparkles className="w-6 h-6 text-pink-400" />
+              <Sparkle className="w-6 h-6 text-pink-400" />
             </div>
             <div>
               <p className="text-xs font-bold text-muted-foreground uppercase">Top Strategy</p>
@@ -104,7 +104,7 @@ export default function AIPerformanceMetrics({ data }: AIPerformanceMetricsProps
         {/* Usage Trend Chart */}
         <div className="lg:col-span-2 glass-card p-6 rounded-2xl border border-white/10">
           <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-            <MessageSquare className="w-5 h-5 text-primary" />
+            <ChatCircle className="w-5 h-5 text-primary" />
             AI Usage & Acceptance Trend
           </h3>
           <div className="h-[300px]">

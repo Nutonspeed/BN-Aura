@@ -77,21 +77,21 @@ export default function InsightCards({ className }: InsightCardsProps) {
   const getIcon = (iconType: string) => {
     switch (iconType) {
       case 'revenue':
-        return <DollarSign className="w-6 h-6" />;
+        return <CurrencyDollar className="w-6 h-6" />;
       case 'customers':
         return <Users className="w-6 h-6" />;
       case 'target':
         return <Target className="w-6 h-6" />;
       default:
-        return <Sparkles className="w-6 h-6" />;
+        return <Sparkle className="w-6 h-6" />;
     }
   };
 
   const getTrendIcon = (trend: string, growth: number) => {
     if (trend === 'up') {
-      return <TrendingUp className="w-4 h-4 text-green-500" />;
+      return <TrendUp className="w-4 h-4 text-green-500" />;
     } else if (trend === 'down') {
-      return <TrendingDown className="w-4 h-4 text-red-500" />;
+      return <TrendDown className="w-4 h-4 text-red-500" />;
     }
     return <Clock className="w-4 h-4 text-muted-foreground" />;
   };
@@ -182,7 +182,7 @@ export default function InsightCards({ className }: InsightCardsProps) {
             {metric.trend === 'up' ? (
               <CheckCircle className="w-8 h-8 text-green-500" />
             ) : metric.trend === 'down' ? (
-              <AlertCircle className="w-8 h-8 text-red-500" />
+              <WarningCircle className="w-8 h-8 text-red-500" />
             ) : (
               <Clock className="w-8 h-8 text-muted-foreground" />
             )}
@@ -201,7 +201,7 @@ export default function InsightCards({ className }: InsightCardsProps) {
         }}
       >
         <div className="text-center text-muted-foreground group-hover:text-primary transition-colors">
-          <Sparkles className="w-8 h-8 mx-auto mb-2" />
+          <Sparkle className="w-8 h-8 mx-auto mb-2" />
           <p className="text-sm font-medium">เพิ่มข้อมูลเพิ่มเติม</p>
           <p className="text-xs opacity-60">คลิกเพื่อปรับแต่ง</p>
         </div>

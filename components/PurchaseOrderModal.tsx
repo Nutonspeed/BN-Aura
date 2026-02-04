@@ -171,7 +171,7 @@ export default function PurchaseOrderModal({ isOpen, onClose, onSuccess, purchas
                     Total Investment *
                   </label>
                   <div className="relative">
-                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <CurrencyDollar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="number"
                       name="total_amount"
@@ -247,12 +247,12 @@ export default function PurchaseOrderModal({ isOpen, onClose, onSuccess, purchas
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Syncing...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4" />
+                      <FloppyDisk className="w-4 h-4" />
                       {purchaseOrder ? 'Commit Updates' : 'Initialize Order'}
                     </>
                   )}

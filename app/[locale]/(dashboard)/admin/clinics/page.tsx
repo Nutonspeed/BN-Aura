@@ -165,7 +165,7 @@ export default function ClinicManagementPage() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -176,7 +176,7 @@ export default function ClinicManagementPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Building2 className="w-8 h-8 text-primary" />
+            <Buildings className="w-8 h-8 text-primary" />
             {t('title')}
           </h1>
           <p className="text-white/60 mt-1">{t('description')}</p>
@@ -193,7 +193,7 @@ export default function ClinicManagementPage() {
       {/* Alerts */}
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400" />
+          <WarningCircle className="w-5 h-5 text-red-400" />
           <p className="text-red-400">{error}</p>
           <button onClick={() => setError(null)} className="ml-auto">
             <XCircle className="w-4 h-4 text-red-400" />
@@ -220,7 +220,7 @@ export default function ClinicManagementPage() {
         >
           <div className="flex items-center gap-4">
             <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Building2 className="w-6 h-6 text-blue-400" />
+              <Buildings className="w-6 h-6 text-blue-400" />
             </div>
             <div>
               <p className="text-3xl font-bold text-white">{clinics.length}</p>
@@ -275,7 +275,7 @@ export default function ClinicManagementPage() {
         >
           <div className="flex items-center gap-4">
             <div className="p-3 bg-amber-500/20 rounded-xl">
-              <DollarSign className="w-6 h-6 text-amber-400" />
+              <CurrencyDollar className="w-6 h-6 text-amber-400" />
             </div>
             <div>
               <p className="text-3xl font-bold text-white">
@@ -291,7 +291,7 @@ export default function ClinicManagementPage() {
       <div className="glass-card p-6 rounded-2xl border border-white/10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
             <input
               type="text"
               placeholder={t('search_clinics')}
@@ -349,7 +349,7 @@ export default function ClinicManagementPage() {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Building2 className="w-5 h-5 text-primary" />
+                        <Buildings className="w-5 h-5 text-primary" />
                       </div>
                       <div>
                         <p className="font-medium text-white">{getClinicName(clinic)}</p>
@@ -390,7 +390,7 @@ export default function ClinicManagementPage() {
                         className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
                         title={t('edit_clinic')}
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </button>
                       <button 
                         onClick={() => handleUpdateStatus(clinic.id, clinic.is_active)}
@@ -459,13 +459,13 @@ export default function ClinicManagementPage() {
               {selectedClinic.metadata?.contact && (
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
+                    <EnvelopeSimple className="w-4 h-4" />
                     {t('contact_information')}
                   </h3>
                   <div className="space-y-2">
                     {selectedClinic.metadata.contact.email && (
                       <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-white/40" />
+                        <EnvelopeSimple className="w-4 h-4 text-white/40" />
                         <span className="text-white/80">{selectedClinic.metadata.contact.email}</span>
                       </div>
                     )}
@@ -488,7 +488,7 @@ export default function ClinicManagementPage() {
               {/* Usage Statistics */}
               <div>
                 <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                  <Activity className="w-4 h-4" />
+                  <Pulse className="w-4 h-4" />
                   {t('usage_statistics')}
                 </h3>
                 <div className="grid grid-cols-3 gap-4">

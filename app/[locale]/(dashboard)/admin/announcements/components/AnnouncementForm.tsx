@@ -66,7 +66,7 @@ export default function AnnouncementForm({ initialData, onClose }: AnnouncementF
       className="glass-card p-8 rounded-2xl border border-white/10"
     >
       <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-        <Save className="w-6 h-6 text-primary" />
+        <FloppyDisk className="w-6 h-6 text-primary" />
         {initialData?.id ? 'Edit Announcement' : 'Create New Announcement'}
       </h2>
 
@@ -281,7 +281,7 @@ export default function AnnouncementForm({ initialData, onClose }: AnnouncementF
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-white/80 text-sm font-medium mb-2">
-              <Calendar className="w-4 h-4 inline mr-2" />
+              <CalendarDots className="w-4 h-4 inline mr-2" />
               Start Date
             </label>
             <input
@@ -327,7 +327,7 @@ export default function AnnouncementForm({ initialData, onClose }: AnnouncementF
             disabled={saving || !formData.title || !formData.content}
             className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            <Save className="w-4 h-4" />
+            <FloppyDisk className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Announcement'}
           </button>
 

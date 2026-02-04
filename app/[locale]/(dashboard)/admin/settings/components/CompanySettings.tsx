@@ -53,7 +53,7 @@ export default function CompanySettings({ onSettingsChange }: CompanySettingsPro
       className="glass-card p-8 rounded-2xl border border-white/10"
     >
       <div className="flex items-center gap-3 mb-8">
-        <Building2 className="w-6 h-6 text-primary" />
+        <Buildings className="w-6 h-6 text-primary" />
         <div>
           <h2 className="text-2xl font-bold text-white">Company Information</h2>
           <p className="text-white/60">Basic company details and branding</p>
@@ -83,7 +83,7 @@ export default function CompanySettings({ onSettingsChange }: CompanySettingsPro
               </div>
             ) : (
               <div className="w-24 h-24 border-2 border-dashed border-white/20 rounded-xl flex items-center justify-center">
-                <Building2 className="w-8 h-8 text-white/40" />
+                <Buildings className="w-8 h-8 text-white/40" />
               </div>
             )}
             

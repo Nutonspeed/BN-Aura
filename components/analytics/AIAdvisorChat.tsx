@@ -115,13 +115,13 @@ export default function AIAdvisorChat() {
 
   const getQuickQuestionIcon = (category: string) => {
     switch (category) {
-      case 'revenue': return <DollarSign className="w-4 h-4" />;
+      case 'revenue': return <CurrencyDollar className="w-4 h-4" />;
       case 'customers': return <Users className="w-4 h-4" />;
       case 'treatments': return <Star className="w-4 h-4" />;
       case 'staff': return <Target className="w-4 h-4" />;
-      case 'strategy': return <TrendingUp className="w-4 h-4" />;
-      case 'expenses': return <BarChart3 className="w-4 h-4" />;
-      default: return <Sparkles className="w-4 h-4" />;
+      case 'strategy': return <TrendUp className="w-4 h-4" />;
+      case 'expenses': return <ChartBar className="w-4 h-4" />;
+      default: return <Sparkle className="w-4 h-4" />;
     }
   };
 
@@ -131,7 +131,7 @@ export default function AIAdvisorChat() {
       <div className="p-6 bg-gradient-to-r from-primary/10 to-primary/5 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="p-3 bg-primary/20 rounded-xl">
-            <Sparkles className="w-6 h-6 text-primary" />
+            <Sparkle className="w-6 h-6 text-primary" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-foreground">AI Business Advisor</h3>
@@ -265,7 +265,7 @@ export default function AIAdvisorChat() {
             className="flex justify-start"
           >
             <div className="bg-muted/50 p-4 rounded-2xl flex items-center gap-3">
-              <Loader2 className="w-4 h-4 animate-spin text-primary" />
+              <SpinnerGap className="w-4 h-4 animate-spin text-primary" />
               <span className="text-sm text-muted-foreground">AI กำลังคิด...</span>
             </div>
           </motion.div>
@@ -292,7 +292,7 @@ export default function AIAdvisorChat() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <Send className="w-4 h-4" />
+            <PaperPlaneTilt className="w-4 h-4" />
           </motion.button>
         </div>
       </form>

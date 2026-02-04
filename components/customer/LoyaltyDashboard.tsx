@@ -277,7 +277,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
             ครั้งที่มาใช้บริการ
           </div>
           <div className="mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground">
-            <Calendar className="w-3 h-3" />
+            <CalendarDots className="w-3 h-3" />
             ล่าสุด {profile.lastVisit.toLocaleDateString('th-TH')}
           </div>
         </div>
@@ -349,7 +349,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
             className="bg-card border border-border rounded-2xl p-6"
           >
             <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
+              <Lightning className="w-5 h-5 text-primary" />
               กิจกรรมล่าสุด
             </h3>
             
@@ -435,7 +435,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                       </div>
                       {unlocked && (
                         <div className="text-green-500">
-                          <Award className="w-4 h-4" />
+                          <Medal className="w-4 h-4" />
                         </div>
                       )}
                     </motion.div>

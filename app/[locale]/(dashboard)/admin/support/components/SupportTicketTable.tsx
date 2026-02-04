@@ -62,11 +62,11 @@ export default function SupportTicketTable({
   // Get status icon
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'open': return <AlertCircle className="w-4 h-4" />;
+      case 'open': return <WarningCircle className="w-4 h-4" />;
       case 'in_progress': return <Clock className="w-4 h-4" />;
       case 'resolved': return <CheckCircle className="w-4 h-4" />;
       case 'closed': return <XCircle className="w-4 h-4" />;
-      default: return <AlertCircle className="w-4 h-4" />;
+      default: return <WarningCircle className="w-4 h-4" />;
     }
   };
 
@@ -88,7 +88,7 @@ export default function SupportTicketTable({
           <div className="flex flex-col sm:flex-row gap-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search tickets..."
@@ -247,7 +247,7 @@ export default function SupportTicketTable({
                       }}
                       className="text-red-600 hover:text-red-900"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </button>
                   </div>
                 </td>
@@ -261,7 +261,7 @@ export default function SupportTicketTable({
       {filteredTickets.length === 0 && (
         <div className="text-center py-12">
           <div className="text-gray-500">
-            <Filter className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+            <Funnel className="w-12 h-12 mx-auto mb-4 text-gray-300" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets found</h3>
             <p className="text-gray-500">Try adjusting your search or filters</p>
           </div>

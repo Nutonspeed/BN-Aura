@@ -185,7 +185,7 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-          <DollarSign className="w-6 h-6 text-primary" />
+          <CurrencyDollar className="w-6 h-6 text-primary" />
           Pricing Configuration
         </h2>
         <button
@@ -345,13 +345,13 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
                       onClick={() => setEditingPlan(key)}
                       className="p-2 text-white/60 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <PencilSimple className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => handleDeletePlan(key)}
                       className="p-2 text-white/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
@@ -386,7 +386,7 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
                     <span>{plan.limits.max_branches === -1 ? 'Unlimited' : plan.limits.max_branches} branches</span>
                   </div>
                   <div className="flex items-center gap-2 text-white/60">
-                    <Zap className="w-4 h-4" />
+                    <Lightning className="w-4 h-4" />
                     <span>{plan.limits.max_ai_requests === -1 ? 'Unlimited' : plan.limits.max_ai_requests} AI requests</span>
                   </div>
                   <div className="flex items-center gap-2 text-white/60">
@@ -501,7 +501,7 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
                 onClick={() => handleDeleteAddOn(addon.id)}
                 className="p-2 text-white/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
               >
-                <Trash2 className="w-4 h-4" />
+                <Trash className="w-4 h-4" />
               </button>
             </div>
           </div>

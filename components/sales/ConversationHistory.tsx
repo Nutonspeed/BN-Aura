@@ -76,7 +76,7 @@ export default function ConversationHistory({
     return (
       <div className="glass-card p-6 rounded-[32px] border border-white/10 space-y-4">
         <div className="flex items-center gap-3">
-          <MessageCircle className="w-5 h-5 text-primary" />
+          <ChatCircle className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">
             Conversation History
           </h3>
@@ -94,13 +94,13 @@ export default function ConversationHistory({
     return (
       <div className="glass-card p-6 rounded-[32px] border border-white/10">
         <div className="flex items-center gap-3 mb-4">
-          <MessageCircle className="w-5 h-5 text-primary" />
+          <ChatCircle className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">
             Conversation History
           </h3>
         </div>
         <div className="text-center py-8 opacity-50">
-          <MessageCircle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+          <ChatCircle className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
           <p className="text-xs text-muted-foreground">
             ยังไม่มีประวัติการสนทนา
           </p>
@@ -113,7 +113,7 @@ export default function ConversationHistory({
     <div className="glass-card p-6 rounded-[32px] border border-white/10 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <MessageCircle className="w-5 h-5 text-primary" />
+          <ChatCircle className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">
             Conversation History
           </h3>
@@ -157,7 +157,7 @@ export default function ConversationHistory({
                     {conv.summary || `${(conv.messages || []).length} ข้อความ`}
                   </p>
                 </div>
-                <ChevronRight className={cn(
+                <CaretRight className={cn(
                   'w-4 h-4 text-muted-foreground transition-all',
                   selectedId === conv.id ? 'text-primary rotate-90' : 'group-hover:text-white group-hover:translate-x-1'
                 )} />
@@ -172,7 +172,7 @@ export default function ConversationHistory({
                 </div>
                 {conv.deal_probability !== null && (
                   <div className="flex items-center gap-1.5">
-                    <TrendingUp className="w-3 h-3 text-primary/60" />
+                    <TrendUp className="w-3 h-3 text-primary/60" />
                     <span className={cn('font-bold', getProbabilityColor(conv.deal_probability))}>
                       {conv.deal_probability}%
                     </span>

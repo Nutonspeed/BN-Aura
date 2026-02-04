@@ -38,9 +38,9 @@ function SystemMonitoringContent() {
       case 'online':
         return <CheckCircle className="w-5 h-5 text-emerald-400" />;
       case 'degraded':
-        return <AlertTriangle className="w-5 h-5 text-amber-400" />;
+        return <Warning className="w-5 h-5 text-amber-400" />;
       case 'offline':
-        return <WifiOff className="w-5 h-5 text-red-400" />;
+        return <WifiSlash className="w-5 h-5 text-red-400" />;
       default:
         return <Wifi className="w-5 h-5 text-gray-400" />;
     }
@@ -53,7 +53,7 @@ function SystemMonitoringContent() {
   if (loading && metrics.length === 0) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -68,7 +68,7 @@ function SystemMonitoringContent() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Activity className="w-8 h-8 text-primary" />
+            <Pulse className="w-8 h-8 text-primary" />
             System Monitoring
           </h1>
           <p className="text-white/60 mt-1">Real-time system health and performance monitoring</p>
@@ -82,7 +82,7 @@ function SystemMonitoringContent() {
           disabled={refreshing}
           className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+          <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
           Refresh
         </button>
       </div>
@@ -98,7 +98,7 @@ function SystemMonitoringContent() {
         >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 bg-emerald-500/20 rounded-xl">
-              <Server className="w-6 h-6 text-emerald-400" />
+              <HardDrives className="w-6 h-6 text-emerald-400" />
             </div>
             <span className={`text-xs font-bold ${
               health?.status === 'healthy' ? 'text-emerald-400' :
@@ -182,7 +182,7 @@ function SystemMonitoringContent() {
           }`}
         >
           <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5" />
+            <Warning className="w-5 h-5" />
             Active Alerts
           </h3>
           <div className="flex gap-4">
@@ -232,7 +232,7 @@ function SystemMonitoringContent() {
         className="glass-card p-8 rounded-3xl border border-white/10"
       >
         <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-          <Server className="w-5 h-5 text-primary" />
+          <HardDrives className="w-5 h-5 text-primary" />
           Performance Metrics
         </h2>
         

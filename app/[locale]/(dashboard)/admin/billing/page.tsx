@@ -42,7 +42,7 @@ export default function BillingManagementPage() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -71,7 +71,7 @@ export default function BillingManagementPage() {
             disabled={refreshing}
             className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh
           </button>
           <button className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2">

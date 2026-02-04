@@ -184,7 +184,7 @@ export default function SharedChatPage() {
       <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-            <MessageSquare className="w-5 h-5 text-primary" />
+            <ChatCircle className="w-5 h-5 text-primary" />
           </div>
           <div>
             <h1 className="text-lg font-bold text-white">
@@ -207,7 +207,7 @@ export default function SharedChatPage() {
           {/* Search */}
           <div className="p-3 border-b border-white/10">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <input
                 type="text"
                 placeholder="Search conversations..."
@@ -226,7 +226,7 @@ export default function SharedChatPage() {
               </div>
             ) : filteredSessions.length === 0 ? (
               <div className="p-4 text-center text-muted-foreground">
-                <MessageSquare className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <ChatCircle className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>No conversations yet</p>
               </div>
             ) : (
@@ -297,7 +297,7 @@ export default function SharedChatPage() {
                     <Phone className="w-5 h-5" />
                   </button>
                   <button className="p-2 hover:bg-white/5 rounded-lg text-muted-foreground">
-                    <MoreVertical className="w-5 h-5" />
+                    <DotsThreeVertical className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function SharedChatPage() {
                     disabled={!input.trim()}
                     className="px-4 bg-primary text-primary-foreground rounded-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
-                    <Send className="w-5 h-5" />
+                    <PaperPlaneTilt className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -363,7 +363,7 @@ export default function SharedChatPage() {
           ) : (
             <div className="flex-1 flex items-center justify-center text-muted-foreground">
               <div className="text-center">
-                <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-30" />
+                <ChatCircle className="w-16 h-16 mx-auto mb-4 opacity-30" />
                 <h3 className="text-lg font-medium text-white mb-2">Select a conversation</h3>
                 <p className="text-sm">Choose a conversation from the list to start chatting</p>
               </div>

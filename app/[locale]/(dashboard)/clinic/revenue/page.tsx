@@ -74,7 +74,7 @@ export default function RevenueDashboard() {
   if (loading && !stats) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Accessing Financial Nodes...</p>
       </div>
     );
@@ -92,7 +92,7 @@ export default function RevenueDashboard() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-            <TrendingUp className="w-4 h-4" />
+            <TrendUp className="w-4 h-4" />
             Financial Intelligence
           </div>
           <h1 className="text-4xl font-black text-white uppercase tracking-tight">Revenue <span className="text-primary text-glow">Intelligence</span></h1>
@@ -242,7 +242,7 @@ export default function RevenueDashboard() {
             
             {topTreatments.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center opacity-20 py-20">
-                <BarChart3 className="w-12 h-12 mb-4" />
+                <ChartBar className="w-12 h-12 mb-4" />
                 <p className="text-xs font-black uppercase tracking-widest">No Protocol Data</p>
               </div>
             )}

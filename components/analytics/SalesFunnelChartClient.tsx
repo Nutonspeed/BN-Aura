@@ -36,7 +36,7 @@ export default function SalesFunnelChartClient({ data, period = 'This Month' }: 
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Filter className="w-5 h-5 text-primary" />
+            <Funnel className="w-5 h-5 text-primary" />
             Sales Funnel
           </h3>
           <p className="text-sm text-muted-foreground">Conversion tracking • {period}</p>

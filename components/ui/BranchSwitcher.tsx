@@ -54,7 +54,7 @@ export default function BranchSwitcher() {
     window.dispatchEvent(new Event('branch_changed'));
   };
 
-  if (loading) return <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />;
+  if (loading) return <SpinnerGap className="w-4 h-4 animate-spin text-muted-foreground" />;
   if (branches.length <= 1 && !selectedBranch) return null;
 
   return (
@@ -64,7 +64,7 @@ export default function BranchSwitcher() {
         className="flex items-center gap-3 px-4 py-2 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group"
       >
         <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
-          <Building2 className="w-4 h-4" />
+          <Buildings className="w-4 h-4" />
         </div>
         <div className="text-left hidden md:block">
           <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest leading-none mb-1">Operational Node</p>
@@ -72,7 +72,7 @@ export default function BranchSwitcher() {
             {selectedBranch?.branch_name || 'Select Branch'}
           </p>
         </div>
-        <ChevronDown className={cn("w-4 h-4 text-muted-foreground transition-transform duration-300", isOpen && "rotate-180")} />
+        <CaretDown className={cn("w-4 h-4 text-muted-foreground transition-transform duration-300", isOpen && "rotate-180")} />
       </button>
 
       <AnimatePresence>
@@ -105,7 +105,7 @@ export default function BranchSwitcher() {
                         "w-8 h-8 rounded-lg flex items-center justify-center border transition-all",
                         selectedBranch?.id === branch.id ? "bg-white/20 border-white/20" : "bg-white/5 border-white/5 group-hover:border-primary/30"
                       )}>
-                        <Building2 className="w-4 h-4" />
+                        <Buildings className="w-4 h-4" />
                       </div>
                       <div className="text-left">
                         <p className="text-xs font-bold truncate max-w-[120px]">{branch.branch_name}</p>

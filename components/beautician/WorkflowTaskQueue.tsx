@@ -240,7 +240,7 @@ export default function WorkflowTaskQueue() {
                       <span>{task.estimated_duration} min</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CalendarDots className="w-4 h-4" />
+                      <CalendarDotsDots className="w-4 h-4" />
                       <span>{new Date(task.scheduled_time).toLocaleString()}</span>
                     </div>
                   </div>

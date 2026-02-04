@@ -73,9 +73,9 @@ export default function SecurityMetrics({ metrics, timeRange = '24h' }: Security
               <p className="text-gray-300 text-sm font-semibold">{card.title}</p>
               <p className="text-4xl font-bold text-white">{card.value}</p>
               <p className={`text-sm font-medium flex items-center gap-1 mt-2 ${card.trendColor}`}>
-                {card.title === 'Active Sessions' && <TrendingUp className="w-4 h-4" />}
-                {card.title === 'Failed Logins' && <TrendingUp className="w-4 h-4" />}
-                {card.title === 'Security Alerts' && <AlertTriangle className="w-4 h-4" />}
+                {card.title === 'Active Sessions' && <TrendUp className="w-4 h-4" />}
+                {card.title === 'Failed Logins' && <TrendUp className="w-4 h-4" />}
+                {card.title === 'Security Alerts' && <Warning className="w-4 h-4" />}
                 {card.title === '2FA Enabled' && <CheckCircle className="w-4 h-4" />}
                 {card.trend}
               </p>

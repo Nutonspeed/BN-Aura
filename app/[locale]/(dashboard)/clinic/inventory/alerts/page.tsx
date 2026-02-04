@@ -59,7 +59,7 @@ export default function InventoryAlertsPage() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <AlertTriangle className="w-7 h-7 text-yellow-500" /> Inventory Alerts
+            <Warning className="w-7 h-7 text-yellow-500" /> Inventory Alerts
           </h1>
           <p className="text-gray-600">การแจ้งเตือนสินค้าคงคลัง</p>
         </div>

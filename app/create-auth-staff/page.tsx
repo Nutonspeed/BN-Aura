@@ -75,7 +75,7 @@ export default function CreateAuthStaffPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">
-                  <Mail className="w-4 h-4 inline mr-2" />
+                  <EnvelopeSimple className="w-4 h-4 inline mr-2" />
                   Email Address
                 </label>
                 <input
@@ -163,7 +163,7 @@ export default function CreateAuthStaffPage() {
             >
               {loading ? (
                 <div className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <SpinnerGap className="w-5 h-5 animate-spin" />
                   Creating Staff...
                 </div>
               ) : (
@@ -179,7 +179,7 @@ export default function CreateAuthStaffPage() {
               className="mt-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg"
             >
               <div className="flex items-center gap-3">
-                <AlertCircle className="w-5 h-5 text-red-400" />
+                <WarningCircle className="w-5 h-5 text-red-400" />
                 <div>
                   <p className="text-red-400 font-medium">Error</p>
                   <p className="text-red-300 text-sm">{error}</p>

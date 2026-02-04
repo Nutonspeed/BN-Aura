@@ -143,7 +143,7 @@ export default function CreateCustomerPage() {
                   อีเมล *
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
+                  <EnvelopeSimple className="absolute left-3 top-3 w-5 h-5 text-blue-300" />
                   <input
                     type="email"
                     required
@@ -193,7 +193,7 @@ export default function CreateCustomerPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-3 text-blue-300 hover:text-white"
                   >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    {showPassword ? <EyeSlash className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
                 </div>
               </div>

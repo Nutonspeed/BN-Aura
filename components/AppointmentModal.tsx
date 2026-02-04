@@ -152,7 +152,7 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-primary" />
+                  <CalendarDots className="w-6 h-6 text-primary" />
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight">
@@ -227,7 +227,7 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
                     Temporal Coordinate (Date) *
                   </label>
                   <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <CalendarDots className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="date"
                       name="appointment_date"
@@ -358,12 +358,12 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Orchestrating...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4" />
+                      <FloppyDisk className="w-4 h-4" />
                       {appointment ? 'Commit Updates' : 'Initialize Node'}
                     </>
                   )}

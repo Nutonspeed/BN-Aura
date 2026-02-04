@@ -58,15 +58,15 @@ export default function AlertCenter() {
   const getAlertIcon = (type: Alert['type']) => {
     switch (type) {
       case 'revenue_drop':
-        return <TrendingDown className="w-5 h-5" />;
+        return <TrendDown className="w-5 h-5" />;
       case 'customer_churn':
         return <Users className="w-5 h-5" />;
       case 'staff_performance':
-        return <AlertCircle className="w-5 h-5" />;
+        return <WarningCircle className="w-5 h-5" />;
       case 'inventory_low':
         return <Package className="w-5 h-5" />;
       default:
-        return <AlertTriangle className="w-5 h-5" />;
+        return <Warning className="w-5 h-5" />;
     }
   };
 
@@ -146,7 +146,7 @@ export default function AlertCenter() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-orange-500/20 rounded-xl">
-              <AlertTriangle className="w-6 h-6 text-orange-500" />
+              <Warning className="w-6 h-6 text-orange-500" />
             </div>
             <div>
               <h3 className="text-xl font-bold text-foreground">Smart Alerts</h3>
@@ -242,7 +242,7 @@ export default function AlertCenter() {
                           className="p-1 hover:bg-background/50 rounded text-muted-foreground hover:text-foreground transition-colors"
                           title="ดูรายละเอียด"
                         >
-                          <ExternalLink className="w-4 h-4" />
+                          <ArrowSquareOut className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => dismissAlert(index)}

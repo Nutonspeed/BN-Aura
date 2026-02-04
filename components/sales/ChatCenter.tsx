@@ -84,7 +84,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
         <div className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-primary" />
+              <ChatCircle className="w-5 h-5 text-primary" />
               Intelligence Chat
             </h3>
             {sessions.reduce((acc, s) => acc + s.unreadCount, 0) > 0 && (
@@ -95,7 +95,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
           </div>
           
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search conversations..."
@@ -175,7 +175,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                 </div>
                 <div className="flex gap-2">
                   <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-primary hover:bg-primary/10 transition-all tooltip" title="Send AI Recommendation">
-                    <Sparkles className="w-4 h-4" />
+                    <Sparkle className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                     }`}>
                       {msg.messageType === 'treatment_recommendation' && (
                         <div className="mb-2 p-2 bg-black/20 rounded-lg border border-white/10 flex items-center gap-2">
-                          <Sparkles className="w-3 h-3 text-primary-foreground" />
+                          <Sparkle className="w-3 h-3 text-primary-foreground" />
                           <span className="text-[10px] font-black uppercase">Clinical Insight</span>
                         </div>
                       )}
@@ -226,7 +226,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                     disabled={!newMessage.trim()}
                     className="p-3 bg-primary text-primary-foreground rounded-xl shadow-premium hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:active:scale-100 transition-all"
                   >
-                    <Send className="w-5 h-5" />
+                    <PaperPlaneTilt className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-center p-12 space-y-4">
               <div className="w-20 h-20 rounded-[30px] bg-primary/5 border border-primary/10 flex items-center justify-center text-primary/40 animate-pulse">
-                <MessageSquare className="w-10 h-10" />
+                <ChatCircle className="w-10 h-10" />
               </div>
               <div className="space-y-2">
                 <h4 className="text-xl font-bold text-white uppercase tracking-tight">Select a Channel</h4>

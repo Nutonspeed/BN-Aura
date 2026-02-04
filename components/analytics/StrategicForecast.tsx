@@ -66,13 +66,13 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
       className="glass-premium p-10 rounded-[48px] border border-white/10 space-y-10 relative overflow-hidden group"
     >
       <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:opacity-10 transition-opacity duration-700">
-        <Activity className="w-48 h-48 text-primary" />
+        <Pulse className="w-48 h-48 text-primary" />
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-            <BarChart3 className="w-8 h-8" />
+            <ChartBar className="w-8 h-8" />
           </div>
           <div>
             <h2 className="text-2xl font-black text-white uppercase tracking-tight">Strategic <span className="text-primary">Forecast</span></h2>
@@ -80,7 +80,7 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
           </div>
         </div>
         <div className="flex items-center gap-3 px-5 py-2.5 bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md">
-          <Sparkles className="w-4 h-4 text-primary animate-glow-pulse" />
+          <Sparkle className="w-4 h-4 text-primary animate-glow-pulse" />
           <span className="text-[10px] font-black text-white uppercase tracking-widest">Confidence: {(data?.confidenceScore || 0.85 * 100).toFixed(0)}%</span>
         </div>
       </div>
@@ -129,14 +129,14 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
                 ))
               ) : (
                 <div className="flex items-center gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/20">
-                  <TrendingUp className="w-4 h-4 text-emerald-400" />
+                  <TrendUp className="w-4 h-4 text-emerald-400" />
                   <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">All nodes optimized</p>
                 </div>
               )}
             </div>
 
             <button className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-[0.2em] group-hover/item:gap-3 transition-all">
-              Supply Chain Registry <ChevronRight className="w-3 h-3" />
+              Supply Chain Registry <CaretRight className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
       <div className="p-6 bg-primary/5 rounded-[32px] border border-primary/10 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
-            <Sparkles className="w-5 h-5 animate-glow-pulse" />
+            <Sparkle className="w-5 h-5 animate-glow-pulse" />
           </div>
           <p className="text-[11px] text-white/80 font-light leading-relaxed max-w-md">
             Neural model suggests a <span className="text-primary font-black uppercase">Bullish Cycle</span> ahead. Increasing advertising bandwidth for <span className="text-primary font-black">HydraFacial Plus</span> could optimize ROI by 14.2%.

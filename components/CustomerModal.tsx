@@ -182,7 +182,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     Digital Mail
                   </label>
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <EnvelopeSimple className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="email"
                       name="email"
@@ -218,7 +218,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     Temporal Origin (DOB)
                   </label>
                   <div className="relative">
-                    <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <CalendarDots className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="date"
                       name="date_of_birth"
@@ -328,12 +328,12 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Processing...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4" />
+                      <FloppyDisk className="w-4 h-4" />
                       {customer ? 'Commit Updates' : 'Initialize Patient'}
                     </>
                   )}

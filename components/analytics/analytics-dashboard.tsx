@@ -80,8 +80,8 @@ const MetricCard: React.FC<MetricCardProps> = ({
   };
 
   const getTrendIcon = () => {
-    if (trend === 'up') return <TrendingUp className="w-4 h-4 text-green-600" />;
-    if (trend === 'down') return <TrendingDown className="w-4 h-4 text-red-600" />;
+    if (trend === 'up') return <TrendUp className="w-4 h-4 text-green-600" />;
+    if (trend === 'down') return <TrendDown className="w-4 h-4 text-red-600" />;
     return null;
   };
 
@@ -275,7 +275,7 @@ const AnalyticsDashboard: React.FC = () => {
           title="Total Revenue"
           value={`฿${(analyticsData.revenue.reduce((sum, r) => sum + r.amount, 0) / 1000000).toFixed(1)}M`}
           change={5.9}
-          icon={<DollarSign className="w-6 h-6" />}
+          icon={<CurrencyDollar className="w-6 h-6" />}
           trend="up"
           color="green"
         />
@@ -290,7 +290,7 @@ const AnalyticsDashboard: React.FC = () => {
         <MetricCard
           title="Active Users"
           value={analyticsData.realTime.activeUsers}
-          icon={<Activity className="w-6 h-6" />}
+          icon={<Pulse className="w-6 h-6" />}
           color="yellow"
         />
         <MetricCard
@@ -413,7 +413,7 @@ const AnalyticsDashboard: React.FC = () => {
             ) : (
               realTimeUpdates.map((update, index) => (
                 <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                  <Activity className="w-4 h-4 text-blue-500" />
+                  <Pulse className="w-4 h-4 text-blue-500" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">{update.type.replace('_', ' ')}</p>
                     <p className="text-xs text-gray-600">

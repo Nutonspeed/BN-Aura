@@ -24,9 +24,9 @@ export default function SecurityEvents({ events }: SecurityEventsProps) {
     switch (status) {
       case 'success': return <CheckCircle className="w-4 h-4 text-emerald-400" />;
       case 'failed': return <XCircle className="w-4 h-4 text-red-400" />;
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-400" />;
-      case 'critical': return <Activity className="w-4 h-4 text-red-400" />;
-      default: return <Activity className="w-4 h-4 text-gray-400" />;
+      case 'warning': return <Warning className="w-4 h-4 text-yellow-400" />;
+      case 'critical': return <Pulse className="w-4 h-4 text-red-400" />;
+      default: return <Pulse className="w-4 h-4 text-gray-400" />;
     }
   };
 
@@ -52,7 +52,7 @@ export default function SecurityEvents({ events }: SecurityEventsProps) {
       className="bg-slate-800 p-6 rounded-xl border-2 border-slate-600 shadow-lg"
     >
       <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-        <Activity className="w-5 h-5" />
+        <Pulse className="w-5 h-5" />
         Recent Security Events
       </h3>
       

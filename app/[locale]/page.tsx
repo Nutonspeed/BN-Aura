@@ -115,15 +115,15 @@ export default function LandingPage() {
             <div className="text-sm text-muted-foreground uppercase tracking-widest">Trusted by leading clinics</div>
             <div className="flex items-center gap-6 text-white/60">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
                 <span className="text-sm">10+ คลินิกชั้นนำ</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
                 <span className="text-sm">5,000+ การวิเคราะห์</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <CheckCircle className="w-4 h-4 text-emerald-400" />
                 <span className="text-sm">Enterprise Security</span>
               </div>
             </div>
@@ -199,7 +199,7 @@ export default function LandingPage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    <CheckCircle2 className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                    <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                     <span className="text-lg text-white/80">{item}</span>
                   </motion.li>
                 ))}
@@ -242,7 +242,7 @@ export default function LandingPage() {
               transition={{ type: "spring", stiffness: 300 }}
             >
               <div className="text-center space-y-4">
-                <Zap className="w-16 h-16 text-primary mx-auto" />
+                <Lightning className="w-16 h-16 text-primary mx-auto" />
                 <div className="text-6xl font-bold text-white">30s</div>
                 <div className="text-xl text-muted-foreground">Analysis Time</div>
               </div>
@@ -274,7 +274,7 @@ export default function LandingPage() {
                     transition={{ delay: i * 0.1 }}
                     className="flex items-start gap-3"
                   >
-                    <CheckCircle2 className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
+                    <CheckCircle className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
                     <span className="text-lg text-white/80">{item}</span>
                   </motion.li>
                 ))}
@@ -502,7 +502,7 @@ export default function LandingPage() {
                   <ul className="space-y-3 pt-4">
                     {plan.features.map((f, fi) => (
                       <li key={fi} className="flex items-center gap-3 text-xs text-white/60">
-                        <CheckCircle2 className={cn("w-4 h-4 shrink-0", plan.color)} />
+                        <CheckCircle className={cn("w-4 h-4 shrink-0", plan.color)} />
                         <span className="line-clamp-1">{f}</span>
                       </li>
                     ))}
@@ -612,7 +612,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-primary" />
+              <Sparkle className="w-5 h-5 text-primary" />
               <span className="font-bold text-white text-xl">BN-Aura</span>
             </div>
             

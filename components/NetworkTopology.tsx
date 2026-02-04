@@ -69,12 +69,12 @@ const getNodeIcon = (type: string, status: string) => {
                    'text-red-400';
   
   switch (type) {
-    case 'server': return <Server className={`w-6 h-6 ${iconClass}`} />;
+    case 'server': return <HardDrives className={`w-6 h-6 ${iconClass}`} />;
     case 'database': return <Database className={`w-6 h-6 ${iconClass}`} />;
     case 'api': return <Cloud className={`w-6 h-6 ${iconClass}`} />;
     case 'auth': return <Shield className={`w-6 h-6 ${iconClass}`} />;
     case 'storage': return <Database className={`w-6 h-6 ${iconClass}`} />;
-    case 'clinic': return <Building2 className={`w-6 h-6 ${iconClass}`} />;
+    case 'clinic': return <Buildings className={`w-6 h-6 ${iconClass}`} />;
     default: return <Globe className={`w-6 h-6 ${iconClass}`} />;
   }
 };
@@ -96,9 +96,9 @@ const CustomNode = ({ data, selected }: { data: NetworkNodeData; selected: boole
     
     switch (type) {
       case 'clinic':
-        return <Building2 className={iconClass} />;
+        return <Buildings className={iconClass} />;
       case 'server':
-        return <Server className={iconClass} />;
+        return <HardDrives className={iconClass} />;
       case 'database':
         return <Database className={iconClass} />;
       case 'api':
@@ -108,7 +108,7 @@ const CustomNode = ({ data, selected }: { data: NetworkNodeData; selected: boole
       case 'storage':
         return <HardDrive className={iconClass} />;
       default:
-        return <Activity className={iconClass} />;
+        return <Pulse className={iconClass} />;
     }
   };
   

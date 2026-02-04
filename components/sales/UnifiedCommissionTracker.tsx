@@ -198,8 +198,8 @@ export default function UnifiedCommissionTracker() {
             className="bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30 rounded-xl p-6"
           >
             <div className="flex items-center justify-between mb-2">
-              <DollarSign className="w-8 h-8 text-green-400" />
-              <TrendingUp className="w-5 h-5 text-green-400" />
+              <CurrencyDollar className="w-8 h-8 text-green-400" />
+              <TrendUp className="w-5 h-5 text-green-400" />
             </div>
             <p className="text-gray-400 text-sm mb-1">Total Commission</p>
             <p className="text-2xl font-bold text-white">
@@ -215,7 +215,7 @@ export default function UnifiedCommissionTracker() {
           >
             <div className="flex items-center justify-between mb-2">
               <Clock className="w-8 h-8 text-orange-400" />
-              <AlertCircle className="w-5 h-5 text-orange-400" />
+              <WarningCircle className="w-5 h-5 text-orange-400" />
             </div>
             <p className="text-gray-400 text-sm mb-1">Pending</p>
             <p className="text-2xl font-bold text-white">
@@ -231,7 +231,7 @@ export default function UnifiedCommissionTracker() {
           >
             <div className="flex items-center justify-between mb-2">
               <CheckCircle className="w-8 h-8 text-blue-400" />
-              <Calendar className="w-5 h-5 text-blue-400" />
+              <CalendarDots className="w-5 h-5 text-blue-400" />
             </div>
             <p className="text-gray-400 text-sm mb-1">Paid</p>
             <p className="text-2xl font-bold text-white">
@@ -246,7 +246,7 @@ export default function UnifiedCommissionTracker() {
             className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30 rounded-xl p-6"
           >
             <div className="flex items-center justify-between mb-2">
-              <TrendingUp className="w-8 h-8 text-purple-400" />
+              <TrendUp className="w-8 h-8 text-purple-400" />
               <span className="text-purple-400 text-sm font-medium">AVG</span>
             </div>
             <p className="text-gray-400 text-sm mb-1">Average</p>
@@ -360,7 +360,7 @@ export default function UnifiedCommissionTracker() {
 
           {commissions.length === 0 && (
             <div className="text-center py-12">
-              <DollarSign className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+              <CurrencyDollar className="w-12 h-12 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">No commissions found for this period</p>
             </div>
           )}

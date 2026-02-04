@@ -110,7 +110,7 @@ export default function KioskPage() {
               onClick={() => handleCheckIn('appointment')}
               className="flex flex-col items-center gap-4 p-8 bg-white rounded-2xl shadow-lg hover:shadow-xl transition"
             >
-              <Calendar className="w-16 h-16 text-blue-600" />
+              <CalendarDots className="w-16 h-16 text-blue-600" />
               <span className="text-xl font-medium">มีนัดหมาย</span>
             </button>
             <button

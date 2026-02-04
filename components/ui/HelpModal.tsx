@@ -62,7 +62,7 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
-                  <HelpCircle className="w-6 h-6" />
+                  <Question className="w-6 h-6" />
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-white uppercase tracking-tight text-glow">Intelligence Center</h3>
@@ -76,7 +76,7 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
 
             {/* Search */}
             <div className="relative mb-8">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+              <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
               <input 
                 type="text"
                 placeholder="Query system manual..."
@@ -108,7 +108,7 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
                 <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/10 blur-[50px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
                 <div className="space-y-2 relative z-10">
                   <h4 className="text-base font-black text-white uppercase tracking-wider flex items-center gap-2">
-                    <MessageCircle className="w-4 h-4 text-primary" />
+                    <ChatCircle className="w-4 h-4 text-primary" />
                     Direct Human Support
                   </h4>
                   <p className="text-[10px] text-muted-foreground font-light italic">Connect with an system architect for complex orchestration needs.</p>
@@ -120,7 +120,7 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
             </div>
 
             <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-center gap-2 text-[8px] font-black text-white/10 uppercase tracking-[0.3em]">
-              <Zap className="w-3 h-3" />
+              <Lightning className="w-3 h-3" />
               Neural Support System 2.0
             </div>
           </motion.div>

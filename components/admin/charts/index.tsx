@@ -26,9 +26,9 @@ export function MetricCard({
   const getTrendIcon = () => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="w-4 h-4 text-emerald-400" />;
+        return <TrendUp className="w-4 h-4 text-emerald-400" />;
       case 'down':
-        return <TrendingDown className="w-4 h-4 text-red-400" />;
+        return <TrendDown className="w-4 h-4 text-red-400" />;
       default:
         return <Minus className="w-4 h-4 text-gray-400" />;
     }

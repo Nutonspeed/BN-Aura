@@ -169,7 +169,7 @@ export default function PaymentModal({
                           <QRCodeSVG value={qrCode} size={180} />
                         ) : (
                           <div className="w-[180px] h-[180px] flex items-center justify-center bg-gray-100 rounded-2xl">
-                            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                            <SpinnerGap className="w-8 h-8 text-primary animate-spin" />
                           </div>
                         )}
                       </div>
@@ -194,7 +194,7 @@ export default function PaymentModal({
                         "w-24 h-24 rounded-full flex items-center justify-center mx-auto border-2 border-dashed",
                         method === 'CASH' ? "border-emerald-500/30 text-emerald-400 bg-emerald-500/5" : "border-amber-500/30 text-amber-400 bg-amber-500/5"
                       )}>
-                        {method === 'CASH' ? <Banknote className="w-10 h-10" /> : <CreditCard className="w-10 h-10" />}
+                        {method === 'CASH' ? <Money className="w-10 h-10" /> : <CreditCard className="w-10 h-10" />}
                       </div>
                       <div className="space-y-2">
                         <h4 className="text-sm font-black text-white uppercase tracking-widest">{method} Settlement</h4>
@@ -219,7 +219,7 @@ export default function PaymentModal({
                 disabled={loading}
                 className="flex-1 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-3 text-xs shadow-premium"
               >
-                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                {loading ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                 Confirm Payment Node
               </button>
             </div>

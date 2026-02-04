@@ -133,7 +133,7 @@ function SupplierManagementContent() {
         <div className="lg:col-span-3">
           <div className="relative group">
             <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by company name, contact, or neural mail..."
@@ -145,7 +145,7 @@ function SupplierManagementContent() {
         </div>
         <div className="glass-premium p-6 rounded-3xl border border-white/5 flex items-center justify-between group overflow-hidden relative">
           <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-            <Building2 className="w-16 h-16 text-white" />
+            <Buildings className="w-16 h-16 text-white" />
           </div>
           <div>
             <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Active Links</p>
@@ -160,7 +160,7 @@ function SupplierManagementContent() {
       {/* Supplier Grid */}
       {loading ? (
         <div className="py-32 flex flex-col items-center justify-center space-y-6">
-          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
           <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Acquisition Grid...</p>
         </div>
       ) : (
@@ -181,7 +181,7 @@ function SupplierManagementContent() {
               <div className="space-y-6 relative z-10">
                 <div className="flex justify-between items-start">
                   <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500 shadow-sm">
-                    <Building2 className="w-7 h-7" />
+                    <Buildings className="w-7 h-7" />
                   </div>
                   <div className="flex gap-2">
                     <motion.button 
@@ -190,7 +190,7 @@ function SupplierManagementContent() {
                       onClick={() => handleEditSupplier(s)}
                       className="p-2.5 bg-white/5 rounded-xl text-white/30 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <PencilSimple className="w-4 h-4" />
                     </motion.button>
                     <motion.button 
                       whileHover={{ scale: 1.1, rotate: 5 }} 
@@ -198,7 +198,7 @@ function SupplierManagementContent() {
                       onClick={() => handleDeleteSupplier(s.id)}
                       className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/10"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </motion.button>
                   </div>
                 </div>
@@ -221,7 +221,7 @@ function SupplierManagementContent() {
                 <div className="space-y-3">
                   {s.email && (
                     <div className="flex items-center gap-3">
-                      <Mail className="w-4 h-4 text-primary/60 shrink-0" />
+                      <EnvelopeSimple className="w-4 h-4 text-primary/60 shrink-0" />
                       <p className="text-xs text-white/60 font-medium truncate">{s.email}</p>
                     </div>
                   )}
@@ -253,7 +253,7 @@ function SupplierManagementContent() {
                   whileTap={{ scale: 0.9 }}
                   className="p-3 bg-white/5 rounded-2xl text-white/40 hover:text-white hover:bg-white/10 transition-all border border-transparent shadow-sm"
                 >
-                  <MoreVertical className="w-5 h-5" />
+                  <DotsThreeVertical className="w-5 h-5" />
                 </motion.button>
               </div>
             </motion.div>
@@ -262,7 +262,7 @@ function SupplierManagementContent() {
           {filteredSuppliers.length === 0 && !loading && (
             <div className="col-span-full py-32 text-center relative overflow-hidden glass-card rounded-[48px] border border-white/5">
               <div className="flex flex-col items-center justify-center space-y-6 relative z-10 opacity-30">
-                <Building2 className="w-16 h-16" />
+                <Buildings className="w-16 h-16" />
                 <p className="text-sm font-black uppercase tracking-widest">No Supplier Clusters Detected</p>
               </div>
             </div>
@@ -277,7 +277,7 @@ export default function SupplierManagementPage() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Acquisition Interface...</p>
       </div>
     }>

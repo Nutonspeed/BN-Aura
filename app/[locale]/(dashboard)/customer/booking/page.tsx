@@ -113,7 +113,7 @@ function CustomerBookingContent() {
   if (loading) {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Synchronizing with Booking Node...</p>
       </div>
     );
@@ -125,7 +125,7 @@ function CustomerBookingContent() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-            <CalendarIcon className="w-4 h-4" />
+            <CalendarDotsIcon className="w-4 h-4" />
             Clinical Orchestration
           </div>
           <h1 className="text-4xl font-black text-white uppercase tracking-tight">Book your <span className="text-primary text-glow">Transformation</span></h1>
@@ -142,7 +142,7 @@ function CustomerBookingContent() {
                 step > s ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" :
                 "bg-white/5 text-white/20 border border-white/5"
               )}>
-                {step > s ? <CheckCircle2 className="w-4 h-4" /> : s}
+                {step > s ? <CheckCircle className="w-4 h-4" /> : s}
               </div>
               {s < 3 && <div className="w-4 h-px bg-white/10" />}
             </div>
@@ -177,7 +177,7 @@ function CustomerBookingContent() {
                       "w-12 h-12 rounded-2xl flex items-center justify-center border transition-all",
                       selectedTreatment?.id === t.id ? "bg-primary text-primary-foreground border-primary" : "bg-white/5 text-primary border-white/10"
                     )}>
-                      <BriefcaseMedical className="w-6 h-6" />
+                      <FirstAidKit className="w-6 h-6" />
                     </div>
                     <div className="text-right">
                       <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Base Rate</p>
@@ -200,7 +200,7 @@ function CustomerBookingContent() {
                 className="group flex items-center gap-3 px-10 py-5 bg-primary text-primary-foreground rounded-[24px] font-black uppercase tracking-[0.2em] shadow-premium hover:brightness-110 disabled:opacity-20 transition-all"
               >
                 Next Configuration
-                <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <CaretRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
             </div>
           </motion.div>
@@ -218,7 +218,7 @@ function CustomerBookingContent() {
             <div className="lg:col-span-2 space-y-8">
               <div className="glass-premium p-10 rounded-[48px] border border-white/10">
                 <h3 className="text-xl font-black text-white uppercase tracking-tight mb-8 flex items-center gap-3">
-                  <CalendarIcon className="w-6 h-6 text-primary" />
+                  <CalendarDotsIcon className="w-6 h-6 text-primary" />
                   Select Temporal Node
                 </h3>
                 <input 
@@ -260,7 +260,7 @@ function CustomerBookingContent() {
                 <div className="space-y-6">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                      <BriefcaseMedical className="w-5 h-5" />
+                      <FirstAidKit className="w-5 h-5" />
                     </div>
                     <div>
                       <p className="text-[10px] text-muted-foreground font-black uppercase">Treatment</p>
@@ -270,7 +270,7 @@ function CustomerBookingContent() {
                   {selectedDate && (
                     <div className="flex items-center gap-4">
                       <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center text-blue-400">
-                        <CalendarIcon className="w-5 h-5" />
+                        <CalendarDotsIcon className="w-5 h-5" />
                       </div>
                       <div>
                         <p className="text-[10px] text-muted-foreground font-black uppercase">Date</p>
@@ -286,7 +286,7 @@ function CustomerBookingContent() {
                   onClick={() => setStep(1)}
                   className="p-5 bg-white/5 border border-white/10 text-white rounded-[24px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
                 >
-                  <ChevronLeft className="w-6 h-6" />
+                  <CaretLeft className="w-6 h-6" />
                 </button>
                 <button
                   disabled={!selectedDate || !selectedTime}
@@ -294,7 +294,7 @@ function CustomerBookingContent() {
                   className="flex-1 flex items-center justify-center gap-3 py-5 bg-primary text-primary-foreground rounded-[24px] font-black uppercase tracking-[0.2em] shadow-premium hover:brightness-110 disabled:opacity-20 transition-all"
                 >
                   Finalize Node
-                  <ChevronRight className="w-5 h-5" />
+                  <CaretRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
@@ -311,7 +311,7 @@ function CustomerBookingContent() {
           >
             <div className="glass-premium p-12 rounded-[56px] border border-white/10 space-y-10 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-                <Sparkles className="w-48 h-48 text-primary" />
+                <Sparkle className="w-48 h-48 text-primary" />
               </div>
 
               <div className="text-center space-y-2 relative z-10">
@@ -364,7 +364,7 @@ function CustomerBookingContent() {
                   disabled={submitting}
                   className="flex-1 flex items-center justify-center gap-3 py-5 bg-primary text-primary-foreground rounded-[24px] font-black uppercase tracking-[0.2em] shadow-premium hover:brightness-110 transition-all"
                 >
-                  {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
+                  {submitting ? <SpinnerGap className="w-5 h-5 animate-spin" /> : <Sparkle className="w-5 h-5" />}
                   Finalize Transformation
                 </button>
               </div>
@@ -388,7 +388,7 @@ function CustomerBookingContent() {
               className="w-full max-w-sm bg-[#0A0A0A] border border-primary/30 rounded-[48px] p-12 text-center shadow-[0_0_50px_rgba(var(--primary),0.2)]"
             >
               <div className="w-24 h-24 rounded-[32px] bg-primary/20 border border-primary/20 flex items-center justify-center mx-auto mb-8">
-                <CheckCircle2 className="w-12 h-12 text-primary" />
+                <CheckCircle className="w-12 h-12 text-primary" />
               </div>
               <h3 className="text-3xl font-black text-white uppercase tracking-tight mb-2">Reserved</h3>
               <p className="text-sm text-muted-foreground mb-8">Clinical node initialized successfully</p>
@@ -417,7 +417,7 @@ export default function CustomerBookingPage() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Interface node...</p>
       </div>
     }>

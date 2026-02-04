@@ -179,7 +179,7 @@ export default function AuditTrailPage() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -214,7 +214,7 @@ export default function AuditTrailPage() {
             onClick={fetchAuditData}
             className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
           >
-            <RefreshCw className="w-4 h-4" />
+            <ArrowsClockwise className="w-4 h-4" />
             {t('refresh')}
           </button>
           <button 
@@ -229,7 +229,7 @@ export default function AuditTrailPage() {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
+        <MagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
         <input
           type="text"
           placeholder={t('search')}

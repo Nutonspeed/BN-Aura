@@ -57,7 +57,7 @@ export default function InfiniteLeadsList({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <SpinnerGap className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -65,7 +65,7 @@ export default function InfiniteLeadsList({
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <AlertCircle className="w-12 h-12 text-destructive mb-4" />
+        <WarningCircle className="w-12 h-12 text-destructive mb-4" />
         <p className="text-muted-foreground">Failed to load leads</p>
       </div>
     );
@@ -152,7 +152,7 @@ export default function InfiniteLeadsList({
               {/* Score */}
               <div className="flex flex-col items-end gap-1">
                 <div className="flex items-center gap-1">
-                  <TrendingUp className={cn(
+                  <TrendUp className={cn(
                     "w-4 h-4",
                     lead.score >= 70 ? "text-primary" : "text-muted-foreground"
                   )} />
@@ -180,7 +180,7 @@ export default function InfiniteLeadsList({
         >
           {isFetchingNextPage ? (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <SpinnerGap className="w-5 h-5 animate-spin" />
               <span className="text-sm">Loading more...</span>
             </div>
           ) : (

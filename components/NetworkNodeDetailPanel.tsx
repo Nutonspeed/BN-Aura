@@ -30,12 +30,12 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
 
   const getNodeIcon = (type: string) => {
     switch (type) {
-      case 'server': return <Server className="w-6 h-6" />;
+      case 'server': return <HardDrives className="w-6 h-6" />;
       case 'database': return <Database className="w-6 h-6" />;
       case 'api': return <Cloud className="w-6 h-6" />;
       case 'auth': return <Shield className="w-6 h-6" />;
       case 'storage': return <Database className="w-6 h-6" />;
-      case 'clinic': return <Building2 className="w-6 h-6" />;
+      case 'clinic': return <Buildings className="w-6 h-6" />;
       default: return <Globe className="w-6 h-6" />;
     }
   };
@@ -100,7 +100,7 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 mb-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-medium text-white/80">Health Score</h3>
-            <Activity className="w-4 h-4 text-white/60" />
+            <Pulse className="w-4 h-4 text-white/60" />
           </div>
           <div className="flex items-end gap-3">
             <span className="text-4xl font-bold text-white">{healthScore}</span>
@@ -124,7 +124,7 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-3">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-400" />
+                <Lightning className="w-4 h-4 text-amber-400" />
                 <span className="text-sm text-white/80">Latency</span>
               </div>
               <span className="text-lg font-bold text-white">{node.metrics.latency}ms</span>
@@ -207,7 +207,7 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
           <button className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-3 text-left transition-all duration-300">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-500/20 rounded-lg">
-                <TrendingUp className="w-4 h-4 text-blue-400" />
+                <TrendUp className="w-4 h-4 text-blue-400" />
               </div>
               <div>
                 <p className="text-sm font-medium text-white">View Performance History</p>
@@ -219,7 +219,7 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
           <button className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl p-3 text-left transition-all duration-300">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-purple-500/20 rounded-lg">
-                <Activity className="w-4 h-4 text-purple-400" />
+                <Pulse className="w-4 h-4 text-purple-400" />
               </div>
               <div>
                 <p className="text-sm font-medium text-white">View System Logs</p>
@@ -232,7 +232,7 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
             <button className="w-full bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-400/20 rounded-xl p-3 text-left transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-emerald-500/20 rounded-lg">
-                  <Activity className="w-4 h-4 text-emerald-400" />
+                  <Pulse className="w-4 h-4 text-emerald-400" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-emerald-400">Restart Node</p>
@@ -246,7 +246,7 @@ export default function NetworkNodeDetailPanel({ node, onClose }: NetworkNodeDet
             <button className="w-full bg-amber-500/10 hover:bg-amber-500/20 border border-amber-400/20 rounded-xl p-3 text-left transition-all duration-300">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-amber-500/20 rounded-lg">
-                  <AlertCircle className="w-4 h-4 text-amber-400" />
+                  <WarningCircle className="w-4 h-4 text-amber-400" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-amber-400">View Warnings</p>

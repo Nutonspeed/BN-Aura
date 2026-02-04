@@ -237,7 +237,7 @@ export default function APIKeyManagement() {
   if (loading) {
     return (
       <div className="bg-slate-800 p-12 rounded-xl border-2 border-slate-600 shadow-lg mt-6 flex flex-col items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin mb-4" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin mb-4" />
         <p className="text-gray-400">Loading API keys...</p>
       </div>
     );
@@ -263,7 +263,7 @@ export default function APIKeyManagement() {
             className="p-2 text-gray-400 hover:text-white transition-colors"
             title="Refresh"
           >
-            <RefreshCw className={`w-5 h-5 ${isProcessing ? 'animate-spin' : ''}`} />
+            <ArrowsClockwise className={`w-5 h-5 ${isProcessing ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
@@ -277,7 +277,7 @@ export default function APIKeyManagement() {
 
       {error && (
         <div className="mb-6 p-4 bg-red-500/10 border-2 border-red-500/20 rounded-xl flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400" />
+          <WarningCircle className="w-5 h-5 text-red-400" />
           <p className="text-red-300 text-sm">{error}</p>
         </div>
       )}
@@ -317,7 +317,7 @@ export default function APIKeyManagement() {
                       onClick={() => toggleKeyVisibility(apiKey.id)}
                       className="p-1 hover:text-white text-gray-400 transition-colors"
                     >
-                      {visibleKeys[apiKey.id] ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {visibleKeys[apiKey.id] ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                     <button
                       onClick={() => handleCopy(apiKey.id, apiKey.key)}
@@ -342,7 +342,7 @@ export default function APIKeyManagement() {
                     <span>Created: {new Date(apiKey.created_at).toLocaleDateString()}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <RefreshCw className="w-3 h-3" />
+                    <ArrowsClockwise className="w-3 h-3" />
                     <span>Last used: {apiKey.last_used_at ? new Date(apiKey.last_used_at).toLocaleDateString() : 'Never'}</span>
                   </div>
                   {apiKey.status === 'active' && (
@@ -350,7 +350,7 @@ export default function APIKeyManagement() {
                       onClick={() => handleRevokeKey(apiKey.id)}
                       className="mt-2 flex items-center gap-1 text-rose-400 hover:text-rose-300 transition-colors"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <Trash className="w-3 h-3" />
                       Revoke Key
                     </button>
                   )}
@@ -428,7 +428,7 @@ export default function APIKeyManagement() {
                 </div>
 
                 <div className="bg-amber-500/10 border-2 border-amber-500/20 p-4 rounded-xl flex gap-3">
-                  <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+                  <WarningCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
                   <p className="text-xs text-amber-300 leading-relaxed">
                     API keys provide full access to the selected scopes. Never share keys in client-side code or public repositories.
                   </p>
@@ -440,7 +440,7 @@ export default function APIKeyManagement() {
                     disabled={!newKeyData.name || newKeyData.scopes.length === 0 || isProcessing}
                     className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-bold hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                   >
-                    {isProcessing && <Loader2 className="w-4 h-4 animate-spin" />}
+                    {isProcessing && <SpinnerGap className="w-4 h-4 animate-spin" />}
                     Generate API Key
                   </button>
                   <button

@@ -48,7 +48,7 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
               activeTab === 'TREATMENT' ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-white"
             )}
           >
-            <BriefcaseMedical className="w-4 h-4" />
+            <FirstAidKit className="w-4 h-4" />
             Treatments
           </button>
           <button
@@ -65,7 +65,7 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
 
         <div className="flex gap-3">
           <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
             <input
               type="text"
               placeholder={`Search ${activeTab.toLowerCase()}s...`}
@@ -105,7 +105,7 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
 
               <div className="mb-4">
                 <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-muted-foreground group-hover:text-primary transition-colors">
-                  {activeTab === 'TREATMENT' ? <BriefcaseMedical className="w-5 h-5" /> : <Package className="w-5 h-5" />}
+                  {activeTab === 'TREATMENT' ? <FirstAidKit className="w-5 h-5" /> : <Package className="w-5 h-5" />}
                 </div>
               </div>
 
@@ -139,7 +139,7 @@ export default function POSProductGrid({ products, treatments, onSelectItem, cur
 
         {filteredItems.length === 0 && (
           <div className="h-full flex flex-col items-center justify-center opacity-30 py-20">
-            <Search className="w-12 h-12 mb-4" />
+            <MagnifyingGlass className="w-12 h-12 mb-4" />
             <p className="text-sm font-black uppercase tracking-[0.2em]">No Matches Found</p>
           </div>
         )}

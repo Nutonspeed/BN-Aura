@@ -79,7 +79,7 @@ export default function CohortAnalysis({ data }: CohortAnalysisProps) {
             {data.map((row, i) => (
               <tr key={i} className="hover:bg-white/5 transition-colors">
                 <td className="px-4 py-3 font-medium text-white flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <CalendarDots className="w-4 h-4 text-muted-foreground" />
                   {row.cohort}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">{row.size}</td>

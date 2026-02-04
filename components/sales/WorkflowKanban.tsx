@@ -195,7 +195,7 @@ export default function WorkflowKanban() {
                     
                     <div className="flex items-center gap-4 text-gray-400 text-sm">
                       <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
+                        <CalendarDots className="w-4 h-4" />
                         {new Date(workflow.created_at).toLocaleDateString()}
                       </div>
                     </div>

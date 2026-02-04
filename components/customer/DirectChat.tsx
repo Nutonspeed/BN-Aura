@@ -140,12 +140,12 @@ export default function DirectChat({
             <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
               {loading ? (
                 <div className="h-full flex flex-col items-center justify-center space-y-2 opacity-50">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
+                  <SpinnerGap className="w-6 h-6 animate-spin text-primary" />
                   <p className="text-[10px] uppercase tracking-widest">Securing Channel...</p>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">
-                  <MessageSquare className="w-12 h-12" />
+                  <ChatCircle className="w-12 h-12" />
                   <p className="text-xs font-light max-w-[200px]">Start a conversation with your advisor for personalized insights.</p>
                 </div>
               ) : (
@@ -164,7 +164,7 @@ export default function DirectChat({
                     }`}>
                       {msg.messageType === 'treatment_recommendation' && (
                         <div className="mb-2 p-2 bg-black/20 rounded-lg border border-white/10 flex items-center gap-2">
-                          <Sparkles className="w-3.5 h-3.5 text-primary" />
+                          <Sparkle className="w-3.5 h-3.5 text-primary" />
                           <span className="text-[10px] font-black uppercase tracking-tighter text-primary">Advisor Suggestion</span>
                         </div>
                       )}
@@ -195,7 +195,7 @@ export default function DirectChat({
                   disabled={!newMessage.trim()}
                   className="p-3 bg-primary text-primary-foreground rounded-2xl shadow-premium hover:brightness-110 active:scale-95 disabled:opacity-50 transition-all"
                 >
-                  <Send className="w-5 h-5" />
+                  <PaperPlaneTilt className="w-5 h-5" />
                 </button>
               </div>
             </div>

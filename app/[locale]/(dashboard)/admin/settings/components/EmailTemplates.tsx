@@ -257,7 +257,7 @@ export default function EmailTemplates({ onSettingsChange }: EmailTemplatesProps
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-          <Mail className="w-6 h-6 text-primary" />
+          <EnvelopeSimple className="w-6 h-6 text-primary" />
           Email Templates
         </h2>
         <button
@@ -334,7 +334,7 @@ export default function EmailTemplates({ onSettingsChange }: EmailTemplatesProps
                           }}
                           className="p-1 hover:bg-red-400/10 rounded text-red-400"
                         >
-                          <Trash2 className="w-3 h-3" />
+                          <Trash className="w-3 h-3" />
                         </button>
                       </div>
                     </div>
@@ -387,13 +387,13 @@ export default function EmailTemplates({ onSettingsChange }: EmailTemplatesProps
                         onClick={() => setEditingTemplate(selectedTemplate)}
                         className="p-2 text-white/60 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setShowTestDialog(true)}
                         className="p-2 text-white/60 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-all"
                       >
-                        <Send className="w-4 h-4" />
+                        <PaperPlaneTilt className="w-4 h-4" />
                       </button>
                     </>
                   )}
@@ -497,7 +497,7 @@ export default function EmailTemplates({ onSettingsChange }: EmailTemplatesProps
             </div>
           ) : (
             <div className="glass-card p-12 rounded-xl border border-white/10 text-center">
-              <Mail className="w-16 h-16 text-white/20 mx-auto mb-4" />
+              <EnvelopeSimple className="w-16 h-16 text-white/20 mx-auto mb-4" />
               <h3 className="text-xl font-bold text-white mb-2">Select a template</h3>
               <p className="text-white/60">Choose a template from the list to view or edit</p>
             </div>

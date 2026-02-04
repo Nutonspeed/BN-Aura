@@ -224,7 +224,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }: Pr
                     Unit Acquisition Cost *
                   </label>
                   <div className="relative">
-                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <CurrencyDollar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="number"
                       name="cost_price"
@@ -243,7 +243,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }: Pr
                     Market Value (Sale) *
                   </label>
                   <div className="relative">
-                    <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                    <CurrencyDollar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
                     <input
                       type="number"
                       name="sale_price"
@@ -300,12 +300,12 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }: Pr
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <SpinnerGap className="w-4 h-4 animate-spin" />
                       Syncing...
                     </>
                   ) : (
                     <>
-                      <Save className="w-4 h-4" />
+                      <FloppyDisk className="w-4 h-4" />
                       {product ? 'Commit Changes' : 'Initialize Asset'}
                     </>
                   )}

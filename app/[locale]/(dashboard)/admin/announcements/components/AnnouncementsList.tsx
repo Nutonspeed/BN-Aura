@@ -135,7 +135,7 @@ export default function AnnouncementsList() {
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <CalendarDots className="w-4 h-4" />
+                  <CalendarDotsDots className="w-4 h-4" />
                   <span>
                     {new Date(announcement.start_date) > new Date() 
                       ? `Starts ${formatDate(announcement.start_date)}`

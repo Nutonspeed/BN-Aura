@@ -88,7 +88,7 @@ export default function DigitalReceipt({
         {/* Header - Clinic Info */}
         <div className="text-center space-y-4">
           <div className="w-20 h-20 bg-primary/20 rounded-[32px] flex items-center justify-center mx-auto mb-4 border border-primary/20 print:hidden">
-            <Building2 className="w-10 h-10 text-primary" />
+            <Buildings className="w-10 h-10 text-primary" />
           </div>
           <h2 className="text-2xl font-black uppercase tracking-tight text-white print:text-black">{clinicInfo.name}</h2>
           <div className="space-y-1 text-xs text-muted-foreground font-medium print:text-gray-600">
@@ -176,7 +176,7 @@ export default function DigitalReceipt({
             This is a system-generated digital node receipt.
           </p>
           <div className="flex items-center justify-center gap-2 text-[8px] font-black uppercase text-white/10 print:text-gray-300">
-            <CheckCircle2 className="w-3 h-3" />
+            <CheckCircle className="w-3 h-3" />
             Neural Receipt Node v1.0
           </div>
         </div>

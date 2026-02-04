@@ -19,7 +19,7 @@ export default function NetworkAlertCenter({ alerts }: { alerts: Alert[] }) {
   const getIcon = (type: string) => {
     switch (type) {
       case 'error': return <XCircle className="w-4 h-4 text-red-400" />;
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-amber-400" />;
+      case 'warning': return <Warning className="w-4 h-4 text-amber-400" />;
       case 'success': return <CheckCircle className="w-4 h-4 text-emerald-400" />;
       default: return <Info className="w-4 h-4 text-blue-400" />;
     }

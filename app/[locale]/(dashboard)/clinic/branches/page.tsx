@@ -105,7 +105,7 @@ function BranchManagementContent() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-            <Building2 className="w-4 h-4" />
+            <Buildings className="w-4 h-4" />
             Clinical Expansion Node
           </div>
           <h1 className="text-4xl font-black text-white uppercase tracking-tight">Branch <span className="text-primary text-glow">Orchestration</span></h1>
@@ -128,7 +128,7 @@ function BranchManagementContent() {
         <div className="lg:col-span-3">
           <div className="relative group">
             <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by branch designation, code, or city..."
@@ -147,7 +147,7 @@ function BranchManagementContent() {
             <p className="text-3xl font-black text-white tracking-tighter">{branches.length}</p>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium group-hover:scale-110 transition-transform">
-            <Building2 className="w-7 h-7" />
+            <Buildings className="w-7 h-7" />
           </div>
         </div>
       </div>
@@ -155,7 +155,7 @@ function BranchManagementContent() {
       {/* Branch Grid */}
       {loading ? (
         <div className="py-32 flex flex-col items-center justify-center space-y-6">
-          <Loader2 className="w-12 h-12 text-primary animate-spin" />
+          <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
           <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Syncing Expansion Grid...</p>
         </div>
       ) : (
@@ -176,7 +176,7 @@ function BranchManagementContent() {
               <div className="space-y-6 relative z-10">
                 <div className="flex justify-between items-start">
                   <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500 shadow-sm">
-                    <Building2 className="w-7 h-7" />
+                    <Buildings className="w-7 h-7" />
                   </div>
                   <div className="flex gap-2">
                     <motion.button 
@@ -185,7 +185,7 @@ function BranchManagementContent() {
                       onClick={() => handleEditBranch(branch)}
                       className="p-2.5 bg-white/5 rounded-xl text-white/30 hover:text-white hover:bg-white/10 transition-all border border-transparent hover:border-white/10"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <PencilSimple className="w-4 h-4" />
                     </motion.button>
                     <motion.button 
                       whileHover={{ scale: 1.1, rotate: 5 }} 
@@ -193,7 +193,7 @@ function BranchManagementContent() {
                       onClick={() => handleDeleteBranch(branch.id)}
                       className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-rose-500/10"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash className="w-4 h-4" />
                     </motion.button>
                   </div>
                 </div>
@@ -241,7 +241,7 @@ function BranchManagementContent() {
                   whileTap={{ scale: 0.9 }}
                   className="p-3 bg-white/5 rounded-2xl text-white/40 hover:text-white hover:bg-white/10 transition-all border border-transparent shadow-sm"
                 >
-                  <MoreVertical className="w-5 h-5" />
+                  <DotsThreeVertical className="w-5 h-5" />
                 </motion.button>
               </div>
             </motion.div>
@@ -250,7 +250,7 @@ function BranchManagementContent() {
           {filteredBranches.length === 0 && !loading && (
             <div className="col-span-full py-32 text-center relative overflow-hidden glass-card rounded-[48px] border border-white/5">
               <div className="flex flex-col items-center justify-center space-y-6 relative z-10 opacity-30">
-                <Building2 className="w-16 h-16" />
+                <Buildings className="w-16 h-16" />
                 <p className="text-sm font-black uppercase tracking-widest">No Operational Clusters Detected</p>
               </div>
             </div>
@@ -265,7 +265,7 @@ export default function BranchManagement() {
   return (
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
-        <Loader2 className="w-12 h-12 text-primary animate-spin" />
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Expansion Grid...</p>
       </div>
     }>

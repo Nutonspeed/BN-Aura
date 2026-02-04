@@ -47,7 +47,7 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
       <div className="flex items-center justify-between relative z-10">
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
-            <Award className="w-6 h-6" />
+            <Medal className="w-6 h-6" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-white uppercase tracking-tight">Staff Intelligence</h3>
@@ -55,7 +55,7 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
           </div>
         </div>
         <button className="text-[10px] font-bold text-primary uppercase tracking-widest hover:gap-2 transition-all flex items-center gap-1">
-          Full Report <ChevronRight className="w-3 h-3" />
+          Full Report <CaretRight className="w-3 h-3" />
         </button>
       </div>
 
@@ -109,7 +109,7 @@ export default function StaffIntelligence({ clinicId }: { clinicId: string }) {
 
       <div className="p-6 bg-gradient-to-br from-primary/10 to-transparent rounded-[32px] border border-primary/10 space-y-4">
         <div className="flex items-center gap-3">
-          <TrendingUp className="w-4 h-4 text-primary" />
+          <TrendUp className="w-4 h-4 text-primary" />
           <span className="text-[10px] font-black text-white uppercase tracking-widest">Growth Opportunity</span>
         </div>
         <p className="text-xs text-muted-foreground font-light leading-relaxed">

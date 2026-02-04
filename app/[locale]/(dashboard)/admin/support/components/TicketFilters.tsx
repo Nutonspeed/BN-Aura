@@ -22,12 +22,12 @@ export default function TicketFilters() {
     <div className="glass-card p-6 rounded-2xl border border-white/10">
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-white/40" />
+          <Funnel className="w-4 h-4 text-white/40" />
           <span className="text-white font-medium">Filters</span>
         </div>
         
         <div className="relative flex-1 min-w-[250px]">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" />
+          <MagnifyingGlass className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" />
           <input
             type="text"
             placeholder="Search tickets by subject or description..."

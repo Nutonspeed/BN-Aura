@@ -103,7 +103,7 @@ function ResultsContent() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center space-y-4">
-        <Sparkles className="w-12 h-12 text-primary animate-pulse" />
+        <Sparkle className="w-12 h-12 text-primary animate-pulse" />
         <p className="text-muted-foreground animate-pulse font-heading tracking-widest uppercase text-xs">Loading Clinical Report...</p>
       </div>
     );
@@ -157,14 +157,14 @@ function ResultsContent() {
             href="/clinic"
             className="p-2.5 hover:bg-white/5 rounded-2xl text-muted-foreground hover:text-white transition-all flex items-center gap-3 group"
           >
-            <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            <CaretLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             <span className="text-xs font-black uppercase tracking-widest">Back to Hub</span>
           </Link>
         </motion.div>
         
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-            <Sparkles className="w-5 h-5 animate-glow-pulse" />
+            <Sparkle className="w-5 h-5 animate-glow-pulse" />
           </div>
           <span className="font-heading font-black text-xl tracking-tighter text-white uppercase italic">Clinical <span className="text-primary text-glow">Report</span></span>
         </div>
@@ -188,7 +188,7 @@ function ResultsContent() {
           >
             <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
             <div className="absolute top-0 right-0 p-10 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-              <Award className="w-48 h-48 text-primary" />
+              <Medal className="w-48 h-48 text-primary" />
             </div>
             
             <div className="relative">
@@ -272,7 +272,7 @@ function ResultsContent() {
               <div className="space-y-1">
                 <p className="text-5xl font-black text-white tracking-tighter tabular-nums">{displayResults.skinAge}</p>
                 <p className="text-[10px] text-emerald-400 font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                  <CheckCircle2 className="w-3 h-3" /> Calibration Active
+                  <CheckCircle className="w-3 h-3" /> Calibration Active
                 </p>
               </div>
             </motion.div>
@@ -284,7 +284,7 @@ function ResultsContent() {
               <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-blue-500/10 blur-[40px] rounded-full group-hover/card:bg-blue-500/20 transition-all duration-700" />
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 border border-blue-500/20">
-                  <Activity className="w-6 h-6" />
+                  <Pulse className="w-6 h-6" />
                 </div>
                 <div>
                   <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] mb-0.5">Detected</p>
@@ -305,7 +305,7 @@ function ResultsContent() {
             <div className="space-y-1">
               <h3 className="text-3xl font-black text-white uppercase tracking-tight flex items-center gap-4">
                 <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
-                  <Sparkles className="w-5 h-5" />
+                  <Sparkle className="w-5 h-5" />
                 </div>
                 Identified <span className="text-primary">Deviations</span>
               </h3>
@@ -393,7 +393,7 @@ function ResultsContent() {
                   className="glass-premium p-8 rounded-[48px] border border-white/10 group hover:border-amber-500/40 transition-all relative overflow-hidden"
                 >
                   <div className="absolute top-0 right-0 p-10 opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none">
-                    <Sparkles className="w-24 h-24 text-amber-400" />
+                    <Sparkle className="w-24 h-24 text-amber-400" />
                   </div>
 
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 relative z-10">
@@ -404,7 +404,7 @@ function ResultsContent() {
                       </div>
                     </div>
                     <div className="w-14 h-14 rounded-[20px] bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shadow-premium flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <BriefcaseMedical className="w-7 h-7" />
+                      <FirstAidKit className="w-7 h-7" />
                     </div>
                   </div>
                   <div className="p-5 bg-white/5 rounded-[28px] border border-white/5 mb-8 backdrop-blur-md group-hover:bg-white/[0.08] transition-all">
@@ -451,7 +451,7 @@ function ResultsContent() {
                   className="glass-premium p-8 rounded-[48px] border border-white/10 group hover:border-emerald-500/40 transition-all relative overflow-hidden"
                 >
                   <div className="absolute top-0 left-0 p-10 opacity-0 group-hover:opacity-5 transition-opacity pointer-events-none">
-                    <Sparkles className="w-24 h-24 text-emerald-400" />
+                    <Sparkle className="w-24 h-24 text-emerald-400" />
                   </div>
 
                   <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 relative z-10">
@@ -466,7 +466,7 @@ function ResultsContent() {
                       </div>
                     </div>
                     <div className="w-14 h-14 rounded-[20px] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shadow-premium flex-shrink-0 group-hover:scale-110 transition-transform">
-                      <Sparkles className="w-7 h-7" />
+                      <Sparkle className="w-7 h-7" />
                     </div>
                   </div>
                   
@@ -548,7 +548,7 @@ export default function AnalysisResultsPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-background flex flex-col items-center justify-center space-y-4">
-        <Sparkles className="w-12 h-12 text-primary animate-pulse" />
+        <Sparkle className="w-12 h-12 text-primary animate-pulse" />
         <p className="text-muted-foreground animate-pulse font-heading tracking-widest uppercase text-xs">Loading Clinical Report...</p>
       </div>
     }>

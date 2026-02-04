@@ -182,7 +182,7 @@ export default function DemoPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-3xl font-heading font-bold text-white mb-2 flex items-center gap-2">
-                <Sparkles className="w-8 h-8 text-primary" />
+                <Sparkle className="w-8 h-8 text-primary" />
                 Demo Mode - ทดลองใช้งาน AR Simulator
               </h1>
               <p className="text-muted-foreground">
@@ -199,7 +199,7 @@ export default function DemoPage() {
           
           <div className="glass-card p-4 rounded-xl border border-yellow-500/20 bg-yellow-500/5">
             <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-400 mt-0.5" />
+              <WarningCircle className="w-5 h-5 text-yellow-400 mt-0.5" />
               <div>
                 <p className="text-sm text-yellow-200 font-medium">โหมด Demo สำหรับทดลอง</p>
                 <p className="text-xs text-yellow-300/70 mt-1">
@@ -286,7 +286,7 @@ export default function DemoPage() {
             {/* AI Insights */}
             <div className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-blue-500/5 rounded-2xl border border-primary/10">
               <h4 className="text-sm font-semibold text-primary mb-3 flex items-center gap-2">
-                <Sparkles className="w-4 h-4" />
+                <Sparkle className="w-4 h-4" />
                 AI Insights & Recommendations
               </h4>
               <div className="space-y-2">
@@ -347,7 +347,7 @@ export default function DemoPage() {
 
                   {loading && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                      <Loader2 className="w-12 h-12 text-primary animate-spin" />
+                      <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
                     </div>
                   )}
                 </div>
@@ -381,7 +381,7 @@ export default function DemoPage() {
               <div className="glass-card p-6 rounded-[40px] border border-white/10">
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-primary" />
+                    <Lightning className="w-4 h-4 text-primary" />
                     แนะนำการรักษาจาก AI
                   </h3>
                   <div className="space-y-3">
@@ -460,12 +460,12 @@ export default function DemoPage() {
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <SpinnerGap className="w-5 h-5 animate-spin" />
                       กำลังประมวลผล...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5" />
+                      <Sparkle className="w-5 h-5" />
                       สร้างรายงานเปรียบเทียบ
                     </>
                   )}

@@ -106,7 +106,7 @@ export default function UserManagementPage() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
-        <Loader2 className="w-10 h-10 text-primary animate-spin" />
+        <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
@@ -131,7 +131,7 @@ export default function UserManagementPage() {
       {/* Alerts */}
       {error && (
         <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-          <AlertCircle className="w-5 h-5 text-red-400" />
+          <WarningCircle className="w-5 h-5 text-red-400" />
           <p className="text-red-400">{error}</p>
           <button onClick={() => setError(null)} className="ml-auto">
             <X className="w-4 h-4 text-red-400" />
@@ -152,7 +152,7 @@ export default function UserManagementPage() {
       {/* Search */}
       <div className="glass-card p-6 rounded-2xl border border-white/10">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+          <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
           <input
             type="text"
             placeholder="Search users by name or email..."
@@ -221,7 +221,7 @@ export default function UserManagementPage() {
                         title={user.is_active ? 'Suspend User' : 'Activate User'}
                       >
                         {isProcessing === user.id ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <SpinnerGap className="w-4 h-4 animate-spin" />
                         ) : user.is_active ? (
                           <UserMinus className="w-4 h-4" />
                         ) : (
@@ -232,7 +232,7 @@ export default function UserManagementPage() {
                         className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
                         title="Edit User"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </button>
                     </div>
                   </td>

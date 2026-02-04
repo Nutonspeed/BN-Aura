@@ -32,7 +32,7 @@ export default function SupportHeader({ onCreateTicket }: SupportHeaderProps) {
           disabled={loading}
           className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 disabled:opacity-50"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          <ArrowsClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           Refresh
         </button>
 

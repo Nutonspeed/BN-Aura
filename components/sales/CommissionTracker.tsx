@@ -115,7 +115,7 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
           <div className="p-6 bg-gradient-to-br from-white/5 to-transparent rounded-[32px] border border-white/5 space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <BarChart3 className="w-4 h-4 text-muted-foreground" />
+                <ChartBar className="w-4 h-4 text-muted-foreground" />
                 <span className="text-xs font-bold text-white uppercase tracking-widest">Performance Stats</span>
               </div>
             </div>

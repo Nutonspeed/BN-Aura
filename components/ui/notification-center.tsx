@@ -26,9 +26,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       case 'success':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-500" />;
+        return <Warning className="w-5 h-5 text-yellow-500" />;
       case 'error':
-        return <AlertCircle className="w-5 h-5 text-red-500" />;
+        return <WarningCircle className="w-5 h-5 text-red-500" />;
       default:
         return <Info className="w-5 h-5 text-blue-500" />;
     }
@@ -263,7 +263,7 @@ const NotificationCenter: React.FC = () => {
               </div>
             ) : error ? (
               <div className="p-4 text-center text-red-500">
-                <AlertCircle className="w-8 h-8 mx-auto mb-2" />
+                <WarningCircle className="w-8 h-8 mx-auto mb-2" />
                 {error}
               </div>
             ) : filteredNotifications.length === 0 ? (

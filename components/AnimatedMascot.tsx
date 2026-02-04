@@ -112,7 +112,7 @@ export default function AnimatedMascot() {
               repeat: Infinity,
             }}
           >
-            <Sparkles className="w-6 h-6 text-primary" />
+            <Sparkle className="w-6 h-6 text-primary" />
           </motion.div>
         </motion.div>
       </motion.div>

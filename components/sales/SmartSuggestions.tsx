@@ -53,11 +53,11 @@ export default function SmartSuggestions({
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
       case 'high':
-        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+        return <Warning className="w-4 h-4 text-red-500" />;
       case 'medium':
         return <Clock className="w-4 h-4 text-yellow-500" />;
       case 'low':
-        return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+        return <CheckCircle className="w-4 h-4 text-green-500" />;
       default:
         return null;
     }

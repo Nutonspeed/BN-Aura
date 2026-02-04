@@ -3,19 +3,19 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Sparkles, 
-  History, 
+  Sparkle, 
+  ClockCounterClockwise, 
   ArrowLeft, 
-  Loader2, 
-  ChevronRight,
-  TrendingUp,
+  SpinnerGap, 
+  CaretRight,
+  TrendUp,
   Camera,
   Image as ImageIcon,
-  CheckCircle2,
-  Calendar,
-  Zap,
+  CheckCircle,
+  CalendarDots,
+  Lightning,
   Info
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { Link } from '@/i18n/routing';

@@ -3,18 +3,18 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Calendar as CalendarIcon, 
+  CalendarDots, 
   Clock, 
   User, 
-  BriefcaseMedical, 
-  ChevronRight, 
-  ChevronLeft,
-  CheckCircle2,
-  Loader2,
-  AlertCircle,
-  Sparkles,
+  FirstAidKit, 
+  CaretRight, 
+  CaretLeft,
+  CheckCircle,
+  SpinnerGap,
+  WarningCircle,
+  Sparkle,
   ArrowRight
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 

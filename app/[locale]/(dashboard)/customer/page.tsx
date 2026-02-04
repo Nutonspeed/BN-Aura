@@ -3,15 +3,15 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Sparkles, 
-  MessageSquare, 
-  Calendar, 
-  Loader2,
-  ChevronRight,
-  TrendingUp,
-  Zap,
+  Sparkle, 
+  ChatCircle, 
+  CalendarDots, 
+  SpinnerGap,
+  CaretRight,
+  TrendUp,
+  Lightning,
   ShieldCheck
-} from 'lucide-react';
+} from '@phosphor-icons/react';
 import { createClient } from '@/lib/supabase/client';
 import MySalesRep from '@/components/customer/MySalesRep';
 import TreatmentJourney from '@/components/customer/TreatmentJourney';

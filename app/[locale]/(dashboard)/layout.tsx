@@ -39,6 +39,7 @@ import {
   Wallet,
   Globe
 } from '@phosphor-icons/react';
+import { Image, Gift, IdentificationCard, Megaphone, Eye, MapTrifold, Headset, Cpu } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';

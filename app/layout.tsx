@@ -1,7 +1,4 @@
 import { ReactNode } from 'react'
-import { getLocale } from 'next-intl/server'
-import { notFound } from 'next/navigation'
-import { routing } from '@/i18n/routing'
 import { IBM_Plex_Sans_Thai, Anuphan, Inter } from "next/font/google";
 import "@/app/globals.css";
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
@@ -29,20 +26,13 @@ export const metadata = {
 };
 
 // This is the root layout that wraps all locales
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: ReactNode
 }) {
-  const locale = await getLocale()
-  
-  // Ensure we have a valid locale
-  if (!routing.locales.includes(locale as any)) {
-    notFound()
-  }
-
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang="th" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
         <meta name="theme-color" content="#0A0A0A" />

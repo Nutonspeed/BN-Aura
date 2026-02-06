@@ -74,7 +74,7 @@ export default function CustomerDashboard() {
           // Fetch treatment history (past appointments)
           const { data: pastAppts } = await supabase
             .from('appointments')
-            .select('id, service_type, treatment_name, appointment_date, status, notes')
+            .select('id, appointment_type, services, appointment_date, status, notes')
             .eq('customer_id', customer.id)
             .lt('appointment_date', new Date().toISOString())
             .in('status', ['completed', 'confirmed'])
@@ -86,9 +86,9 @@ export default function CustomerDashboard() {
         // Fetch loyalty points
         const { data: loyaltyData } = await supabase
           .from('loyalty_points')
-          .select('points, source, description, created_at')
+          .select('points, updated_at')
           .eq('user_id', user.id)
-          .order('created_at', { ascending: false });
+          .order('updated_at', { ascending: false });
 
         if (loyaltyData) {
           const totalPoints = loyaltyData.reduce((sum, lp) => sum + (lp.points || 0), 0);
@@ -210,7 +210,7 @@ export default function CustomerDashboard() {
                         <CalendarDots className="w-4 h-4 text-blue-500" />
                       </div>
                       <div>
-                        <p className="font-semibold text-sm">{apt.service_type || apt.treatment_name || 'Appointment'}</p>
+                        <p className="font-semibold text-sm">{apt.appointment_type || 'Appointment'}</p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(apt.appointment_date).toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>

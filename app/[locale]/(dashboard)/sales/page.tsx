@@ -78,9 +78,9 @@ export default function SalesDashboard() {
           const quotaResponse = await fetch(`/api/quota/billing-test?action=quota-config&clinicId=${staffData.clinic_id}`);
           const quotaData = await quotaResponse.json();
 
-          if (quotaData.success) {
+          if (quotaData.success && quotaData.data) {
             const quota = quotaData.data;
-            const utilizationRate = (quota.currentUsage / quota.monthlyQuota) * 100;
+            const utilizationRate = quota.monthlyQuota ? (quota.currentUsage / quota.monthlyQuota) * 100 : 0;
             
             setQuotaInfo({
               currentUsage: quota.currentUsage,

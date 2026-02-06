@@ -54,46 +54,62 @@ export default function CommissionsPage() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [period, setPeriod] = useState('this_month');
 
-  // Mock data for initial implementation
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setRecords([
-        {
-          id: '1',
-          date: '2024-02-01',
-          customer_name: 'คุณสมชาย ใจดี',
-          service_name: 'Ultra Lift Premium',
-          amount: 15000,
-          commission_rate: 5,
-          commission_amount: 750,
-          status: 'paid',
-          payment_date: '2024-02-03'
-        },
-        {
-          id: '2',
-          date: '2024-02-02',
-          customer_name: 'คุณสมหญิง รักดี',
-          service_name: 'V-Shape Botox',
-          amount: 8000,
-          commission_rate: 5,
-          commission_amount: 400,
-          status: 'approved'
-        },
-        {
-          id: '3',
-          date: '2024-02-03',
-          customer_name: 'คุณวิชัย รุ่งเรือง',
-          service_name: 'Skin Rejuvenation',
-          amount: 12000,
-          commission_rate: 5,
-          commission_amount: 600,
-          status: 'pending'
-        }
-      ]);
+    fetchCommissions();
+  }, [period]);
+
+  const fetchCommissions = async () => {
+    try {
+      setLoading(true);
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: staffData } = await supabase
+        .from('clinic_staff')
+        .select('clinic_id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .limit(1)
+        .maybeSingle();
+
+      if (!staffData) { setLoading(false); return; }
+
+      const now = new Date();
+      let query = supabase
+        .from('sales_commissions')
+        .select('*, customer:customers(full_name)')
+        .eq('clinic_id', staffData.clinic_id)
+        .order('created_at', { ascending: false });
+
+      if (period === 'this_month') {
+        query = query.gte('created_at', new Date(now.getFullYear(), now.getMonth(), 1).toISOString());
+      } else if (period === 'last_month') {
+        query = query
+          .gte('created_at', new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString())
+          .lte('created_at', new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59).toISOString());
+      }
+
+      const { data: commissions } = await query.limit(100);
+
+      setRecords((commissions || []).map((c: any) => ({
+        id: c.id,
+        date: c.transaction_date || c.created_at,
+        customer_name: c.customer?.full_name || 'Unknown',
+        service_name: c.transaction_type || 'treatment_sale',
+        amount: c.base_amount || 0,
+        commission_rate: (c.commission_rate || 0) * 100,
+        commission_amount: c.commission_amount || 0,
+        status: c.payment_status || 'pending',
+        payment_date: c.paid_at
+      })));
+    } catch (error) {
+      console.error('Commission fetch error:', error);
+    } finally {
       setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  };
 
   const filteredRecords = records.filter(record => {
     const matchesSearch = record.customer_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -230,16 +246,16 @@ export default function CommissionsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
           title="Consolidated Earn"
-          value={1750}
+          value={records.reduce((s, r) => s + r.commission_amount, 0)}
           prefix="฿"
           icon={Coins as Icon}
           trend="up"
-          change={12.5}
+          change={0}
           className="p-4"
         />
         <StatCard
           title="Settled Nodes"
-          value={750}
+          value={records.filter(r => r.status === 'paid').reduce((s, r) => s + r.commission_amount, 0)}
           prefix="฿"
           icon={CheckCircle as Icon}
           iconColor="text-emerald-500"
@@ -247,7 +263,7 @@ export default function CommissionsPage() {
         />
         <StatCard
           title="Pending Payouts"
-          value={1000}
+          value={records.filter(r => r.status === 'pending' || r.status === 'approved').reduce((s, r) => s + r.commission_amount, 0)}
           prefix="฿"
           icon={Clock as Icon}
           iconColor="text-amber-500"

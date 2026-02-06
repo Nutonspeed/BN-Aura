@@ -45,90 +45,77 @@ export async function GET(request: Request) {
     const status = url.searchParams.get('status');
     const page = parseInt(url.searchParams.get('page') || '1');
     const limit = parseInt(url.searchParams.get('limit') || '20');
+    const offset = (page - 1) * limit;
 
-    // Mock data for support tickets (since table doesn't exist yet)
-    const mockTickets = [
-      {
-        id: '1',
-        subject: 'Login issue with Super Admin account',
-        description: 'Cannot login to Super Admin dashboard after recent update',
-        priority: 'high',
-        status: 'open',
-        category: 'technical',
-        clinic_id: '00000000-0000-0000-0000-000000000001',
-        user_id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-        assigned_to: null,
-        created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-        clinic_name: 'บางกอก พรีเมียม คลินิก',
-        user: {
-          id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-          full_name: 'Nuttapong - System Administrator',
-          email: 'nuttapong161@gmail.com'
-        }
-      },
-      {
-        id: '2',
-        subject: 'Feature request: Customer data export',
-        description: 'Need ability to export customer data for reporting',
-        priority: 'medium',
-        status: 'in_progress',
-        category: 'feature_request',
-        clinic_id: '00000000-0000-0000-0000-000000000001',
-        user_id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-        assigned_to: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-        created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-        clinic_name: 'บางกอก พรีเมียม คลินิก',
-        user: {
-          id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-          full_name: 'Nuttapong - System Administrator',
-          email: 'nuttapong161@gmail.com'
-        }
-      },
-      {
-        id: '3',
-        subject: 'Billing question about subscription',
-        description: 'Question about pricing for premium subscription tier',
-        priority: 'low',
-        status: 'resolved',
-        category: 'billing',
-        clinic_id: 'a1b2c3d4-e5f6-7890-abcd-1234567890ab',
-        user_id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-        assigned_to: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-        created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
-        clinic_name: 'คลินิกความงามกรุงเทพ',
-        user: {
-          id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff',
-          full_name: 'Nuttapong - System Administrator',
-          email: 'nuttapong161@gmail.com'
-        }
-      }
-    ];
+    // Query real support tickets from database
+    let query = adminClient
+      .from('support_tickets')
+      .select('*, clinic:clinics(display_name), reporter:users!support_tickets_user_id_fkey(id, full_name, email)', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
 
-    // Filter by status if specified
-    let filteredTickets = mockTickets;
     if (status && status !== 'all') {
-      filteredTickets = mockTickets.filter(ticket => ticket.status === status);
+      query = query.eq('status', status);
     }
 
-    // Mock stats
+    const { data: tickets, error: ticketsError, count } = await query;
+
+    if (ticketsError) {
+      console.error('Support tickets query error:', ticketsError);
+      // Fallback: query without joins if foreign key fails
+      let fallbackQuery = adminClient
+        .from('support_tickets')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .range(offset, offset + limit - 1);
+
+      if (status && status !== 'all') {
+        fallbackQuery = fallbackQuery.eq('status', status);
+      }
+
+      const { data: fallbackTickets, count: fallbackCount } = await fallbackQuery;
+      
+      // Get stats from all tickets
+      const { data: allTickets } = await adminClient.from('support_tickets').select('status, priority');
+      const statsData = allTickets || [];
+
+      return successResponse({
+        tickets: fallbackTickets || [],
+        pagination: {
+          page,
+          limit,
+          total: fallbackCount || 0,
+          pages: Math.ceil((fallbackCount || 0) / limit)
+        },
+        stats: {
+          total: statsData.length,
+          open: statsData.filter((t: any) => t.status === 'open').length,
+          in_progress: statsData.filter((t: any) => t.status === 'in_progress').length,
+          resolved: statsData.filter((t: any) => t.status === 'resolved').length,
+          high_priority: statsData.filter((t: any) => t.priority === 'high').length
+        }
+      });
+    }
+
+    // Get stats from all tickets (unfiltered)
+    const { data: allTickets } = await adminClient.from('support_tickets').select('status, priority');
+    const statsData = allTickets || [];
+
     const stats = {
-      total: mockTickets.length,
-      open: mockTickets.filter(t => t.status === 'open').length,
-      in_progress: mockTickets.filter(t => t.status === 'in_progress').length,
-      resolved: mockTickets.filter(t => t.status === 'resolved').length,
-      high_priority: mockTickets.filter(t => t.priority === 'high').length
+      total: statsData.length,
+      open: statsData.filter((t: any) => t.status === 'open').length,
+      in_progress: statsData.filter((t: any) => t.status === 'in_progress').length,
+      resolved: statsData.filter((t: any) => t.status === 'resolved').length,
+      high_priority: statsData.filter((t: any) => t.priority === 'high').length
     };
 
     return successResponse({
-      tickets: filteredTickets,
+      tickets: tickets || [],
       pagination: {
         page,
         limit,
-        total: filteredTickets.length,
-        pages: Math.ceil(filteredTickets.length / limit)
+        total: count || 0,
+        pages: Math.ceil((count || 0) / limit)
       },
       stats
     });

@@ -13,6 +13,7 @@ export default function CustomerDashboard() {
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalPurchases, setTotalPurchases] = useState(0);
   const [recentTransactions, setRecentTransactions] = useState<any[]>([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
 
   useEffect(() => {
     fetchCustomerData();
@@ -24,17 +25,40 @@ export default function CustomerDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (user) {
-        // Fetch customer profile
-        const { data: customer } = await supabase
+        // Fetch customer profile - try by user_id first, then by email
+        let customer = null;
+        const { data: byUserId } = await supabase
           .from('customers')
           .select('*')
-          .eq('id', user.id)
-          .single();
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (byUserId) {
+          customer = byUserId;
+        } else {
+          const { data: byEmail } = await supabase
+            .from('customers')
+            .select('*')
+            .eq('email', user.email)
+            .maybeSingle();
+          customer = byEmail;
+        }
 
         if (customer) {
           setCustomerData(customer);
           setTotalSpent(customer.metadata?.total_spent || 0);
           setTotalPurchases(customer.metadata?.total_purchases || 0);
+
+          // Fetch upcoming appointments for this customer
+          const { data: appointments } = await supabase
+            .from('appointments')
+            .select('*')
+            .eq('customer_id', customer.id)
+            .gte('appointment_date', new Date().toISOString())
+            .order('appointment_date', { ascending: true })
+            .limit(5);
+
+          setUpcomingAppointments(appointments || []);
         }
 
         // Fetch loyalty points
@@ -156,10 +180,31 @@ export default function CustomerDashboard() {
           </CardHeader>
           <CardContent className="px-0 pb-0">
             <div className="space-y-4">
-              <div className="text-center py-8 text-muted-foreground">
-                <p>No upcoming appointments</p>
-                <p className="text-sm mt-2">Schedule your next beauty session</p>
-              </div>
+              {upcomingAppointments.length > 0 ? (
+                upcomingAppointments.map((apt, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-4 bg-secondary/20 rounded-xl">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <CalendarDots className="w-4 h-4 text-blue-500" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm">{apt.service_type || apt.treatment_name || 'Appointment'}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(apt.appointment_date).toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${apt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
+                      {apt.status === 'confirmed' ? 'Confirmed' : apt.status}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>No upcoming appointments</p>
+                  <p className="text-sm mt-2">Schedule your next beauty session</p>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

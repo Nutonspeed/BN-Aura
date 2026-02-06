@@ -46,24 +46,33 @@ export default function QueuePage() {
   const [clinicId, setClinicId] = useState<string>('');
 
   useEffect(() => {
-    // Get clinic ID from staff session
-    fetchClinicId();
+    initQueue();
   }, []);
 
   useEffect(() => {
     if (clinicId) {
       fetchQueue();
-      // Auto-refresh every 10 seconds
       const interval = setInterval(fetchQueue, 10000);
       return () => clearInterval(interval);
     }
   }, [clinicId]);
 
-  const fetchClinicId = async () => {
+  const initQueue = async () => {
     try {
-      const res = await fetch('/api/auth/session');
-      const data = await res.json();
-      if (data.clinicId) setClinicId(data.clinicId);
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: staffData } = await supabase
+        .from('clinic_staff')
+        .select('clinic_id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .limit(1)
+        .maybeSingle();
+
+      if (staffData) setClinicId(staffData.clinic_id);
     } catch (e) { console.error(e); }
   };
 
@@ -71,20 +80,43 @@ export default function QueuePage() {
     if (!clinicId) return;
     setLoading(true);
     try {
-      const res = await fetch(`/api/kiosk?clinic_id=${clinicId}&action=queue`);
-      const data = await res.json();
-      setQueue(data.queue || []);
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data } = await supabase
+        .from('kiosk_checkins')
+        .select('*, customer:customers(full_name)')
+        .eq('clinic_id', clinicId)
+        .gte('checked_in_at', today.toISOString())
+        .in('status', ['waiting', 'called', 'serving'])
+        .order('queue_number', { ascending: true });
+
+      setQueue((data || []).map((d: any) => ({
+        id: d.id,
+        queue_number: d.queue_number || 0,
+        status: d.status,
+        check_in_method: d.check_in_method || 'walk_in',
+        phone_lookup: d.phone_lookup,
+        checked_in_at: d.checked_in_at,
+        customer: d.customer
+      })));
     } catch (e) { console.error(e); }
     setLoading(false);
   };
 
-  const updateStatus = async (checkinId: string, status: string) => {
-    await fetch('/api/kiosk', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ checkinId, status })
-    });
-    fetchQueue();
+  const updateStatus = async (checkinId: string, newStatus: string) => {
+    try {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      const updateData: Record<string, any> = { status: newStatus };
+      if (newStatus === 'called') updateData.called_at = new Date().toISOString();
+      if (newStatus === 'serving') updateData.served_at = new Date().toISOString();
+
+      await supabase.from('kiosk_checkins').update(updateData).eq('id', checkinId);
+      fetchQueue();
+    } catch (e) { console.error(e); }
   };
 
   const formatTime = (d: string) => new Date(d).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });

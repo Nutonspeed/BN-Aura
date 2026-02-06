@@ -2,10 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, CalendarDots, User, CurrencyDollar, SpinnerGap } from '@phosphor-icons/react';
+import { X, CreditCard, CalendarDots, User, CurrencyDollar, SpinnerGap, CaretDown, CheckCircle, Wallet } from '@phosphor-icons/react';
 import { useConfirmPayment } from '@/hooks/useWorkflowStatus';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
 
 interface ConfirmPaymentModalProps {
   isOpen: boolean;
@@ -96,160 +100,189 @@ export default function ConfirmPaymentModal({
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-          className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-        />
+      {isOpen && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-y-auto">
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+          />
 
-        {/* Modal */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-md bg-card border border-border rounded-2xl shadow-2xl overflow-hidden"
-        >
-          {/* Header */}
-          <div className="bg-gradient-to-r from-primary/20 to-primary/5 border-b border-border p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center text-primary">
-                  <CreditCard className="w-5 h-5" />
+          {/* Modal */}
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-lg bg-card border border-border rounded-[32px] shadow-premium overflow-hidden group"
+          >
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+              <Wallet className="w-64 h-64 text-primary" />
+            </div>
+
+            {/* Header */}
+            <div className="bg-gradient-to-r from-primary/10 to-transparent border-b border-border/50 p-8 relative z-10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                    <CreditCard weight="duotone" className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight">Confirm Settlement</h3>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Client: {customerName}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-foreground">Confirm Payment</h3>
-                  <p className="text-sm text-muted-foreground">{customerName}</p>
+                <button
+                  onClick={onClose}
+                  className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all"
+                >
+                  <X weight="bold" className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="p-8 space-y-8 relative z-10">
+              <div className="space-y-6">
+                {/* Amount */}
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
+                    Settlement Amount (THB) *
+                  </label>
+                  <div className="relative group/input">
+                    <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-2xl" />
+                    <CurrencyDollar weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                      placeholder="0.00"
+                      className="w-full pl-14 pr-4 py-6 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all text-3xl font-black tabular-nums relative z-10"
+                      required
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Payment Method */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
+                      Method Node
+                    </label>
+                    <div className="relative group/input">
+                      <select
+                        value={paymentMethod}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        className="w-full px-5 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase tracking-widest text-[10px]"
+                      >
+                        <option value="cash" className="bg-card">CASH (Physical)</option>
+                        <option value="credit_card" className="bg-card">CREDIT CARD</option>
+                        <option value="bank_transfer" className="bg-card">BANK TRANSFER</option>
+                        <option value="promptpay" className="bg-card">PROMPTPAY (QR)</option>
+                      </select>
+                      <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Treatment Name */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
+                      Protocol Node *
+                    </label>
+                    <input
+                      type="text"
+                      value={treatmentName}
+                      onChange={(e) => setTreatmentName(e.target.value)}
+                      placeholder="e.g. HydraFacial Matrix"
+                      className="w-full px-5 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Beautician */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
+                      Assign Practitioner *
+                    </label>
+                    <div className="relative group/input">
+                      <User weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
+                      <select
+                        value={beauticianId}
+                        onChange={(e) => setBeauticianId(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-medium"
+                        required
+                      >
+                        <option value="" className="bg-card">Select Identity...</option>
+                        {beauticians.map((b) => (
+                          <option key={b.user_id} value={b.user_id} className="bg-card">
+                            {(b.users as any)?.full_name || 'Unknown Node'}
+                          </option>
+                        ))}
+                      </select>
+                      <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+                    </div>
+                  </div>
+
+                  {/* Scheduled Time */}
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
+                      Temporal Sync *
+                    </label>
+                    <div className="relative group/input">
+                      <CalendarDots weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
+                      <input
+                        type="datetime-local"
+                        value={scheduledTime}
+                        onChange={(e) => setScheduledTime(e.target.value)}
+                        className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-muted-foreground" />
-              </button>
-            </div>
-          </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            {/* Amount */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <CurrencyDollar className="w-4 h-4 inline mr-1" />
-                Payment Amount *
-              </label>
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="0.00"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                required
-                min="0"
-                step="0.01"
-              />
-            </div>
-
-            {/* Payment Method */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Payment Method
-              </label>
-              <select
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-              >
-                <option value="cash">Cash</option>
-                <option value="credit_card">Credit Card</option>
-                <option value="bank_transfer">Bank Transfer</option>
-                <option value="promptpay">PromptPay</option>
-              </select>
-            </div>
-
-            {/* Treatment Name */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                Treatment Name *
-              </label>
-              <input
-                type="text"
-                value={treatmentName}
-                onChange={(e) => setTreatmentName(e.target.value)}
-                placeholder="e.g., HydraFacial, Laser Treatment"
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                required
-              />
-            </div>
-
-            {/* Beautician */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <User className="w-4 h-4 inline mr-1" />
-                Assign to Beautician *
-              </label>
-              <select
-                value={beauticianId}
-                onChange={(e) => setBeauticianId(e.target.value)}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                required
-              >
-                <option value="">Select beautician...</option>
-                {beauticians.map((b) => (
-                  <option key={b.user_id} value={b.user_id}>
-                    {(b.users as any)?.full_name || 'Unknown'}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Scheduled Time */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                <CalendarDots className="w-4 h-4 inline mr-1" />
-                Scheduled Time *
-              </label>
-              <input
-                type="datetime-local"
-                value={scheduledTime}
-                onChange={(e) => setScheduledTime(e.target.value)}
-                className="w-full px-4 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                required
-              />
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-3 pt-4">
-              <button
-                type="button"
-                onClick={onClose}
-                className="flex-1 px-4 py-2 bg-muted text-foreground rounded-lg font-medium hover:bg-muted/80 transition-colors"
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <>
-                    <SpinnerGap className="w-4 h-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  'Confirm Payment'
-                )}
-              </button>
-            </div>
-          </form>
-        </motion.div>
-      </div>
+              {/* Actions */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onClose}
+                  className="w-full sm:flex-1 py-6 rounded-[20px] font-black uppercase tracking-widest text-[10px]"
+                  disabled={loading}
+                >
+                  Abort
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:flex-[2] py-6 rounded-[20px] font-black uppercase tracking-widest text-[10px] shadow-premium gap-3"
+                >
+                  {loading ? (
+                    <>
+                      <SpinnerGap className="w-5 h-5 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle weight="bold" className="w-5 h-5" />
+                      Confirm Payment Node
+                    </>
+                  )}
+                </Button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </AnimatePresence>
   );
 }

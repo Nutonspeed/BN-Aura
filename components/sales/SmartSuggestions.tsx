@@ -50,6 +50,19 @@ export default function SmartSuggestions({
     }
   };
 
+  const handleAddToOffer = (recommendation: UpsellRecommendation) => {
+    console.log('Adding to offer:', recommendation);
+    // TODO: Integrate with POS system or create customer offer
+  };
+
+  const handleMarkAsDone = (index: number) => {
+    setRecommendations(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleDismiss = (index: number) => {
+    setRecommendations(prev => prev.filter((_, i) => i !== index));
+  };
+
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
       case 'high':
@@ -125,9 +138,26 @@ export default function SmartSuggestions({
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">{rec.reason}</p>
-                  <button className="text-xs text-primary hover:underline font-medium">
-                    + เพิ่มในข้อเสนอ
-                  </button>
+                  <div className="flex items-center gap-2 mt-3">
+                    <button 
+                      onClick={() => handleAddToOffer(rec)}
+                      className="flex-1 text-xs px-3 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+                    >
+                      + เพิ่มในข้อเสนอ
+                    </button>
+                    <button 
+                      onClick={() => handleMarkAsDone(index)}
+                      className="text-xs px-3 py-2 bg-emerald-500/10 text-emerald-600 rounded-lg hover:bg-emerald-500/20 transition-colors font-medium"
+                    >
+                      ✓ เสร็จแล้ว
+                    </button>
+                    <button 
+                      onClick={() => handleDismiss(index)}
+                      className="text-xs px-3 py-2 bg-muted hover:bg-muted/80 text-muted-foreground rounded-lg transition-colors"
+                    >
+                      ✕
+                    </button>
+                  </div>
                 </div>
               </div>
             </motion.div>

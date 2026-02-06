@@ -114,6 +114,57 @@ Record quota usage or perform actions.
 
 ---
 
+## Monitoring APIs
+
+### GET /api/monitoring/health
+Check system health status.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "timestamp": "2026-02-06T12:00:00Z",
+  "latency": 120,
+  "checks": [
+    { "service": "database", "status": "healthy", "latency": 50 },
+    { "service": "ai_gateway", "status": "healthy", "latency": 200 }
+  ]
+}
+```
+
+### GET /api/monitoring/ai-usage
+Get AI usage statistics.
+
+**Parameters:**
+- `days` (number): Days to look back (default: 7)
+
+### GET /api/alerts/quota
+Get quota alerts for clinics.
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "alerts": [
+      {
+        "id": "alert-123",
+        "type": "quota_critical",
+        "severity": "urgent",
+        "clinicName": "Bangkok Beauty",
+        "message": "Quota at 95%",
+        "acknowledged": false
+      }
+    ]
+  }
+}
+```
+
+### POST /api/alerts/quota
+Manage quota alerts (acknowledge, action_taken, test_alert).
+
+---
+
 ## Notification APIs
 
 ### POST /api/notifications/line

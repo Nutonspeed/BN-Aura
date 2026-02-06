@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { aiAnalysisLimiter } from '@/lib/middleware/rateLimiter';
+import { QuotaManager } from '@/lib/quota/quotaManager';
+import { QuotaMonitor } from '@/lib/monitoring/quotaMonitor';
+import { NeuralCache } from '@/lib/quota/neuralCache';
+import { createClient } from '@/lib/supabase/client';
 
 export async function POST(request: NextRequest) {
   // Apply rate limiting
@@ -9,23 +13,95 @@ export async function POST(request: NextRequest) {
   }
   try {
     const body = await request.json();
-    const { customerInfo, facialMetrics, imageAnalysis } = body;
+    const { customerInfo, facialMetrics, imageAnalysis, clinicId, userId, useProModel = false } = body;
+
+    // Validate required fields
+    if (!clinicId || !userId) {
+      return NextResponse.json(
+        { error: 'Missing required fields: clinicId and userId' },
+        { status: 400 }
+      );
+    }
+
+    // Neural Caching: Check if customer was scanned recently (24hr window)
+    const cacheResult = NeuralCache.checkCustomerCache(clinicId, customerInfo, facialMetrics);
+    
+    if (cacheResult.isHit) {
+      // Use cached analysis - no quota deduction needed
+      const cachedAnalysis = NeuralCache.getCachedAnalysis(clinicId, customerInfo);
+      
+      if (cachedAnalysis) {
+        console.log(`🧠 Neural Cache HIT: ${cacheResult.reason} - Saved ${cacheResult.quotaSaved} quota units`);
+        
+        // Record monitoring for cache hit
+        QuotaMonitor.recordPerformance('ai_analysis_cached', 50, clinicId, true); // Very fast cached response
+        
+        return NextResponse.json({
+          success: true,
+          analysis: cachedAnalysis,
+          source: 'neural_cache',
+          modelUsed: 'cached-analysis',
+          quotaInfo: {
+            consumed: 0, // No quota consumed for cached results
+            remaining: (await QuotaManager.getQuotaConfig(clinicId))?.monthlyQuota || 100,
+            willIncurCharge: false,
+            quotaSaved: cacheResult.quotaSaved,
+            cacheHit: true,
+            cacheReason: cacheResult.reason
+          }
+        });
+      }
+    }
+    
+    console.log(`🧠 Neural Cache MISS: ${cacheResult.reason} - Will perform new analysis`);
+
+    // Check quota before processing (only for new scans)
+    const quotaCheck = await QuotaManager.checkQuotaAvailability(clinicId);
+    
+    if (!quotaCheck.canScan) {
+      return NextResponse.json(
+        { 
+          error: 'Cannot perform AI analysis',
+          message: quotaCheck.message,
+          quotaExceeded: true,
+          remainingQuota: quotaCheck.quotaRemaining,
+          willIncurCharge: quotaCheck.willIncurCharge,
+          estimatedCost: quotaCheck.estimatedCost
+        },
+        { status: 403 }
+      );
+    }
 
     // Check if Gemini API is available
     const geminiApiKey = process.env.GOOGLE_AI_API_KEY;
     let analysis;
+    let actualModelUsed = 'mock';
+    let quotaConsumed = 0.1; // Default for mock
 
     if (geminiApiKey && geminiApiKey.length > 0) {
       try {
-        // Use real Gemini AI Analysis
-        const { deepSkinAnalysis } = await import('@/lib/ai/gemini');
-        analysis = await deepSkinAnalysis({
-          customerInfo,
-          facialMetrics,
-          imageAnalysis
-        });
+        // Use real Gemini AI Analysis with quota tracking
+        const { deepSkinAnalysis, quickSkinAnalysis } = await import('@/lib/ai/gemini');
         
-        console.log('✅ Gemini AI Analysis completed successfully');
+        if (useProModel) {
+          analysis = await deepSkinAnalysis({
+            customerInfo,
+            facialMetrics,
+            imageAnalysis
+          });
+          actualModelUsed = 'gemini-1.5-pro';
+          quotaConsumed = 1.0; // Pro model: 1.0 quota units
+        } else {
+          analysis = await quickSkinAnalysis({
+            customerInfo,
+            facialMetrics,
+            imageAnalysis
+          });
+          actualModelUsed = 'gemini-1.5-flash';
+          quotaConsumed = 0.2; // Flash model: 0.2 quota units
+        }
+        
+        console.log(`✅ Gemini AI Analysis completed successfully using ${actualModelUsed}`);
       } catch (error) {
         console.warn('⚠️ Gemini API failed, falling back to enhanced mock:', error);
         analysis = generateEnhancedMockAnalysis(customerInfo);
@@ -35,10 +111,50 @@ export async function POST(request: NextRequest) {
       analysis = generateEnhancedMockAnalysis(customerInfo);
     }
 
+    // Record quota usage after successful analysis
+    try {
+      const usageRecord = await QuotaManager.recordUsage(
+        clinicId,
+        userId,
+        useProModel ? 'detailed' : 'quick',
+        true, // successful
+        {
+          analysisScore: analysis.overallScore,
+          proposalGenerated: false,
+          leadScore: Math.floor(analysis.overallScore * 0.9) // Derive lead score from analysis
+        }
+      );
+      
+      console.log(`📊 Quota usage recorded: ${quotaConsumed} units for ${actualModelUsed}`);
+      
+      // Neural Caching: Record customer scan for future cache hits
+      NeuralCache.recordCustomerScan(clinicId, customerInfo, facialMetrics, analysis);
+      console.log(`🧠 Neural Cache: Customer scan recorded for ${customerInfo.name}`);
+      
+    } catch (quotaError) {
+      console.error('❌ Failed to record quota usage:', quotaError);
+      // Don't fail the entire request if quota recording fails
+    }
+
+    // Get updated quota status for response
+    const updatedQuota = await QuotaManager.getQuotaConfig(clinicId);
+    const remaining = updatedQuota ? updatedQuota.monthlyQuota - updatedQuota.currentUsage : 0;
+
+    // Record monitoring metrics
+    const analysisEndTime = Date.now();
+    const totalDuration = analysisEndTime - (request as any).startTime || 0;
+    QuotaMonitor.recordPerformance('ai_analysis', totalDuration, clinicId, true);
+
     return NextResponse.json({
       success: true,
       analysis,
-      source: geminiApiKey ? 'gemini_ai' : 'enhanced_mock'
+      source: geminiApiKey ? 'gemini_ai' : 'enhanced_mock',
+      modelUsed: actualModelUsed,
+      quotaInfo: {
+        consumed: quotaConsumed,
+        remaining: Math.max(0, remaining),
+        willIncurCharge: quotaCheck.willIncurCharge
+      }
     });
 
   } catch (error) {

@@ -185,8 +185,7 @@ export async function PUT(request: Request) {
     const { data: currentUserRole } = await supabase
       .from('clinic_staff')
       .select('role')
-      .eq('user_id', user.id)
-      .single();
+      .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
 
     // Only clinic_owner and super_admin can change roles
     if (!currentUserRole || !['clinic_owner', 'super_admin'].includes(currentUserRole.role)) {

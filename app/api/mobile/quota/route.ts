@@ -22,8 +22,7 @@ export async function GET(request: NextRequest) {
     const { data: staffData } = await supabase
       .from('clinic_staff')
       .select('clinic_id, role, clinics(name, subscription_tier)')
-      .eq('user_id', user.id)
-      .single();
+      .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
 
     if (!staffData?.clinic_id) {
       return NextResponse.json({ error: 'No clinic found' }, { status: 404 });

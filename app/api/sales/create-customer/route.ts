@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       .select('id, clinic_id, role')
       .eq('user_id', user.id)
       .eq('is_active', true)
-      .single();
+      .eq('is_active', true).limit(1).maybeSingle();
 
     if (staffError || !staffData || staffData.role !== 'sales_staff') {
       return NextResponse.json({ error: 'Only sales staff can create customers' }, { status: 403 });

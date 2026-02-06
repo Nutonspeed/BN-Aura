@@ -281,7 +281,7 @@ export async function PUT(request: Request) {
       .from('clinic_staff')
       .select('user_id')
       .eq('id', staff_id)
-      .single();
+      .eq('is_active', true).limit(1).maybeSingle();
 
     if (getError || !currentStaff) {
       return NextResponse.json({ error: 'Staff profile not found' }, { status: 404 });

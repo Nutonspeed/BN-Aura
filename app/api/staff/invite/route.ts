@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       .select('role')
       .eq('user_id', user.id)
       .eq('clinic_id', profile.clinic_id)
-      .single();
+      .eq('is_active', true).limit(1).maybeSingle();
 
     if (staffError || !staffRole || !['clinic_owner', 'clinic_admin'].includes(staffRole.role)) {
       return NextResponse.json(

@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const customerId = searchParams.get('customer_id');
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff) return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
 
     let query = adminClient
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff) return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
 
     // Generate unique room ID

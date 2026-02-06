@@ -275,8 +275,7 @@ const ADJUST_POINTS = withErrorHandling(async (request: Request) => {
   const { data: staffData } = await supabase
     .from('clinic_staff')
     .select('clinic_id')
-    .eq('user_id', user.id)
-    .single();
+    .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
 
   if (!staffData) {
     return createErrorResponse(APIErrorCode.FORBIDDEN, 'Permissions denied');

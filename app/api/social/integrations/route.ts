@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff) return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
 
     const { data: integrations } = await adminClient
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
     if (!platform) return NextResponse.json({ error: 'platform required' }, { status: 400 });
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id, role').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id, role').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff || !['clinic_owner', 'clinic_admin'].includes(staff.role)) {
       return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
     }
@@ -80,7 +80,7 @@ export async function DELETE(request: NextRequest) {
     if (!platform) return NextResponse.json({ error: 'platform required' }, { status: 400 });
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff) return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
 
     await adminClient

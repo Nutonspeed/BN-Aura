@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const period = searchParams.get('period') || 'month';
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff) return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
 
     // Calculate period dates
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     const { staffId, periodStart, periodEnd } = body;
 
     const adminClient = createAdminClient();
-    const { data: staffRecord } = await adminClient.from('clinic_staff').select('clinic_id, role').eq('user_id', user.id).single();
+    const { data: staffRecord } = await adminClient.from('clinic_staff').select('clinic_id, role').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staffRecord || !['clinic_owner', 'clinic_admin'].includes(staffRecord.role)) {
       return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
     }

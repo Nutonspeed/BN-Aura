@@ -23,8 +23,7 @@ export async function GET(request: NextRequest) {
     const { data: staff } = await adminClient
       .from('clinic_staff')
       .select('clinic_id')
-      .eq('user_id', user.id)
-      .single();
+      .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
 
     const targetClinicId = clinicId || staff?.clinic_id;
 

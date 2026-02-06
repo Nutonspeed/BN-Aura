@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         .from('clinic_staff')
         .select('clinic_id, role')
         .eq('user_id', authData.user.id)
-        .single();
+        .eq('is_active', true).limit(1).maybeSingle();
 
       if (!staffError) {
         staffData = staff;

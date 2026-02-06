@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
       .select('clinic_id')
       .eq('user_id', user.id)
       .eq('clinic_id', clinicId)
-      .single();
+      .eq('is_active', true).limit(1).maybeSingle();
 
     if (!staff) {
       return NextResponse.json({ error: 'Not authorized' }, { status: 403 });

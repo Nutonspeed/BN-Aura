@@ -36,73 +36,23 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        console.log('Login: Authentication successful, checking user role');
-        
+        console.log('Login: Auth successful, routing...');
+        setLoading(false);
         try {
-          // Get user role from users table with timeout
-          const { data: userData, error: userError } = await supabase
-            .from('users')
-            .select('role, clinic_id')
-            .eq('id', data.user.id)
-            .single();
-
-          if (userError) {
-            console.log('Login: User data error:', userError);
-            // Fallback to customer dashboard if user query fails
-            setLoading(false);
-            router.push('/customer');
-            return;
-          }
-
-          console.log('Login: User data retrieved:', userData);
-
-          // Check if super_admin
-          if (userData?.role === 'super_admin') {
-            console.log('Login: Super admin detected, redirecting to /admin');
-            setLoading(false);
-            router.push('/admin');
-            return;
-          }
-
-          // For non-super-admin, check clinic_staff table
-          try {
-            const { data: staffData, error: staffError } = await supabase
-              .from('clinic_staff')
-              .select('role, clinic_id')
-              .eq('user_id', data.user.id)
-              .eq('is_active', true)
-              .order('created_at', { ascending: true })
-              .limit(1)
-              .maybeSingle();
-
-            console.log('Login: Staff data check result:', { staffData, staffError });
-
-            if (staffError) {
-              console.log('Login: Staff query error, defaulting to customer');
-              setLoading(false);
-              router.push('/customer');
-              return;
-            }
-
-            setLoading(false);
-            if (staffData?.role === 'sales_staff') {
-              console.log('Login: Sales staff detected, redirecting to /sales');
-              router.push('/sales');
-            } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) {
-              console.log('Login: Clinic staff detected, redirecting to /clinic');
-              router.push('/clinic');
-            } else {
-              console.log('Login: No staff role found, redirecting to customer dashboard');
-              router.push('/customer');
-            }
-          } catch (staffQueryError) {
-            console.error('Login: Staff query exception:', staffQueryError);
-            setLoading(false);
-            router.push('/customer');
-          }
-        } catch (userQueryError) {
-          console.error('Login: User query exception:', userQueryError);
-          setLoading(false);
+          const [staffResult, userResult] = await Promise.all([
+            supabase.from('clinic_staff').select('role, clinic_id').eq('user_id', data.user.id).eq('is_active', true).order('created_at', { ascending: true }).limit(1).maybeSingle(),
+            supabase.from('users').select('role').eq('id', data.user.id).maybeSingle()
+          ]);
+          const staffData = staffResult.data;
+          const userData = userResult.data;
+          console.log('Login: Roles:', { staff: staffData?.role, user: userData?.role });
+          if (userData?.role === 'super_admin') { router.push('/admin'); return; }
+          if (staffData?.role === 'sales_staff') { router.push('/sales'); }
+          else if (staffData?.role === 'beautician') { router.push('/beautician'); }
+          else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { router.push('/clinic'); }
+          else { router.push('/customer'); }
+        } catch (routeError) {
+          console.error('Login: Route error:', routeError);
           router.push('/customer');
         }
       }

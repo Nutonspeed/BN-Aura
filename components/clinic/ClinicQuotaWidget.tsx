@@ -27,13 +27,15 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
     try {
       const res = await fetch(`/api/quota/billing-test?action=quota-config&clinicId=${clinicId}`);
       const result = await res.json();
-      if (result.success) {
+      if (result.success && result.data) {
         const q = result.data;
+        const used = q.currentUsage || 0;
+        const total = q.monthlyQuota || 200;
         setQuota({
-          used: q.currentUsage || 0,
-          total: q.monthlyQuota || 200,
-          rate: Math.round((q.currentUsage / q.monthlyQuota) * 100),
-          remaining: Math.max(0, q.monthlyQuota - q.currentUsage),
+          used,
+          total,
+          rate: total > 0 ? Math.round((used / total) * 100) : 0,
+          remaining: Math.max(0, total - used),
           plan: q.plan || 'professional',
           resetDate: q.resetDate,
           cacheHits: 12,

@@ -21,8 +21,7 @@ export async function GET(request: NextRequest) {
         clinic_id,
         clinic:clinics(display_name)
       `)
-      .eq('user_id', user.id)
-      .single();
+      .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
 
     // Get customers this user can see
     const { data: customers, error } = await supabase

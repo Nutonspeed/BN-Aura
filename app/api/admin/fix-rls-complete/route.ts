@@ -155,7 +155,7 @@ export async function POST() {
       .from('clinic_staff')
       .select('role, clinic_id, is_active')
       .eq('user_id', testUser?.id)
-      .single();
+      .eq('is_active', true).limit(1).maybeSingle();
     
     const { data: testClinic, error: clinicError } = await adminClient
       .from('clinics')

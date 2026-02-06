@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const dateTime = searchParams.get('datetime');
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff) return NextResponse.json({ error: 'Clinic not found' }, { status: 404 });
 
     // If calculating price for specific service/datetime
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
     }
 
     const adminClient = createAdminClient();
-    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id, role').eq('user_id', user.id).single();
+    const { data: staff } = await adminClient.from('clinic_staff').select('clinic_id, role').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
     if (!staff || !['clinic_owner', 'clinic_admin'].includes(staff.role)) {
       return NextResponse.json({ error: 'Not authorized' }, { status: 403 });
     }

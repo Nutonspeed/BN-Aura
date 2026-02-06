@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { exportCustomersToCSV, exportAnalysisData, exportToJSON } from '@/lib/data/dataExport';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -7,31 +8,60 @@ export async function GET(request: NextRequest) {
   const format = searchParams.get('format') || 'csv';
   const clinicId = searchParams.get('clinicId');
 
-  if (!clinicId) {
-    return NextResponse.json({ success: false, error: 'clinicId required' }, { status: 400 });
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  // Mock data - in production, fetch from database
-  const mockCustomers = [
-    { id: '1', name: 'คุณสมหญิง', email: 'test1@example.com', phone: '0812345678', skinType: 'oily', createdAt: '2026-01-15' },
-    { id: '2', name: 'คุณสมชาย', email: 'test2@example.com', phone: '0823456789', skinType: 'dry', createdAt: '2026-01-20' },
-  ];
+  let effectiveClinicId = clinicId;
+  if (!effectiveClinicId) {
+    const { data: staffData } = await supabase
+      .from('clinic_staff')
+      .select('clinic_id')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
+    effectiveClinicId = staffData?.clinic_id;
+  }
 
-  const mockAnalyses = [
-    { id: '1', customerName: 'คุณสมหญิง', date: '2026-02-01', overallScore: 78, metrics: { spots: 65, wrinkles: 82, texture: 75, pores: 68 } },
-    { id: '2', customerName: 'คุณสมชาย', date: '2026-02-05', overallScore: 85, metrics: { spots: 88, wrinkles: 79, texture: 90, pores: 82 } },
-  ];
+  if (!effectiveClinicId) {
+    return NextResponse.json({ success: false, error: 'clinicId required' }, { status: 400 });
+  }
 
   let content: string;
   let contentType: string;
   let filename: string;
 
   if (type === 'customers') {
-    content = format === 'json' ? exportToJSON(mockCustomers) : exportCustomersToCSV(mockCustomers);
+    const { data: customers } = await supabase
+      .from('customers')
+      .select('id, full_name, email, phone, skin_type, created_at')
+      .eq('clinic_id', effectiveClinicId)
+      .order('created_at', { ascending: false });
+
+    const exportData = (customers || []).map(c => ({
+      id: c.id, name: c.full_name, email: c.email || '',
+      phone: c.phone || '', skinType: c.skin_type || '', createdAt: c.created_at
+    }));
+
+    content = format === 'json' ? exportToJSON(exportData) : exportCustomersToCSV(exportData);
     contentType = format === 'json' ? 'application/json' : 'text/csv';
     filename = `customers-${Date.now()}.${format}`;
   } else {
-    content = format === 'json' ? exportToJSON(mockAnalyses) : exportAnalysisData(mockAnalyses);
+    const { data: analyses } = await supabase
+      .from('skin_analyses')
+      .select('id, created_at, overall_score, metrics, customer:customers(full_name)')
+      .eq('clinic_id', effectiveClinicId)
+      .order('created_at', { ascending: false });
+
+    const exportData = (analyses || []).map((a: any) => ({
+      id: a.id, customerName: a.customer?.full_name || 'Unknown',
+      date: a.created_at, overallScore: a.overall_score || 0, metrics: a.metrics || {}
+    }));
+
+    content = format === 'json' ? exportToJSON(exportData) : exportAnalysisData(exportData);
     contentType = format === 'json' ? 'application/json' : 'text/csv';
     filename = `analyses-${Date.now()}.${format}`;
   }

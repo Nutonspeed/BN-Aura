@@ -13,20 +13,28 @@ import { APIErrorCode } from '@/lib/api/contracts';
 export const GET = withErrorHandling(async (request: Request) => {
   const supabase = await createClient();
   
-  // TODO: Temporarily skip auth check for testing
-  // const { data: { user } } = await supabase.auth.getUser();
-  // 
-  // if (!user) {
-  //   return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
-  // }
+  const { data: { user } } = await supabase.auth.getUser();
   
-  // Use hardcoded user for testing (sales2.test@bntest.com)
-  const user = { id: 'f2d3667d-7ca9-454e-b483-83dffb7e5981' };
+  if (!user) {
+    return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
+  }
 
-  // TODO: Use hardcoded clinic_id for testing
+  const { data: staffRecord } = await supabase
+    .from('clinic_staff')
+    .select('clinic_id')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
   const staffData = { 
-    clinic_id: 'd1e8ce74-3beb-4502-85c9-169fa0909647'
+    clinic_id: staffRecord?.clinic_id || ''
   };
+
+  if (!staffData.clinic_id) {
+    return createErrorResponse(APIErrorCode.FORBIDDEN, 'User is not associated with a clinic');
+  }
 
   const { searchParams } = new URL(request.url);
   const type = searchParams.get('type') || 'revenue_summary';

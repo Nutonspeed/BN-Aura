@@ -57,17 +57,19 @@ export default function GiftCardsPage() {
   const fetchGiftCards = async () => {
     try {
       setLoading(true);
-      const params = new URLSearchParams();
-      if (filter !== 'all') params.set('status', filter);
-      
-      const res = await fetch(`/api/gift-cards?${params}`);
-      const data = await res.json();
-      setGiftCards(data.giftCards || []);
-    } catch (error) {
-      console.error('Failed to fetch gift cards:', error);
-    } finally {
-      setLoading(false);
-    }
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data: staffData } = await supabase.from('clinic_staff').select('clinic_id').eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
+      if (!staffData?.clinic_id) return;
+      let query = supabase.from('gift_cards').select('*, purchased_by:customers!gift_cards_purchased_by_customer_id_fkey(full_name)').eq('clinic_id', staffData.clinic_id).order('created_at', { ascending: false });
+      if (filter === 'active') query = query.eq('is_active', true).gte('valid_until', new Date().toISOString());
+      else if (filter === 'expired') query = query.lt('valid_until', new Date().toISOString());
+      else if (filter === 'depleted') query = query.eq('current_balance', 0);
+      const { data } = await query;
+      setGiftCards(data || []);
+    } catch (error) { console.error('Failed to fetch gift cards:', error); }
+    finally { setLoading(false); }
   };
 
   const copyCode = (code: string) => {

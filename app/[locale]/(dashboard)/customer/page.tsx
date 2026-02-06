@@ -14,6 +14,8 @@ export default function CustomerDashboard() {
   const [totalPurchases, setTotalPurchases] = useState(0);
   const [recentTransactions, setRecentTransactions] = useState<any[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [skinAnalyses, setSkinAnalyses] = useState<any[]>([]);
+  const [treatmentHistory, setTreatmentHistory] = useState<any[]>([]);
 
   useEffect(() => {
     fetchCustomerData();
@@ -59,6 +61,26 @@ export default function CustomerDashboard() {
             .limit(5);
 
           setUpcomingAppointments(appointments || []);
+
+          // Fetch skin analysis history
+          const { data: analyses } = await supabase
+            .from('skin_analyses')
+            .select('id, overall_score, skin_health_grade, analyzed_at, recommendations')
+            .eq('customer_id', customer.id)
+            .order('analyzed_at', { ascending: false })
+            .limit(5);
+          setSkinAnalyses(analyses || []);
+
+          // Fetch treatment history (past appointments)
+          const { data: pastAppts } = await supabase
+            .from('appointments')
+            .select('id, service_type, treatment_name, appointment_date, status, notes')
+            .eq('customer_id', customer.id)
+            .lt('appointment_date', new Date().toISOString())
+            .in('status', ['completed', 'confirmed'])
+            .order('appointment_date', { ascending: false })
+            .limit(5);
+          setTreatmentHistory(pastAppts || []);
         }
 
         // Fetch loyalty points

@@ -59,9 +59,21 @@ export default function ConsultationsPage() {
   const fetchConsultations = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/consultations');
-      const data = await res.json();
-      setConsultations(data.consultations || []);
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: staffData } = await supabase
+        .from('clinic_staff').select('clinic_id')
+        .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
+      if (!staffData?.clinic_id) return;
+
+      const { data } = await supabase
+        .from('consultations')
+        .select('*, customer:customers(full_name, phone, email)')
+        .eq('clinic_id', staffData.clinic_id)
+        .order('scheduled_at', { ascending: false });
+      setConsultations(data || []);
     } catch (e) { console.error(e); }
     setLoading(false);
   };

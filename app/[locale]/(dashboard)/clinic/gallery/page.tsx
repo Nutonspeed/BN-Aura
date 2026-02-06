@@ -69,10 +69,28 @@ export default function GalleryPage() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/gallery');
-      const data = await res.json();
-      setPhotos(data.photos || []);
-      setComparisons(data.comparisons || []);
+      const supabase = (await import('@/lib/supabase/client')).createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data: staffData } = await supabase
+        .from('clinic_staff').select('clinic_id')
+        .eq('user_id', user.id).eq('is_active', true).limit(1).maybeSingle();
+      if (!staffData?.clinic_id) return;
+
+      const { data: photoData } = await supabase
+        .from('gallery_photos')
+        .select('*, customer:customers(id, full_name), treatment:treatments(id, names)')
+        .eq('clinic_id', staffData.clinic_id)
+        .order('taken_at', { ascending: false });
+      setPhotos(photoData || []);
+
+      const { data: compData } = await supabase
+        .from('gallery_comparisons')
+        .select('*, before_photo:gallery_photos!gallery_comparisons_before_photo_id_fkey(*,customer:customers(full_name)), after_photo:gallery_photos!gallery_comparisons_after_photo_id_fkey(*)')
+        .eq('clinic_id', staffData.clinic_id)
+        .order('created_at', { ascending: false });
+      setComparisons(compData || []);
     } catch (error) {
       console.error('Failed to fetch gallery:', error);
     } finally {

@@ -1,13 +1,32 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, SpinnerGap, Key, User, Sparkle, ArrowLeft } from '@phosphor-icons/react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
 
+function AcceptInvitationLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex flex-col items-center gap-4">
+        <SpinnerGap className="w-10 h-10 animate-spin text-primary" />
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-[0.3em] animate-pulse">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
 export default function AcceptInvitationPage() {
+  return (
+    <Suspense fallback={<AcceptInvitationLoading />}>
+      <AcceptInvitationContent />
+    </Suspense>
+  );
+}
+
+function AcceptInvitationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   

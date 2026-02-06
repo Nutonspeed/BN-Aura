@@ -26,7 +26,6 @@ import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from '@/i18n/routing';
@@ -45,7 +44,6 @@ interface InventoryAlert {
 
 export default function InventoryAlertsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.inventory.alerts');
   const [loading, setLoading] = useState(true);
   const [alerts, setAlerts] = useState<InventoryAlert[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

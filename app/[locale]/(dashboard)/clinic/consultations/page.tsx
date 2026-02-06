@@ -26,7 +26,6 @@ import {
 } from '@phosphor-icons/react';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { StatCard } from '@/components/ui/StatCard';
 import { SpinnerGap } from '@phosphor-icons/react';
 
@@ -44,7 +43,6 @@ interface Consultation {
 
 export default function ConsultationsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.consultations' as any);
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);

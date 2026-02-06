@@ -23,7 +23,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface Review {
@@ -38,7 +37,6 @@ interface Review {
 
 export default function ReviewsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.reviews' as any);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [stats, setStats] = useState({ totalReviews: 0, avgRating: 0, ratingCounts: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 } });
   const [loading, setLoading] = useState(true);

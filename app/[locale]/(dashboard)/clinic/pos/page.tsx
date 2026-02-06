@@ -26,7 +26,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import POSProductGrid from '@/components/pos/POSProductGrid';
@@ -37,7 +36,6 @@ import { createClient } from '@/lib/supabase/client';
 
 export default function POSPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.pos' as any);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);

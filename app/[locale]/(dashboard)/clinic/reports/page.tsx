@@ -27,7 +27,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import ResponsiveTable from '@/components/ui/ResponsiveTable';
@@ -46,7 +45,6 @@ import {
 
 export default function ReportsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.reports' as any);
   const [loading, setLoading] = useState(true);
   const [reportType, setReportType] = useState<'sales' | 'staff' | 'treatments'>('sales');
   const [data, setData] = useState<any[]>([]);

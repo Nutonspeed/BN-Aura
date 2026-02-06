@@ -27,7 +27,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -47,7 +46,6 @@ interface CommissionRecord {
 
 export default function CommissionsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.commissions');
   const [loading, setLoading] = useState(true);
   const [records, setRecords] = useState<CommissionRecord[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

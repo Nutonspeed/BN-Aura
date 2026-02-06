@@ -27,7 +27,6 @@ import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { cn } from '@/lib/utils';
 import BranchModal from '@/components/BranchModal';
-import { useTranslations } from 'next-intl';
 
 interface Branch {
   id: string;
@@ -43,7 +42,6 @@ interface Branch {
 
 function BranchManagementContent() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.branches' as any);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');

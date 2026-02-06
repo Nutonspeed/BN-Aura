@@ -24,7 +24,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface Photo {
@@ -54,7 +53,6 @@ interface Comparison {
 
 export default function GalleryPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.gallery' as any);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [comparisons, setComparisons] = useState<Comparison[]>([]);
   const [loading, setLoading] = useState(true);

@@ -23,7 +23,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface Campaign {
@@ -38,7 +37,6 @@ interface Campaign {
 
 export default function EmailCampaignsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.email-campaigns' as any);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);

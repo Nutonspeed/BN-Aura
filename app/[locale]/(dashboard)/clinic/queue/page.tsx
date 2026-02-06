@@ -24,7 +24,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface CheckIn {
@@ -40,7 +39,6 @@ interface CheckIn {
 
 export default function QueuePage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.queue' as any);
   const [queue, setQueue] = useState<CheckIn[]>([]);
   const [loading, setLoading] = useState(true);
   const [clinicId, setClinicId] = useState<string>('');

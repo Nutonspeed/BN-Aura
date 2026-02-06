@@ -29,7 +29,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useCallback, Suspense, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,7 +55,6 @@ interface Appointment {
 
 export default function AppointmentPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.appointments' as any);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState(new Date());

@@ -222,7 +222,7 @@ export default function SalesDashboard() {
               .from('pos_transactions')
               .select(`
                 *,
-                customers(first_name, last_name, assigned_sales_id)
+                customers(full_name, assigned_sales_id)
               `)
               .in('customer_id', customerIds)
               .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
@@ -631,10 +631,10 @@ export default function SalesDashboard() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                      {customer.first_name?.charAt(0)}{customer.last_name?.charAt(0)}
+                      {(customer.full_name || '?').charAt(0)}
                     </div>
                     <div>
-                      <p className="font-bold">{customer.first_name} {customer.last_name}</p>
+                      <p className="font-bold">{customer.full_name || 'Unknown'}</p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Envelope className="w-3 h-3" />
                         {customer.email}
@@ -856,7 +856,7 @@ export default function SalesDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {customers.slice(0, 2).map((customer) => {
               const customerContext = {
-                name: `${customer.first_name} ${customer.last_name}`,
+                name: customer.full_name || 'Unknown',
                 demographics: {
                   age: customer.metadata?.age || 25,
                   gender: customer.metadata?.gender || 'female',
@@ -886,7 +886,7 @@ export default function SalesDashboard() {
               return (
                 <div key={customer.id} className="space-y-3">
                   <h3 className="font-semibold text-sm text-muted-foreground">
-                    Recommendations for {customer.first_name} {customer.last_name}
+                    Recommendations for {customer.full_name || 'Unknown'}
                   </h3>
                   <SmartSuggestions 
                     customerContext={customerContext}

@@ -24,7 +24,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface GiftCard {
@@ -43,7 +42,6 @@ interface GiftCard {
 
 export default function GiftCardsPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.gift-cards' as any);
   const [giftCards, setGiftCards] = useState<GiftCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');

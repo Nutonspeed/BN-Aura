@@ -21,7 +21,6 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
-import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 interface Conversation {
@@ -36,7 +35,6 @@ interface Conversation {
 
 export default function SMSPage() {
   const { goBack } = useBackNavigation();
-  const t = useTranslations('clinic.sms' as any);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selected, setSelected] = useState<Conversation | null>(null);
   const [message, setMessage] = useState('');

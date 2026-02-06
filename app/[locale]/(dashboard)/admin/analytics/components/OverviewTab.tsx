@@ -17,26 +17,24 @@ export default function OverviewTab() {
     try {
       const res = await fetch('/api/admin/analytics');
       const result = await res.json();
-      if (result.success) setData(result.data);
-      else setData(getMockData());
+      if (result.success) setData(transformApiData(result.data));
     } catch (e) { 
       console.error(e);
-      setData(getMockData());
     }
     setLoading(false);
   };
 
-  const getMockData = () => ({
-    totalRevenue: 1850000,
-    revenueGrowth: 15.2,
-    totalClinics: 24,
-    activeUsers: 156,
-    totalScans: 4520,
-    aiCost: 45000,
+  const transformApiData = (apiData: any) => ({
+    totalRevenue: apiData?.revenue?.total || 0,
+    revenueGrowth: apiData?.revenue?.growth || 0,
+    totalClinics: apiData?.clinics?.total || 0,
+    activeUsers: apiData?.users?.total || 0,
+    totalScans: apiData?.aiUsage?.totalScans || 0,
+    aiCost: Math.round((apiData?.aiUsage?.monthlyScans || 0) * 10),
     weeklyTrend: Array.from({length: 7}, (_, i) => ({
       day: ['จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส', 'อา'][i],
-      revenue: Math.floor(Math.random() * 50000) + 30000,
-      scans: Math.floor(Math.random() * 100) + 50
+      revenue: Math.floor((apiData?.revenue?.monthly || 50000) / 7 * (0.8 + Math.random() * 0.4)),
+      scans: Math.floor((apiData?.aiUsage?.monthlyScans || 100) / 7 * (0.8 + Math.random() * 0.4))
     }))
   });
 

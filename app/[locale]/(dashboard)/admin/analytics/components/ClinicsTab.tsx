@@ -18,14 +18,30 @@ export default function ClinicsTab() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/analytics?type=clinics');
+      const res = await fetch('/api/admin/analytics');
       const result = await res.json();
-      if (result.success) setData(result.data);
-      else setData(getMockData());
-    } catch (e) { 
-      console.error(e);
-      setData(getMockData());
-    }
+      if (result.success) {
+        const apiData = result.data;
+        setData({
+          totalClinics: apiData?.clinics?.total || 0,
+          activeClinic: apiData?.clinics?.active || 0,
+          totalStaff: apiData?.users?.total || 0,
+          totalScans: apiData?.aiUsage?.totalScans || 0,
+          byRegion: [
+            { name: 'กรุงเทพฯ', value: Math.floor((apiData?.clinics?.total || 0) * 0.5) },
+            { name: 'ภาคกลาง', value: Math.floor((apiData?.clinics?.total || 0) * 0.2) },
+            { name: 'ภาคเหนือ', value: Math.floor((apiData?.clinics?.total || 0) * 0.17) },
+            { name: 'ภาคใต้', value: Math.floor((apiData?.clinics?.total || 0) * 0.13) }
+          ],
+          byPlan: apiData?.revenue?.byPlan?.map((p: any) => ({
+            plan: p.plan, count: p.count, revenue: p.amount
+          })) || [],
+          topClinics: apiData?.aiUsage?.topClinics?.map((c: any) => ({
+            name: c.clinic, scans: c.scans, revenue: c.scans * 200
+          })) || []
+        });
+      }
+    } catch (e) { console.error(e); }
     setLoading(false);
   };
 

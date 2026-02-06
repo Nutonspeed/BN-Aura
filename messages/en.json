@@ -21,7 +21,15 @@
     "skin_profile": "Skin Profile",
     "booking": "Booking",
     "rewards": "Rewards",
-    "loyalty": "Loyalty"
+    "loyalty": "Loyalty",
+    "analytics": "Analytics",
+    "ai_usage": "AI Usage",
+    "revenue": "Revenue",
+    "clinics": "Clinics",
+    "overview": "Overview",
+    "quota": "Quota",
+    "alerts": "Alerts",
+    "monitoring": "Monitoring"
   },
   "common": {
     "title": "BN-Aura",

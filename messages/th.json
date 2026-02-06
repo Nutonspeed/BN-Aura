@@ -21,7 +21,15 @@
     "skin_profile": "โปรไฟล์ผิว",
     "booking": "จองบริการ",
     "rewards": "รางวัล",
-    "loyalty": "สมาชิก"
+    "loyalty": "สมาชิก",
+    "analytics": "การวิเคราะห์ข้อมูล",
+    "ai_usage": "การใช้งาน AI",
+    "revenue": "รายได้",
+    "clinics": "คลินิก",
+    "overview": "ภาพรวม",
+    "quota": "โควตา",
+    "alerts": "การแจ้งเตือน",
+    "monitoring": "การติดตาม"
   },
   "common": {
     "title": "BN-Aura",

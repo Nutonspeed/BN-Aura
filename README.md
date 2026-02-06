@@ -1,5 +1,9 @@
 # 🌟 BN-Aura: Premium Aesthetic Intelligence Suite
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-repo/bn-aura)
+
+**🌐 Production:** https://bn-aura.vercel.app
+
 BN-Aura เป็นแพลตฟอร์ม Enterprise-grade สำหรับคลินิกความงามระดับ Premium ที่รวมระบบ AI Skin Analysis, 3D/AR Visualization และ CRM เข้าด้วยกัน ภายใต้สถาปัตยกรรม Multi-tenant ที่มีความปลอดภัยสูงและรองรับการขยายตัว (Scalable)
 
 ## 🚀 Key Features

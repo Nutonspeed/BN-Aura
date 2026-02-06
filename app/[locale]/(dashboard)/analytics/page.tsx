@@ -1,6 +1,11 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { 
   Brain, 
   TrendUp, 
@@ -10,9 +15,13 @@ import {
   Users,
   CurrencyDollar,
   Sparkle,
-  SpinnerGap
+  SpinnerGap,
+  CaretRight,
+  Lightning,
+  Monitor,
+  Pulse,
+  ArrowsClockwise
 } from '@phosphor-icons/react';
-import { useState, useEffect } from 'react';
 import AIAdvisorChat from '@/components/analytics/AIAdvisorChat';
 import InsightCards from '@/components/analytics/InsightCards';
 import AlertCenter from '@/components/analytics/AlertCenter';
@@ -53,27 +62,30 @@ export default function AnalyticsDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[600px] flex flex-col items-center justify-center space-y-6">
-        <motion.div
-          animate={{ 
-            scale: [1, 1.1, 1],
-            rotate: [0, 180, 360]
-          }}
-          transition={{ 
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="p-4 bg-primary/20 rounded-2xl"
-        >
-          <Brain className="w-12 h-12 text-primary" />
-        </motion.div>
-        <div className="text-center space-y-2">
-          <p className="text-lg font-semibold text-foreground">
-            กำลังเตรียม Executive Intelligence
+      <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-6">
+        <div className="relative">
+          <motion.div
+            animate={{ 
+              scale: [1, 1.1, 1],
+              rotate: [0, 180, 360]
+            }}
+            transition={{ 
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            className="p-6 bg-primary/10 rounded-[32px] border border-primary/20 shadow-inner"
+          >
+            <Brain weight="duotone" className="w-16 h-16 text-primary" />
+          </motion.div>
+          <div className="absolute -inset-4 bg-primary/5 blur-2xl rounded-full z-[-1] animate-pulse" />
+        </div>
+        <div className="text-center space-y-3">
+          <p className="text-xl font-black text-foreground uppercase tracking-widest">
+            Establishing <span className="text-primary">Intelligence</span>
           </p>
-          <p className="text-sm text-muted-foreground animate-pulse">
-            รวบรวมข้อมูลธุรกิจและเตรียม AI Analysis...
+          <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">
+            Synchronizing global metrics & cognitive nodes...
           </p>
         </div>
       </div>
@@ -84,244 +96,295 @@ export default function AnalyticsDashboard() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8 pb-20"
+      className="space-y-8 pb-20 font-sans"
     >
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-        <div className="space-y-2">
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 text-primary text-sm font-bold uppercase tracking-wider"
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            <Brain className="w-5 h-5" />
-            Executive Intelligence Suite
+            <Brain weight="duotone" className="w-4 h-4" />
+            Executive Intelligence Matrix
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            AI <span className="text-primary text-glow">Business</span> Analytics
+            AI <span className="text-primary">Business</span> Analytics
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-muted-foreground font-light text-sm italic max-w-2xl"
+            className="text-muted-foreground font-light text-sm italic max-w-2xl leading-relaxed"
           >
-            ระบบวิเคราะห์ธุรกิจด้วย AI ที่ตอบคำถามเป็นภาษาไทย วิเคราะห์แนวโน้ม และแจ้งเตือนความเสี่ยงอัตโนมัติ
-            เพื่อการตัดสินใจที่มีประสิทธิภาพสูงสุด
+            Orchestrating autonomous diagnostic insights, predictive revenue modeling, and real-time risk mitigation protocols.
           </motion.p>
         </div>
 
-        {/* Quick Stats */}
+        {/* Neural Quick Stats */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex gap-4"
+          className="flex flex-wrap items-center gap-4"
         >
           {metrics && (
             <>
-              <div className="text-center p-4 bg-card/50 border border-border rounded-xl">
-                <div className="text-2xl font-bold text-primary">
-                  {metrics.revenue?.formatted || '฿0'}
+              <Card className="px-6 py-4 bg-secondary/30 border-border/50 shadow-inner group overflow-hidden relative min-w-[160px]">
+                <div className="absolute top-0 right-0 p-2 opacity-[0.03] group-hover:scale-110 transition-transform">
+                  <CurrencyDollar weight="fill" className="w-12 h-12 text-primary" />
                 </div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wide">
-                  รายได้เดือนนี้
+                <div className="relative z-10">
+                  <div className="text-xl font-black text-primary tabular-nums tracking-tighter">
+                    {metrics.revenue?.formatted || '฿0'}
+                  </div>
+                  <div className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">
+                    Monthly Yield
+                  </div>
                 </div>
-              </div>
-              <div className="text-center p-4 bg-card/50 border border-border rounded-xl">
-                <div className="text-2xl font-bold text-green-500">
-                  {metrics.customers?.formatted || '0 คน'}
+              </Card>
+              <Card className="px-6 py-4 bg-secondary/30 border-border/50 shadow-inner group overflow-hidden relative min-w-[160px]">
+                <div className="absolute top-0 right-0 p-2 opacity-[0.03] group-hover:scale-110 transition-transform">
+                  <Users weight="fill" className="w-12 h-12 text-emerald-500" />
                 </div>
-                <div className="text-xs text-muted-foreground uppercase tracking-wide">
-                  ลูกค้าใหม่
+                <div className="relative z-10">
+                  <div className="text-xl font-black text-emerald-500 tabular-nums tracking-tighter">
+                    {metrics.customers?.formatted || '0 คน'}
+                  </div>
+                  <div className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">
+                    New Identity Links
+                  </div>
                 </div>
-              </div>
+              </Card>
             </>
           )}
           {(criticalCount + highCount) > 0 && (
-            <div className="text-center p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
-              <div className="text-2xl font-bold text-red-500">
-                {criticalCount + highCount}
+            <Card className="px-6 py-4 bg-rose-500/5 border-rose-500/20 shadow-inner group overflow-hidden relative min-w-[120px]">
+              <div className="absolute top-0 right-0 p-2 opacity-[0.05] group-hover:scale-110 transition-transform">
+                <Warning weight="fill" className="w-12 h-12 text-rose-500" />
               </div>
-              <div className="text-xs text-red-400 uppercase tracking-wide">
-                การแจ้งเตือน
+              <div className="relative z-10 text-center">
+                <div className="text-xl font-black text-rose-500 tabular-nums tracking-tighter">
+                  {criticalCount + highCount}
+                </div>
+                <div className="text-[8px] font-black text-rose-400/60 uppercase tracking-widest mt-0.5">
+                  Anomalies
+                </div>
               </div>
-            </div>
+            </Card>
           )}
         </motion.div>
       </div>
 
-      {/* Navigation Tabs */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="flex gap-2 p-2 bg-card/30 border border-border rounded-2xl backdrop-blur-sm"
-      >
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-3 px-6 py-4 rounded-xl font-medium transition-all duration-200 relative ${
-              activeTab === tab.id
-                ? 'bg-primary text-primary-foreground shadow-lg'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-            }`}
+      {/* Protocol Navigation Tabs */}
+      <div className="px-2">
+        <div className="flex bg-secondary/50 border border-border p-1.5 rounded-[24px] w-fit shadow-inner">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "flex items-center gap-3 px-8 py-3 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest border whitespace-nowrap relative",
+                activeTab === tab.id
+                  ? "bg-primary text-primary-foreground border-primary shadow-premium"
+                  : "bg-transparent text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground"
+              )}
+            >
+              <tab.icon weight={activeTab === tab.id ? "fill" : "bold"} className="w-4 h-4" />
+              <span>{tab.label} Node</span>
+              {tab.badge && (
+                <span className="ml-2 w-5 h-5 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-glow-sm">
+                  {tab.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Neural Content Hub */}
+      <div className="px-2">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.3 }}
           >
-            <tab.icon className="w-5 h-5" />
-            <span>{tab.label}</span>
-            {tab.badge && (
-              <span className="absolute -top-1 -right-1 w-6 h-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
-                {tab.badge}
-              </span>
-            )}
-          </button>
-        ))}
-      </motion.div>
+            {activeTab === 'overview' && (
+              <div className="space-y-10">
+                {/* Global Metrics Node */}
+                <section className="space-y-6">
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Critical Biomarkers</h2>
+                  </div>
+                  <InsightCards />
+                </section>
 
-      {/* Content */}
-      <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {activeTab === 'overview' && (
-          <div className="space-y-8">
-            {/* Business Metrics Cards */}
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <ChartBar className="w-5 h-5 text-primary" />
-                ข้อมูลสำคัญ
-              </h2>
-              <InsightCards />
-            </section>
+                {/* Risk Mitigation Node */}
+                {alerts.length > 0 && (
+                  <section className="space-y-6">
+                    <div className="flex items-center justify-between px-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                        <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Anomaly Registry</h2>
+                      </div>
+                      <Badge variant="ghost" className="bg-rose-500/5 text-rose-500 border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">Real-time Detection</Badge>
+                    </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {alerts.slice(0, 4).map((alert, index) => (
+                        <Card 
+                          key={index}
+                          className={cn(
+                            "p-6 rounded-[32px] border transition-all hover:shadow-card-hover group/alert cursor-pointer overflow-hidden relative shadow-card",
+                            alert.severity === 'critical' ? 'bg-rose-500/5 border-rose-500/20' :
+                            alert.severity === 'high' ? 'bg-amber-500/5 border-amber-500/20' :
+                            'bg-blue-500/5 border-blue-500/20'
+                          )}
+                        >
+                          <div className="absolute top-0 right-0 p-4 opacity-0 group-hover/alert:opacity-[0.03] transition-opacity">
+                            <Warning weight="fill" className="w-20 h-20" />
+                          </div>
+                          <div className="flex items-start gap-5 relative z-10">
+                            <div className={cn(
+                              "w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-500 shadow-inner",
+                              alert.severity === 'critical' ? 'bg-rose-500/10 border-rose-500/20 text-rose-500' :
+                              alert.severity === 'high' ? 'bg-amber-500/10 border-amber-500/20 text-amber-500' :
+                              'bg-blue-500/10 border-blue-500/20 text-blue-500'
+                            )}>
+                              <Warning weight="duotone" className="w-6 h-6 animate-pulse" />
+                            </div>
+                            <div className="space-y-1 flex-1">
+                              <h4 className="font-black text-foreground text-base uppercase tracking-tight leading-tight">
+                                {alert.title}
+                              </h4>
+                              <p className="text-xs text-muted-foreground font-medium italic leading-relaxed line-clamp-2">
+                                {alert.description}
+                              </p>
+                            </div>
+                            <CaretRight weight="bold" className="w-4 h-4 text-muted-foreground opacity-0 group-hover/alert:opacity-100 group-hover/alert:translate-x-1 transition-all self-center" />
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                    {alerts.length > 4 && (
+                      <div className="flex justify-center pt-4">
+                        <Button
+                          variant="ghost"
+                          onClick={() => setActiveTab('alerts')}
+                          className="text-[10px] font-black uppercase tracking-[0.3em] text-primary hover:bg-primary/5 gap-3 rounded-xl px-8 py-4"
+                        >
+                          Access Global Alert Center ({alerts.length})
+                          <CaretRight weight="bold" className="w-3.5 h-3.5" />
+                        </Button>
+                      </div>
+                    )}
+                  </section>
+                )}
 
-            {/* Recent Alerts Summary */}
-            {alerts.length > 0 && (
-              <section>
-                <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                  <Warning className="w-5 h-5 text-orange-500" />
-                  การแจ้งเตือนล่าสุด
-                </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {alerts.slice(0, 4).map((alert, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={`p-4 rounded-xl border ${
-                        alert.severity === 'critical' ? 'bg-red-500/10 border-red-500/30' :
-                        alert.severity === 'high' ? 'bg-orange-500/10 border-orange-500/30' :
-                        'bg-yellow-500/10 border-yellow-500/30'
-                      }`}
+                {/* Cognitive Action Nodes */}
+                <section className="space-y-6">
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Intelligence Orchestration</h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <Card 
+                      as="button"
+                      onClick={() => setActiveTab('advisor')}
+                      className="p-8 border-border/50 hover:border-primary/40 hover:shadow-premium transition-all text-left group overflow-hidden relative shadow-card"
                     >
-                      <div className="flex items-start gap-3">
-                        <Warning className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                          alert.severity === 'critical' ? 'text-red-500' :
-                          alert.severity === 'high' ? 'text-orange-500' :
-                          'text-yellow-500'
-                        }`} />
-                        <div className="space-y-1">
-                          <h4 className="font-semibold text-foreground text-sm">
-                            {alert.title}
-                          </h4>
-                          <p className="text-xs text-muted-foreground line-clamp-2">
-                            {alert.description}
+                      <div className="absolute top-0 right-0 p-6 opacity-[0.02] group-hover:scale-110 transition-transform duration-700">
+                        <Brain weight="fill" className="w-32 h-32 text-primary" />
+                      </div>
+                      <div className="relative z-10 space-y-6">
+                        <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform shadow-inner">
+                          <ChatCircle weight="duotone" className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">Neural Advisor</h3>
+                          <p className="text-xs text-muted-foreground font-medium italic leading-relaxed">
+                            Interact with high-fidelity cognitive models for real-time strategy synthesis.
                           </p>
                         </div>
+                        <div className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-widest pt-2">
+                          Initialize Link <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        </div>
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-                {alerts.length > 4 && (
-                  <div className="mt-4 text-center">
-                    <button
-                      onClick={() => setActiveTab('alerts')}
-                      className="px-6 py-2 text-sm text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                    </Card>
+
+                    <Card 
+                      as="button"
+                      className="p-8 border-border/50 hover:border-emerald-500/40 hover:shadow-premium transition-all text-left group overflow-hidden relative shadow-card"
                     >
-                      ดูการแจ้งเตือนทั้งหมด ({alerts.length})
-                    </button>
+                      <div className="absolute top-0 right-0 p-6 opacity-[0.02] group-hover:scale-110 transition-transform duration-700">
+                        <TrendUp weight="fill" className="w-32 h-32 text-emerald-500" />
+                      </div>
+                      <div className="relative z-10 space-y-6">
+                        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 group-hover:scale-110 transition-transform shadow-inner">
+                          <ChartBar weight="duotone" className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-emerald-500 transition-colors">Fiscal Reports</h3>
+                          <p className="text-xs text-muted-foreground font-medium italic leading-relaxed">
+                            Access periodic audit payloads and predictive revenue trajectory nodes.
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-[9px] font-black text-emerald-500 uppercase tracking-widest pt-2">
+                          Scan Registry <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </Card>
+
+                    <Card 
+                      as="button"
+                      className="p-8 border-border/50 hover:border-blue-500/40 hover:shadow-premium transition-all text-left group overflow-hidden relative shadow-card"
+                    >
+                      <div className="absolute top-0 right-0 p-6 opacity-[0.02] group-hover:scale-110 transition-transform duration-700">
+                        <Users weight="fill" className="w-32 h-32 text-blue-500" />
+                      </div>
+                      <div className="relative z-10 space-y-6">
+                        <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-500 group-hover:scale-110 transition-transform shadow-inner">
+                          <Users weight="duotone" className="w-7 h-7" />
+                        </div>
+                        <div className="space-y-2">
+                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-blue-500 transition-colors">Staff Oversight</h3>
+                          <p className="text-xs text-muted-foreground font-medium italic leading-relaxed">
+                            Monitor personnel efficiency nodes and establish functional task queues.
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 text-[9px] font-black text-blue-500 uppercase tracking-widest pt-2">
+                          Deploy Matrix <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      </div>
+                    </Card>
                   </div>
-                )}
-              </section>
+                </section>
+              </div>
             )}
 
-            {/* Quick Access Actions */}
-            <section>
-              <h2 className="text-xl font-bold text-foreground mb-6 flex items-center gap-2">
-                <Sparkle className="w-5 h-5 text-primary" />
-                การดำเนินการด่วน
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <motion.button
-                  onClick={() => setActiveTab('advisor')}
-                  className="p-6 bg-card border border-border rounded-2xl hover:border-primary/50 transition-all text-left group"
-                  whileHover={{ y: -2 }}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-primary/20 rounded-lg text-primary group-hover:bg-primary group-hover:text-white transition-colors">
-                      <ChatCircle className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-semibold text-foreground">ถาม AI Advisor</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    ถามคำถามเกี่ยวกับธุรกิจเป็นภาษาไทย
-                  </p>
-                </motion.button>
+            {activeTab === 'advisor' && (
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="max-w-4xl mx-auto">
+                <AIAdvisorChat />
+              </motion.div>
+            )}
 
-                <motion.button
-                  className="p-6 bg-card border border-border rounded-2xl hover:border-green-500/50 transition-all text-left group"
-                  whileHover={{ y: -2 }}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-green-500/20 rounded-lg text-green-500 group-hover:bg-green-500 group-hover:text-white transition-colors">
-                      <TrendUp className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-semibold text-foreground">ดูรายงาน</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    รายงานประจำเดือนและการวิเคราะห์แนวโน้ม
-                  </p>
-                </motion.button>
-
-                <motion.button
-                  className="p-6 bg-card border border-border rounded-2xl hover:border-blue-500/50 transition-all text-left group"
-                  whileHover={{ y: -2 }}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-blue-500/20 rounded-lg text-blue-500 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                      <Users className="w-5 h-5" />
-                    </div>
-                    <h3 className="font-semibold text-foreground">จัดการทีม</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    ดูประสิทธิภาพพนักงานและการมอบหมายงาน
-                  </p>
-                </motion.button>
-              </div>
-            </section>
-          </div>
-        )}
-
-        {activeTab === 'advisor' && (
-          <div className="max-w-4xl mx-auto">
-            <AIAdvisorChat />
-          </div>
-        )}
-
-        {activeTab === 'alerts' && (
-          <div className="max-w-4xl mx-auto">
-            <AlertCenter />
-          </div>
-        )}
-      </motion.div>
+            {activeTab === 'alerts' && (
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="max-w-4xl mx-auto">
+                <AlertCenter />
+              </motion.div>
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }

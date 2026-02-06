@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, Money, QrCode, SpinnerGap, CheckCircle, Download, Printer } from '@phosphor-icons/react';
+import { X, CreditCard, Money, QrCode, SpinnerGap, CheckCircle, Download, Printer, Star } from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { generatePromptPayQR } from '@/lib/utils/promptpay';
 import { cn } from '@/lib/utils';
@@ -14,6 +14,22 @@ interface PaymentModalProps {
   amount: number;
   transactionId: string;
   clinicId: string;
+  customer?: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone?: string;
+    metadata?: any;
+    assigned_sales_id?: string;
+  } | null;
+  items?: Array<{
+    id: string;
+    item_name: string;
+    quantity: number;
+    unit_price: number;
+    total: number;
+  }>;
 }
 
 type PaymentMethod = 'CASH' | 'PROMPTPAY' | 'CARD' | 'TRANSFER';
@@ -24,13 +40,22 @@ export default function PaymentModal({
   onSuccess, 
   amount, 
   transactionId,
-  clinicId 
+  clinicId,
+  customer,
+  items = []
 }: PaymentModalProps) {
   const [method, setMethod] = useState<PaymentMethod>('PROMPTPAY');
   const [loading, setLoading] = useState(false);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [promptPayId, setPromptPayId] = useState('0812345678'); // Mock clinic PromptPay ID
+  
+  // Calculate loyalty points (1 point per ฿100 spent)
+  const calculateLoyaltyPoints = (amount: number): number => {
+    return Math.floor(amount / 100);
+  };
+  
+  const loyaltyPoints = customer ? calculateLoyaltyPoints(amount) : 0;
 
   useEffect(() => {
     if (method === 'PROMPTPAY' && amount > 0) {
@@ -49,27 +74,145 @@ export default function PaymentModal({
     setError('');
 
     try {
-      const res = await fetch('/api/payments', {
+      // Step 1: Process payment
+      const paymentRes = await fetch('/api/payments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transaction_id: transactionId,
           amount,
           payment_method: method,
+          customer_id: customer?.id,
+          clinic_id: clinicId,
+          items: items,
           metadata: {
             promptpay_id: method === 'PROMPTPAY' ? promptPayId : undefined,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            loyalty_points_earned: loyaltyPoints
           }
         })
       });
 
-      const result = await res.json();
+      const paymentResult = await paymentRes.json();
 
-      if (!res.ok) {
-        throw new Error(result.error?.message || 'Payment recording failed');
+      if (!paymentRes.ok) {
+        throw new Error(paymentResult.error?.message || 'Payment recording failed');
       }
 
-      onSuccess(result.data);
+      // Step 2: Award loyalty points if customer exists
+      if (customer && loyaltyPoints > 0) {
+        try {
+          const loyaltyRes = await fetch('/api/loyalty/points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customerId: customer.id,
+              clinicId: clinicId,
+              points: loyaltyPoints,
+              transactionId: transactionId,
+              source: 'purchase',
+              description: `Purchase ฿${amount.toLocaleString()} - ${items.length} item(s)`
+            })
+          });
+
+          const loyaltyResult = await loyaltyRes.json();
+          
+          if (!loyaltyRes.ok) {
+            console.warn('Loyalty points award failed:', loyaltyResult.error);
+            // Continue with success even if loyalty fails
+          } else {
+            console.log(`✅ Awarded ${loyaltyPoints} loyalty points to ${customer.first_name}`);
+          }
+        } catch (loyaltyErr) {
+          console.warn('Loyalty API error:', loyaltyErr);
+          // Continue with success even if loyalty fails
+        }
+      }
+
+      // Step 3: Record commission for sales staff
+      if (customer && customer.assigned_sales_id) {
+        try {
+          const commissionRes = await fetch('/api/commissions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              salesId: customer.assigned_sales_id,
+              customerId: customer.id,
+              treatmentName: items.map(i => i.item_name).join(', ') || 'Treatment',
+              amount: amount,
+              commissionRate: 15, // 15% commission rate
+              clinicId: clinicId
+            })
+          });
+
+          const commissionResult = await commissionRes.json();
+          
+          if (!commissionRes.ok) {
+            console.warn('Commission recording failed:', commissionResult.error);
+          } else {
+            console.log(`✅ Commission recorded for sales staff: ${customer.assigned_sales_id}`);
+          }
+        } catch (commissionErr) {
+          console.warn('Commission API error:', commissionErr);
+        }
+      }
+
+      // Step 4: Update customer metadata with purchase history
+      if (customer) {
+        try {
+          const currentSpent = parseFloat(customer.metadata?.total_spent || '0');
+          const currentPurchases = parseInt(customer.metadata?.total_purchases || '0');
+          
+          const updatedMetadata = {
+            ...customer.metadata,
+            total_spent: currentSpent + amount,
+            total_purchases: currentPurchases + 1,
+            last_purchase_date: new Date().toISOString(),
+            last_purchase_amount: amount,
+            loyalty_points: (customer.metadata?.loyalty_points || 0) + loyaltyPoints
+          };
+
+          console.log(`🔄 Updating customer ${customer.id} metadata:`, updatedMetadata);
+          
+          const metadataRes = await fetch(`/api/customers/${customer.id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              metadata: updatedMetadata
+            })
+          });
+
+          const metadataResult = await metadataRes.json();
+
+          if (!metadataRes.ok) {
+            console.error('❌ Customer metadata update failed:', {
+              status: metadataRes.status,
+              error: metadataResult.error || metadataResult,
+              customer: customer.id
+            });
+            // Still continue with success, metadata update is not critical
+          } else {
+            console.log(`✅ Updated customer metadata for ${customer.first_name}:`, {
+              customerId: customer.id,
+              newTotalSpent: updatedMetadata.total_spent,
+              newTotalPurchases: updatedMetadata.total_purchases
+            });
+          }
+        } catch (metaErr) {
+          console.error('❌ Customer metadata update error:', {
+            error: metaErr,
+            customer: customer.id,
+            amount: amount
+          });
+          // Continue with success even if metadata update fails
+        }
+      }
+
+      onSuccess({
+        ...paymentResult.data,
+        loyalty_points_earned: loyaltyPoints,
+        customer_updated: !!customer
+      });
     } catch (err: any) {
       console.error('Payment error:', err);
       setError(err.message);
@@ -118,6 +261,28 @@ export default function PaymentModal({
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Total Outstanding</p>
                   <p className="text-4xl font-black text-primary tracking-tighter tabular-nums">฿{amount.toLocaleString()}</p>
                 </div>
+
+                {/* Customer & Loyalty Points Section */}
+                {customer && (
+                  <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl space-y-3">
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-amber-500" />
+                      <p className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em]">Customer Loyalty</p>
+                    </div>
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-foreground">
+                        {customer.first_name} {customer.last_name}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground">Points to Earn:</span>
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3 h-3 text-amber-500" />
+                          <span className="text-sm font-bold text-amber-500">+{loyaltyPoints}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="space-y-3">
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Select Method</p>

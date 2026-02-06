@@ -1,12 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { 
-  Users, 
-  MagnifyingGlass, 
-  Funnel, 
-  DotsThreeVertical, 
-  EnvelopeSimple, 
+import {
+  Users,
+  MagnifyingGlass,
+  Funnel,
+  DotsThreeVertical,
+  EnvelopeSimple,
   Phone,
   UserPlus,
   Sparkle,
@@ -15,8 +15,11 @@ import {
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useEffect, useState, useCallback, Suspense } from 'react';
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { Link } from '@/i18n/routing';
+import { useSearchParams, usePathname } from 'next/navigation';
+import { Link, useRouter } from '@/i18n/routing';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import ResponsiveTable from '@/components/ui/ResponsiveTable';
 import CustomerModal from '@/components/CustomerModal';
 
 interface Customer {
@@ -35,6 +38,7 @@ interface Customer {
 }
 
 function CustomerManagementContent() {
+  const { goBack } = useBackNavigation();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -91,12 +95,101 @@ function CustomerManagementContent() {
     setIsModalOpen(true);
   };
 
+  const columns = [
+    {
+      header: 'Patient Identity',
+      accessor: (customer: Customer) => (
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold shadow-sm shrink-0">
+            {customer.full_name.charAt(0)}
+          </div>
+          <div className="min-w-0">
+            <Link href={`/clinic/customers/${customer.id}`} className="font-bold text-foreground hover:text-primary transition-colors truncate block">
+              {customer.full_name} {customer.nickname ? `(${customer.nickname})` : ''}
+            </Link>
+            <div className="flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground mt-0.5">
+              <span className="flex items-center gap-1"><EnvelopeSimple className="w-3 h-3" /> {customer.email || 'No Email'}</span>
+              <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {customer.phone || 'No Phone'}</span>
+            </div>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: 'Cutaneous Health',
+      accessor: (customer: Customer) => {
+        const skinScore = customer.metadata?.skinScore || 0;
+        return (
+          <div className="space-y-1.5 w-32">
+            <div className="flex justify-between items-center">
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Score</span>
+              <span className="text-[10px] font-bold text-foreground">{skinScore}%</span>
+            </div>
+            <div className="h-1 w-full bg-secondary rounded-full overflow-hidden border border-border">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${skinScore}%` }}
+                className={cn(
+                  "h-full rounded-full",
+                  skinScore > 80 ? "bg-emerald-500" : skinScore > 70 ? "bg-primary" : "bg-rose-500"
+                )} 
+              />
+            </div>
+          </div>
+        );
+      }
+    },
+    {
+      header: 'Security Tier',
+      accessor: (customer: Customer) => (
+        <span className={cn(
+          "px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border",
+          customer.customer_type === 'premium' 
+            ? "bg-primary/10 border-primary/20 text-primary" 
+            : "bg-secondary border-border text-muted-foreground"
+        )}>
+          {customer.customer_type}
+        </span>
+      )
+    },
+    {
+      header: 'Last Diagnostic',
+      accessor: (customer: Customer) => {
+        const lastScan = customer.metadata?.lastScan || customer.created_at;
+        return (
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkle className="w-3 h-3 animate-pulse" /> AI Validated
+            </span>
+            <span className="text-xs text-muted-foreground mt-0.5">
+              {new Date(lastScan).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+            </span>
+          </div>
+        );
+      }
+    },
+    {
+      header: '',
+      className: 'text-right',
+      accessor: (customer: Customer) => (
+        <button 
+          onClick={() => handleEditCustomer(customer)}
+          className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-xl transition-all"
+        >
+          <DotsThreeVertical className="w-5 h-5" />
+        </button>
+      )
+    }
+  ];
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20 font-sans"
+      className="space-y-6 pb-20 font-sans"
     >
+      <Breadcrumb />
+
       <CustomerModal 
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)} 
@@ -110,7 +203,7 @@ function CustomerManagementContent() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
+            className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-[0.3em]"
           >
             <Users className="w-4 h-4" />
             Patient Identity Management
@@ -119,9 +212,9 @@ function CustomerManagementContent() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground uppercase tracking-tight"
           >
-            Customer <span className="text-primary text-glow">Database</span>
+            Customer <span className="text-primary">Database</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -136,7 +229,7 @@ function CustomerManagementContent() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleAddCustomer}
-          className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
+          className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
         >
           <UserPlus className="w-4 h-4 stroke-[3px]" />
           <span>Register New Patient</span>
@@ -154,20 +247,20 @@ function CustomerManagementContent() {
             className="relative flex-1 group"
           >
             <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
+            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
               placeholder="Filter by identity, digital mail, or neural ID..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 pl-14 pr-6 text-sm text-white focus:outline-none focus:border-primary/50 transition-all shadow-inner backdrop-blur-md relative z-10"
+              className="w-full bg-secondary border border-border rounded-xl py-4 pl-14 pr-6 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner backdrop-blur-md relative z-10"
             />
           </motion.form>
           <motion.button 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="flex items-center gap-3 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all backdrop-blur-md"
+            className="flex items-center gap-3 px-6 py-4 bg-secondary border border-border rounded-xl text-xs font-bold uppercase tracking-widest text-foreground hover:bg-accent transition-all backdrop-blur-md"
           >
             <Funnel className="w-4 h-4 text-primary" />
             <span>Advanced Filters</span>
@@ -178,14 +271,14 @@ function CustomerManagementContent() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
           whileHover={{ y: -5 }}
-          className="glass-premium p-6 rounded-3xl border border-white/5 flex items-center justify-between group overflow-hidden relative"
+          className="bg-card p-6 rounded-2xl border border-border shadow-card flex items-center justify-between group overflow-hidden relative"
         >
           <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-            <Users className="w-16 h-16 text-white" />
+            <Users className="w-16 h-16 text-foreground" />
           </div>
           <div>
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Active Population</p>
-            <p className="text-3xl font-black text-white tracking-tighter">{totalCount.toLocaleString()}</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-1">Active Population</p>
+            <p className="text-3xl font-bold text-foreground tracking-tighter">{totalCount.toLocaleString()}</p>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium group-hover:scale-110 transition-transform">
             <Users className="w-7 h-7" />
@@ -194,134 +287,53 @@ function CustomerManagementContent() {
       </div>
 
       {/* Customer List Table */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="glass-premium rounded-[40px] overflow-hidden border border-white/5 shadow-2xl relative"
-      >
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="w-full text-left border-collapse min-w-[1000px]">
-            <thead>
-              <tr className="border-b border-white/5 bg-white/[0.03]">
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Patient Identity</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Cutaneous Health</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Security Tier</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Last Diagnostic</th>
-                <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {loading ? (
-                <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-                      <p className="text-sm text-muted-foreground animate-pulse font-black uppercase tracking-widest">Accessing Neural Database...</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : customers.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4 opacity-40">
-                      <Users className="w-12 h-12" />
-                      <p className="text-sm font-black uppercase tracking-widest">No Patients Found</p>
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                customers.map((customer, i) => {
-                  const skinScore = customer.metadata?.skinScore || 0;
-                  const lastScan = customer.metadata?.lastScan || customer.created_at;
-                  
-                  return (
-                    <motion.tr 
-                      key={customer.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.03 }}
-                      className="group hover:bg-white/[0.05] transition-all relative overflow-hidden"
-                    >
-                      <td className="px-8 py-6 relative">
-                        <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all" />
-                        <div className="flex items-center gap-5">
-                          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary text-sm font-black border border-primary/20 shadow-premium group-hover:scale-110 transition-transform duration-500">
-                            {customer.full_name.charAt(0)}
-                          </div>
-                          <div className="flex flex-col space-y-1 pr-6">
-                            <Link href={`/clinic/customers/${customer.id}`} className="hover:underline">
-                              <span className="text-base font-black text-white group-hover:text-primary transition-colors tracking-tight">
-                                {customer.full_name} {customer.nickname ? `(${customer.nickname})` : ''}
-                              </span>
-                            </Link>
-                            <div className="flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground font-medium italic">
-                              <span className="flex items-center gap-1.5"><EnvelopeSimple className="w-3 h-3 text-primary/60" /> {customer.email || 'No Email'}</span>
-                              <div className="w-1 h-1 rounded-full bg-white/10" />
-                              <span className="flex items-center gap-1.5"><Phone className="w-3 h-3 text-primary/60" /> {customer.phone || 'No Phone'}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="space-y-2 w-48">
-                          <div className="flex justify-between items-center">
-                            <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Neural Score</span>
-                            <span className="text-xs font-black text-white">{skinScore}%</span>
-                          </div>
-                          <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
-                            <motion.div 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${skinScore}%` }}
-                              transition={{ duration: 1.5, ease: "easeOut" }}
-                              className={cn(
-                                "h-full rounded-full shadow-sm",
-                                skinScore > 80 ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.4)]" : 
-                                skinScore > 70 ? "bg-primary shadow-[0_0_10px_rgba(var(--primary),0.4)]" : 
-                                skinScore > 0 ? "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.4)]" : "bg-white/10"
-                              )} 
-                            />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <span className={cn(
-                          "px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] border shadow-sm transition-all duration-500",
-                          customer.customer_type === 'premium' 
-                            ? "bg-primary/20 border-primary/30 text-primary group-hover:bg-primary group-hover:text-primary-foreground shadow-[0_0_15px_rgba(var(--primary),0.1)]" 
-                            : "bg-white/5 border-white/10 text-muted-foreground"
-                        )}>
-                          {customer.customer_type}
-                        </span>
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex flex-col space-y-1.5">
-                          <span className="text-[9px] font-black text-primary uppercase tracking-[0.2em] flex items-center gap-2">
-                            <Sparkle className="w-3 h-3 animate-pulse" /> AI Validated
-                          </span>
-                          <span className="text-xs text-white/60 font-medium tabular-nums">
-                            {new Date(lastScan).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <motion.button 
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => handleEditCustomer(customer)}
-                          className="p-3 text-white/30 hover:text-white transition-all rounded-xl hover:bg-white/10 border border-transparent hover:border-white/5 shadow-sm group/btn"
-                        >
-                          <DotsThreeVertical className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
-                        </motion.button>
-                      </td>
-                    </motion.tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
+      <ResponsiveTable
+        columns={columns}
+        data={customers}
+        loading={loading}
+        rowKey={(c) => c.id}
+        emptyMessage="No patients found in the neural database"
+        onRowClick={(c) => router.push(`/clinic/customers/${c.id}`)}
+        mobileCard={(c) => (
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold">
+                {c.full_name.charAt(0)}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="font-bold text-foreground truncate">{c.full_name}</p>
+                <div className="flex items-center gap-2 mt-0.5">
+                  <span className={cn(
+                    "px-2 py-0.5 rounded-md text-[8px] font-bold uppercase tracking-wider border",
+                    c.customer_type === 'premium' ? "bg-primary/10 border-primary/20 text-primary" : "bg-secondary border-border text-muted-foreground"
+                  )}>
+                    {c.customer_type}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">{c.phone}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Skin Score</p>
+                <p className="text-sm font-bold text-primary">{c.metadata?.skinScore || 0}%</p>
+              </div>
+            </div>
+            <div className="flex justify-between items-center pt-3 border-t border-border">
+              <span className="text-[10px] text-muted-foreground italic">
+                Last Diagnostic: {new Date(c.metadata?.lastScan || c.created_at).toLocaleDateString()}
+              </span>
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditCustomer(c);
+                }}
+                className="p-2 bg-secondary border border-border rounded-xl text-muted-foreground"
+              >
+                <DotsThreeVertical className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+      />
     </motion.div>
   );
 }

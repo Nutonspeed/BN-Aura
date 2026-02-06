@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkle, 
   Dna, 
@@ -11,11 +9,21 @@ import {
   CaretDown,
   CaretUp,
   Clock,
-  ClipboardText
+  ClipboardText,
+  IdentificationBadge,
+  Pulse,
+  Heartbeat,
+  ShieldCheck,
+  CheckCircle,
+  X
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
-
 import { createClient } from '@/lib/supabase/client';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Protocol {
   step: number;
@@ -160,124 +168,143 @@ export default function ProtocolInsights({ customerId, journeyId }: { customerId
   return (
     <div className="space-y-8">
       {/* 1. Actual Clinical Protocol (The "How-To") */}
-      <div className="glass-premium p-8 rounded-[40px] border border-primary/30 bg-primary/[0.02] space-y-8 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-          <CheckSquare className="w-24 h-24 text-primary" />
+      <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+          <CheckSquare className="w-64 h-64 text-primary" />
         </div>
 
-        <div className="flex items-center justify-between relative z-10">
+        <CardHeader className="p-8 border-b border-border/50 bg-secondary/30">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-              <ClipboardText className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+              <ClipboardText weight="duotone" className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-black text-white uppercase tracking-tight">Execution <span className="text-primary">Protocol</span></h3>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">{treatmentName || 'Standard Operating Procedure'}</p>
+              <CardTitle className="text-xl font-black uppercase tracking-tight">Execution Protocol</CardTitle>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">{treatmentName || 'Standard Operating Procedure'}</p>
             </div>
           </div>
-        </div>
+        </CardHeader>
 
-        <div className="space-y-4 relative z-10">
+        <CardContent className="p-8 relative z-10 space-y-6">
           {loading ? (
-            <div className="space-y-4 animate-pulse">
+            <div className="space-y-4 py-4 animate-pulse">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-20 bg-white/5 rounded-2xl border border-white/5" />
+                <div key={i} className="h-24 bg-secondary/20 rounded-[32px] border border-border/50" />
               ))}
             </div>
           ) : actualProtocol.length === 0 ? (
-            <div className="py-12 text-center text-muted-foreground text-sm italic font-light bg-white/5 rounded-[32px] border border-white/5">
-              No custom protocol nodes defined for this treatment.
+            <div className="py-24 text-center opacity-20 flex flex-col items-center gap-6">
+              <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
+                <ClipboardText weight="duotone" className="w-10 h-10" />
+              </div>
+              <p className="text-sm font-black uppercase tracking-[0.3em]">No protocol nodes defined for this treatment.</p>
             </div>
           ) : (
-            actualProtocol.map((step, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className={cn(
-                  "p-6 rounded-3xl border transition-all duration-300",
-                  step.isCritical ? "bg-rose-500/5 border-rose-500/20" : "bg-white/5 border-white/5 hover:border-white/10"
-                )}
-              >
-                <div className="flex gap-6">
-                  <div className={cn(
-                    "w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 border",
-                    step.isCritical ? "bg-rose-500 text-white border-rose-400" : "bg-white/10 text-white/60 border-white/10"
-                  )}>
-                    {step.step}
-                  </div>
-                  <div className="flex-1 space-y-2">
-                    <div className="flex justify-between items-start">
-                      <h4 className="text-sm font-black text-white uppercase tracking-wider">{step.action}</h4>
-                      <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground">
-                        <Clock className="w-3 h-3" />
-                        {step.duration}
-                      </div>
+            <div className="grid grid-cols-1 gap-4">
+              {actualProtocol.map((step, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  className={cn(
+                    "p-6 rounded-[32px] border transition-all duration-300 relative overflow-hidden",
+                    step.isCritical ? "bg-rose-500/5 border-rose-500/20" : "bg-secondary/20 border-border/50 hover:border-primary/20"
+                  )}
+                >
+                  <div className="flex gap-6 relative z-10">
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shrink-0 border shadow-inner transition-all duration-500",
+                      step.isCritical ? "bg-rose-500 text-white border-rose-400" : "bg-card border-border text-primary group-hover:border-primary/30"
+                    )}>
+                      {step.step}
                     </div>
-                    <p className="text-xs text-muted-foreground font-light leading-relaxed italic">
-                      {step.notes}
-                    </p>
-                    {step.isCritical && (
-                      <div className="pt-2 flex items-center gap-2 text-rose-400">
-                        <ShieldWarning className="w-3 h-3" />
-                        <span className="text-[8px] font-black uppercase tracking-widest">Safety Critical Step</span>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex justify-between items-start">
+                        <h4 className={cn("text-sm font-bold uppercase tracking-tight", step.isCritical ? "text-rose-500" : "text-foreground")}>{step.action}</h4>
+                        <Badge variant="ghost" size="sm" className="bg-secondary/50 text-muted-foreground border-none font-black text-[8px] tracking-widest uppercase px-2 py-0.5">
+                          <Clock weight="bold" className="w-3 h-3 mr-1.5" />
+                          {step.duration}
+                        </Badge>
                       </div>
-                    )}
+                      <p className="text-xs text-muted-foreground font-medium italic leading-relaxed opacity-80">
+                        {step.notes}
+                      </p>
+                      {step.isCritical && (
+                        <div className="pt-2 flex items-center gap-2">
+                          <Badge variant="destructive" className="font-black text-[7px] tracking-widest px-2 py-0.5">SAFETY_CRITICAL</Badge>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))
+                </motion.div>
+              ))}
+            </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* 2. AI Diagnostic Insights (The "Why") */}
-      <div className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-          <Dna className="w-24 h-24 text-primary" />
+      <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+        <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+          <Sparkle className="w-64 h-64 text-emerald-500" />
         </div>
 
-        <div className="flex items-center justify-between relative z-10">
+        <CardHeader className="p-8 border-b border-border/50 bg-secondary/30">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
-              <Sparkle className="w-6 h-6" />
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20 shadow-inner">
+              <Sparkle weight="duotone" className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold text-white uppercase tracking-tight">AI Insights</h3>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Diagnostic Data Summary</p>
+              <CardTitle className="text-xl font-black uppercase tracking-tight">AI Clinical Insights</CardTitle>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Cognitive diagnostic summary</p>
             </div>
           </div>
-        </div>
+        </CardHeader>
 
-        <div className="space-y-4 relative z-10">
-          {insights.map((insight, idx) => (
-            <div 
-              key={idx}
-              className="p-6 bg-white/5 border border-white/5 rounded-3xl space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-black text-white uppercase tracking-widest">{insight.category}</h4>
-                <span className={cn(
-                  "px-3 py-1 rounded-full text-[9px] font-black uppercase",
-                  insight.score > 80 ? "bg-emerald-500/10 text-emerald-400" :
-                  insight.score > 60 ? "bg-primary/10 text-primary" :
-                  "bg-rose-500/10 text-rose-400"
-                )}>
-                  Score: {insight.score}
-                </span>
+        <CardContent className="p-8 md:p-10 space-y-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {insights.map((insight, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: idx * 0.1 }}
+                className="p-6 bg-secondary/20 border border-border/50 rounded-[32px] space-y-5 hover:border-emerald-500/30 transition-all group/insight"
+              >
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black text-foreground uppercase tracking-widest group-hover/insight:text-emerald-500 transition-colors">{insight.category}</h4>
+                  <Badge 
+                    variant={insight.score > 80 ? 'success' : insight.score > 60 ? 'default' : 'warning'} 
+                    size="sm" 
+                    className="font-black text-[8px] tracking-widest px-2 py-0.5"
+                  >
+                    INDEX: {insight.score}
+                  </Badge>
+                </div>
+                <div className="p-4 bg-card border border-border/50 rounded-2xl flex gap-4 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 p-3 opacity-[0.02]">
+                    <Info weight="bold" className="w-8 h-8 text-primary" />
+                  </div>
+                  <Info weight="duotone" className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                  <p className="text-[11px] text-muted-foreground font-medium italic leading-relaxed relative z-10">
+                    {insight.recommendation}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+          
+          {insights.length === 0 && !loading && (
+            <div className="py-20 text-center opacity-20 flex flex-col items-center gap-6">
+              <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
+                <Dna weight="duotone" className="w-10 h-10" />
               </div>
-              <div className="flex gap-3 p-3 bg-black/40 rounded-2xl border border-white/5">
-                <Info className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                <p className="text-[10px] text-muted-foreground font-light leading-relaxed">
-                  {insight.recommendation}
-                </p>
-              </div>
+              <p className="text-sm font-black uppercase tracking-[0.3em]">Zero diagnostic intelligence detected.</p>
             </div>
-          ))}
-        </div>
-      </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }
-

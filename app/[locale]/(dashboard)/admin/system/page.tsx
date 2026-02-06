@@ -1,14 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Pulse, HardDrives, CheckCircle, Cpu, HardDrive, Users, ArrowsClockwise, SpinnerGap,
-  Warning, Database, WifiHigh, WifiSlash, Clock
+  Warning, Database, WifiHigh, WifiSlash, Clock, ArrowLeft, ChartLineUp, ChartLine, ShieldCheck
 } from '@phosphor-icons/react';
-import { SystemMonitoringProvider, useSystemMonitoringContext } from './context';
+import { cn } from '@/lib/utils';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useSystemMonitoringContext, SystemMonitoringProvider } from './context';
 
 function SystemMonitoringContent() {
+  const { goBack } = useBackNavigation();
   const { metrics, alerts, health, loading, refreshing, fetchMetrics, fetchAlerts, fetchHealth } = useSystemMonitoringContext();
   const [selectedMetric, setSelectedMetric] = useState<'cpu' | 'memory' | 'disk'>('cpu');
 
@@ -62,207 +70,216 @@ function SystemMonitoringContent() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-8 pb-20 font-sans"
     >
+      <Breadcrumb />
+
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Pulse className="w-8 h-8 text-primary" />
-            System Monitoring
-          </h1>
-          <p className="text-white/60 mt-1">Real-time system health and performance monitoring</p>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <Pulse weight="duotone" className="w-4 h-4" />
+            Infrastructure Intelligence
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
+          >
+            System <span className="text-primary">Monitoring</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Real-time infrastructure performance, health nodes, and global sync status.
+          </motion.p>
         </div>
-        <button 
-          onClick={() => {
-            fetchMetrics();
-            fetchAlerts();
-            fetchHealth();
-          }}
-          disabled={refreshing}
-          className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 disabled:opacity-50"
-        >
-          <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline"
+            onClick={() => {
+              fetchMetrics();
+              fetchAlerts();
+              fetchHealth();
+            }}
+            disabled={refreshing}
+            className="gap-2"
+          >
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", refreshing && "animate-spin")} />
+            Sync Metrics
+          </Button>
+        </div>
       </div>
 
       {/* System Health Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* System Status */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-emerald-500/20 rounded-xl">
-              <HardDrives className="w-6 h-6 text-emerald-400" />
-            </div>
-            <span className={`text-xs font-bold ${
-              health?.status === 'healthy' ? 'text-emerald-400' :
-              health?.status === 'warning' ? 'text-amber-400' : 'text-red-400'
-            }`}>
-              {health?.status?.toUpperCase() || 'UNKNOWN'}
-            </span>
-          </div>
-          <div>
-            <p className="text-3xl font-bold text-white">{health?.uptime || 99.9}%</p>
-            <p className="text-white/60 text-sm">System Uptime</p>
-          </div>
-        </motion.div>
-
-        {/* CPU Usage */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Cpu className="w-6 h-6 text-blue-400" />
-            </div>
-          </div>
-          <div>
-            <p className={`text-3xl font-bold ${getStatusColor(currentMetric?.cpu || 0, { good: 60, warning: 80 })}`}>
-              {currentMetric?.cpu.toFixed(1) || 0}%
-            </p>
-            <p className="text-white/60 text-sm">CPU Usage</p>
-          </div>
-        </motion.div>
-
-        {/* Memory Usage */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-purple-500/20 rounded-xl">
-              <HardDrive className="w-6 h-6 text-purple-400" />
-            </div>
-          </div>
-          <div>
-            <p className={`text-3xl font-bold ${getStatusColor(currentMetric?.memory || 0, { good: 70, warning: 85 })}`}>
-              {currentMetric?.memory.toFixed(1) || 0}%
-            </p>
-            <p className="text-white/60 text-sm">Memory Usage</p>
-          </div>
-        </motion.div>
-
-        {/* Active Connections */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 bg-amber-500/20 rounded-xl">
-              <Users className="w-6 h-6 text-amber-400" />
-            </div>
-          </div>
-          <div>
-            <p className="text-3xl font-bold text-white">{currentMetric?.active_connections || 0}</p>
-            <p className="text-white/60 text-sm">Active Connections</p>
-          </div>
-        </motion.div>
+        <StatCard
+          title="Global Uptime"
+          value={health?.uptime || 99.9}
+          suffix="%"
+          decimals={1}
+          icon={HardDrives}
+          trend={health?.status === 'healthy' ? 'up' : 'down'}
+          iconColor={health?.status === 'healthy' ? 'text-emerald-500' : 'text-rose-500'}
+        />
+        <StatCard
+          title="CPU Compute"
+          value={currentMetric?.cpu || 0}
+          suffix="%"
+          decimals={1}
+          icon={Cpu}
+          trend={(currentMetric?.cpu || 0) > 80 ? 'down' : 'neutral'}
+          iconColor={(currentMetric?.cpu || 0) > 80 ? 'text-rose-500' : 'text-blue-500'}
+        />
+        <StatCard
+          title="Memory Load"
+          value={currentMetric?.memory || 0}
+          suffix="%"
+          decimals={1}
+          icon={HardDrive}
+          trend={(currentMetric?.memory || 0) > 85 ? 'down' : 'neutral'}
+          iconColor={(currentMetric?.memory || 0) > 85 ? 'text-rose-500' : 'text-purple-500'}
+        />
+        <StatCard
+          title="Network Nodes"
+          value={currentMetric?.active_connections || 0}
+          icon={Users}
+          trend="neutral"
+          iconColor="text-amber-500"
+        />
       </div>
 
       {/* Alerts Section */}
-      {(criticalAlerts > 0 || warningAlerts > 0) && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`glass-card p-6 rounded-2xl border ${
-            criticalAlerts > 0 ? 'border-red-500/50 bg-red-500/5' : 'border-amber-500/50 bg-amber-500/5'
-          }`}
-        >
-          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Warning className="w-5 h-5" />
-            Active Alerts
-          </h3>
-          <div className="flex gap-4">
-            {criticalAlerts > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-red-400">{criticalAlerts} Critical</span>
-              </div>
-            )}
-            {warningAlerts > 0 && (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
-                <span className="text-amber-400">{warningAlerts} High</span>
-              </div>
-            )}
-          </div>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {(criticalAlerts > 0 || warningAlerts > 0) && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+          >
+            <Card className={cn(
+              "border-none relative overflow-hidden",
+              criticalAlerts > 0 ? "bg-rose-500/10" : "bg-amber-500/10"
+            )}>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-card/5" />
+              <CardContent className="p-6 relative z-10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className={cn(
+                      "w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm",
+                      criticalAlerts > 0 ? "bg-rose-500/20 text-rose-500" : "bg-amber-500/20 text-amber-500"
+                    )}>
+                      <Warning weight="fill" className={cn("w-6 h-6", criticalAlerts > 0 && "animate-pulse")} />
+                    </div>
+                    <div>
+                      <h3 className={cn("text-lg font-bold uppercase tracking-tight", criticalAlerts > 0 ? "text-rose-500" : "text-amber-500")}>
+                        Active Infrastructure Alerts
+                      </h3>
+                      <p className="text-muted-foreground text-sm font-medium">Critical systems require immediate diagnostic review.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    {criticalAlerts > 0 && (
+                      <Badge variant="destructive" pulse className="font-black px-4 py-1.5 uppercase">
+                        {criticalAlerts} Critical Node
+                      </Badge>
+                    )}
+                    {warningAlerts > 0 && (
+                      <Badge variant="warning" className="font-black px-4 py-1.5 uppercase">
+                        {warningAlerts} Warning Node
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Services Status */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="glass-card p-8 rounded-3xl border border-white/10"
-      >
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-          <Database className="w-5 h-5 text-primary" />
-          Service Status
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {health?.services && Object.entries(health.services).map(([service, status]) => (
-            <div key={service} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-              <span className="text-white/80 capitalize">{service}</span>
-              {getStatusIcon(status)}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Services Status */}
+        <Card className="relative overflow-hidden group border-border/50">
+          <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
+            <Database className="w-48 h-48 text-primary" />
+          </div>
+
+          <CardHeader className="border-b border-border/50 pb-6">
+            <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+              <Database weight="duotone" className="w-5 h-5 text-primary" />
+              Core Service Matrix
+            </CardTitle>
+          </CardHeader>
+          
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {health?.services && Object.entries(health.services).map(([service, status]) => (
+                <div key={service} className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border/50 hover:bg-secondary/50 transition-all group/node">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-border group-hover/node:bg-primary transition-colors" />
+                    <span className="text-[11px] font-black text-foreground/80 uppercase tracking-widest">{service}</span>
+                  </div>
+                  {getStatusIcon(status)}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </motion.div>
+          </CardContent>
+        </Card>
 
-      {/* Performance Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-        className="glass-card p-8 rounded-3xl border border-white/10"
-      >
-        <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-          <HardDrives className="w-5 h-5 text-primary" />
-          Performance Metrics
-        </h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex items-center justify-between">
-            <span className="text-white/80">Average Response Time</span>
-            <span className={`font-bold ${getStatusColor(currentMetric?.response_time || 0, { good: 200, warning: 500 })}`}>
-              {currentMetric?.response_time || 0}ms
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-white/80">Error Rate</span>
-            <span className={`font-bold ${getStatusColor(currentMetric?.error_rate || 0, { good: 0.5, warning: 2 })}`}>
-              {currentMetric?.error_rate.toFixed(2) || 0}%
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-white/80">Disk Usage</span>
-            <span className={`font-bold ${getStatusColor(currentMetric?.disk || 0, { good: 70, warning: 85 })}`}>
-              {currentMetric?.disk.toFixed(1) || 0}%
-            </span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-white/80">Last Check</span>
-            <span className="font-bold text-white/80">
-              {health?.last_check ? new Date(health.last_check).toLocaleTimeString() : 'Never'}
-            </span>
-          </div>
-        </div>
-      </motion.div>
+        {/* Performance Metrics */}
+        <Card className="relative overflow-hidden group border-border/50">
+          <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-primary/5 blur-[60px] rounded-full" />
+          
+          <CardHeader className="border-b border-border/50 pb-6">
+            <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3 text-primary">
+              <ChartLine weight="duotone" className="w-5 h-5" />
+              Telemetry Analytics
+            </CardTitle>
+          </CardHeader>
+          
+          <CardContent className="pt-6 space-y-4">
+            {[
+              { label: "Mean Latency", value: `${currentMetric?.response_time || 0}ms`, icon: Clock, threshold: { val: currentMetric?.response_time || 0, good: 200, warning: 500 } },
+              { label: "Error Frequency", value: `${(currentMetric?.error_rate || 0).toFixed(2)}%`, icon: ChartLineUp, threshold: { val: currentMetric?.error_rate || 0, good: 0.5, warning: 2 } },
+              { label: "Disk Volume Load", value: `${(currentMetric?.disk || 0).toFixed(1)}%`, icon: HardDrive, threshold: { val: currentMetric?.disk || 0, good: 70, warning: 85 } },
+            ].map((metric, i) => (
+              <div key={i} className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-muted-foreground">
+                    <metric.icon weight="duotone" className="w-5 h-5" />
+                  </div>
+                  <span className="text-sm font-bold text-foreground tracking-tight">{metric.label}</span>
+                </div>
+                <span className={cn(
+                  "text-base font-black tabular-nums",
+                  getStatusColor(metric.threshold.val, { good: metric.threshold.good, warning: metric.threshold.warning })
+                )}>
+                  {metric.value}
+                </span>
+              </div>
+            ))}
+            
+            <div className="pt-4 flex items-center justify-between border-t border-border/50 mt-4">
+              <div className="flex items-center gap-2">
+                <ShieldCheck weight="duotone" className="w-4 h-4 text-emerald-500" />
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Diagnostic Node: Healthy</span>
+              </div>
+              <span className="text-[10px] font-medium text-muted-foreground italic">
+                Last heartbeat: {health?.last_check ? new Date(health.last_check).toLocaleTimeString() : 'N/A'}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </motion.div>
   );
 }

@@ -1,7 +1,31 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Image as ImageIcon, Plus, SquaresFour, List, Funnel, Eye, ShareNetwork, Trash } from '@phosphor-icons/react';
+import { 
+  Image as ImageIcon, 
+  Plus, 
+  SquaresFour, 
+  List, 
+  Funnel, 
+  Eye, 
+  ShareNetwork, 
+  Trash,
+  ArrowLeft,
+  ArrowsClockwise,
+  CheckCircle,
+  Clock,
+  User,
+  CaretRight,
+  Sparkle
+} from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
 
 interface Photo {
   id: string;
@@ -29,6 +53,8 @@ interface Comparison {
 }
 
 export default function GalleryPage() {
+  const { goBack } = useBackNavigation();
+  const t = useTranslations('clinic.gallery' as any);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [comparisons, setComparisons] = useState<Comparison[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,267 +93,351 @@ export default function GalleryPage() {
     : photos.filter(p => p.type === typeFilter);
 
   return (
-    <div className="p-6">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-8 pb-20 font-sans"
+    >
+      <Breadcrumb />
+
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <ImageIcon className="w-7 h-7 text-indigo-600" />
-            Before/After Gallery
-          </h1>
-          <p className="text-gray-600">จัดการภาพผลลัพธ์การรักษา</p>
-        </div>
-        <button
-          className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
-        >
-          <Plus className="w-5 h-5" />
-          อัพโหลดภาพ
-        </button>
-      </div>
-
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <p className="text-sm text-gray-600">ภาพทั้งหมด</p>
-          <p className="text-2xl font-bold text-gray-900">{photos.length}</p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <p className="text-sm text-gray-600">Before/After Pairs</p>
-          <p className="text-2xl font-bold text-indigo-600">{comparisons.length}</p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <p className="text-sm text-gray-600">Public Gallery</p>
-          <p className="text-2xl font-bold text-green-600">
-            {comparisons.filter(c => c.is_public).length}
-          </p>
-        </div>
-        <div className="bg-white rounded-xl p-4 shadow-sm border">
-          <p className="text-sm text-gray-600">Total Views</p>
-          <p className="text-2xl font-bold text-purple-600">
-            {comparisons.reduce((sum, c) => sum + c.view_count, 0)}
-          </p>
-        </div>
-      </div>
-
-      {/* Tabs & Filters */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-        <div className="flex gap-4 border-b w-full md:w-auto">
-          <button
-            onClick={() => setActiveTab('comparisons')}
-            className={`pb-3 px-1 font-medium ${
-              activeTab === 'comparisons'
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            Before/After
-          </button>
-          <button
-            onClick={() => setActiveTab('photos')}
-            className={`pb-3 px-1 font-medium ${
-              activeTab === 'photos'
-                ? 'text-indigo-600 border-b-2 border-indigo-600'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
+            <ImageIcon weight="duotone" className="w-4 h-4" />
+            Visual Evidence Node
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            ภาพทั้งหมด
-          </button>
+            Clinical <span className="text-primary">Gallery</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Managing transformation benchmarks, evolution comparisons, and clinical visual records.
+          </motion.p>
         </div>
 
         <div className="flex items-center gap-3">
-          {activeTab === 'photos' && (
-            <div className="flex items-center gap-2">
-              <Funnel className="w-4 h-4 text-gray-500" />
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
-                className="border rounded-lg px-3 py-1.5 text-sm"
+          <Button 
+            variant="outline" 
+            onClick={fetchData}
+            disabled={loading}
+            className="gap-2"
+          >
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+            Sync Media
+          </Button>
+          <Button className="gap-2 shadow-premium px-8">
+            <Plus weight="bold" className="w-4 h-4" />
+            Upload Evidence
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard
+          title="Total Media Units"
+          value={photos.length}
+          icon={ImageIcon}
+          trend="neutral"
+        />
+        <StatCard
+          title="Transformation Pairs"
+          value={comparisons.length}
+          icon={SquaresFour}
+          trend="up"
+          change={5}
+          iconColor="text-primary"
+        />
+        <StatCard
+          title="Public Portfolios"
+          value={comparisons.filter(c => c.is_public).length}
+          icon={CheckCircle}
+          trend="neutral"
+          iconColor="text-emerald-500"
+        />
+        <StatCard
+          title="Global Visual Reach"
+          value={comparisons.reduce((sum, c) => sum + c.view_count, 0)}
+          icon={Eye}
+          trend="up"
+          change={12}
+          iconColor="text-purple-500"
+        />
+      </div>
+
+      {/* Navigation Tabs & Controls */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div className="flex bg-secondary/50 border border-border p-1 rounded-2xl w-fit shadow-inner">
+          {[
+            { id: 'comparisons', label: 'Evolution Pairs', icon: SquaresFour },
+            { id: 'photos', label: 'Identity Registry', icon: ImageIcon }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={cn(
+                "flex items-center gap-2 px-6 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all border",
+                activeTab === tab.id
+                  ? "bg-card text-primary border-border/50 shadow-sm"
+                  : "text-muted-foreground border-transparent hover:text-foreground"
+              )}
+            >
+              <tab.icon weight={activeTab === tab.id ? "fill" : "duotone"} className="w-4 h-4" />
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-4">
+          <AnimatePresence mode="wait">
+            {activeTab === 'photos' && (
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                className="flex items-center gap-3 bg-secondary/50 border border-border p-1 rounded-2xl shadow-inner"
               >
-                <option value="all">ทั้งหมด</option>
-                <option value="before">Before</option>
-                <option value="after">After</option>
-                <option value="progress">Progress</option>
-              </select>
-            </div>
-          )}
-          <div className="flex border rounded-lg overflow-hidden">
+                {(['all', 'before', 'after', 'progress'] as const).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => setTypeFilter(type)}
+                    className={cn(
+                      "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                      typeFilter === type
+                        ? "bg-card text-primary border-border/50 shadow-sm"
+                        : "text-muted-foreground border-transparent hover:text-foreground"
+                    )}
+                  >
+                    {type === 'all' ? 'Universal' : type}
+                  </button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <div className="flex bg-secondary/50 border border-border p-1 rounded-2xl shadow-inner">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 ${viewMode === 'grid' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500'}`}
+              className={cn(
+                "p-2 rounded-xl transition-all",
+                viewMode === 'grid' ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <SquaresFour className="w-4 h-4" />
+              <SquaresFour weight="bold" className="w-5 h-5" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 ${viewMode === 'list' ? 'bg-indigo-100 text-indigo-600' : 'text-gray-500'}`}
+              className={cn(
+                "p-2 rounded-xl transition-all",
+                viewMode === 'list' ? "bg-card text-primary shadow-sm" : "text-muted-foreground hover:text-foreground"
+              )}
             >
-              <List className="w-4 h-4" />
+              <List weight="bold" className="w-5 h-5" />
             </button>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      {loading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mx-auto"></div>
-        </div>
-      ) : activeTab === 'comparisons' ? (
-        comparisons.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border">
-            <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">ยังไม่มีภาพ Before/After</p>
-            <p className="text-sm text-gray-400 mt-1">อัพโหลดภาพและสร้าง comparison</p>
-          </div>
-        ) : (
-          <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'
-            : 'space-y-4'
-          }>
-            {comparisons.map((comparison) => (
-              <div
-                key={comparison.id}
-                className="bg-white rounded-xl border overflow-hidden group"
-              >
-                <div className="relative">
-                  <div className="grid grid-cols-2">
-                    <div className="relative aspect-square">
-                      <img
-                        src={comparison.before_photo?.thumbnail_url || comparison.before_photo?.photo_url || '/placeholder.jpg'}
-                        alt="Before"
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                        Before
-                      </span>
-                    </div>
-                    <div className="relative aspect-square">
-                      <img
-                        src={comparison.after_photo?.thumbnail_url || comparison.after_photo?.photo_url || '/placeholder.jpg'}
-                        alt="After"
-                        className="w-full h-full object-cover"
-                      />
-                      <span className="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">
-                        After
-                      </span>
-                    </div>
-                  </div>
+      {/* Main Content Area */}
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div 
+            key="loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="py-32 flex flex-col items-center gap-4"
+          >
+            <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Decoding Media Matrix...</p>
+          </motion.div>
+        ) : activeTab === 'comparisons' ? (
+          <motion.div 
+            key="comparisons"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            {comparisons.length === 0 ? (
+              <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-4 opacity-40">
+                <SquaresFour weight="duotone" className="w-16 h-16" />
+                <p className="text-xs font-black uppercase tracking-widest">Zero Evolution Benchmark Detected</p>
+              </Card>
+            ) : (
+              <div className={cn(
+                viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8' : 'space-y-4'
+              )}>
+                {comparisons.map((comparison, i) => (
+                  <motion.div
+                    key={comparison.id}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.05 }}
+                  >
+                    <Card className="h-full border-border/50 hover:border-primary/30 transition-all group overflow-hidden flex flex-col">
+                      <div className="relative aspect-[16/9] bg-secondary/50 overflow-hidden">
+                        <div className="grid grid-cols-2 h-full gap-0.5">
+                          <div className="relative group/before">
+                            <img
+                              src={comparison.before_photo?.thumbnail_url || comparison.before_photo?.photo_url || '/placeholder.jpg'}
+                              alt="Before"
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover/before:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-black/20" />
+                            <Badge variant="secondary" size="sm" className="absolute top-3 left-3 font-black uppercase text-[8px] bg-black/60 text-white border-none">Node: Before</Badge>
+                          </div>
+                          <div className="relative group/after">
+                            <img
+                              src={comparison.after_photo?.thumbnail_url || comparison.after_photo?.photo_url || '/placeholder.jpg'}
+                              alt="After"
+                              className="w-full h-full object-cover transition-transform duration-700 group-hover/after:scale-110"
+                            />
+                            <div className="absolute inset-0 bg-primary/10" />
+                            <Badge variant="default" size="sm" className="absolute top-3 left-3 font-black uppercase text-[8px] border-none">Node: After</Badge>
+                          </div>
+                        </div>
 
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                    <button className="p-2 bg-white rounded-full hover:bg-gray-100">
-                      <Eye className="w-5 h-5 text-gray-700" />
-                    </button>
-                    <button className="p-2 bg-white rounded-full hover:bg-gray-100">
-                      <ShareNetwork className="w-5 h-5 text-gray-700" />
-                    </button>
-                    <button className="p-2 bg-white rounded-full hover:bg-gray-100">
-                      <Trash className="w-5 h-5 text-red-500" />
-                    </button>
-                  </div>
-                </div>
+                        {/* Overlay Controls */}
+                        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center gap-3">
+                          <Button size="sm" variant="outline" className="rounded-full w-10 h-10 p-0 border-white/20 text-white hover:bg-white/10">
+                            <Eye weight="bold" className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="outline" className="rounded-full w-10 h-10 p-0 border-white/20 text-white hover:bg-white/10">
+                            <ShareNetwork weight="bold" className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="outline" className="rounded-full w-10 h-10 p-0 border-white/20 text-rose-400 hover:bg-rose-500/10 hover:border-rose-500/30">
+                            <Trash weight="bold" className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
 
-                <div className="p-4">
-                  <h3 className="font-medium text-gray-900">
-                    {comparison.title || comparison.treatment_name || 'Untitled'}
-                  </h3>
-                  {comparison.description && (
-                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                      {comparison.description}
-                    </p>
-                  )}
-                  <div className="flex items-center justify-between mt-3 text-sm">
-                    <div className="flex items-center gap-2 text-gray-500">
-                      <Eye className="w-4 h-4" />
-                      {comparison.view_count} views
-                    </div>
-                    <div className="flex items-center gap-2">
-                      {comparison.featured && (
-                        <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded text-xs">
-                          Featured
-                        </span>
-                      )}
-                      <span className={`px-2 py-0.5 rounded text-xs ${
-                        comparison.is_public
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        {comparison.is_public ? 'Public' : 'Private'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                      <CardContent className="p-6 flex-1 flex flex-col justify-between">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h3 className="text-lg font-bold text-foreground tracking-tight group-hover:text-primary transition-colors truncate">
+                              {comparison.title || comparison.treatment_name || 'Protocol Node'}
+                            </h3>
+                            <Badge variant={comparison.is_public ? 'success' : 'secondary'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-2">
+                              {comparison.is_public ? 'Public' : 'Encrypted'}
+                            </Badge>
+                          </div>
+                          {comparison.description && (
+                            <p className="text-xs text-muted-foreground font-medium line-clamp-2 italic leading-relaxed">
+                              "{comparison.description}"
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="pt-6 mt-6 border-t border-border/50 flex items-center justify-between">
+                          <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                            <Eye weight="bold" className="w-3.5 h-3.5 opacity-60" />
+                            {comparison.view_count} Interactions
+                          </div>
+                          {comparison.featured && (
+                            <Badge variant="warning" size="sm" className="font-black uppercase text-[8px] tracking-widest gap-1.5 px-3">
+                              <Sparkle weight="fill" className="w-3 h-3" />
+                              Showcase
+                            </Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
               </div>
-            ))}
-          </div>
-        )
-      ) : (
-        filteredPhotos.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl border">
-            <ImageIcon className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-gray-500">ยังไม่มีภาพ</p>
-          </div>
+            )}
+          </motion.div>
         ) : (
-          <div className={viewMode === 'grid'
-            ? 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4'
-            : 'space-y-3'
-          }>
-            {filteredPhotos.map((photo) => (
-              <div
-                key={photo.id}
-                className={viewMode === 'grid'
-                  ? 'relative aspect-square rounded-lg overflow-hidden group cursor-pointer'
-                  : 'flex items-center gap-4 p-3 bg-white rounded-lg border'
-                }
-              >
-                {viewMode === 'grid' ? (
-                  <>
-                    <img
-                      src={photo.thumbnail_url || photo.photo_url}
-                      alt={photo.type}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Eye className="w-6 h-6 text-white" />
-                    </div>
-                    <span className={`absolute top-2 left-2 text-xs px-2 py-0.5 rounded ${
-                      photo.type === 'before' ? 'bg-gray-800 text-white' :
-                      photo.type === 'after' ? 'bg-indigo-600 text-white' :
-                      'bg-yellow-500 text-white'
-                    }`}>
-                      {photo.type}
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <img
-                      src={photo.thumbnail_url || photo.photo_url}
-                      alt={photo.type}
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">
-                        {photo.customer?.full_name || 'Unknown'}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {photo.treatment?.names?.th || 'No treatment'}
-                      </p>
-                      <p className="text-xs text-gray-400">{formatDate(photo.taken_at)}</p>
-                    </div>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      photo.type === 'before' ? 'bg-gray-100 text-gray-700' :
-                      photo.type === 'after' ? 'bg-indigo-100 text-indigo-700' :
-                      'bg-yellow-100 text-yellow-700'
-                    }`}>
-                      {photo.type}
-                    </span>
-                  </>
-                )}
+          <motion.div 
+            key="photos"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            {filteredPhotos.length === 0 ? (
+              <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-4 opacity-40">
+                <ImageIcon weight="duotone" className="w-16 h-16" />
+                <p className="text-xs font-black uppercase tracking-widest">Media Registry Nominal</p>
+              </Card>
+            ) : (
+              <div className={cn(
+                viewMode === 'grid' 
+                  ? 'grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4' 
+                  : 'space-y-3'
+              )}>
+                {filteredPhotos.map((photo, i) => (
+                  <motion.div
+                    key={photo.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.02 }}
+                  >
+                    {viewMode === 'grid' ? (
+                      <div className="relative aspect-square rounded-[20px] overflow-hidden group cursor-pointer border border-border/50 hover:border-primary/40 transition-all shadow-sm">
+                        <img
+                          src={photo.thumbnail_url || photo.photo_url}
+                          alt={photo.type}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-3">
+                          <Eye weight="bold" className="w-6 h-6 text-white" />
+                          <span className="text-[8px] font-black text-white uppercase tracking-widest">Analyze Node</span>
+                        </div>
+                        <Badge 
+                          variant={photo.type === 'before' ? 'secondary' : photo.type === 'after' ? 'default' : 'warning'} 
+                          size="sm" 
+                          className="absolute top-2 left-2 font-black uppercase text-[7px] tracking-widest px-2 opacity-90 border-none"
+                        >
+                          {photo.type}
+                        </Badge>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-5 p-4 bg-secondary/30 rounded-2xl border border-border/50 hover:bg-secondary/50 transition-all group/list">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-border/50 flex-shrink-0 group-hover/list:border-primary/30 transition-all">
+                          <img
+                            src={photo.thumbnail_url || photo.photo_url}
+                            alt={photo.type}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-foreground truncate tracking-tight">{photo.customer?.full_name || 'Identity Unknown'}</p>
+                          <div className="flex items-center gap-3 mt-1">
+                            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest truncate">{photo.treatment?.names?.th || 'Registry Unlinked'}</p>
+                            <div className="w-1 h-1 rounded-full bg-border" />
+                            <span className="text-[9px] text-muted-foreground font-bold tabular-nums uppercase">{formatDate(photo.taken_at)}</span>
+                          </div>
+                        </div>
+                        <Badge 
+                          variant={photo.type === 'before' ? 'secondary' : photo.type === 'after' ? 'default' : 'warning'} 
+                          size="sm" 
+                          className="font-black uppercase text-[8px] tracking-widest px-3 border-none"
+                        >
+                          {photo.type}
+                        </Badge>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
               </div>
-            ))}
-          </div>
-        )
-      )}
-    </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

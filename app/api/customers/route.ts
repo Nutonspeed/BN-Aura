@@ -8,6 +8,39 @@ import {
 } from '@/lib/api/responseHelpers';
 import { APIErrorCode } from '@/lib/api/contracts';
 
+// Simple in-memory cache for user clinic data (5 minutes TTL)
+const userClinicCache = new Map<string, { clinic_id: string, role: string, expires: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+async function getUserClinicData(supabase: any, userId: string) {
+  const cached = userClinicCache.get(userId);
+  if (cached && cached.expires > Date.now()) {
+    return cached;
+  }
+
+  const { data: staffData, error: staffError } = await supabase
+    .from('clinic_staff')
+    .select('clinic_id, role')
+    .eq('user_id', userId)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (staffError || !staffData) {
+    throw new Error('User is not associated with a clinic');
+  }
+
+  const clinicData = {
+    clinic_id: staffData.clinic_id,
+    role: staffData.role,
+    expires: Date.now() + CACHE_TTL
+  };
+  
+  userClinicCache.set(userId, clinicData);
+  return clinicData;
+}
+
 /**
  * GET /api/customers
  * List customers for the current clinic
@@ -20,14 +53,11 @@ export const GET = withErrorHandling(async (request: Request) => {
     return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
   }
 
-  // Get clinic_id for the current user
-  const { data: staffData, error: staffError } = await supabase
-    .from('clinic_staff')
-    .select('clinic_id')
-    .eq('user_id', user.id)
-    .single();
-
-  if (staffError || !staffData) {
+  // Get clinic_id for the current user (with caching)
+  let clinicData;
+  try {
+    clinicData = await getUserClinicData(supabase, user.id);
+  } catch (error) {
     return createErrorResponse(APIErrorCode.FORBIDDEN, 'User is not associated with a clinic');
   }
 
@@ -39,7 +69,7 @@ export const GET = withErrorHandling(async (request: Request) => {
   let query = supabase
     .from('customers')
     .select('*', { count: 'exact' })
-    .eq('clinic_id', staffData.clinic_id)
+    .eq('clinic_id', clinicData.clinic_id)
     .order('created_at', { ascending: false });
 
   if (searchTerm) {
@@ -59,7 +89,7 @@ export const GET = withErrorHandling(async (request: Request) => {
       totalPages: Math.ceil((count || 0) / limit)
     },
     meta: {
-      clinicId: staffData.clinic_id,
+      clinicId: clinicData.clinic_id,
       searchTerm
     }
   });

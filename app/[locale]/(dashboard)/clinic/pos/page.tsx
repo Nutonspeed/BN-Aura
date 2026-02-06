@@ -12,9 +12,21 @@ import {
   CheckCircle,
   XCircle,
   Clock,
-  CaretLeft
+  CaretLeft,
+  ArrowLeft,
+  CurrencyCircleDollar,
+  Receipt,
+  IdentificationCard,
+  Plus
 } from '@phosphor-icons/react';
 import type { Icon } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import POSProductGrid from '@/components/pos/POSProductGrid';
@@ -24,6 +36,8 @@ import DigitalReceipt from '@/components/pos/DigitalReceipt';
 import { createClient } from '@/lib/supabase/client';
 
 export default function POSPage() {
+  const { goBack } = useBackNavigation();
+  const t = useTranslations('clinic.pos' as any);
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState<any[]>([]);
@@ -209,7 +223,11 @@ export default function POSPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-140px)] -m-10 overflow-hidden font-sans">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="h-[calc(100vh-140px)] -m-8 flex font-sans overflow-hidden bg-background"
+    >
       <PaymentModal 
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
@@ -217,45 +235,65 @@ export default function POSPage() {
         amount={cartItems.reduce((acc, item) => acc + item.total, 0)}
         transactionId={pendingTransactionId || ''}
         clinicId={clinicId}
+        customer={selectedCustomer}
+        items={cartItems}
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col p-10 overflow-hidden print:hidden">
-        <div className="flex items-center justify-between mb-8">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <SquaresFour className="w-4 h-4" />
-              Sales Orchestration
-            </div>
-            <h1 className="text-4xl font-heading font-bold text-foreground tracking-tight">Point of <span className="text-primary">Sale</span></h1>
-          </div>
+      <div className="flex-1 flex flex-col p-8 overflow-hidden print:hidden relative border-r border-border/50">
+        <div className="flex-shrink-0 mb-8">
+          <Breadcrumb />
           
-          <div className="flex items-center gap-4">
-            <div className="flex bg-secondary border border-border p-1 rounded-xl mr-2">
-              {(['THB', 'USD'] as const).map((curr) => (
-                <button
-                  key={curr}
-                  onClick={() => setCurrency(curr)}
-                  className={cn(
-                    "px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all",
-                    currency === curr ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  {curr}
-                </button>
-              ))}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mt-6">
+            <div className="space-y-1">
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+              >
+                <SquaresFour weight="duotone" className="w-4 h-4" />
+                Sales Orchestration Node
+              </motion.div>
+              <motion.h1 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="text-4xl font-heading font-bold text-foreground tracking-tight"
+              >
+                Point of <span className="text-primary">Sale</span>
+              </motion.h1>
             </div>
-            <button 
-              onClick={() => router.push('/clinic/pos/history')}
-              className="flex items-center gap-2 px-5 py-3 bg-secondary border border-border rounded-xl text-xs font-medium text-foreground hover:bg-accent transition-all"
-            >
-              <ClockCounterClockwise className="w-4 h-4" />
-              Recent Logs
-            </button>
+            
+            <div className="flex items-center gap-3">
+              <div className="flex bg-secondary/50 border border-border p-1 rounded-2xl shadow-inner">
+                {(['THB', 'USD'] as const).map((curr) => (
+                  <button
+                    key={curr}
+                    onClick={() => setCurrency(curr)}
+                    className={cn(
+                      "px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border",
+                      currency === curr 
+                        ? "bg-card text-primary border-border/50 shadow-sm" 
+                        : "text-muted-foreground border-transparent hover:text-foreground"
+                    )}
+                  >
+                    {curr}
+                  </button>
+                ))}
+              </div>
+              <Button 
+                variant="outline"
+                onClick={() => router.push('/clinic/pos/history')}
+                className="gap-2"
+              >
+                <ClockCounterClockwise weight="bold" className="w-4 h-4" />
+                Recent Logs
+              </Button>
+            </div>
           </div>
         </div>
 
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-0 relative">
           <POSProductGrid 
             products={products}
             treatments={treatments}
@@ -267,7 +305,7 @@ export default function POSPage() {
       </div>
 
       {/* Sidebar - Cart */}
-      <div className="print:hidden">
+      <div className="w-[400px] flex-shrink-0 print:hidden bg-card/30 backdrop-blur-xl">
         <POSCart 
           items={cartItems}
           customer={selectedCustomer}
@@ -281,51 +319,53 @@ export default function POSPage() {
         />
       </div>
 
-      {/* Customer Selection Drawer/Overlay */}
+      {/* Customer Selection Modal */}
       <AnimatePresence>
         {isCustomerSelectOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 print:hidden"
-            onClick={() => setIsCustomerSelectOpen(false)}
-          >
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 print:hidden">
             <motion.div
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg bg-card border border-border rounded-2xl p-8 shadow-2xl overflow-hidden flex flex-col max-h-[80vh]"
+              className="w-full max-w-lg bg-card border border-border rounded-[32px] p-8 shadow-premium overflow-hidden flex flex-col max-h-[85vh] relative"
             >
-              <div className="flex items-center justify-between mb-8">
+              <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none">
+                <IdentificationCard className="w-48 h-48 text-primary" />
+              </div>
+
+              <div className="flex items-center justify-between mb-8 relative z-10">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
-                    <User className="w-6 h-6" />
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                    <User weight="duotone" className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-foreground">Select Patient</h3>
-                    <p className="text-sm text-muted-foreground italic font-light">Linking transaction to identity</p>
+                    <h2 className="text-2xl font-bold text-foreground tracking-tight">Identity Registry</h2>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Select target client node</p>
                   </div>
                 </div>
-                <button onClick={() => setIsCustomerSelectOpen(false)} className="p-3 hover:bg-white/5 rounded-2xl transition-colors">
-                  <XCircle className="w-6 h-6 text-muted-foreground" />
+                <button 
+                  onClick={() => setIsCustomerSelectOpen(false)}
+                  className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all"
+                >
+                  <XCircle weight="bold" className="w-6 h-6" />
                 </button>
               </div>
 
-              <div className="relative mb-6">
-                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within:text-primary transition-colors" />
+              <div className="relative mb-8 relative z-10 group">
+                <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-2xl" />
+                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
                 <input 
-                  type="text"
-                  placeholder="Search by name, phone, or alias..."
+                  type="text" 
+                  placeholder="Search by identity name, phone, or alias..."
                   value={customerSearch}
                   onChange={(e) => setCustomerSearch(e.target.value)}
                   autoFocus
-                  className="w-full bg-secondary border border-border rounded-xl py-3 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
+                  className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-5 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
                 />
               </div>
 
-              <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar">
+              <div className="flex-1 overflow-y-auto space-y-2 pr-2 custom-scrollbar relative z-10">
                 {filteredCustomers.map(customer => (
                   <button
                     key={customer.id}
@@ -334,54 +374,61 @@ export default function POSPage() {
                       setIsCustomerSelectOpen(false);
                     }}
                     className={cn(
-                      "w-full flex items-center justify-between p-4 rounded-2xl border transition-all",
+                      "w-full flex items-center justify-between p-5 rounded-[24px] border transition-all group/item",
                       selectedCustomer?.id === customer.id 
-                        ? "bg-primary/20 border-primary/40" 
-                        : "bg-secondary border-border hover:border-primary/30"
+                        ? "bg-primary text-white border-primary shadow-premium" 
+                        : "bg-secondary/30 border-border/50 hover:border-primary/30 hover:bg-secondary/50 text-foreground"
                     )}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary/20 to-transparent flex items-center justify-center text-primary text-xs font-black">
+                    <div className="flex items-center gap-5">
+                      <div className={cn(
+                        "w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-bold shadow-sm transition-colors",
+                        selectedCustomer?.id === customer.id ? "bg-white/20" : "bg-card border border-border group-hover/item:text-primary"
+                      )}>
                         {customer.full_name.charAt(0)}
                       </div>
-                      <div className="text-left">
-                        <p className="text-sm font-semibold text-foreground">{customer.full_name}</p>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest">{customer.phone || 'No Phone'}</p>
+                      <div className="text-left space-y-0.5">
+                        <p className={cn("font-bold text-base tracking-tight", selectedCustomer?.id === customer.id ? "text-white" : "text-foreground")}>{customer.full_name}</p>
+                        <p className={cn("text-[10px] font-black uppercase tracking-widest", selectedCustomer?.id === customer.id ? "text-white/60" : "text-muted-foreground")}>{customer.phone || 'No Phone Node'}</p>
                       </div>
                     </div>
-                    {selectedCustomer?.id === customer.id && <CheckCircle className="w-5 h-5 text-primary" />}
+                    {selectedCustomer?.id === customer.id && (
+                      <div className="bg-white/20 p-1.5 rounded-full">
+                        <CheckCircle weight="fill" className="w-5 h-5 text-white" />
+                      </div>
+                    )}
                   </button>
                 ))}
                 {filteredCustomers.length === 0 && (
-                  <div className="py-10 text-center opacity-30">
-                    <User className="w-12 h-12 mx-auto mb-2 stroke-[1px]" />
-                    <p className="text-xs font-black uppercase tracking-widest">No Patients Found</p>
+                  <div className="py-20 text-center opacity-30 flex flex-col items-center gap-4">
+                    <User weight="duotone" className="w-16 h-16" />
+                    <p className="text-[10px] font-black uppercase tracking-widest">Zero Identities Detected</p>
                   </div>
                 )}
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Transaction Success Modal with Digital Receipt */}
+      {/* Transaction Success Modal */}
       <AnimatePresence>
         {transactionSuccessData && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[200] flex items-center justify-center p-4 overflow-y-auto custom-scrollbar"
+            className="fixed inset-0 bg-black/90 backdrop-blur-2xl z-[300] flex items-center justify-center p-4 overflow-y-auto custom-scrollbar"
           >
-            <div className="max-w-2xl w-full py-10">
-              <div className="flex justify-center mb-8 print:hidden">
+            <div className="max-w-2xl w-full py-10 relative">
+              <div className="flex justify-center mb-10 print:hidden">
                 <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="bg-emerald-500/20 border border-emerald-500/30 px-6 py-2 rounded-full flex items-center gap-3"
+                  initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                  animate={{ scale: 1, opacity: 1, y: 0 }}
+                  className="bg-emerald-500/10 border border-emerald-500/20 px-8 py-3 rounded-full flex items-center gap-4 shadow-lg backdrop-blur-md"
                 >
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  <span className="text-xs font-black text-white uppercase tracking-widest">Transaction Validated</span>
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
+                  <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em]">Transaction Node Validated</span>
                 </motion.div>
               </div>
 
@@ -394,21 +441,24 @@ export default function POSPage() {
                 discount={0}
                 tax={0}
                 total={transactionSuccessData.total}
-                clinicInfo={clinicInfo || { name: 'BN-Aura Clinic', address: 'Loading...', phone: '...' }}
+                clinicInfo={clinicInfo || { name: 'BN-Aura Clinical Node', address: 'Operational Data Loading...', phone: '...' }}
               />
 
-              <div className="mt-8 flex justify-center print:hidden">
-                <button
+              <div className="mt-12 flex flex-col items-center gap-6 print:hidden">
+                <Button
                   onClick={() => setTransactionSuccessData(null)}
-                  className="px-10 py-3 bg-secondary border border-border text-foreground rounded-xl font-medium hover:bg-accent transition-all text-sm"
+                  className="px-12 py-6 rounded-[24px] shadow-premium text-base font-bold uppercase tracking-widest"
                 >
-                  Close & New Sale
+                  Confirm & New Sale
+                </Button>
+                <button className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-white transition-colors">
+                  Archive Digital Transcript
                 </button>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

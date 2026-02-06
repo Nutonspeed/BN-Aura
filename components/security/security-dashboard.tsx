@@ -1,4 +1,4 @@
-// Security Monitoring Dashboard Component
+﻿// Security Monitoring Dashboard Component
 // Real-time security monitoring and threat detection
 
 'use client';
@@ -83,7 +83,7 @@ const SecurityDashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<SecurityMetric[]>([]);
   const [events, setEvents] = useState<SecurityEvent[]>([]);
   const [threatData, setThreatData] = useState<ThreatData[]>([]);
-  const [userActivity, setUserActivity] = useState<UserActivity[]>([]);
+  const [userPulse, setUserActivity] = useState<UserActivity[]>([]);
   const [autoRefresh, setAutoRefresh] = useState(true);
 
   // Mock data generation
@@ -189,7 +189,7 @@ const SecurityDashboard: React.FC = () => {
 
     return {
       threatData,
-      userActivity,
+      userPulse,
       metrics: securityMetrics,
       events: securityEvents
     };
@@ -372,7 +372,7 @@ const SecurityDashboard: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
           <h3 className="text-lg font-semibold mb-4">User Activity</h3>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={userActivity}>
+            <LineChart data={userPulse}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="hour" />
               <YAxis />

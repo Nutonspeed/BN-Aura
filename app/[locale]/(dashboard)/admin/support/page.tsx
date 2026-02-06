@@ -1,16 +1,47 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { SpinnerGap } from '@phosphor-icons/react';
+import { 
+  SpinnerGap, 
+  Plus, 
+  X, 
+  CaretRight, 
+  DownloadSimple, 
+  ArrowLeft,
+  Lifebuoy,
+  WarningCircle,
+  CheckCircle,
+  ChatCircleText,
+  Clock,
+  User,
+  Buildings,
+  Tag,
+  ShieldCheck,
+  ArrowRight,
+  Monitor,
+  IdentificationBadge,
+  Pulse,
+  Briefcase,
+  ArrowsClockwise,
+  Headset
+} from '@phosphor-icons/react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { StatCard } from '@/components/ui/StatCard';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { SupportProvider, useSupportContext } from './context';
 import SupportHeader from './components/SupportHeader';
 import SupportStats from './components/SupportStats';
 import TicketFilters from './components/TicketFilters';
 import SupportTicketTable from './components/SupportTicketTable';
 import { SupportTicket } from './types';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function SupportContent() {
+  const { goBack } = useBackNavigation();
   const { loading, tickets, refreshTickets } = useSupportContext();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
@@ -36,8 +67,11 @@ function SupportContent() {
 
   if (loading && !selectedTicket) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
+      <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
+        <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
+          Synchronizing Support Registry...
+        </p>
       </div>
     );
   }
@@ -46,230 +80,341 @@ function SupportContent() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-8 pb-20 font-sans"
     >
-      <SupportHeader onCreateTicket={handleCreateTicket} />
-      
-      <SupportStats />
-      
-      <TicketFilters />
-      
-      <SupportTicketTable 
-        tickets={tickets || []}
-        onTicketSelect={handleViewTicket}
-        onTicketEdit={handleEditTicket}
-        onTicketDelete={(ticketId) => console.log('Delete ticket:', ticketId)}
-        loading={loading}
-      />
+      <Breadcrumb />
+
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <Headset weight="duotone" className="w-4 h-4" />
+            Support Intelligence Node
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            Clinical <span className="text-primary">Support</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating multi-tenant support protocols and clinical issue resolution.
+          </motion.p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline"
+            onClick={refreshTickets}
+            disabled={loading}
+            className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
+          >
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+            Sync Registry
+          </Button>
+          <Button 
+            onClick={handleCreateTicket}
+            className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
+          >
+            <Plus weight="bold" className="w-4 h-4" />
+            Initialize Ticket
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats Summary Section */}
+      <div className="px-2">
+        <SupportStats />
+      </div>
+
+      {/* Main Content Node */}
+      <div className="px-2 space-y-8">
+        <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+          <CardHeader className="p-8 border-b border-border/50 bg-secondary/30 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                <ChatCircleText weight="duotone" className="w-6 h-6" />
+              </div>
+              <div>
+                <CardTitle className="text-xl font-black uppercase tracking-tight">Active Protocol Registry</CardTitle>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Real-time clinical support nodes</p>
+              </div>
+            </div>
+            <TicketFilters />
+          </CardHeader>
+          <CardContent className="p-0">
+            <SupportTicketTable onViewTicket={handleViewTicket} onEditTicket={handleEditTicket} />
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Create Ticket Modal */}
-      {showCreateModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800 p-8 rounded-2xl border border-white/10 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
-          >
-            <h2 className="text-2xl font-bold text-white mb-6">Create Support Ticket</h2>
-            
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">
-                    Clinic
-                  </label>
-                  <select className="w-full bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50">
-                    <option value="" className="bg-slate-800">Select Clinic</option>
-                    <option value="clinic-1" className="bg-slate-800">Bangkok Premium Clinic</option>
-                    <option value="clinic-2" className="bg-slate-800">Phuket Beauty Center</option>
+      <AnimatePresence>
+        {showCreateModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-card p-8 rounded-[32px] border border-border shadow-premium w-full max-w-2xl max-h-[90vh] overflow-y-auto relative"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                    <Plus weight="bold" className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground tracking-tight">Create Support Ticket</h2>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Initiate assistance node</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowCreateModal(false)}
+                  className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all"
+                >
+                  <X weight="bold" className="w-6 h-6" />
+                </button>
+              </div>
+              
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Target Clinic</label>
+                    <div className="relative group">
+                      <Buildings className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary" />
+                      <select className="w-full bg-secondary/30 border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium appearance-none">
+                        <option value="" className="bg-card">Select Clinic Instance</option>
+                        <option value="clinic-1" className="bg-card">Bangkok Premium Clinic</option>
+                        <option value="clinic-2" className="bg-card">Phuket Beauty Center</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Priority Level</label>
+                    <div className="relative group">
+                      <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary" />
+                      <select className="w-full bg-secondary/30 border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium appearance-none">
+                        <option value="low" className="bg-card">Low (Standard)</option>
+                        <option value="medium" className="bg-card" selected>Medium (Moderate)</option>
+                        <option value="high" className="bg-card">High (Accelerated)</option>
+                        <option value="urgent" className="bg-card">Urgent (Immediate)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Inquiry Category</label>
+                  <select className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-5 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium appearance-none">
+                    <option value="general" className="bg-card" selected>General Consultation</option>
+                    <option value="technical" className="bg-card">Technical Infrastructure</option>
+                    <option value="billing" className="bg-card">Financial / Billing</option>
+                    <option value="feature_request" className="bg-card">Feature Enhancement</option>
+                    <option value="bug_report" className="bg-card">Diagnostic / Bug Report</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-white/80 text-sm font-medium mb-2">
-                    Priority
-                  </label>
-                  <select className="w-full bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50">
-                    <option value="low" className="bg-slate-800">Low</option>
-                    <option value="medium" className="bg-slate-800" selected>Medium</option>
-                    <option value="high" className="bg-slate-800">High</option>
-                    <option value="urgent" className="bg-slate-800">Urgent</option>
-                  </select>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Subject</label>
+                  <input
+                    type="text"
+                    className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-5 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium placeholder:text-muted-foreground/40"
+                    placeholder="Brief objective summary"
+                  />
                 </div>
-              </div>
 
-              <div>
-                <label className="block text-white/80 text-sm font-medium mb-2">
-                  Category
-                </label>
-                <select className="w-full bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50">
-                  <option value="general" className="bg-slate-800" selected>General</option>
-                  <option value="technical" className="bg-slate-800">Technical</option>
-                  <option value="billing" className="bg-slate-800">Billing</option>
-                  <option value="feature_request" className="bg-slate-800">Feature Request</option>
-                  <option value="bug_report" className="bg-slate-800">Bug Report</option>
-                </select>
-              </div>
+                <div className="space-y-2">
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Description</label>
+                  <textarea
+                    rows={4}
+                    className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-5 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium placeholder:text-muted-foreground/40"
+                    placeholder="Detailed infrastructure or operational context"
+                  />
+                </div>
+              </form>
 
-              <div>
-                <label className="block text-white/80 text-sm font-medium mb-2">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  className="w-full bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  placeholder="Brief description of the issue"
-                />
+              <div className="flex flex-col sm:flex-row items-center gap-4 mt-10">
+                <Button className="w-full sm:w-auto px-10 py-4 shadow-premium">
+                  Initiate Ticket
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setShowCreateModal(false)}
+                  className="w-full sm:w-auto text-xs font-black uppercase tracking-widest text-muted-foreground"
+                >
+                  Cancel
+                </Button>
               </div>
-
-              <div>
-                <label className="block text-white/80 text-sm font-medium mb-2">
-                  Description
-                </label>
-                <textarea
-                  rows={4}
-                  className="w-full bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                  placeholder="Detailed description of the issue or request"
-                />
-              </div>
-            </form>
-
-            <div className="flex items-center gap-4 mt-8">
-              <button
-                type="button"
-                className="px-6 py-3 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all font-medium"
-              >
-                Create Ticket
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowCreateModal(false)}
-                className="px-6 py-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-medium"
-              >
-                Cancel
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Ticket Detail Modal */}
-      {showDetailModal && selectedTicket && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800 p-8 rounded-2xl border border-white/10 w-full max-w-4xl max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Ticket Details</h2>
-              <button
-                onClick={() => setShowDetailModal(false)}
-                className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              <div className="flex items-center gap-3">
-                <span className={`px-3 py-1 rounded-full text-sm font-bold uppercase ${selectedTicket.priority === 'urgent' ? 'bg-red-500/20 text-red-400' : selectedTicket.priority === 'high' ? 'bg-orange-500/20 text-orange-400' : 'bg-blue-500/20 text-blue-400'}`}>
-                  {selectedTicket.priority}
-                </span>
-                <span className={`px-3 py-1 rounded-full text-sm font-bold uppercase ${selectedTicket.status === 'open' ? 'bg-amber-500/20 text-amber-400' : selectedTicket.status === 'resolved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-blue-500/20 text-blue-400'}`}>
-                  {selectedTicket.status.replace('_', ' ')}
-                </span>
+      <AnimatePresence>
+        {showDetailModal && selectedTicket && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-card p-8 rounded-[32px] border border-border shadow-premium w-full max-w-4xl max-h-[90vh] overflow-y-auto relative"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                    <ChatCircleText weight="duotone" className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-foreground tracking-tight">Ticket Node Analysis</h2>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Status: {selectedTicket.status}</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all"
+                >
+                  <X weight="bold" className="w-6 h-6" />
+                </button>
               </div>
 
-              <div>
-                <h3 className="text-xl font-bold text-white mb-2">{selectedTicket.subject}</h3>
-                <p className="text-white/80">{selectedTicket.description}</p>
-              </div>
+              <div className="space-y-8">
+                <div className="flex flex-wrap gap-3">
+                  <Badge variant={
+                    selectedTicket.priority === 'urgent' ? 'destructive' : 
+                    selectedTicket.priority === 'high' ? 'warning' : 'default'
+                  } className="font-black uppercase tracking-widest px-4 py-1.5">
+                    {selectedTicket.priority} Priority
+                  </Badge>
+                  <Badge variant={
+                    selectedTicket.status === 'open' ? 'warning' : 
+                    selectedTicket.status === 'resolved' ? 'success' : 'secondary'
+                  } className="font-black uppercase tracking-widest px-4 py-1.5">
+                    {selectedTicket.status.replace('_', ' ')}
+                  </Badge>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white/5 rounded-xl">
                 <div>
-                  <h4 className="font-medium text-white mb-2">Clinic</h4>
-                  <p className="text-white/60">{selectedTicket.clinic?.name}</p>
+                  <h3 className="text-2xl font-bold text-foreground tracking-tight mb-3">{selectedTicket.subject}</h3>
+                  <Card className="bg-secondary/30 border-border/50">
+                    <CardContent className="p-6">
+                      <p className="text-foreground leading-relaxed font-medium">{selectedTicket.description}</p>
+                    </CardContent>
+                  </Card>
                 </div>
-                <div>
-                  <h4 className="font-medium text-white mb-2">Created By</h4>
-                  <p className="text-white/60">{selectedTicket.user?.full_name}</p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-white mb-2">Created At</h4>
-                  <p className="text-white/60">
-                    {new Date(selectedTicket.created_at).toLocaleDateString('th-TH', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </p>
-                </div>
-                <div>
-                  <h4 className="font-medium text-white mb-2">Assigned To</h4>
-                  <p className="text-white/60">
-                    {selectedTicket.assigned_user?.full_name || 'Unassigned'}
-                  </p>
-                </div>
-              </div>
 
-              <div>
-                <h4 className="font-medium text-white mb-4">Conversation</h4>
-                <div className="space-y-4">
-                  {/* Initial message */}
-                  <div className="p-4 bg-white/5 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-medium text-white">{selectedTicket.user?.full_name}</span>
-                      <span className="text-xs text-white/40">
-                        {new Date(selectedTicket.created_at).toLocaleString('th-TH')}
-                      </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-6 bg-secondary/50 rounded-3xl border border-border shadow-inner">
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Source Clinic</p>
+                    <div className="flex items-center gap-2 text-foreground font-bold">
+                      <Buildings weight="bold" className="w-4 h-4 text-primary" />
+                      <span className="text-sm truncate">{selectedTicket.clinic?.name}</span>
                     </div>
-                    <p className="text-white/80">{selectedTicket.description}</p>
                   </div>
-
-                  {/* Replies would go here */}
-                  <div className="p-4 bg-primary/10 rounded-xl">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="font-medium text-white">Support Agent</span>
-                      <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded-full">ADMIN</span>
-                      <span className="text-xs text-white/40">2 hours ago</span>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Identity Origin</p>
+                    <div className="flex items-center gap-2 text-foreground font-bold">
+                      <User weight="bold" className="w-4 h-4 text-primary" />
+                      <span className="text-sm truncate">{selectedTicket.user?.full_name}</span>
                     </div>
-                    <p className="text-white/80">Thank you for contacting support. We're looking into this issue and will get back to you shortly.</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Initiated At</p>
+                    <div className="flex items-center gap-2 text-foreground font-bold">
+                      <Clock weight="bold" className="w-4 h-4 text-primary" />
+                      <span className="text-sm">{new Date(selectedTicket.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Handler Node</p>
+                    <div className="flex items-center gap-2 text-foreground font-bold">
+                      <Badge variant="ghost" size="sm" className="font-bold">
+                        {selectedTicket.assigned_user?.full_name || 'UNASSIGNED'}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
 
-                {/* Reply form */}
-                <div className="mt-6 p-4 bg-white/5 rounded-xl">
-                  <textarea
-                    rows={3}
-                    className="w-full bg-white/10 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="Type your reply..."
-                  />
-                  <div className="flex items-center justify-between mt-4">
-                    <label className="flex items-center gap-2 text-sm text-white/60">
-                      <input type="checkbox" className="rounded" />
-                      Internal note (not visible to customer)
-                    </label>
-                    <button className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all font-medium">
-                      Send Reply
-                    </button>
+                <div className="space-y-6">
+                  <h4 className="text-sm font-black text-foreground uppercase tracking-[0.2em] flex items-center gap-3">
+                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
+                    Communication Log
+                  </h4>
+                  
+                  <div className="space-y-4">
+                    {/* Initial message */}
+                    <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50 relative overflow-hidden">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-card border border-border flex items-center justify-center text-muted-foreground">
+                            <User weight="bold" className="w-4 h-4" />
+                          </div>
+                          <span className="font-bold text-foreground text-sm">{selectedTicket.user?.full_name}</span>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground font-medium italic">
+                          {new Date(selectedTicket.created_at).toLocaleString()}
+                        </span>
+                      </div>
+                      <p className="text-foreground/80 text-sm leading-relaxed">{selectedTicket.description}</p>
+                    </div>
+
+                    {/* Simulation message */}
+                    <div className="p-5 bg-primary/5 rounded-3xl border border-primary/10 relative overflow-hidden ml-8">
+                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/20" />
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
+                            <ShieldCheck weight="fill" className="w-4 h-4" />
+                          </div>
+                          <span className="font-bold text-foreground text-sm">System Support Node</span>
+                          <Badge variant="default" size="sm" className="text-[8px] font-black">ADMIN</Badge>
+                        </div>
+                        <span className="text-[10px] text-muted-foreground font-medium italic">2 hours ago</span>
+                      </div>
+                      <p className="text-foreground/80 text-sm leading-relaxed">Identity node processed. Diagnostic algorithms initiated for technical review.</p>
+                    </div>
+                  </div>
+
+                  {/* Reply form */}
+                  <div className="mt-8 p-6 bg-secondary/50 rounded-[32px] border border-border shadow-inner">
+                    <textarea
+                      rows={3}
+                      className="w-full bg-card border border-border rounded-2xl py-4 px-5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium text-sm"
+                      placeholder="Input response node..."
+                    />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6">
+                      <label className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center">
+                          <input type="checkbox" className="peer sr-only" />
+                          <div className="w-5 h-5 bg-card border border-border rounded transition-all peer-checked:bg-primary peer-checked:border-primary" />
+                          <CheckCircle weight="fill" className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+                        </div>
+                        <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">Internal diagnostic note (Encrypted)</span>
+                      </label>
+                      <Button className="px-8 shadow-premium gap-2">
+                        Transmit Reply
+                        <ArrowRight weight="bold" className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
-  );
-}
-
-export default function SupportPage() {
-  return (
-    <SupportProvider>
-      <SupportContent />
-    </SupportProvider>
   );
 }

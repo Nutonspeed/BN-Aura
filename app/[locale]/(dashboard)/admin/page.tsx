@@ -20,9 +20,26 @@ import {
   EnvelopeSimple,
   Phone,
   MapPin,
-  Shield
+  Shield,
+  TrendUp,
+  CheckCircle,
+  HardDrives,
+  Key,
+  IdentificationBadge,
+  Briefcase,
+  Monitor,
+  ChartLineUp,
+  Database,
+  ArrowSquareOut,
+  Target
 } from '@phosphor-icons/react';
-import AnimatedNumber from '@/components/ui/premium/AnimatedNumber';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 
 interface Clinic {
   id: string;
@@ -311,34 +328,36 @@ export default function SuperAdminDashboard() {
   }
 
   const stats = [
-    { label: 'Total Clinics', value: globalStats.totalClinics, icon: Buildings, color: 'text-primary', suffix: '' },
-    { label: 'Global Customers', value: globalStats.globalCustomers, icon: Users, color: 'text-emerald-400', suffix: '' },
-    { label: 'Monthly AI Load', value: globalStats.monthlyAILoad / 1000, icon: Lightning, color: 'text-amber-400', suffix: 'k', decimals: 1 },
-    { label: 'Active Personnel', value: globalStats.activeSessions, icon: Pulse, color: 'text-rose-400', suffix: '' },
+    { label: 'Total Clinics', value: globalStats.totalClinics, icon: Buildings, trend: 'up' as const, change: 12 },
+    { label: 'Global Customers', value: globalStats.globalCustomers, icon: Users, trend: 'up' as const, change: 8 },
+    { label: 'Monthly AI Load', value: globalStats.monthlyAILoad, icon: Lightning, suffix: ' reqs', trend: 'up' as const, change: 24 },
+    { label: 'Active Personnel', value: globalStats.activeSessions, icon: Pulse, trend: 'neutral' as const, change: 0 },
   ];
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20"
+      className="space-y-8 pb-20 font-sans"
     >
+      <Breadcrumb />
+
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
         <div className="space-y-1">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-rose-500 text-xs font-black uppercase tracking-[0.3em]"
+            className="flex items-center space-xs text-primary text-label"
           >
-            <ShieldCheck className="w-4 h-4" />
+            <ShieldCheck weight="duotone" className="w-4 h-4" />
             System Authority Node
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-foreground tracking-tight"
+            className="text-display text-foreground"
           >
             Super Admin <span className="text-primary">Console</span>
           </motion.h1>
@@ -356,810 +375,828 @@ export default function SuperAdminDashboard() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3 }}
-          className="flex gap-3"
+          className="flex flex-wrap gap-3"
         >
-          <button 
-            onClick={() => router.push('/th/admin/network-map')}
-            className="px-6 py-3 bg-secondary border border-border rounded-2xl text-sm font-bold text-foreground hover:bg-accent transition-all active:scale-95 flex items-center gap-2"
+          <Button 
+            variant="outline"
+            onClick={() => router.push('/admin/network-map')}
+            className="space-xs pad-md radius-lg text-micro border-border/50"
           >
-            <Globe className="w-4 h-4 text-primary" />
+            <Globe weight="duotone" className="w-4 h-4 text-primary" />
             Network Map
-          </button>
-          <button 
+          </Button>
+          <Button 
             onClick={() => setShowRegisterModal(true)}
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-sm font-bold shadow-premium hover:brightness-110 transition-all active:scale-95 flex items-center gap-2"
+            className="space-xs pad-lg radius-lg text-micro shadow-premium"
           >
-            <Plus className="w-4 h-4 stroke-[3px]" />
-            Register New Clinic
-          </button>
-          <button 
+            <Plus weight="bold" className="w-4 h-4" />
+            Register Clinic
+          </Button>
+          <Button 
+            variant="outline"
+            className="bg-emerald-500/5 border-emerald-500/20 text-emerald-500 hover:bg-emerald-500/10 space-xs pad-lg radius-lg text-micro"
             onClick={() => setShowUserModal(true)}
-            className="px-6 py-3 bg-green-600 text-white rounded-2xl text-sm font-bold shadow-premium hover:brightness-110 transition-all active:scale-95 flex items-center gap-2"
           >
-            <Users className="w-4 h-4 stroke-[3px]" />
-            Create Clinic Owner
-          </button>
+            <Users weight="bold" className="w-4 h-4" />
+            Initialize Owner
+          </Button>
         </motion.div>
       </div>
 
       {/* Global Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         {stats.map((stat, i) => (
-          <motion.div
+          <StatCard
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + i * 0.1 }}
-            whileHover={{ y: -5 }}
-            className="bg-card p-6 rounded-2xl border border-border shadow-card relative overflow-hidden group"
-          >
-            <div className="absolute -top-4 -right-4 p-8 opacity-5 group-hover:opacity-10 group-hover:scale-125 transition-all duration-500">
-              <stat.icon className="w-16 h-16 text-primary" />
-            </div>
-            <div className="space-y-2 relative z-10">
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{stat.label}</p>
-              <p className="text-3xl font-bold text-foreground tracking-tight">
-                <AnimatedNumber value={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} duration={1.5} />
-              </p>
-            </div>
-          </motion.div>
+            title={stat.label}
+            value={stat.value}
+            icon={stat.icon}
+            trend={stat.trend}
+            change={stat.change}
+            suffix={stat.suffix}
+            className="p-4"
+          />
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-2">
         {/* Left: Clinic Management */}
-        <div className="lg:col-span-2 space-y-8">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-              <Buildings className="w-48 h-48 text-primary" />
+        <div className="lg:col-span-2 space-lg">
+          <Card className="radius-xl border-border/50 shadow-premium overflow-hidden group">
+            <div className="absolute top-0 right-0 pad-xl opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+              <Buildings className="w-64 h-64 text-primary" />
             </div>
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-              <h3 className="text-xl font-semibold text-foreground flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                  <Buildings className="w-6 h-6" />
+            <CardHeader className="flex flex-col md:flex-row md:items-center justify-between space-md border-b border-border/50 pad-lg bg-secondary/30">
+              <div className="flex items-center space-sm">
+                <div className="w-12 h-12 radius-lg bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                  <IdentificationBadge weight="duotone" className="w-6 h-6" />
                 </div>
-                Global Clinic Registry
-              </h3>
-              <div className="relative group">
-                <div className="absolute inset-0 bg-primary/10 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
-                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-primary transition-colors" />
+                <div>
+                  <CardTitle className="text-heading-2">Global Clinic Registry</CardTitle>
+                  <p className="text-label text-muted-foreground mt-0.5">Managed cluster instances</p>
+                </div>
+              </div>
+              <div className="relative group w-full md:w-72">
+                <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity radius-md" />
+                <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
                 <input 
                   type="text" 
-                  placeholder="Search clinics..." 
-                  className="bg-secondary border border-border rounded-xl py-3 pl-12 pr-6 text-sm text-foreground focus:outline-none focus:border-primary transition-all w-full md:w-72 relative z-10"
+                  placeholder="Query cluster nodes..." 
+                  className="w-full bg-card border border-border/50 radius-lg py-3 pl-11 pr-4 text-caption text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
                 />
               </div>
-            </div>
+            </CardHeader>
 
-            <div className="space-y-4 relative z-10">
-              {clinics.map((clinic, idx) => (
-                <motion.div
-                  key={clinic.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7 + idx * 0.05 }}
-                  className="p-5 bg-secondary rounded-xl border border-border hover:border-primary/30 transition-all group flex flex-col md:flex-row md:items-center justify-between gap-5"
-                >
-                  <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-foreground border border-border group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 transition-all duration-500">
-                      <Buildings className="w-7 h-7" />
+            <CardContent className="pad-lg">
+              <div className="space-sm">
+                {clinics.map((clinic, idx) => (
+                  <motion.div
+                    key={clinic.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + idx * 0.05 }}
+                    className="pad-md bg-secondary/20 radius-xl border border-border/50 hover:border-primary/30 hover:bg-secondary/40 transition-all group/item flex flex-col md:flex-row md:items-center justify-between space-md relative overflow-hidden"
+                  >
+                    <div className="flex items-center space-md relative z-10">
+                      <div className="w-14 h-14 radius-lg bg-card border border-border flex items-center justify-center text-muted-foreground group-hover/item:bg-primary/10 group-hover/item:text-primary transition-all duration-500 shadow-inner">
+                        <Buildings weight="duotone" className="w-7 h-7" />
+                      </div>
+                      <div className="space-xs min-w-0">
+                        <h4 className="text-heading-3 text-foreground group-hover/item:text-primary transition-colors truncate uppercase">{clinic.name}</h4>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] uppercase tracking-widest px-3">
+                            {clinic.plan}
+                          </Badge>
+                          <div className="w-1 h-1 rounded-full bg-border" />
+                          <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">
+                            NODE-{clinic.id.slice(0, 8).toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">{clinic.name}</h4>
+
+                    <div className="flex flex-wrap items-center gap-8 md:gap-10 relative z-10">
+                      <div className="flex gap-8">
+                        <div className="text-center min-w-[60px]">
+                          <p className="text-lg font-black text-foreground tabular-nums tracking-tight">{clinic.customerCount.toLocaleString()}</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Entities</p>
+                        </div>
+                        <div className="text-center min-w-[60px]">
+                          <p className="text-lg font-black text-foreground tabular-nums tracking-tight">{clinic.staffCount.toLocaleString()}</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Personnel</p>
+                        </div>
+                      </div>
+                      
                       <div className="flex items-center gap-4">
-                        <span className="text-[10px] text-primary font-black uppercase tracking-widest">{clinic.plan}</span>
-                        <div className="w-1 h-1 rounded-full bg-white/20" />
-                        <span className="text-[10px] text-muted-foreground font-medium italic">
-                          ID: {clinic.id.slice(0,8)}
-                        </span>
+                        <button 
+                          onClick={() => handleUpdateStatus(clinic.id, clinic.status)}
+                          className={cn(
+                            "px-5 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all border shadow-sm",
+                            clinic.status === 'active' 
+                              ? "bg-emerald-500/5 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/10" 
+                              : "bg-rose-500/5 text-rose-500 border-rose-500/20 hover:bg-rose-500/10"
+                          )}
+                        >
+                          {clinic.status === 'active' ? 'Operational' : 'Offline'}
+                        </button>
+                        <Button 
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => router.push(`/admin/clinics/${clinic.id}`)}
+                          className="h-10 w-10 p-0 rounded-xl hover:bg-primary/10 hover:text-primary transition-all"
+                        >
+                          <CaretRight weight="bold" className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <Button 
+                variant="ghost" 
+                className="w-full mt-8 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary border border-dashed border-border/50"
+              >
+                Access Full Cluster Matrix
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right: System Health & Operations */}
+        <div className="space-y-8">
+          {/* System Health */}
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
+              <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+                Infrastructure Health
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent className="p-8 space-y-4">
+              {Object.entries(systemStatus).map(([node, status], idx) => (
+                <motion.div 
+                  key={node} 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.4 + idx * 0.1 }}
+                  className="p-4 bg-secondary/20 rounded-2xl border border-border/50 flex justify-between items-center group/health hover:bg-secondary/40 transition-all"
+                >
+                  <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">
+                    {node.replace('_', ' ')}
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">{status === 'Checking...' ? 'Syncing...' : status}</span>
+                    <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]", status === 'Checking...' ? 'bg-muted animate-pulse' : 'bg-emerald-500')} />
+                  </div>
+                </motion.div>
+              ))}
+
+              <div className="p-5 bg-amber-500/5 rounded-[24px] border border-amber-500/10 flex gap-4 relative z-10 backdrop-blur-md mt-6">
+                <WarningCircle weight="fill" className="w-6 h-6 text-amber-500 flex-shrink-0" />
+                <p className="text-[10px] text-muted-foreground font-medium leading-relaxed italic">
+                  <span className="text-amber-500 font-black uppercase tracking-tighter mr-1.5">Anomaly Detected:</span>
+                  Minor latency in vision clusters. Automated regional sync scheduled for 02:00 UTC.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Global Control Tools */}
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
+              <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3 text-primary">
+                <Gear weight="duotone" className="w-5 h-5" />
+                Global Control
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent className="p-8">
+              <div className="space-y-3">
+                {[
+                  { title: "Distributed Database Backup", sub: "Interval: 4h Cycle", icon: Database },
+                  { title: "Neural Cache Invalidation", sub: "AI Gateway & Redis", icon: Lightning },
+                  { title: "Security Cluster Audit", sub: "3 identities expiring", icon: ShieldCheck }
+                ].map((tool, i) => (
+                  <motion.button 
+                    key={i} 
+                    whileHover={{ x: 4 }}
+                    className="w-full flex items-center justify-between p-4 bg-secondary/20 border border-border/50 rounded-2xl hover:bg-primary/5 hover:border-primary/20 transition-all text-left group/tool"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-muted-foreground group-hover/tool:text-primary transition-colors shadow-inner">
+                        <tool.icon weight="duotone" className="w-5 h-5" />
+                      </div>
+                      <div className="space-y-0.5 min-w-0">
+                        <p className="text-xs font-bold text-foreground group-hover/tool:text-primary transition-colors truncate uppercase">{tool.title}</p>
+                        <p className="text-[9px] text-muted-foreground italic font-medium truncate uppercase tracking-tighter">{tool.sub}</p>
+                      </div>
+                    </div>
+                    <CaretRight weight="bold" className="w-3.5 h-3.5 text-muted-foreground group-hover/tool:text-primary transition-all" />
+                  </motion.button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* Create User Modal - Refined */}
+      <AnimatePresence>
+        {showUserModal && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-lg bg-card border border-border rounded-[40px] overflow-hidden shadow-premium group p-10"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <IdentificationBadge className="w-64 h-64 text-primary" />
+              </div>
+
+              <div className="relative z-10 space-y-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20 shadow-sm">
+                      <Users weight="duotone" className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">Identity Initialization</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Create clinical administrator node</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setShowUserModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
+                    <X weight="bold" className="w-5 h-5" />
+                  </Button>
+                </div>
+                
+                {userError && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3"
+                  >
+                    <WarningCircle weight="fill" className="w-5 h-5 text-rose-500" />
+                    <p className="text-rose-500 text-xs font-bold uppercase tracking-widest">Exception: {userError}</p>
+                  </motion.div>
+                )}
+
+                <form onSubmit={handleCreateUser} className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Identity Mail node *</label>
+                    <div className="relative">
+                      <EnvelopeSimple weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                      <input
+                        type="email"
+                        value={newUser.email}
+                        onChange={(e) => setNewUser(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="owner@clinical-node.com"
+                        className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Full Entity Name *</label>
+                    <div className="relative">
+                      <IdentificationBadge weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                      <input
+                        type="text"
+                        value={newUser.fullName}
+                        onChange={(e) => setNewUser(prev => ({ ...prev, fullName: e.target.value }))}
+                        placeholder="Clinical Identity Name"
+                        className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Target Cluster *</label>
+                      <div className="relative">
+                        <Buildings weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                        <select
+                          value={newUser.clinicId}
+                          onChange={(e) => setNewUser(prev => ({ ...prev, clinicId: e.target.value }))}
+                          className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                          required
+                        >
+                          <option value="" className="bg-card">SELECT_CLUSTER</option>
+                          {clinics.map(clinic => (
+                            <option key={clinic.id} value={clinic.id} className="bg-card">
+                              {clinic.name.toUpperCase()}
+                            </option>
+                          ))}
+                        </select>
+                        <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Access Protocol *</label>
+                      <div className="relative">
+                        <Shield weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                        <select
+                          value={newUser.role}
+                          onChange={(e) => setNewUser(prev => ({ ...prev, role: e.target.value }))}
+                          className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                          required
+                        >
+                          <option value="clinic_owner" className="bg-card">CLINIC_OWNER</option>
+                          <option value="clinic_admin" className="bg-card">CLINIC_ADMIN</option>
+                          <option value="sales_staff" className="bg-card">SALES_STAFF</option>
+                        </select>
+                        <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-6 md:gap-10">
-                    <div className="text-center min-w-[60px]">
-                      <p className="text-lg font-bold text-foreground">{clinic.customerCount}</p>
-                      <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Users</p>
+                  <div className="p-5 bg-primary/5 border border-primary/20 rounded-3xl space-y-2">
+                    <div className="flex items-center gap-3">
+                      <Key weight="fill" className="w-4 h-4 text-primary" />
+                      <p className="text-[10px] font-black text-primary uppercase tracking-widest">Initial Credentials</p>
                     </div>
-                    <div className="text-center min-w-[60px]">
-                      <p className="text-lg font-bold text-foreground">{clinic.staffCount}</p>
-                      <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Staff</p>
-                    </div>
-                    <button 
-                      onClick={() => handleUpdateStatus(clinic.id, clinic.status)}
-                      className={cn(
-                        "px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em] transition-all border",
-                        clinic.status === 'active' 
-                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20" 
-                          : "bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/20"
+                    <p className="text-xl font-mono font-black text-foreground tracking-tighter">BNAura2024!</p>
+                    <p className="text-[9px] text-muted-foreground font-medium italic">Identity node must regenerate access token after primary sync.</p>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowUserModal(false)}
+                      className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary"
+                    >
+                      Abort
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={creatingUser}
+                      className="flex-[2] py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest shadow-premium gap-3"
+                    >
+                      {creatingUser ? (
+                        <>
+                          <SpinnerGap weight="bold" className="w-4 h-4 animate-spin" />
+                          Synchronizing...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle weight="bold" className="w-4 h-4" />
+                          Commit Identity
+                        </>
                       )}
-                    >
-                      {clinic.status}
-                    </button>
-                    <button 
-                      onClick={() => router.push(`/th/admin/clinics/${clinic.id}`)}
-                      className="p-3 hover:bg-white/10 rounded-2xl transition-all border border-transparent hover:border-white/10 shadow-sm"
-                    >
-                      <CaretRight className="w-5 h-5 text-muted-foreground" />
-                    </button>
+                    </Button>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-
-            <button className="w-full py-3 bg-secondary border border-border rounded-xl text-xs font-medium text-foreground hover:bg-accent transition-all active:scale-95">
-              Load Additional Clinic Nodes
-            </button>
-          </motion.div>
-        </div>
-
-        {/* Right: System Health & Maintenance */}
-        <div className="space-y-8">
-          {/* System Health */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden"
-          >
-            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-emerald-500/5 blur-[50px] rounded-full" />
-            
-            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3 relative z-10">
-              <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
-              Infrastructure Health
-            </h3>
-            
-            <div className="space-y-4 relative z-10">
-              {Object.entries(systemStatus).map(([node, status]) => (
-                <div key={node} className="p-4 bg-white/5 rounded-2xl border border-white/5 flex justify-between items-center group hover:bg-white/[0.08] transition-all">
-                  <span className="text-[11px] text-muted-foreground font-black uppercase tracking-widest">
-                    {node.replace('_', ' ')}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">{status}</span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="p-5 bg-primary/5 rounded-[32px] border border-primary/10 flex gap-4 relative z-10 backdrop-blur-md">
-              <WarningCircle className="w-6 h-6 text-primary flex-shrink-0" />
-              <p className="text-[11px] text-muted-foreground font-light leading-relaxed">
-                <span className="text-primary font-black uppercase tracking-tighter mr-1.5">Node Alert:</span>
-                Higher than average latency detected in Asia-Pacific vision processing clusters. Optimization required.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Maintenance Tools */}
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden"
-          >
-            <div className="absolute -top-12 -left-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full" />
-            
-            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3 relative z-10">
-              <Gear className="w-4 h-4 text-primary" />
-              Global Operations
-            </h3>
-            
-            <div className="grid grid-cols-1 gap-4 relative z-10">
-              {[
-                { title: "Database Backup", sub: "Last: 4h ago", icon: ShieldCheck },
-                { title: "Clear Global Cache", sub: "Redis & AI Gateway", icon: Lightning },
-                { title: "API Keys Audit", sub: "3 keys expiring", icon: Pulse }
-              ].map((tool, i) => (
-                <button key={i} className="flex items-center justify-between p-5 bg-white/5 border border-white/5 rounded-3xl hover:bg-white/10 hover:border-white/10 transition-all text-left group">
-                  <div className="space-y-1">
-                    <p className="text-xs font-black text-white uppercase tracking-widest group-hover:text-primary transition-colors">{tool.title}</p>
-                    <p className="text-[9px] text-muted-foreground italic font-medium">{tool.sub}</p>
-                  </div>
-                  <CaretRight className="w-4 h-4 text-muted-foreground group-hover:text-white group-hover:translate-x-1 transition-all" />
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Create User Modal */}
-      {showUserModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
-          <div className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur border border-white/10 rounded-3xl w-full max-w-md max-h-[90vh] overflow-hidden">
-            <div className="p-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <Users className="w-6 h-6 text-green-400" />
-                  Create Clinic Owner
-                </h2>
-                <button 
-                  onClick={() => setShowUserModal(false)}
-                  className="p-2 hover:bg-white/10 rounded-xl transition-colors"
-                >
-                  <X className="w-5 h-5 text-white/50" />
-                </button>
+                </form>
               </div>
-              
-              {userError && (
-                <div className="mt-4 p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-                  <WarningCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                  <span className="text-red-300 text-sm">{userError}</span>
-                </div>
-              )}
-
-              <form onSubmit={handleCreateUser} className="mt-6 space-y-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-white/70">อีเมล *</label>
-                  <div className="relative">
-                    <EnvelopeSimple className="absolute left-4 top-3 w-4 h-4 text-white/30" />
-                    <input
-                      type="email"
-                      value={newUser.email}
-                      onChange={(e) => setNewUser(prev => ({ ...prev, email: e.target.value }))}
-                      placeholder="owner@clinic.com (ใช้ 10-minute email)"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition-all"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-white/70">ชื่อ-นามสกุล *</label>
-                  <input
-                    type="text"
-                    value={newUser.fullName}
-                    onChange={(e) => setNewUser(prev => ({ ...prev, fullName: e.target.value }))}
-                    placeholder="เช่น นาย สมชาย ใจดี"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-green-400/50 transition-all"
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-white/70">คลินิก *</label>
-                  <select
-                    value={newUser.clinicId}
-                    onChange={(e) => setNewUser(prev => ({ ...prev, clinicId: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-green-400/50 transition-all"
-                    required
-                  >
-                    <option value="" className="bg-slate-800">-- เลือกคลินิก --</option>
-                    {clinics.map(clinic => (
-                      <option key={clinic.id} value={clinic.id} className="bg-slate-800">
-                        {clinic.name} ({clinic.plan})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-white/70">บทบาท *</label>
-                  <select
-                    value={newUser.role}
-                    onChange={(e) => setNewUser(prev => ({ ...prev, role: e.target.value }))}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-green-400/50 transition-all"
-                    required
-                  >
-                    <option value="clinic_owner" className="bg-slate-800">Clinic Owner</option>
-                    <option value="clinic_admin" className="bg-slate-800">Clinic Admin</option>
-                    <option value="sales_staff" className="bg-slate-800">Sales Staff</option>
-                  </select>
-                </div>
-
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4">
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                    <div className="text-sm">
-                      <p className="text-blue-300 font-medium">รหัสผ่านเริ่มต้น</p>
-                      <p className="text-blue-200/80 mt-1">BNAura2024!</p>
-                      <p className="text-blue-200/60 text-xs mt-1">ผู้ใช้สามารถเปลี่ยนรหัสผ่านได้หลังจากล็อกอินครั้งแรก</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex gap-3 pt-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowUserModal(false)}
-                    className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white hover:bg-white/10 transition-all"
-                  >
-                    ยกเลิก
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={creatingUser}
-                    className="flex-1 px-4 py-3 bg-green-600 text-white rounded-xl font-bold hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {creatingUser ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" />}
-                    สร้าง User
-                  </button>
-                </div>
-              </form>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
-      {/* Register Clinic Modal */}
+      {/* Register Clinic Modal - Comprehensive Overhaul */}
       <AnimatePresence>
         {showRegisterModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowRegisterModal(false)}
-          >
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowRegisterModal(false)}
+            />
+            
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-lg glass-card p-8 rounded-3xl border border-white/10 space-y-6"
+              className="relative w-full max-w-2xl bg-card border border-border rounded-[40px] overflow-hidden shadow-premium group"
             >
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <Buildings className="w-6 h-6 text-primary" />
-                  Register New Clinic
-                </h2>
-                <button 
-                  onClick={() => setShowRegisterModal(false)}
-                  className="p-2 hover:bg-white/10 rounded-xl transition-all"
-                >
-                  <X className="w-5 h-5 text-muted-foreground" />
-                </button>
+              {/* Background Decor */}
+              <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <Buildings className="w-64 h-64 text-primary" />
               </div>
 
-              {registerError && (
-                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-                  <WarningCircle className="w-5 h-5 text-red-400" />
-                  <p className="text-sm text-red-400">{registerError}</p>
-                </div>
-              )}
-
-              {/* Progress Steps */}
-              <div className="flex items-center justify-center mb-6">
-                {[1, 2, 3, 4].map((step) => (
-                  <div key={step} className="flex items-center">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                      registerStep >= step 
-                        ? 'bg-primary text-primary-foreground' 
-                        : 'bg-white/10 text-white/50'
-                    }`}>
-                      {step}
+              {/* Multi-step Header */}
+              <div className="relative z-10 p-10 pb-0 space-y-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                      <Buildings weight="duotone" className="w-8 h-8" />
                     </div>
-                    {step < 4 && (
-                      <div className={`w-12 h-0.5 ${
-                        registerStep > step ? 'bg-primary' : 'bg-white/10'
-                      }`} />
-                    )}
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">Cluster Registration</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Initialize clinical infrastructure node</p>
+                    </div>
                   </div>
-                ))}
+                  <Button variant="ghost" size="sm" onClick={() => setShowRegisterModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
+                    <X weight="bold" className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                {/* Progress Pipeline */}
+                <div className="flex items-center justify-center gap-4 max-w-md mx-auto">
+                  {[1, 2, 3, 4].map((step) => (
+                    <div key={step} className="flex items-center flex-1 last:flex-none">
+                      <div className={cn(
+                        "w-10 h-10 rounded-xl border-2 flex items-center justify-center text-xs font-black transition-all duration-500 relative",
+                        registerStep >= step 
+                          ? "bg-primary/10 border-primary text-primary shadow-glow-sm" 
+                          : "bg-secondary/50 border-border/50 text-muted-foreground"
+                      )}>
+                        {registerStep > step ? <CheckCircle weight="bold" className="w-5 h-5" /> : step}
+                        {registerStep === step && (
+                          <motion.div layoutId="active-step" className="absolute -inset-1.5 bg-primary/5 blur-md rounded-xl z-[-1]" />
+                        )}
+                      </div>
+                      {step < 4 && (
+                        <div className="flex-1 h-0.5 mx-4 bg-border/30 relative overflow-hidden">
+                          <motion.div 
+                            initial={false}
+                            animate={{ width: registerStep > step ? '100%' : '0%' }}
+                            className="absolute inset-0 bg-primary"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <form onSubmit={handleRegisterClinic} className="space-y-4">
-                {/* Step 1: Basic Information */}
-                {registerStep === 1 && (
-                  <>
-                    <h3 className="text-lg font-bold text-white mb-4">ข้อมูลพื้นฐาน</h3>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">ชื่อคลินิก *</label>
-                      <input
-                        type="text"
-                        value={newClinic.name}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder="เช่น BN Beauty Clinic"
-                        required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      />
-                    </div>
+              <div className="p-10 relative z-10">
+                {registerError && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-8 p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3"
+                  >
+                    <WarningCircle weight="fill" className="w-5 h-5 text-rose-500" />
+                    <p className="text-rose-500 text-xs font-bold uppercase tracking-widest">Exception: {registerError}</p>
+                  </motion.div>
+                )}
 
-                    <div className="grid grid-cols-2 gap-4">
+                <form onSubmit={handleRegisterClinic} className="space-y-8">
+                  {/* Step 1: Basic Node Intel */}
+                  {registerStep === 1 && (
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
                       <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">อีเมล *</label>
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Node Identity Name *</label>
                         <input
-                          type="email"
-                          value={newClinic.email}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, email: e.target.value }))}
-                          placeholder="clinic@example.com"
+                          type="text"
+                          value={newClinic.name}
+                          onChange={(e) => setNewClinic(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="e.g. BN_PREMIUM_CLINIC_NODE_01"
                           required
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                          className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
                         />
                       </div>
 
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">เบอร์โทร</label>
-                        <input
-                          type="tel"
-                          value={newClinic.phone}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, phone: e.target.value }))}
-                          placeholder="081-234-5678"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">แพ็กเกจ *</label>
-                        <select
-                          value={newClinic.plan}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, plan: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="starter" className="bg-slate-800">Starter (฿2,900/เดือน)</option>
-                          <option value="professional" className="bg-slate-800">Professional (฿4,900/เดือน)</option>
-                          <option value="premium" className="bg-slate-800">Premium (฿7,900/เดือน)</option>
-                          <option value="enterprise" className="bg-slate-800">Enterprise (฿12,900/เดือน)</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">ประเภทธุรกิจ *</label>
-                        <select
-                          value={newClinic.businessType}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, businessType: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="clinic" className="bg-slate-800">คลินิกเสริมความงาม</option>
-                          <option value="hospital" className="bg-slate-800">โรงพยาบาลเสริมความงาม</option>
-                          <option value="spa" className="bg-slate-800">สปาและเวลเนส</option>
-                          <option value="aesthetic_center" className="bg-slate-800">ศูนย์ความงามครบวงจร</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">ที่อยู่</label>
-                      <textarea
-                        value={newClinic.address}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, address: e.target.value }))}
-                        placeholder="123 ถนนสุขุมวิท แขวงคลองตัน เขตคลองตัน กรุงเทพฯ 10110"
-                        rows={2}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* Step 2: Business Information */}
-                {registerStep === 2 && (
-                  <>
-                    <h3 className="text-lg font-bold text-white mb-4">ข้อมูลธุรกิจ <span className="text-sm font-normal text-white/50">(สามารถข้ามได้)</span></h3>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">เลขทะเบียนบริษัท</label>
-                        <input
-                          type="text"
-                          value={newClinic.companyRegistration}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, companyRegistration: e.target.value }))}
-                          placeholder="0105563123456"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">เลขประจำตัวผู้เสียภาษี</label>
-                        <input
-                          type="text"
-                          value={newClinic.taxId}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, taxId: e.target.value }))}
-                          placeholder="0105563123456"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">ปีที่เริ่มดำเนินการ</label>
-                        <input
-                          type="number"
-                          value={newClinic.establishedYear}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, establishedYear: e.target.value }))}
-                          placeholder="2020"
-                          min="1990"
-                          max={new Date().getFullYear()}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">จำนวนพนักงาน</label>
-                        <select
-                          value={newClinic.numberOfStaff}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, numberOfStaff: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="" className="bg-slate-800">-- เลือก --</option>
-                          <option value="1-5" className="bg-slate-800">1-5 คน</option>
-                          <option value="6-10" className="bg-slate-800">6-10 คน</option>
-                          <option value="11-20" className="bg-slate-800">11-20 คน</option>
-                          <option value="21-50" className="bg-slate-800">21-50 คน</option>
-                          <option value="50+" className="bg-slate-800">50+ คน</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">จำนวนสาขา</label>
-                        <input
-                          type="number"
-                          value={newClinic.numberOfBranches}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, numberOfBranches: e.target.value }))}
-                          placeholder="1"
-                          min="1"
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">เว็บไซต์</label>
-                      <input
-                        type="url"
-                        value={newClinic.website}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, website: e.target.value }))}
-                        placeholder="https://bnclinic.com"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">โซเชียลมีเดีย</label>
-                      <input
-                        type="text"
-                        value={newClinic.socialMedia}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, socialMedia: e.target.value }))}
-                        placeholder="@bnclinic, https://facebook.com/bnclinic"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* Step 3: Financial & Marketing */}
-                {registerStep === 3 && (
-                  <>
-                    <h3 className="text-lg font-bold text-white mb-4">ข้อมูลการเงินและการตลาด <span className="text-sm font-normal text-white/50">(สามารถข้ามได้)</span></h3>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">รายได้ต่อเดือน</label>
-                        <select
-                          value={newClinic.monthlyRevenue}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, monthlyRevenue: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="" className="bg-slate-800">-- เลือก --</option>
-                          <option value="<100k" className="bg-slate-800">น้อยกว่า 100,000 บาท</option>
-                          <option value="100k-300k" className="bg-slate-800">100,000 - 300,000 บาท</option>
-                          <option value="300k-500k" className="bg-slate-800">300,000 - 500,000 บาท</option>
-                          <option value="500k-1m" className="bg-slate-800">500,000 - 1,000,000 บาท</option>
-                          <option value="1m-3m" className="bg-slate-800">1,000,000 - 3,000,000 บาท</option>
-                          <option value=">3m" className="bg-slate-800">มากกว่า 3,000,000 บาท</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">งบประมาณ IT ต่อปี</label>
-                        <select
-                          value={newClinic.itBudget}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, itBudget: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="" className="bg-slate-800">-- เลือก --</option>
-                          <option value="<50k" className="bg-slate-800">น้อยกว่า 50,000 บาท</option>
-                          <option value="50k-100k" className="bg-slate-800">50,000 - 100,000 บาท</option>
-                          <option value="100k-300k" className="bg-slate-800">100,000 - 300,000 บาท</option>
-                          <option value="300k-500k" className="bg-slate-800">300,000 - 500,000 บาท</option>
-                          <option value=">500k" className="bg-slate-800">มากกว่า 500,000 บาท</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">วิธีการชำระเงิน</label>
-                        <select
-                          value={newClinic.paymentMethod}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, paymentMethod: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="bank_transfer" className="bg-slate-800">โอนเงินผ่านธนาคาร</option>
-                          <option value="credit_card" className="bg-slate-800">บัตรเครดิต</option>
-                          <option value="check" className="bg-slate-800">เช็ค</option>
-                          <option value="cash" className="bg-slate-800">เงินสด</option>
-                        </select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium text-white/70">ระยะเวลาการชำระ</label>
-                        <select
-                          value={newClinic.paymentTerm}
-                          onChange={(e) => setNewClinic(prev => ({ ...prev, paymentTerm: e.target.value }))}
-                          className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                        >
-                          <option value="monthly" className="bg-slate-800">รายเดือน</option>
-                          <option value="quarterly" className="bg-slate-800">ราย 3 เดือน</option>
-                          <option value="yearly" className="bg-slate-800">รายปี</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">แหล่งที่มาของลูกค้า</label>
-                      <select
-                        value={newClinic.leadSource}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, leadSource: e.target.value }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      >
-                        <option value="" className="bg-slate-800">-- เลือก --</option>
-                        <option value="google_ads" className="bg-slate-800">Google Ads</option>
-                        <option value="facebook_ads" className="bg-slate-800">Facebook Ads</option>
-                        <option value="instagram" className="bg-slate-800">Instagram</option>
-                        <option value="referral" className="bg-slate-800">การแนะนำ</option>
-                        <option value="walk_in" className="bg-slate-800">ลูกค้าเดินเข้ามา</option>
-                        <option value="event" className="bg-slate-800">งานแสดงสินค้า</option>
-                        <option value="other" className="bg-slate-800">อื่นๆ</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">ผู้แนะนำ (ถ้ามี)</label>
-                      <input
-                        type="text"
-                        value={newClinic.referredBy}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, referredBy: e.target.value }))}
-                        placeholder="ชื่อคนหรือคลินิกที่แนะนำ"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">เซลล์ที่รับผิดชอบ</label>
-                      <input
-                        type="text"
-                        value={newClinic.assignedSales}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, assignedSales: e.target.value }))}
-                        placeholder="sales@bnaura.com"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">คู่แข่งหลัก</label>
-                      <input
-                        type="text"
-                        value={newClinic.competitors}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, competitors: e.target.value }))}
-                        placeholder="Clinic A, System B, Application C"
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      />
-                    </div>
-                  </>
-                )}
-
-                {/* Step 4: Technical Information */}
-                {registerStep === 4 && (
-                  <>
-                    <h3 className="text-lg font-bold text-white mb-4">ข้อมูลเทคนิค <span className="text-sm font-normal text-white/50">(สามารถข้ามได้)</span></h3>
-                    
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">ระบบที่ใช้อยู่ปัจจุบัน</label>
-                      <textarea
-                        value={newClinic.currentSystem}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, currentSystem: e.target.value }))}
-                        placeholder="เช่น Excel สำหรับจัดการลูกค้า, สมุดบันทึกสำหรับนัดหมาย, ไม่มีระบบคอมพิวเตอร์"
-                        rows={3}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">ความต้องการ Integration กับระบบอื่น</label>
-                      <textarea
-                        value={newClinic.integrationNeeds}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, integrationNeeds: e.target.value }))}
-                        placeholder="เช่น POS System, Accounting Software, CRM, WhatsApp API"
-                        rows={3}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all resize-none"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-white/70">ระยะเวลาที่ต้องการใช้งาน</label>
-                      <select
-                        value={newClinic.timeline}
-                        onChange={(e) => setNewClinic(prev => ({ ...prev, timeline: e.target.value }))}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
-                      >
-                        <option value="urgent" className="bg-slate-800">ด่วน (ภายใน 1 สัปดาห์)</option>
-                        <option value="normal" className="bg-slate-800">ปกติ (ภายใน 2-4 สัปดาห์)</option>
-                        <option value="flexible" className="bg-slate-800">ยืดหยุ่น (ภายใน 1-2 เดือน)</option>
-                      </select>
-                    </div>
-
-                    <div className="bg-blue-500/10 border border-blue-500/20 rounded-xl p-4 mt-6">
-                      <div className="flex items-start gap-3">
-                        <Shield className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                        <div className="text-sm">
-                          <p className="text-blue-300 font-medium">ข้อมูลสามารถแก้ไขได้ทีหลัง</p>
-                          <p className="text-blue-200/80 mt-1">คุณสามารถกลับมาแก้ไขข้อมูลเหล่านี้ได้ทุกเมื่อในหน้าจัดการคลินิก</p>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Transmission Mail *</label>
+                          <input
+                            type="email"
+                            value={newClinic.email}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, email: e.target.value }))}
+                            placeholder="node@cluster.com"
+                            required
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Comm Channel</label>
+                          <input
+                            type="tel"
+                            value={newClinic.phone}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, phone: e.target.value }))}
+                            placeholder="+66 00-000-0000"
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                          />
                         </div>
                       </div>
-                    </div>
-                  </>
-                )}
 
-                <div className="flex gap-3 pt-4">
-                  {registerStep > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => setRegisterStep(prev => prev - 1)}
-                      className="flex-1 py-3 bg-white/5 border border-white/10 rounded-xl font-semibold text-white hover:bg-white/10 transition-all"
-                    >
-                      ก่อนหน้า
-                    </button>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Protocol Tier *</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.plan}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, plan: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="starter" className="bg-card">STARTER (฿2,900)</option>
+                              <option value="professional" className="bg-card">PROFESSIONAL (฿4,900)</option>
+                              <option value="premium" className="bg-card">PREMIUM (฿7,900)</option>
+                              <option value="enterprise" className="bg-card">ENTERPRISE (฿12,900)</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Industry Logic *</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.businessType}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, businessType: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="clinic" className="bg-card">AESTHETIC_CLINIC</option>
+                              <option value="hospital" className="bg-card">MEDICAL_FACILITY</option>
+                              <option value="spa" className="bg-card">WELLNESS_NODE</option>
+                              <option value="aesthetic_center" className="bg-card">CENTRAL_HUB</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
                   )}
-                  
-                  {registerStep < 4 ? (
-                    <button
-                      type="button"
-                      onClick={() => setRegisterStep(prev => prev + 1)}
-                      className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-semibold shadow-premium hover:brightness-110 transition-all flex items-center justify-center gap-2"
-                    >
-                      ถัดไป
-                      <CaretRight className="w-4 h-4" />
-                    </button>
-                  ) : (
-                    <>
-                      <button
+
+                  {/* Step 2: Business Logic Registry */}
+                  {registerStep === 2 && (
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Company Registration</label>
+                          <input
+                            type="text"
+                            value={newClinic.companyRegistration}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, companyRegistration: e.target.value }))}
+                            placeholder="010XXXXXXXXXX"
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Tax Identity Node</label>
+                          <input
+                            type="text"
+                            value={newClinic.taxId}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, taxId: e.target.value }))}
+                            placeholder="TXN-XXXXXXXXXX"
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Registry Year</label>
+                          <input
+                            type="number"
+                            value={newClinic.establishedYear}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, establishedYear: e.target.value }))}
+                            placeholder="2024"
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold tabular-nums"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Personnel count</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.numberOfStaff}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, numberOfStaff: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="" className="bg-card">SELECT_CAP</option>
+                              <option value="1-5" className="bg-card">1-5 UNITS</option>
+                              <option value="6-10" className="bg-card">6-10 UNITS</option>
+                              <option value="11-20" className="bg-card">11-20 UNITS</option>
+                              <option value="21-50" className="bg-card">21-50 UNITS</option>
+                              <option value="50+" className="bg-card">50+ UNITS</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Cluster Nodes</label>
+                          <input
+                            type="number"
+                            value={newClinic.numberOfBranches}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, numberOfBranches: e.target.value }))}
+                            placeholder="1"
+                            min="1"
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold tabular-nums"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Public Domain Endpoint</label>
+                        <div className="relative">
+                          <Globe weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                          <input
+                            type="url"
+                            value={newClinic.website}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, website: e.target.value }))}
+                            placeholder="https://clinical-node.network"
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
+                          />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Step 3: Fiscal & Marketing Parameters */}
+                  {registerStep === 3 && (
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Yield Band Node</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.monthlyRevenue}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, monthlyRevenue: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="" className="bg-card">SELECT_BAND</option>
+                              <option value="<100k" className="bg-card">LESS THAN ฿100K</option>
+                              <option value="100k-300k" className="bg-card">฿100K - ฿300K</option>
+                              <option value="300k-500k" className="bg-card">฿300K - ฿500K</option>
+                              <option value="500k-1m" className="bg-card">฿500K - ฿1M</option>
+                              <option value=">1m" className="bg-card">EXCEEDS ฿1M</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">IT Fiscal Quota</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.itBudget}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, itBudget: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="" className="bg-card">SELECT_QUOTA</option>
+                              <option value="<50k" className="bg-card">UNDER ฿50K</option>
+                              <option value="50k-100k" className="bg-card">฿50K - ฿100K</option>
+                              <option value=">100k" className="bg-card">OVER ฿100K</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Settlement Node</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.paymentMethod}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="bank_transfer" className="bg-card">BANK_TRANSFER</option>
+                              <option value="credit_card" className="bg-card">CREDIT_CARD</option>
+                              <option value="direct_debit" className="bg-card">DIRECT_DEBIT</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Cycle Term</label>
+                          <div className="relative">
+                            <select
+                              value={newClinic.paymentTerm}
+                              onChange={(e) => setNewClinic(prev => ({ ...prev, paymentTerm: e.target.value }))}
+                              className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                            >
+                              <option value="monthly" className="bg-card">MONTHLY_SYNC</option>
+                              <option value="quarterly" className="bg-card">QUARTERLY_SYNC</option>
+                              <option value="yearly" className="bg-card">ANNUAL_SYNC</option>
+                            </select>
+                            <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Lead Attribution Matrix</label>
+                        <div className="relative">
+                          <Target weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                          <select
+                            value={newClinic.leadSource}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, leadSource: e.target.value }))}
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                          >
+                            <option value="" className="bg-card">SELECT_SOURCE</option>
+                            <option value="google_ads" className="bg-card">GOOGLE_ENGINE_ADS</option>
+                            <option value="facebook_ads" className="bg-card">META_SOCIAL_ADS</option>
+                            <option value="instagram" className="bg-card">IG_VISUAL_NODE</option>
+                            <option value="referral" className="bg-card">NETWORK_REFERRAL</option>
+                            <option value="walk_in" className="bg-card">PHYSICAL_WALK_IN</option>
+                          </select>
+                          <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Step 4: Technical Stack Integration */}
+                  {registerStep === 4 && (
+                    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Current Legacy Architecture</label>
+                        <textarea
+                          value={newClinic.currentSystem}
+                          onChange={(e) => setNewClinic(prev => ({ ...prev, currentSystem: e.target.value }))}
+                          placeholder="Describe current system topography..."
+                          rows={3}
+                          className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold resize-none"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Cross-system Link Requirements</label>
+                        <textarea
+                          value={newClinic.integrationNeeds}
+                          onChange={(e) => setNewClinic(prev => ({ ...prev, integrationNeeds: e.target.value }))}
+                          placeholder="List required API endpoints and system links..."
+                          rows={3}
+                          className="w-full bg-secondary/50 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold resize-none"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Synchronisation Velocity</label>
+                        <div className="relative">
+                          <Lightning weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
+                          <select
+                            value={newClinic.timeline}
+                            onChange={(e) => setNewClinic(prev => ({ ...prev, timeline: e.target.value }))}
+                            className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-[10px] text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
+                          >
+                            <option value="urgent" className="bg-card">HIGH_PRIORITY (1 WEEK)</option>
+                            <option value="normal" className="bg-card">STANDARD_SYNC (2-4 WEEKS)</option>
+                            <option value="flexible" className="bg-card">EXTENDED_WINDOW (1-2 MONTHS)</option>
+                          </select>
+                          <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
+                        </div>
+                      </div>
+
+                      <div className="p-5 bg-primary/5 border border-primary/20 rounded-3xl flex gap-4 mt-6">
+                        <ShieldCheck weight="fill" className="w-6 h-6 text-primary flex-shrink-0" />
+                        <div className="space-y-1">
+                          <p className="text-[10px] font-black text-primary uppercase tracking-widest">Protocol Confirmation</p>
+                          <p className="text-[9px] text-muted-foreground font-medium italic">Parameters can be refined in cluster settings post-initialization.</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  <div className="flex gap-4 pt-6">
+                    {registerStep > 1 && (
+                      <Button
                         type="button"
-                        onClick={() => setShowRegisterModal(false)}
-                        className={`${registerStep > 1 ? 'flex-1' : 'w-full'} py-3 bg-white/5 border border-white/10 rounded-xl font-semibold text-white hover:bg-white/10 transition-all`}
+                        variant="outline"
+                        onClick={() => setRegisterStep(prev => prev - 1)}
+                        className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary"
                       >
-                        ยกเลิก
-                      </button>
-                      <button
+                        Back Cycle
+                      </Button>
+                    )}
+                    
+                    {registerStep < 4 ? (
+                      <Button
+                        type="button"
+                        onClick={() => setRegisterStep(prev => prev + 1)}
+                        className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest shadow-premium gap-3"
+                      >
+                        Advance Protocol
+                        <CaretRight weight="bold" className="w-4 h-4" />
+                      </Button>
+                    ) : (
+                      <Button
                         type="submit"
                         disabled={registering}
-                        className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-semibold shadow-premium hover:brightness-110 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="flex-[2] py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest shadow-premium gap-3"
                       >
                         {registering ? (
                           <>
-                            <SpinnerGap className="w-4 h-4 animate-spin" />
-                            กำลังสร้าง...
+                            <SpinnerGap weight="bold" className="w-4 h-4 animate-spin" />
+                            Initializing...
                           </>
                         ) : (
                           <>
-                            <Plus className="w-4 h-4" />
-                            สร้างคลินิก
+                            <Buildings weight="bold" className="w-4 h-4" />
+                            Initialize Cluster
                           </>
                         )}
-                      </button>
-                    </>
-                  )}
-                </div>
-              </form>
+                      </Button>
+                    )}
+                  </div>
+                </form>
+              </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </motion.div>
   );
-}
-
-function cn(...classes: (string | undefined | null | boolean)[]) {
-  return classes.filter(Boolean).join(' ');
 }

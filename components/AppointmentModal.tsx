@@ -1,8 +1,27 @@
-'use client';
+﻿'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  X, 
+  CalendarDots, 
+  Clock, 
+  User, 
+  FirstAidKit, 
+  MapPin, 
+  Tag, 
+  SpinnerGap, 
+  FloppyDisk, 
+  CaretDown, 
+  CheckCircle,
+  Pulse,
+  IdentificationBadge,
+  Briefcase
+} from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CalendarDots, Clock, User, FirstAidKit, MapPin, Tag, SpinnerGap, FloppyDisk } from '@phosphor-icons/react';
 
 interface AppointmentModalProps {
   isOpen: boolean;
@@ -134,107 +153,117 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
-          onClick={onClose}
-        >
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-y-auto">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-[32px] p-8 shadow-2xl my-8"
+            className="w-full max-w-2xl bg-card border border-border rounded-[40px] p-10 shadow-premium relative z-10 my-8 overflow-hidden group"
           >
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+              <CalendarDots className="w-64 h-64 text-primary" />
+            </div>
+
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center">
-                  <CalendarDots className="w-6 h-6 text-primary" />
+            <div className="flex items-center justify-between mb-10 relative z-10">
+              <div className="flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                  <CalendarDots weight="duotone" className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight">
-                    {appointment ? 'Edit Appointment Node' : 'Schedule New Node'}
+                  <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">
+                    {appointment ? 'Modify Node' : 'Schedule Node'}
                   </h3>
-                  <p className="text-sm text-muted-foreground italic font-light">
-                    {appointment ? 'Updating existing temporal orchestration' : 'Initializing new clinical transformation'}
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">
+                    {appointment ? 'Synchronizing temporal data' : 'Initializing clinical transformation'}
                   </p>
                 </div>
               </div>
-              <button
+              <Button
+                variant="ghost"
                 onClick={onClose}
-                className="p-3 hover:bg-white/5 rounded-2xl transition-all border border-transparent hover:border-white/10"
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all"
               >
-                <X className="w-6 h-6 text-muted-foreground" />
-              </button>
+                <X weight="bold" className="w-6 h-6" />
+              </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Patient Selection */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Patient Identity *
+                    Patient Identity Node *
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <User weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
                     <select
                       name="customer_id"
                       required
                       value={formData.customer_id}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-[10px] tracking-widest"
                     >
-                      <option value="" className="bg-[#0A0A0A]">Select Patient...</option>
+                      <option value="" className="bg-card">Select Client Node...</option>
                       {customers.map(c => (
-                        <option key={c.id} value={c.id} className="bg-[#0A0A0A]">
-                          {c.full_name} {c.nickname ? `(${c.nickname})` : ''}
+                        <option key={c.id} value={c.id} className="bg-card">
+                          {c.full_name.toUpperCase()} {c.nickname ? `(${c.nickname.toUpperCase()})` : ''}
                         </option>
                       ))}
                     </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Staff Selection */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Practitioner / Staff *
+                    Clinical Practitioner *
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <IdentificationBadge weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
                     <select
                       name="staff_id"
                       required
                       value={formData.staff_id}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-[10px] tracking-widest"
                     >
-                      <option value="" className="bg-[#0A0A0A]">Select Staff...</option>
+                      <option value="" className="bg-card">Assign Staff Node...</option>
                       {staffList.length > 0 ? staffList.map(s => (
-                        <option key={s.id} value={s.id} className="bg-[#0A0A0A]">{s.full_name || s.email}</option>
+                        <option key={s.id} value={s.id} className="bg-card">{(s.full_name || s.email).toUpperCase()}</option>
                       )) : (
-                        <option value="current" className="bg-[#0A0A0A]">Self (System Default)</option>
+                        <option value="current" className="bg-card">Self (System Default)</option>
                       )}
                     </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Date */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Temporal Coordinate (Date) *
+                    Temporal Coordinate *
                   </label>
-                  <div className="relative">
-                    <CalendarDots className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-2xl" />
+                    <CalendarDots weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
                     <input
                       type="date"
                       name="appointment_date"
                       required
                       value={formData.appointment_date}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all [color-scheme:dark]"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums relative z-10 shadow-inner"
                     />
                   </div>
                 </div>
@@ -245,73 +274,79 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
                       Start Phase
                     </label>
-                    <div className="relative">
-                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-                      <input
-                        type="time"
-                        name="start_time"
-                        required
-                        value={formData.start_time}
-                        onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all [color-scheme:dark]"
-                      />
-                    </div>
+                    <input
+                      type="time"
+                      name="start_time"
+                      required
+                      value={formData.start_time}
+                      onChange={handleInputChange}
+                      className="w-full px-5 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
                       End Phase
                     </label>
-                    <div className="relative">
-                      <Clock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
-                      <input
-                        type="time"
-                        name="end_time"
-                        required
-                        value={formData.end_time}
-                        onChange={handleInputChange}
-                        className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all [color-scheme:dark]"
-                      />
-                    </div>
+                    <input
+                      type="time"
+                      name="end_time"
+                      required
+                      value={formData.end_time}
+                      onChange={handleInputChange}
+                      className="w-full px-5 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums"
+                    />
                   </div>
                 </div>
 
                 {/* Type Selection */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Transformation Type *
+                    Transformation Logic *
                   </label>
-                  <select
-                    name="appointment_type"
-                    required
-                    value={formData.appointment_type}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
-                  >
-                    <option value="consultation" className="bg-[#0A0A0A]">Consultation</option>
-                    <option value="treatment" className="bg-[#0A0A0A]">Treatment Execution</option>
-                    <option value="follow_up" className="bg-[#0A0A0A]">Post-Op Follow-up</option>
-                    <option value="skin_analysis" className="bg-[#0A0A0A]">AI Skin Analysis</option>
-                  </select>
+                  <div className="relative group/input">
+                    <Tag weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
+                    <select
+                      name="appointment_type"
+                      required
+                      value={formData.appointment_type}
+                      onChange={handleInputChange}
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-[10px] tracking-widest"
+                    >
+                      <option value="consultation" className="bg-card">Consultation Matrix</option>
+                      <option value="treatment" className="bg-card">Treatment Execution</option>
+                      <option value="follow_up" className="bg-card">Post-Op Validation</option>
+                      <option value="skin_analysis" className="bg-card">AI Skin Analysis</option>
+                    </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Status Selection */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Operational Status
+                    Cycle Status
                   </label>
-                  <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none"
-                  >
-                    <option value="scheduled" className="bg-[#0A0A0A]">Scheduled</option>
-                    <option value="confirmed" className="bg-[#0A0A0A]">Confirmed</option>
-                    <option value="in_progress" className="bg-[#0A0A0A]">Executing</option>
-                    <option value="completed" className="bg-[#0A0A0A]">Completed</option>
-                    <option value="cancelled" className="bg-[#0A0A0A]">Terminated</option>
-                    <option value="no_show" className="bg-[#0A0A0A]">No-Show (Exception)</option>
-                  </select>
+                  <div className="relative group/input">
+                    <Pulse weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
+                    <select
+                      name="status"
+                      value={formData.status}
+                      onChange={handleInputChange}
+                      className={cn(
+                        "w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase tracking-widest text-[10px]",
+                        formData.status === 'confirmed' || formData.status === 'completed' ? "text-emerald-500" : 
+                        formData.status === 'in_progress' ? "text-primary" : "text-muted-foreground"
+                      )}
+                    >
+                      <option value="scheduled" className="bg-card">SCHEDULED</option>
+                      <option value="confirmed" className="bg-card text-emerald-500">CONFIRMED</option>
+                      <option value="in_progress" className="bg-card text-primary">EXECUTING</option>
+                      <option value="completed" className="bg-card text-emerald-500">COMPLETED</option>
+                      <option value="cancelled" className="bg-card text-rose-500">TERMINATED</option>
+                      <option value="no_show" className="bg-card text-muted-foreground">NO-SHOW</option>
+                    </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+                  </div>
                 </div>
               </div>
 
@@ -325,53 +360,57 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all resize-none"
-                  placeholder="Additional temporal telemetry..."
+                  className="w-full px-6 py-4 bg-secondary/30 border border-border rounded-[24px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none font-medium leading-relaxed italic shadow-inner"
+                  placeholder="Additional temporal telemetry and clinical observations..."
                 />
               </div>
 
               {/* Error Message */}
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-400 text-xs font-bold uppercase tracking-widest text-center"
-                >
-                  System Exception: {error}
-                </motion.div>
-              )}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-500 text-[10px] font-black uppercase tracking-widest text-center"
+                  >
+                    System Exception: {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* Actions */}
-              <div className="flex gap-4 pt-4">
-                <button
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-border/30">
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={onClose}
                   disabled={loading}
-                  className="flex-1 px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-all disabled:opacity-50 text-xs"
+                  className="w-full sm:flex-1 py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                 >
-                  Cancel
-                </button>
-                <button
+                  Abort Cycle
+                </Button>
+                <Button
                   type="submit"
                   disabled={loading || !formData.customer_id || !formData.appointment_date}
-                  className="flex-1 px-6 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-xs shadow-premium"
+                  className="w-full sm:flex-[2] py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] shadow-premium gap-3"
                 >
                   {loading ? (
                     <>
                       <SpinnerGap className="w-4 h-4 animate-spin" />
-                      Orchestrating...
+                      Synchronizing...
                     </>
                   ) : (
                     <>
-                      <FloppyDisk className="w-4 h-4" />
-                      {appointment ? 'Commit Updates' : 'Initialize Node'}
+                      <CheckCircle weight="bold" className="w-5 h-5" />
+                      {appointment ? 'Commit Updates' : 'Initialize Session'}
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </form>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

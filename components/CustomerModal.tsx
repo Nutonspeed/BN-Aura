@@ -1,8 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { X, User, EnvelopeSimple, Phone, CalendarDots, MapPin, Tag, SpinnerGap, FloppyDisk, IdentificationCard, GenderIntersex, Megaphone, CheckCircle } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, EnvelopeSimple, Phone, CalendarDots, MapPin, Tag, SpinnerGap, FloppyDisk } from '@phosphor-icons/react';
 
 interface CustomerModalProps {
   isOpen: boolean;
@@ -103,59 +107,67 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto"
-          onClick={onClose}
-        >
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 overflow-y-auto">
           <motion.div
-            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl bg-card border border-border rounded-2xl p-6 shadow-2xl my-8"
+            className="w-full max-w-2xl bg-card border border-border rounded-[40px] p-10 shadow-premium relative z-10 my-8 overflow-hidden group"
           >
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+              <IdentificationCard className="w-64 h-64 text-primary" />
+            </div>
+
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center">
-                  <User className="w-6 h-6 text-primary" />
+            <div className="flex items-center justify-between mb-10 relative z-10">
+              <div className="flex items-center gap-5">
+                <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                  <User weight="duotone" className="w-7 h-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">
-                    {customer ? 'Edit Patient Node' : 'Register New Patient'}
+                  <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">
+                    {customer ? 'Modify Patient' : 'Initialize Patient'}
                   </h3>
-                  <p className="text-sm text-muted-foreground italic font-light">
-                    {customer ? 'Updating existing cutaneous identity' : 'Initializing new clinical record'}
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">
+                    {customer ? 'Updating existing cutaneous identity' : 'Initializing new clinical record node'}
                   </p>
                 </div>
               </div>
-              <button
+              <Button
+                variant="ghost"
                 onClick={onClose}
-                className="p-3 hover:bg-white/5 rounded-2xl transition-all border border-transparent hover:border-white/10"
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all"
               >
-                <X className="w-6 h-6 text-muted-foreground" />
-              </button>
+                <X weight="bold" className="w-6 h-6" />
+              </Button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Full Name */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Full Identity *
+                    Full Identity Designation *
                   </label>
-                  <div className="relative">
-                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-2xl" />
+                    <User weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
                     <input
                       type="text"
                       name="full_name"
                       required
                       value={formData.full_name}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tracking-tight relative z-10 shadow-inner"
                       placeholder="Neural ID Name"
                     />
                   </div>
@@ -164,14 +176,14 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Nickname */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Alias / Nickname
+                    Alias / Protocol Name
                   </label>
                   <input
                     type="text"
                     name="nickname"
                     value={formData.nickname}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
+                    className="w-full px-6 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold uppercase text-xs tracking-widest"
                     placeholder="Short Identifier"
                   />
                 </div>
@@ -179,16 +191,16 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Email */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Digital Mail
+                    Digital Mail Node
                   </label>
-                  <div className="relative">
-                    <EnvelopeSimple className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <EnvelopeSimple weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium italic"
                       placeholder="address@network.com"
                     />
                   </div>
@@ -197,16 +209,16 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Phone */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Communication Node
+                    Comm Node (Phone)
                   </label>
-                  <div className="relative">
-                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <Phone weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums"
                       placeholder="+66 00-000-0000"
                     />
                   </div>
@@ -217,14 +229,14 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
                     Temporal Origin (DOB)
                   </label>
-                  <div className="relative">
-                    <CalendarDots className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <CalendarDots weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
                     <input
                       type="date"
                       name="date_of_birth"
                       value={formData.date_of_birth}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all"
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums"
                     />
                   </div>
                 </div>
@@ -234,114 +246,131 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
                     Biological Profile
                   </label>
-                  <select
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all appearance-none"
-                  >
-                    <option value="male" className="bg-[#0A0A0A]">Male</option>
-                    <option value="female" className="bg-[#0A0A0A]">Female</option>
-                    <option value="other" className="bg-[#0A0A0A]">Other / Unspecified</option>
-                  </select>
+                  <div className="relative group/input">
+                    <GenderIntersex weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleInputChange}
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-xs tracking-widest"
+                    >
+                      <option value="male" className="bg-card">MALE</option>
+                      <option value="female" className="bg-card">FEMALE</option>
+                      <option value="other" className="bg-card">OTHER / UNKNOWN</option>
+                    </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+                  </div>
                 </div>
 
                 {/* Customer Type */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Security Tier
+                    Operational Tier
                   </label>
-                  <div className="relative">
-                    <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" />
+                  <div className="relative group/input">
+                    <Tag weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
                     <select
                       name="customer_type"
                       value={formData.customer_type}
                       onChange={handleInputChange}
-                      className="w-full pl-12 pr-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all appearance-none"
+                      className={cn(
+                        "w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase tracking-widest text-[10px]",
+                        formData.customer_type === 'vip' ? "text-amber-500" : 
+                        formData.customer_type === 'premium' ? "text-primary" : "text-foreground"
+                      )}
                     >
-                      <option value="regular" className="bg-[#0A0A0A]">REGULAR</option>
-                      <option value="premium" className="bg-[#0A0A0A]">PREMIUM</option>
-                      <option value="vip" className="bg-[#0A0A0A]">VIP NODE</option>
+                      <option value="regular" className="bg-card">REGULAR NODE</option>
+                      <option value="premium" className="bg-card">PREMIUM NODE</option>
+                      <option value="vip" className="bg-card">VIP ARCHIVE</option>
                     </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Source */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Acquisition Source
+                    Acquisition Vector
                   </label>
-                  <select
-                    name="source"
-                    value={formData.source}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-all appearance-none"
-                  >
-                    <option value="walk_in" className="bg-[#0A0A0A]">Walk-in</option>
-                    <option value="social_media" className="bg-[#0A0A0A]">Social Media</option>
-                    <option value="referral" className="bg-[#0A0A0A]">Referral</option>
-                    <option value="advertisement" className="bg-[#0A0A0A]">Advertisement</option>
-                  </select>
+                  <div className="relative group/input">
+                    <Megaphone weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
+                    <select
+                      name="source"
+                      value={formData.source}
+                      onChange={handleInputChange}
+                      className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-[10px] tracking-widest"
+                    >
+                      <option value="walk_in" className="bg-card">WALK-IN NODE</option>
+                      <option value="social_media" className="bg-card">SOCIAL MATRIX</option>
+                      <option value="referral" className="bg-card">IDENTITY LINK</option>
+                      <option value="advertisement" className="bg-card">CAMPAIGN SIGNAL</option>
+                    </select>
+                    <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+                  </div>
                 </div>
               </div>
 
               {/* Notes */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                  Clinical Observations / Notes
+                  Clinical Directives / Notes
                 </label>
                 <textarea
                   name="notes"
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={3}
-                  className="w-full px-4 py-3 bg-secondary border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all resize-none"
-                  placeholder="Additional patient telemetry..."
+                  className="w-full px-6 py-4 bg-secondary/30 border border-border rounded-[24px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none font-medium leading-relaxed italic shadow-inner"
+                  placeholder="Additional patient telemetry and clinical context..."
                 />
               </div>
 
-              {/* Error Message */}
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-400 text-xs font-bold uppercase tracking-widest text-center"
-                >
-                  System Exception: {error}
-                </motion.div>
-              )}
+              {/* Error Protocol */}
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-500 text-[10px] font-black uppercase tracking-widest text-center"
+                  >
+                    System Exception: {error}
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-              {/* Actions */}
-              <div className="flex gap-4 pt-4">
-                <button
+              {/* Action Selection */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-border/30">
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={onClose}
                   disabled={loading}
-                  className="flex-1 px-5 py-3 bg-secondary border border-border text-foreground rounded-xl font-medium hover:bg-accent transition-all disabled:opacity-50 text-sm"
+                  className="w-full sm:flex-1 py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                 >
-                  Cancel
-                </button>
-                <button
+                  Abort Cycle
+                </Button>
+                <Button
                   type="submit"
                   disabled={loading || !formData.full_name}
-                  className="flex-1 px-6 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-3 text-xs shadow-premium"
+                  className="w-full sm:flex-[2] py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] shadow-premium gap-3"
                 >
                   {loading ? (
                     <>
                       <SpinnerGap className="w-4 h-4 animate-spin" />
-                      Processing...
+                      Synchronizing...
                     </>
                   ) : (
                     <>
-                      <FloppyDisk className="w-4 h-4" />
-                      {customer ? 'Commit Updates' : 'Initialize Patient'}
+                      <CheckCircle weight="bold" className="w-5 h-5" />
+                      {customer ? 'Commit Updates' : 'Initialize Identity'}
                     </>
                   )}
-                </button>
+                </Button>
               </div>
             </form>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

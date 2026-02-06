@@ -95,13 +95,9 @@ export function useBusinessAdvisor(): UseBusinessAdvisorReturn {
     }
 
     try {
-      const response = await fetch('/api/ai/business-advisor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'alerts',
-          type: 'all'
-        })
+      const response = await fetch('/api/ai/business-advisor?type=alerts', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
       });
       
       if (!response.ok) {
@@ -133,12 +129,9 @@ export function useBusinessAdvisor(): UseBusinessAdvisorReturn {
     setError(null);
 
     try {
-      const response = await fetch('/api/ai/business-advisor', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'dashboard_summary'
-        })
+      const response = await fetch('/api/ai/business-advisor?type=dashboard_summary', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
       });
       
       if (!response.ok) {

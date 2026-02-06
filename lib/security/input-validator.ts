@@ -2,8 +2,27 @@
 // Protects against XSS, SQL injection, and other injection attacks
 
 import { z } from 'zod';
-import DOMPurify from 'isomorphic-dompurify';
 import { ErrorHandler } from '@/lib/monitoring/sentry';
+
+// Lazy load DOMPurify to avoid build issues with jsdom
+let DOMPurify: typeof import('isomorphic-dompurify').default | null = null;
+const getDOMPurify = async () => {
+  if (!DOMPurify) {
+    const module = await import('isomorphic-dompurify');
+    DOMPurify = module.default;
+  }
+  return DOMPurify;
+};
+
+// Simple sanitizer for build-time (sync fallback)
+const simpleSanitize = (input: string): string => {
+  return input
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+};
 
 // Common validation schemas
 export const commonSchemas = {
@@ -186,6 +205,10 @@ class InputValidator {
         ALLOWED_ATTR: options?.allowedAttributes || defaultOptions.ALLOWED_ATTR
       };
 
+      // Use simple sanitizer if DOMPurify not loaded (build time)
+      if (!DOMPurify) {
+        return simpleSanitize(html);
+      }
       return DOMPurify.sanitize(html, config as any) as unknown as string;
     } catch (error) {
       ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));

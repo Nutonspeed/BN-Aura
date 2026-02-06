@@ -3,6 +3,8 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { BroadcastContextType, BroadcastMessage, ClinicOption, BroadcastFormData } from './types';
 
+export type { BroadcastFormData } from './types';
+
 const BroadcastContext = createContext<BroadcastContextType | undefined>(undefined);
 
 export const useBroadcastContext = () => {

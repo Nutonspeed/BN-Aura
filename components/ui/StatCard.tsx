@@ -13,7 +13,7 @@ interface StatCardProps {
   suffix?: string;
   change?: number;
   changeLabel?: string;
-  icon?: ComponentType<{ className?: string; weight?: string }>;
+  icon?: ComponentType<any>;
   iconColor?: string;
   trend?: 'up' | 'down' | 'neutral';
   className?: string;

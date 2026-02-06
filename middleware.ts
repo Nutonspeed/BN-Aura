@@ -75,11 +75,8 @@ export default async function proxy(request: NextRequest) {
     return response // No specific permissions required
   }
 
-  // TODO: Temporarily skip auth check for /sales routes, /api/sales routes, and /clinic routes
-  if (routePattern.startsWith('/sales') || routePattern.startsWith('/api/sales') || routePattern.startsWith('/clinic')) {
-    console.log('Proxy: Skipping auth check for routes:', routePattern)
-    return response
-  }
+  // Auth bypass removed for security - all routes now properly protected
+  // Removed dangerous bypass that allowed unauthenticated access to /sales and /clinic routes
 
   // Debug logging
   console.log('Proxy: Checking route', routePattern, 'required roles', requiredRoles)
@@ -113,13 +110,15 @@ export default async function proxy(request: NextRequest) {
     if (userData?.role === 'super_admin') {
       userRole = 'super_admin'
     } else {
-      // Get user's clinic role for non-super-admin
+      // Get user's clinic role for non-super-admin (handle multiple clinic_staff records)
       const { data: staffDataResult } = await supabase
         .from('clinic_staff')
         .select('role, is_active')
         .eq('user_id', user.id)
         .eq('is_active', true)
-        .single()
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
       staffData = staffDataResult // Assign to outer scope variable
       userRole = staffData?.role || 'customer'

@@ -1,6 +1,5 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   PaperPlaneTilt, 
   Sparkle, 
@@ -8,10 +7,24 @@ import {
   Robot,
   ClockCounterClockwise,
   Info,
-  Pulse
+  Pulse,
+  ShieldCheck,
+  Lightning,
+  Monitor,
+  ChatCircleText,
+  IdentificationBadge,
+  ArrowLeft,
+  X
 } from '@phosphor-icons/react';
-import { useState, useEffect, SVGProps } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import { useState, useEffect, useMemo, SVGProps } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Format time consistently to avoid hydration mismatch
 function formatTime(timestamp: number): string {
@@ -22,6 +35,7 @@ function formatTime(timestamp: number): string {
 }
 
 export default function ChatAdvisor() {
+  const { goBack } = useBackNavigation();
   const [isClient, setIsClient] = useState(false);
   const [messages, setMessages] = useState([
     { id: 1, role: 'assistant', content: 'สวัสดีครับ ผม BN-Aura AI Advisor ยินดีที่ได้บริการครับ วันนี้มีเคสลูกค้าท่านไหนให้ผมช่วยวิเคราะห์ข้อมูลหรือแนะนำโปรแกรมการรักษาไหมครับ?' },
@@ -53,13 +67,15 @@ export default function ChatAdvisor() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-[calc(100vh-160px)] flex flex-col space-y-8 pb-6 font-sans"
+      className="h-[calc(100vh-120px)] flex flex-col space-y-8 pb-6 font-sans"
     >
-      {/* Header */}
+      <Breadcrumb />
+
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-            <Robot className="w-8 h-8" />
+        <div className="flex items-center gap-5">
+          <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
+            <Robot weight="duotone" className="w-9 h-9" />
           </div>
           <div className="space-y-1">
             <motion.div 
@@ -67,44 +83,42 @@ export default function ChatAdvisor() {
               animate={{ opacity: 1, x: 0 }}
               className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
             >
-              <Sparkle className="w-3 h-3 animate-glow-pulse" />
+              <Sparkle weight="bold" className="w-3 h-3 animate-pulse" />
               Cognitive Reasoning Node
             </motion.div>
-            <h1 className="text-3xl font-heading font-bold text-white uppercase tracking-tight">AI Chat <span className="text-primary text-glow">Advisor</span></h1>
+            <h1 className="text-3xl font-heading font-bold text-foreground uppercase tracking-tight">AI Chat <span className="text-primary">Advisor</span></h1>
           </div>
         </div>
         <div className="flex gap-3">
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-3 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all shadow-sm group"
+          <Button 
+            variant="outline"
+            className="p-3 h-12 w-12 border-border/50 rounded-2xl hover:bg-secondary group"
           >
-            <ClockCounterClockwise className="w-5 h-5 group-hover:rotate-[-10deg] transition-transform" />
-          </motion.button>
-          <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="p-3 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all shadow-sm group"
+            <ClockCounterClockwise weight="bold" className="w-5 h-5 group-hover:rotate-[-10deg] transition-transform" />
+          </Button>
+          <Button 
+            variant="outline"
+            className="p-3 h-12 w-12 border-border/50 rounded-2xl hover:bg-secondary group"
           >
-            <Info className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          </motion.button>
+            <Info weight="bold" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+          </Button>
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-8 overflow-hidden">
-        {/* Chat Interface */}
-        <div className="lg:col-span-3 glass-premium rounded-[48px] border border-white/10 flex flex-col overflow-hidden relative shadow-2xl">
-          <div className="absolute inset-0 bg-chat-pattern opacity-[0.03] pointer-events-none" />
+      <div className="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-8 overflow-hidden px-2">
+        {/* Chat Interface Node */}
+        <Card className="lg:col-span-3 rounded-[48px] border-border/50 flex flex-col overflow-hidden relative shadow-premium bg-secondary/10">
+          <div className="absolute inset-0 bg-scanner-grid opacity-[0.02] pointer-events-none" />
           
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar relative z-10">
+          {/* Messages Neural Area */}
+          <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar relative z-10">
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
                 <motion.div
                   key={msg.id}
                   initial={{ opacity: 0, y: 20, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.4, delay: 0.1 }}
+                  transition={{ duration: 0.4 }}
                   className={cn(
                     "flex w-full",
                     msg.role === 'user' ? "justify-end" : "justify-start"
@@ -115,25 +129,25 @@ export default function ChatAdvisor() {
                     msg.role === 'user' ? "flex-row-reverse" : "flex-row"
                   )}>
                     <div className={cn(
-                      "w-10 h-10 rounded-2xl flex-shrink-0 flex items-center justify-center border transition-all duration-500 shadow-sm",
+                      "w-12 h-12 rounded-2xl flex-shrink-0 flex items-center justify-center border transition-all duration-500 shadow-inner",
                       msg.role === 'user' 
                         ? "bg-primary text-primary-foreground border-primary/20" 
-                        : "bg-white/5 text-primary border-white/10"
+                        : "bg-card text-primary border-border/50"
                     )}>
-                      {msg.role === 'user' ? <User className="w-5 h-5" /> : <Robot className="w-5 h-5" />}
+                      {msg.role === 'user' ? <User weight="duotone" className="w-6 h-6" /> : <Robot weight="duotone" className="w-6 h-6" />}
                     </div>
                     <div className={cn(
-                      "p-5 rounded-[28px] text-sm leading-relaxed shadow-lg backdrop-blur-md transition-all duration-500",
+                      "p-6 rounded-[32px] text-sm leading-relaxed shadow-premium transition-all duration-500",
                       msg.role === 'user' 
-                        ? "bg-primary text-primary-foreground font-medium rounded-tr-none shadow-[0_0_20px_rgba(var(--primary),0.15)]" 
-                        : "bg-white/5 text-white/90 border border-white/10 rounded-tl-none hover:bg-white/[0.08]"
+                        ? "bg-primary text-primary-foreground font-bold rounded-tr-none" 
+                        : "bg-card border border-border/50 text-foreground rounded-tl-none hover:border-primary/20"
                     )}>
                       {msg.content}
                       <p className={cn(
-                        "text-[9px] mt-2 opacity-40 font-bold uppercase tracking-widest",
+                        "text-[9px] mt-3 opacity-40 font-black uppercase tracking-widest",
                         msg.role === 'user' ? "text-right" : "text-left"
                       )}>
-                        {isClient ? formatTime(msg.id) : '--:--'}
+                        {isClient ? formatTime(msg.id) : '--:--'} • SYNC_OK
                       </p>
                     </div>
                   </div>
@@ -142,139 +156,93 @@ export default function ChatAdvisor() {
             </AnimatePresence>
           </div>
 
-          {/* Input Area */}
-          <div className="p-8 bg-white/[0.03] border-t border-white/10 backdrop-blur-xl relative z-20">
+          {/* Input Transmission Area */}
+          <div className="p-8 bg-secondary/30 border-t border-border/50 backdrop-blur-xl relative z-20">
             <div className="relative group">
-              <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-[24px]" />
+              <div className="absolute inset-0 bg-primary/5 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-[32px]" />
               <input
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Inquire about clinical cases or treatment optimization..."
-                className="w-full bg-white/5 border border-white/10 rounded-[24px] py-5 pl-8 pr-20 text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all shadow-inner relative z-10"
+                placeholder="Inquire about clinical cases or treatment optimization protocol..."
+                className="w-full bg-card border border-border/50 rounded-[32px] py-6 pl-10 pr-24 text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary transition-all shadow-inner relative z-10 font-bold"
               />
-              <motion.button 
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+              <Button 
                 onClick={handleSend}
                 disabled={!input.trim()}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-premium hover:brightness-110 disabled:opacity-30 disabled:grayscale transition-all z-20"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-14 h-14 rounded-2xl shadow-premium hover:scale-105 disabled:opacity-30 transition-all z-20"
               >
-                <PaperPlaneTilt className="w-5 h-5 stroke-[3px]" />
-              </motion.button>
+                <PaperPlaneTilt weight="bold" className="w-6 h-6" />
+              </Button>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-3 opacity-40">
-              <Shield className="w-3 h-3 text-emerald-400" />
-              <p className="text-[9px] text-center text-muted-foreground font-black tracking-[0.2em] uppercase">
-                Secure Neural Encryption Enabled • Clinical Verification Required
+            <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
+              <ShieldCheck weight="fill" className="w-3.5 h-3.5 text-emerald-500" />
+              <p className="text-[9px] text-center text-muted-foreground font-black tracking-[0.3em] uppercase">
+                Secure Neural Encryption Active • End-to-End Clinical Verification
               </p>
             </div>
           </div>
-        </div>
+        </Card>
 
-        {/* Sidebar Info/Status */}
+        {/* Sidebar Context Hub */}
         <div className="hidden lg:flex flex-col gap-8">
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="glass-premium p-8 rounded-[40px] border border-white/10 space-y-8 relative overflow-hidden group"
-          >
-            <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all" />
-            
-            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] flex items-center gap-3 relative z-10">
-              <Pulse className="w-4 h-4 text-primary" />
-              Active Context
-            </h3>
-            
-            <div className="space-y-6 relative z-10">
-              <div className="p-5 bg-primary/10 rounded-3xl border border-primary/20 backdrop-blur-md group-hover:bg-primary/20 transition-all duration-500">
-                <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">Subject Focus</p>
-                <p className="text-base font-black text-white tracking-tight">Nattaya R. <span className="text-[10px] text-muted-foreground ml-1">ID: NR-2026</span></p>
-              </div>
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardHeader className="p-8 border-b border-border/50 bg-secondary/30">
+              <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-3 text-primary">
+                <Pulse weight="duotone" className="w-5 h-5" />
+                Active Context
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8 space-y-8 relative overflow-hidden">
+              <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all" />
               
-              <div className="space-y-4">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Historical Sequence</p>
-                <div className="space-y-3">
-                  {[
-                    "Analysis complete (91%)",
-                    "Previous: Pico Rejuvenation"
-                  ].map((activity, i) => (
-                    <div key={i} className="flex gap-3 items-center group/item">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:scale-150 transition-transform" />
-                      <span className="text-[11px] text-white/60 font-medium">{activity}</span>
-                    </div>
-                  ))}
+              <div className="space-y-6 relative z-10">
+                <div className="p-6 bg-primary/5 rounded-[32px] border border-primary/10 shadow-inner group-hover:border-primary/20 transition-all duration-500">
+                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">Subject Node Focus</p>
+                  <p className="text-base font-black text-foreground tracking-tight uppercase">Identity Hub <span className="text-[10px] text-muted-foreground ml-1">#SYNC-2026</span></p>
+                </div>
+                
+                <div className="space-y-4">
+                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Transmission History</p>
+                  <div className="space-y-3">
+                    {[
+                      "Neural Analysis (91%)",
+                      "Protocol: Pico Rejuvenation"
+                    ].map((activity, i) => (
+                      <div key={i} className="flex gap-3 items-center group/item">
+                        <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:scale-150 transition-transform shadow-[0_0_8px_rgba(var(--primary),0.4)]" />
+                        <span className="text-[11px] text-muted-foreground font-black uppercase tracking-widest">{activity}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </CardContent>
+          </Card>
 
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="glass-card p-8 rounded-[40px] border border-white/10 space-y-6"
-          >
-            <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Neural Prompts</h3>
-            <div className="flex flex-wrap gap-2.5">
-              {['Compare Scans', 
-                'Optimize Protocol', 
-                'Neural Reasoning', 
-                'Financial Logic'
+          <Card className="rounded-[40px] border-border/50 shadow-premium p-8 space-y-6 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:scale-110 transition-transform">
+              <Lightning weight="fill" className="w-24 h-24 text-primary" />
+            </div>
+            <h3 className="text-xs font-black text-foreground uppercase tracking-[0.2em] relative z-10">Neural Prompt Links</h3>
+            <div className="flex flex-wrap gap-2.5 relative z-10">
+              {['Compare Nodes', 
+                'Optimize Delta', 
+                'Neural Logic', 
+                'Fiscal Analysis'
               ].map((tag) => (
-                <motion.button 
+                <button 
                   key={tag} 
-                  whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black text-white/60 hover:text-white hover:border-primary/30 transition-all uppercase tracking-widest"
+                  className="px-4 py-2.5 rounded-xl bg-secondary border border-border/50 text-[9px] font-black text-muted-foreground hover:text-primary hover:border-primary/30 hover:bg-primary/5 transition-all uppercase tracking-widest shadow-sm active:scale-95"
                 >
                   {tag}
-                </motion.button>
+                </button>
               ))}
             </div>
-          </motion.div>
+          </Card>
         </div>
       </div>
     </motion.div>
-  );
-}
-
-function Shield(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-    </svg>
-  );
-}
-
-function Activity(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
   );
 }

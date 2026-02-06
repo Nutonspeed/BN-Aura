@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendUp, TrendDown, Lightning, HardDrive, Clock } from '@phosphor-icons/react';
+import { TrendUp, TrendDown, Pulse, HardDrive, Clock } from '@phosphor-icons/react';
 import { NetworkNode } from '@/app/[locale]/(dashboard)/admin/network-map/page';
 
 interface NetworkPerformanceChartsProps {
@@ -47,7 +47,7 @@ export default function NetworkPerformanceCharts({ nodes, selectedNode }: Networ
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white/5 border border-white/10 rounded-xl p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Lightning className="w-4 h-4 text-amber-400" />
+            <Pulse className="w-4 h-4 text-amber-400" />
             <span className="text-white/60 text-sm">Avg Latency</span>
           </div>
           <div className="flex items-end gap-1">

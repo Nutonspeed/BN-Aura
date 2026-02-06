@@ -1,11 +1,21 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import {
-  Shield, User, CheckCircle, XCircle, MagnifyingGlass, ArrowsClockwise, DownloadSimple, SpinnerGap
+  Shield, User, WarningCircle, CheckCircle, XCircle, MagnifyingGlass, ArrowsClockwise, DownloadSimple, SpinnerGap, ArrowLeft,
+  CalendarDots, FileText, Fingerprint, Pulse, Clock, CaretRight, ClockCounterClockwise, Funnel, Monitor, ChartLineUp, IdentificationBadge, ShieldCheck
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ResponsiveTable from '@/components/ui/ResponsiveTable';
+import type { Icon } from '@phosphor-icons/react';
 
 interface AuditLog {
   id: string;
@@ -22,6 +32,7 @@ interface AuditLog {
 }
 
 export default function AuditTrailPage() {
+  const { goBack } = useBackNavigation();
   const t = useTranslations('admin.audit');
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -176,6 +187,65 @@ export default function AuditTrailPage() {
     log.resource_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const columns = [
+    {
+      header: t('time'),
+      accessor: (log: AuditLog) => (
+        <span className="text-sm text-muted-foreground whitespace-nowrap">
+          {formatTime(log.timestamp)}
+        </span>
+      )
+    },
+    {
+      header: t('user'),
+      accessor: (log: AuditLog) => (
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+            <User className="w-4 h-4" />
+          </div>
+          <span className="text-sm font-medium text-foreground">
+            {typeof log.user_name === 'string' ? log.user_name : String(log.user_name || 'Unknown')}
+          </span>
+        </div>
+      )
+    },
+    {
+      header: t('action'),
+      accessor: (log: AuditLog) => (
+        <span className="text-sm text-foreground font-medium">
+          {(() => {
+            try {
+              const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
+              return t(`actions.${actionStr}` as any) || actionStr.replace('_', ' ');
+            } catch (error) {
+              const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
+              return actionStr.replace('_', ' ');
+            }
+          })()}
+        </span>
+      )
+    },
+    {
+      header: t('resource'),
+      accessor: (log: AuditLog) => (
+        <span className="text-sm text-muted-foreground">
+          {typeof log.resource_name === 'string' ? log.resource_name : String(log.resource_name || 'Unknown')}
+        </span>
+      )
+    },
+    {
+      header: t('status'),
+      accessor: (log: AuditLog) => (
+        <span className={cn(
+          "px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border",
+          log.success ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500' : 'bg-rose-500/10 border-rose-500/20 text-rose-500'
+        )}>
+          {t(log.success ? 'successful' : 'failed')}
+        </span>
+      )
+    }
+  ];
+
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
@@ -188,184 +258,201 @@ export default function AuditTrailPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-8 pb-20 font-sans"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Shield className="w-8 h-8 text-primary" />
-            {t('title')}
-          </h1>
-          <p className="text-white/60 mt-1">{t('description')}</p>
+      <Breadcrumb />
+      
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <Shield weight="duotone" className="w-4 h-4" />
+            Security Audit Node
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            System <span className="text-primary">Audit Trail</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating global event logs, identity transmissions, and security compliance matrices.
+          </motion.p>
         </div>
-        <div className="flex items-center gap-3">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="px-4 py-2 bg-white/10 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
-          >
-            <option value="24h">{t('last_24h')}</option>
-            <option value="7d">{t('last_7d')}</option>
-            <option value="30d">{t('last_30d')}</option>
-            <option value="all">{t('all_time')}</option>
-          </select>
-          <button 
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex bg-secondary/50 border border-border/50 p-1.5 rounded-[24px] shadow-inner">
+            {[
+              { id: '24h', label: '24H Cycle' },
+              { id: '7d', label: '7D Cycle' },
+              { id: '30d', label: '30D Cycle' },
+              { id: 'all', label: 'Global' }
+            ].map((range) => (
+              <button
+                key={range.id}
+                onClick={() => setTimeRange(range.id)}
+                className={cn(
+                  "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap",
+                  timeRange === range.id
+                    ? "bg-primary text-primary-foreground border-primary shadow-premium"
+                    : "bg-transparent text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground"
+                )}
+              >
+                {range.label}
+              </button>
+            ))}
+          </div>
+          <Button 
+            variant="outline"
             onClick={fetchAuditData}
-            className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
+            disabled={loading}
+            className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
-            <ArrowsClockwise className="w-4 h-4" />
-            {t('refresh')}
-          </button>
-          <button 
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+            Sync Ledger
+          </Button>
+          <Button 
             onClick={handleExport}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2"
+            className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
           >
-            <DownloadSimple className="w-4 h-4" />
-            {t('export')}
-          </button>
+            <DownloadSimple weight="bold" className="w-4 h-4" />
+            Export Vault
+          </Button>
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <MagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
-        <input
-          type="text"
-          placeholder={t('search')}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 bg-white/10 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
+      {/* Stats Summary Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Consolidated Logs"
+          value={stats.total}
+          icon={ClockCounterClockwise as Icon}
+          className="p-4"
+        />
+        <StatCard
+          title="Successful Nodes"
+          value={stats.successful}
+          icon={CheckCircle as Icon}
+          iconColor="text-emerald-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Failed Payloads"
+          value={stats.failed}
+          icon={XCircle as Icon}
+          iconColor="text-rose-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Ledger Integrity"
+          value={stats.total ? Math.round((stats.successful / stats.total) * 100) : 100}
+          suffix="%"
+          icon={ShieldCheck as Icon}
+          iconColor="text-primary"
+          className="p-4"
         />
       </div>
 
-      {/* Error State */}
-      {error && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-          <p className="text-red-400">{error}</p>
-        </div>
-      )}
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Shield className="w-6 h-6 text-blue-400" />
+      {/* Search & Intelligence Controls */}
+      <div className="px-2">
+        <Card className="p-6 rounded-[32px] border-border/50 shadow-card">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="relative flex-1 group">
+              <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
+              <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder="Query identity node name, email, or protocol action..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
+              />
             </div>
-            <div>
-              <p className="text-3xl font-bold text-white">{stats.total}</p>
-              <p className="text-white/60 text-sm">{t('total_activities')}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-emerald-500/20 rounded-xl">
-              <CheckCircle className="w-6 h-6 text-emerald-400" />
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-white">{stats.successful}</p>
-              <p className="text-white/60 text-sm">{t('successful')}</p>
+            
+            <div className="flex items-center gap-3">
+              <Button variant="outline" className="gap-2 px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary">
+                <Funnel weight="bold" className="w-4 h-4" />
+                Protocol Filter
+              </Button>
             </div>
           </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-red-500/20 rounded-xl">
-              <XCircle className="w-6 h-6 text-red-400" />
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-white">{stats.failed}</p>
-              <p className="text-white/60 text-sm">{t('failed')}</p>
-            </div>
-          </div>
-        </motion.div>
+        </Card>
       </div>
 
-      {/* Audit Logs Table */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="glass-card rounded-2xl border border-white/10 overflow-hidden"
-      >
-        <div className="p-6 border-b border-white/10">
-          <h2 className="text-xl font-bold text-white">{t('recent_activity')}</h2>
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-white/5">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('time')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('user')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('action')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('resource')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('status')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {filteredLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-white/5 transition-colors">
-                  <td className="px-6 py-4 text-white/80 text-sm">
-                    {formatTime(log.timestamp)}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
-                      <User className="w-4 h-4 text-blue-400" />
-                      <span className="text-white text-sm">{typeof log.user_name === 'string' ? log.user_name : String(log.user_name || 'Unknown')}</span>
+      {/* Audit Registry Table */}
+      <div className="px-2">
+        <Card className="rounded-[40px] border-border/50 overflow-hidden shadow-premium">
+          <ResponsiveTable
+            columns={columns}
+            data={filteredLogs}
+            loading={loading}
+            rowKey={(log) => log.id}
+            emptyMessage="No security events detected in current neural timeframe."
+            mobileCard={(log) => (
+              <div className="space-y-5">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary shadow-inner">
+                      <IdentificationBadge weight="duotone" className="w-7 h-7" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-white/80 text-sm">
+                    <div className="min-w-0">
+                      <p className="font-bold text-foreground truncate uppercase tracking-tight">{log.user_name || 'ANONYMOUS_NODE'}</p>
+                      <p className="text-[10px] font-black text-muted-foreground truncate uppercase tracking-widest">{log.user_email}</p>
+                    </div>
+                  </div>
+                  <Badge variant={log.success ? 'success' : 'destructive'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-3">
+                    {log.success ? 'SUCCESS' : 'EXCEPTION'}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 py-4 border-y border-border/50">
+                  <div>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Protocol Action</p>
+                    <p className="text-xs font-bold text-foreground uppercase tracking-tight">
                       {(() => {
-                        try {
-                          const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
-                          return t(`actions.${actionStr}` as any) || actionStr.replace('_', ' ');
-                        } catch (error) {
-                          const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
-                          return actionStr.replace('_', ' ');
-                        }
+                        const actionStr = typeof log.action === 'string' ? log.action : String(log.action || 'UNKNOWN');
+                        return actionStr.replace('_', ' ');
                       })()}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-white/80 text-sm">
-                    {typeof log.resource_name === 'string' ? log.resource_name : String(log.resource_name || 'Unknown')}
-                  </td>
-                  <td className="px-6 py-4">
-                    {log.success ? (
-                      <span className="px-3 py-1 rounded-full text-xs font-bold text-emerald-400 bg-emerald-500/20">
-                        {t('successful')}
-                      </span>
-                    ) : (
-                      <span className="px-3 py-1 rounded-full text-xs font-bold text-red-400 bg-red-500/20">
-                        {t('failed')}
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </motion.div>
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Temporal Node</p>
+                    <p className="text-xs font-bold text-foreground tabular-nums">{formatTime(log.timestamp)}</p>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-60 ml-1">Transmission Directive</p>
+                  <p className="text-[11px] text-muted-foreground font-medium italic leading-relaxed bg-secondary/30 p-4 rounded-2xl border border-border/50">
+                    {log.description || 'No descriptive payload detected.'}
+                  </p>
+                </div>
+
+                <div className="flex justify-between items-center pt-1">
+                  <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                    <Monitor weight="bold" className="w-3.5 h-3.5 opacity-60" />
+                    IP Node: {log.ip_address}
+                  </div>
+                  <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] tracking-widest uppercase px-2 py-0.5">
+                    {log.table_name}
+                  </Badge>
+                </div>
+              </div>
+            )}
+          />
+        </Card>
+      </div>
     </motion.div>
   );
 }

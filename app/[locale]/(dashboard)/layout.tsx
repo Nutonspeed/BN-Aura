@@ -45,6 +45,7 @@ import { cn } from '@/lib/utils';
 import NotificationCenter from "@/components/ui/NotificationCenter";
 import BranchSwitcher from "@/components/ui/BranchSwitcher";
 import HelpModal from "@/components/ui/HelpModal";
+// import DashboardFooter from "@/components/ui/DashboardFooter"; // Moved to individual pages as needed
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 
@@ -240,7 +241,7 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground overflow-hidden relative">
+    <div className="flex h-screen bg-background text-foreground overflow-hidden">
       <HelpModal 
         isOpen={isHelpOpen} 
         onClose={() => setIsHelpOpen(false)} 
@@ -269,38 +270,42 @@ export default function DashboardLayout({
         }}
         transition={{ type: "spring", damping: 25, stiffness: 200 }}
         className={cn(
-          "fixed lg:relative z-[110] flex flex-col h-full bg-sidebar text-sidebar-foreground border-r border-border backdrop-blur-2xl transition-all duration-300 lg:transition-none",
+          "fixed lg:relative z-[110] flex flex-col h-screen bg-sidebar text-sidebar-foreground border-r border-border backdrop-blur-xl flex-shrink-0",
           "lg:translate-x-0",
           !isMobileOpen && "max-lg:-translate-x-full"
         )}
       >
         {/* Sidebar Header */}
-        <div className="h-20 flex items-center px-6 gap-3 flex-shrink-0">
-          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-premium flex-shrink-0 overflow-hidden">
+        <div className="h-20 flex items-center px-4 gap-3 flex-shrink-0 border-b border-sidebar-foreground/10">
+          <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground flex-shrink-0">
             {metadata?.logo_url ? (
-              <img src={metadata.logo_url} alt="Logo" className="w-full h-full object-cover" />
+              <img src={metadata.logo_url} alt="Logo" className="w-full h-full object-cover rounded-xl" />
             ) : (
-              <Sparkle weight="fill" className="w-6 h-6" />
+              <Sparkle weight="fill" className="w-5 h-5 text-white" />
             )}
           </div>
           <AnimatePresence>
             {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && (
-              <motion.span
+              <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                className="font-heading font-bold text-xl tracking-tight text-sidebar-foreground whitespace-nowrap"
+                className="flex flex-col min-w-0 flex-1"
               >
-                {getClinicName()}
-              </motion.span>
+                <span className="font-bold text-lg text-white whitespace-nowrap truncate">
+                  {getClinicName()}
+                </span>
+                <span className="text-xs font-medium text-primary uppercase tracking-wide">Clinical Node</span>
+              </motion.div>
             )}
           </AnimatePresence>
+          
           {/* Mobile Close Button */}
           <button 
             onClick={() => setIsMobileOpen(false)}
-            className="ml-auto lg:hidden p-2 text-sidebar-foreground/60 hover:text-sidebar-foreground"
+            className="lg:hidden p-2 bg-white/10 rounded-lg text-white hover:bg-white/20 transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
@@ -324,18 +329,21 @@ export default function DashboardLayout({
                 <button
                   onClick={() => toggleGroup(group.id)}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200",
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-2xl transition-all duration-300",
                     hasActiveItem 
-                      ? "bg-primary/10 text-primary" 
-                      : "text-sidebar-foreground/60 hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground"
+                      ? "bg-white/5 text-primary shadow-sm" 
+                      : "text-sidebar-foreground/50 hover:bg-white/[0.03] hover:text-white"
                   )}
                 >
-                  <group.icon className="w-5 h-5 flex-shrink-0" />
+                  <group.icon className={cn(
+                    "w-5 h-5 flex-shrink-0 transition-colors",
+                    hasActiveItem ? "text-primary" : "text-inherit"
+                  )} />
                   {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && (
                     <>
-                      <span className="font-semibold text-sm flex-1 text-left">{group.label}</span>
+                      <span className="font-bold text-[11px] uppercase tracking-widest flex-1 text-left">{group.label}</span>
                       <CaretDown className={cn(
-                        "w-4 h-4 transition-transform duration-200",
+                        "w-3.5 h-3.5 transition-transform duration-300",
                         isExpanded ? "rotate-180" : ""
                       )} />
                     </>
@@ -352,7 +360,7 @@ export default function DashboardLayout({
                       transition={{ duration: 0.2 }}
                       className="overflow-hidden"
                     >
-                      <div className="pl-4 mt-1 space-y-0.5 border-l-2 border-sidebar-foreground/10 ml-5">
+                      <div className="pl-4 mt-1 space-y-1 border-l border-white/5 ml-6">
                         {visibleItems.map((item) => {
                           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
                           return (
@@ -361,14 +369,23 @@ export default function DashboardLayout({
                               href={item.href}
                               onClick={() => setIsMobileOpen(false)}
                               className={cn(
-                                "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group",
+                                "flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-300 group relative",
                                 isActive 
-                                  ? "bg-primary text-primary-foreground shadow-lg" 
-                                  : "text-sidebar-foreground/60 hover:bg-sidebar-foreground/5 hover:text-sidebar-foreground"
+                                  ? "bg-primary text-white shadow-premium" 
+                                  : "text-sidebar-foreground/40 hover:text-white hover:bg-white/[0.02]"
                               )}
                             >
-                              <item.icon className="w-4 h-4 flex-shrink-0" />
-                              <span className="text-sm">{item.label}</span>
+                              <item.icon className={cn(
+                                "w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110",
+                                isActive ? "text-white" : "text-inherit"
+                              )} />
+                              <span className="text-sm font-medium">{item.label}</span>
+                              {isActive && (
+                                <motion.div 
+                                  layoutId="active-indicator"
+                                  className="absolute -left-[17px] w-1 h-6 bg-primary rounded-r-full"
+                                />
+                              )}
                             </Link>
                           );
                         })}
@@ -402,53 +419,67 @@ export default function DashboardLayout({
       </motion.aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col relative h-screen overflow-y-auto custom-scrollbar">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Header */}
-        <header className="h-20 flex items-center justify-between px-4 md:px-8 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-40 flex-shrink-0">
+        <header className="h-20 flex items-center justify-between px-4 md:px-8 border-b border-border bg-background/95 backdrop-blur-sm flex-shrink-0">
           <div className="flex items-center gap-4">
             {/* Mobile Menu Trigger */}
             <button 
               onClick={() => setIsMobileOpen(true)}
-              className="lg:hidden p-2 bg-secondary border border-border rounded-xl text-foreground hover:bg-accent transition-all"
+              className="lg:hidden p-2 bg-secondary border border-border rounded-lg text-foreground hover:bg-accent transition-all"
             >
               <List className="w-5 h-5" />
             </button>
-            <div className="flex items-center gap-2">
-              <Buildings className="w-4 h-4 text-primary hidden sm:block" />
-              <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide truncate max-w-[120px] md:max-w-none">
+            
+            <div className="hidden sm:flex items-center gap-3 px-3 py-2 bg-secondary/50 rounded-xl border border-border">
+              <Buildings weight="duotone" className="w-4 h-4 text-primary" />
+              <h2 className="text-xs font-bold text-foreground uppercase tracking-wide truncate max-w-[180px]">
                 {getClinicName()}
               </h2>
             </div>
           </div>
 
           <div className="flex items-center gap-2 md:gap-4">
-            {['clinic_owner', 'clinic_admin'].includes(getUserRole()) && <BranchSwitcher />}
-            <ThemeToggle />
-            <button 
-              onClick={() => setIsHelpOpen(true)}
-              className="p-2 bg-gray-100 dark:bg-white/5 border border-border rounded-xl text-muted-foreground hover:text-primary transition-all"
-            >
-              <Question className="w-5 h-5" />
-            </button>
-            <NotificationCenter />
-            <div className="h-8 w-px bg-border mx-1 md:mx-2" />
-            <div className="hidden md:flex flex-col text-right">
-              <span className="text-sm font-semibold text-foreground">{getFullName()}</span>
-              <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">
-                {getUserRole().replace('_', ' ')}
-              </span>
+            <div className="hidden md:flex items-center gap-2">
+              {['clinic_owner', 'clinic_admin'].includes(getUserRole()) && <BranchSwitcher />}
+              <ThemeToggle />
             </div>
-            <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
-              <Users className="w-5 h-5" />
+            
+            <div className="h-6 w-px bg-border hidden md:block" />
+            
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setIsHelpOpen(true)}
+                className="p-2 bg-secondary border border-border rounded-lg text-muted-foreground hover:text-primary hover:border-primary/20 transition-all"
+              >
+                <Question className="w-4 h-4" />
+              </button>
+              <NotificationCenter />
+            </div>
+
+            <div className="h-6 w-px bg-border" />
+
+            <div className="flex items-center gap-3">
+              <div className="hidden md:flex flex-col text-right">
+                <span className="text-sm font-semibold text-foreground">{getFullName()}</span>
+                <span className="text-xs text-primary font-medium uppercase">
+                  {getUserRole().replace('_', ' ')}
+                </span>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center text-primary">
+                <Users weight="duotone" className="w-5 h-5" />
+              </div>
             </div>
           </div>
         </header>
 
         {/* Page Content */}
-        <div className="p-4 md:p-8">
-          {children}
-        </div>
-      </main>
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-4 md:p-6">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

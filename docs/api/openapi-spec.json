@@ -1,0 +1,497 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BN-Aura Beauty Clinic Sales Assistant API",
+    "description": "Comprehensive API documentation for BN-Aura beauty clinic management system including AI sales assistant, mobile app integration, analytics, and multi-clinic management.",
+    "version": "1.0.0",
+    "contact": {
+      "name": "BN-Aura API Support",
+      "url": "https://bn-aura.com/api-support",
+      "email": "api-support@bn-aura.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.bn-aura.com/v1",
+      "description": "Production server"
+    },
+    {
+      "url": "https://staging-api.bn-aura.com/v1",
+      "description": "Staging server"
+    },
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "AI Sales Assistant",
+      "description": "AI-powered sales consultation and product recommendations"
+    },
+    {
+      "name": "Mobile App",
+      "description": "Mobile application for sales staff and customers"
+    },
+    {
+      "name": "Analytics",
+      "description": "Advanced sales and performance analytics"
+    },
+    {
+      "name": "Multi-Clinic Management",
+      "description": "Multi-location clinic and franchise management"
+    },
+    {
+      "name": "Partner API",
+      "description": "Integration with treatment partners and suppliers"
+    },
+    {
+      "name": "Security",
+      "description": "Security auditing and monitoring"
+    }
+  ],
+  "paths": {
+    "/ai/sales-assistant": {
+      "post": {
+        "tags": ["AI Sales Assistant"],
+        "summary": "Generate AI consultation or product recommendation",
+        "description": "Generate personalized consultation or product recommendations based on customer skin analysis and preferences",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["consultation", "start-chat", "product-recommendation", "follow-up"]
+            },
+            "description": "Type of AI assistance required"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ConsultationRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ProductRecommendationRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "AI assistance generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AIAssistanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalError"
+          }
+        }
+      }
+    },
+    "/mobile/sales-app": {
+      "post": {
+        "tags": ["Mobile App"],
+        "summary": "Mobile app operations",
+        "description": "Handle mobile app operations including user registration, consultation scheduling, treatment booking",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["register-user", "schedule-consultation", "book-treatment", "start-progress"]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MobileAppRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mobile operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MobileAppResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Mobile App"],
+        "summary": "Get mobile analytics",
+        "responses": {
+          "200": {
+            "description": "Mobile analytics data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MobileAnalytics"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/analytics/advanced-sales": {
+      "post": {
+        "tags": ["Analytics"],
+        "summary": "Track sales performance or map customer journey",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["track-performance", "map-journey"]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnalyticsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analytics data processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["Analytics"],
+        "summary": "Get analytics reports",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["overview", "conversion-funnel"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Analytics report generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnalyticsReport"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/multi-clinic": {
+      "post": {
+        "tags": ["Multi-Clinic Management"],
+        "summary": "Multi-clinic operations",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["register-clinic", "create-franchise", "centralize-customer", "generate-report"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Multi-clinic operation completed"
+          }
+        }
+      }
+    },
+    "/partners/treatment": {
+      "post": {
+        "tags": ["Partner API"],
+        "summary": "Partner API operations",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["register-supplier", "create-order", "create-referral", "request-service"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Partner operation completed"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ConsultationRequest": {
+        "type": "object",
+        "required": ["customerId", "skinAnalysis"],
+        "properties": {
+          "customerId": {
+            "type": "string",
+            "description": "Unique customer identifier"
+          },
+          "skinAnalysis": {
+            "type": "object",
+            "properties": {
+              "skinType": {
+                "type": "string",
+                "enum": ["normal", "oily", "dry", "combination", "sensitive"]
+              },
+              "concerns": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["mild", "moderate", "severe"]
+              }
+            }
+          },
+          "preferences": {
+            "type": "object",
+            "properties": {
+              "budget": {
+                "type": "number",
+                "minimum": 0
+              },
+              "timeAvailable": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "ProductRecommendationRequest": {
+        "type": "object",
+        "required": ["customerId", "skinType"],
+        "properties": {
+          "customerId": {
+            "type": "string"
+          },
+          "skinType": {
+            "type": "string",
+            "enum": ["normal", "oily", "dry", "combination", "sensitive"]
+          },
+          "budget": {
+            "type": "number",
+            "minimum": 0
+          },
+          "concerns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AIAssistanceResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object"
+          },
+          "recommendations": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "MobileAppRequest": {
+        "type": "object",
+        "properties": {
+          "userType": {
+            "type": "string",
+            "enum": ["sales", "customer"]
+          },
+          "profile": {
+            "type": "object"
+          },
+          "deviceInfo": {
+            "type": "object"
+          }
+        }
+      },
+      "MobileAppResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "MobileAnalytics": {
+        "type": "object",
+        "properties": {
+          "totalUsers": {
+            "type": "integer"
+          },
+          "consultationsToday": {
+            "type": "integer"
+          },
+          "bookingsToday": {
+            "type": "integer"
+          },
+          "averageImprovement": {
+            "type": "number"
+          }
+        }
+      },
+      "AnalyticsRequest": {
+        "type": "object"
+      },
+      "AnalyticsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object"
+          },
+          "insights": {
+            "type": "object"
+          }
+        }
+      },
+      "AnalyticsReport": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object"
+          },
+          "analysis": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "InternalError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean"
+                },
+                "error": {
+                  "type": "string"
+                },
+                "details": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}

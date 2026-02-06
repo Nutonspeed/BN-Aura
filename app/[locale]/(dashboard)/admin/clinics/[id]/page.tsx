@@ -1,8 +1,5 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
 import {
   ArrowLeft,
   Buildings,
@@ -16,6 +13,7 @@ import {
   Target,
   Gear,
   Shield,
+  ShieldCheck,
   PencilSimple,
   FloppyDisk,
   X,
@@ -25,9 +23,27 @@ import {
   CurrencyDollar,
   TrendUp,
   Pulse,
-  Package
+  Package,
+  CaretRight,
+  IdentificationCard,
+  Briefcase,
+  Lightning,
+  Sparkle,
+  Archive,
+  ArrowSquareOut,
+  IdentificationBadge
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { createClient } from '@/lib/supabase/client';
+import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ClinicDetail {
   id: string;
@@ -80,7 +96,7 @@ interface ClinicStats {
 
 export default function ClinicDetailPage() {
   const params = useParams();
-  const router = useRouter();
+  const { goBack } = useBackNavigation();
   const clinicId = params.id as string;
 
   const [loading, setLoading] = useState(true);
@@ -250,412 +266,336 @@ export default function ClinicDetailPage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8"
+      className="space-y-8 pb-20 font-sans"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.back()}
-            className="p-3 hover:bg-white/10 rounded-xl transition-all"
+      <Breadcrumb 
+        customLabels={{ 
+          [clinicId]: clinic?.display_name.th || 'Clinic Node Detail'
+        }} 
+      />
+
+      {/* Header & Navigation */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="flex items-center gap-6">
+          <Button 
+            variant="outline"
+            onClick={() => goBack('/admin/clinics')}
+            className="p-4 h-14 w-14 border-border rounded-2xl text-muted-foreground hover:text-foreground transition-all"
           >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-3xl font-bold text-white">
+            <ArrowLeft weight="bold" className="w-5 h-5" />
+          </Button>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
+              <Buildings weight="duotone" className="w-4 h-4" />
+              Clinical Infrastructure Node
+            </div>
+            <h1 className="text-4xl font-bold text-foreground tracking-tight uppercase">
               {clinic.display_name.th}
+              <span className="text-primary/40 font-light italic ml-3">({clinic.clinic_code})</span>
             </h1>
-            <p className="text-white/60 text-sm">
-              ID: {clinic.clinic_code}
-            </p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           {isEditing ? (
-            <>
-              <button
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
                 onClick={handleCancel}
-                className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2"
+                className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50"
               >
-                <X className="w-4 h-4" />
-                Cancel
-              </button>
-              <button
+                <X weight="bold" className="w-4 h-4" />
+                Abort Changes
+              </Button>
+              <Button
                 onClick={handleSave}
                 disabled={saving}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
+                className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
               >
                 {saving ? (
                   <SpinnerGap className="w-4 h-4 animate-spin" />
                 ) : (
-                  <FloppyDisk className="w-4 h-4" />
+                  <FloppyDisk weight="bold" className="w-4 h-4" />
                 )}
-                Save Changes
-              </button>
-            </>
+                Commit Updates
+              </Button>
+            </div>
           ) : (
-            <button
+            <Button
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2"
+              className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
             >
-              <PencilSimple className="w-4 h-4" />
-              Edit Clinic
-            </button>
+              <PencilSimple weight="bold" className="w-4 h-4" />
+              Modify Identity
+            </Button>
           )}
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Stats Cards Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         {statsCards.map((stat, i) => (
-          <motion.div
+          <StatCard
             key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="glass-card p-6 rounded-2xl border border-white/10"
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-white/60 text-sm">{stat.label}</p>
-                <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
-              </div>
-              <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-            </div>
-          </motion.div>
+            title={stat.label}
+            value={stat.value === 'Premium' || stat.value === 'Regular' ? 1 : parseInt(stat.value.replace(/,/g, '')) || 0}
+            suffix={stat.value === 'Premium' || stat.value === 'Regular' ? ` ${stat.value}` : ''}
+            icon={stat.icon}
+            iconColor={stat.color}
+            className="p-4"
+          />
         ))}
       </div>
 
-      {/* Alerts */}
-      {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-          <WarningCircle className="w-5 h-5 text-red-400" />
-          <p className="text-red-400">{error}</p>
-        </div>
-      )}
+      {/* Dynamic Alerts */}
+      <AnimatePresence>
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mx-2 p-4 bg-destructive/10 border border-destructive/20 rounded-2xl flex items-center gap-3"
+          >
+            <WarningCircle weight="fill" className="w-5 h-5 text-destructive" />
+            <p className="text-destructive text-xs font-bold uppercase tracking-widest">Exception: {error}</p>
+          </motion.div>
+        )}
+        {success && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mx-2 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3"
+          >
+            <CheckCircle weight="fill" className="w-5 h-5 text-emerald-500" />
+            <p className="text-emerald-500 text-xs font-bold uppercase tracking-widest">Sync Complete: {success}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {success && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
-          <CheckCircle className="w-5 h-5 text-emerald-400" />
-          <p className="text-emerald-400">{success}</p>
-        </div>
-      )}
-
-      {/* Clinic Information */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Basic Information */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="glass-card p-8 rounded-3xl border border-white/10">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-              <Buildings className="w-5 h-5 text-primary" />
-              Basic Information
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="text-sm text-white/60">Clinic Name (Thai)</label>
-                {isEditing && editForm ? (
-                  <input
-                    type="text"
-                    value={editForm.display_name.th}
-                    onChange={(e) => setEditForm({
-                      ...editForm,
-                      display_name: { ...editForm.display_name, th: e.target.value }
-                    })}
-                    className="w-full mt-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
-                  />
-                ) : (
-                  <p className="text-white mt-1">{clinic.display_name.th}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="text-sm text-white/60">Clinic Name (English)</label>
-                {isEditing && editForm ? (
-                  <input
-                    type="text"
-                    value={editForm.display_name.en}
-                    onChange={(e) => setEditForm({
-                      ...editForm,
-                      display_name: { ...editForm.display_name, en: e.target.value }
-                    })}
-                    className="w-full mt-1 px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white"
-                  />
-                ) : (
-                  <p className="text-white mt-1">{clinic.display_name.en}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="text-sm text-white/60">Contact Email</label>
-                <p className="text-white mt-1 flex items-center gap-2">
-                  <EnvelopeSimple className="w-4 h-4 text-white/40" />
-                  {clinic.metadata.contact_email}
-                </p>
-              </div>
-
-              <div>
-                <label className="text-sm text-white/60">Contact Phone</label>
-                {clinic.metadata.contact_phone ? (
-                  <p className="text-white mt-1 flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-white/40" />
-                    {clinic.metadata.contact_phone}
-                  </p>
-                ) : (
-                  <p className="text-white/40 mt-1">Not provided</p>
-                )}
-              </div>
-
-              <div className="md:col-span-2">
-                <label className="text-sm text-white/60">Address</label>
-                {clinic.metadata.address ? (
-                  <p className="text-white mt-1 flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-white/40 mt-0.5" />
-                    {clinic.metadata.address}
-                  </p>
-                ) : (
-                  <p className="text-white/40 mt-1">Not provided</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Business Information */}
-          {clinic.metadata.business_info && (
-            <div className="glass-card p-8 rounded-3xl border border-white/10">
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <Gear className="w-5 h-5 text-primary" />
-                Business Information
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-2">
+        {/* Main Intel Column */}
+        <div className="lg:col-span-2 space-y-10">
+          {/* Identity Matrix */}
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardHeader className="p-8 border-b border-border/50 bg-secondary/30">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                  <IdentificationBadge weight="duotone" className="w-6 h-6" />
+                </div>
                 <div>
-                  <label className="text-sm text-white/60">Business Type</label>
-                  <p className="text-white mt-1 capitalize">
-                    {clinic.metadata.business_info.type.replace('_', ' ')}
-                  </p>
+                  <CardTitle className="text-xl font-black uppercase tracking-tight">Identity Matrix</CardTitle>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Core node authentication & data</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-10">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Identity Node (TH)</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editForm?.display_name.th}
+                        onChange={(e) => setEditForm(f => f ? ({ ...f, display_name: { ...f.display_name, th: e.target.value } }) : null)}
+                        className="w-full px-6 py-4 bg-secondary border border-border rounded-2xl text-foreground focus:border-primary outline-none transition-all font-bold"
+                      />
+                    ) : (
+                      <div className="p-4 bg-secondary/30 border border-border/50 rounded-2xl flex items-center gap-3">
+                        <span className="text-sm font-bold text-foreground">{clinic.display_name.th}</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Identity Node (EN)</label>
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={editForm?.display_name.en}
+                        onChange={(e) => setEditForm(f => f ? ({ ...f, display_name: { ...f.display_name, en: e.target.value } }) : null)}
+                        className="w-full px-6 py-4 bg-secondary border border-border rounded-2xl text-foreground focus:border-primary outline-none transition-all font-bold"
+                      />
+                    ) : (
+                      <div className="p-4 bg-secondary/30 border border-border/50 rounded-2xl flex items-center gap-3">
+                        <span className="text-sm font-bold text-foreground">{clinic.display_name.en}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
-                {clinic.metadata.business_info.established_year && (
-                  <div>
-                    <label className="text-sm text-white/60">Established Year</label>
-                    <p className="text-white mt-1">{clinic.metadata.business_info.established_year}</p>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Transmission Uplink</label>
+                    <div className="p-4 bg-secondary/30 border border-border/50 rounded-2xl flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500 shadow-inner">
+                        <EnvelopeSimple weight="bold" className="w-5 h-5" />
+                      </div>
+                      <span className="text-sm font-bold text-foreground truncate">{clinic.metadata.contact_email}</span>
+                    </div>
                   </div>
-                )}
-
-                {clinic.metadata.business_info.number_of_staff && (
-                  <div>
-                    <label className="text-sm text-white/60">Number of Staff</label>
-                    <p className="text-white mt-1">{clinic.metadata.business_info.number_of_staff}</p>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Comm Channel</label>
+                    <div className="p-4 bg-secondary/30 border border-border/50 rounded-2xl flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 shadow-inner">
+                        <Phone weight="bold" className="w-5 h-5" />
+                      </div>
+                      <span className="text-sm font-bold text-foreground">{clinic.metadata.contact_phone || 'NODE_OFFLINE'}</span>
+                    </div>
                   </div>
-                )}
+                </div>
 
-                {clinic.metadata.business_info.number_of_branches && (
-                  <div>
-                    <label className="text-sm text-white/60">Number of Branches</label>
-                    <p className="text-white mt-1">{clinic.metadata.business_info.number_of_branches}</p>
-                  </div>
-                )}
-
-                {clinic.metadata.business_info.website && (
-                  <div className="md:col-span-2">
-                    <label className="text-sm text-white/60">Website</label>
-                    <p className="text-white mt-1 flex items-center gap-2">
-                      <Globe className="w-4 h-4 text-white/40" />
-                      <a
-                        href={clinic.metadata.business_info.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline"
-                      >
-                        {clinic.metadata.business_info.website}
-                      </a>
+                <div className="md:col-span-2 space-y-2">
+                  <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Deployment Coordinate</label>
+                  <div className="p-5 bg-secondary/30 border border-border/50 rounded-2xl flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-500 shadow-inner shrink-0">
+                      <MapPin weight="bold" className="w-5 h-5" />
+                    </div>
+                    <p className="text-sm text-muted-foreground font-medium italic leading-relaxed">
+                      {clinic.metadata.address || 'Deployment address coordinates not initialized in current node.'}
                     </p>
                   </div>
-                )}
-
-                {clinic.metadata.business_info.social_media && (
-                  <div className="md:col-span-2">
-                    <label className="text-sm text-white/60">Social Media</label>
-                    <p className="text-white mt-1">{clinic.metadata.business_info.social_media}</p>
-                  </div>
-                )}
+                </div>
               </div>
-            </div>
-          )}
+            </CardContent>
+          </Card>
 
-          {/* Financial Information */}
-          {clinic.metadata.financial && (
-            <div className="glass-card p-8 rounded-3xl border border-white/10">
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <CurrencyDollar className="w-5 h-5 text-primary" />
-                Financial Information
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {clinic.metadata.financial.monthly_revenue && (
-                  <div>
-                    <label className="text-sm text-white/60">Monthly Revenue Range</label>
-                    <p className="text-white mt-1">{clinic.metadata.financial.monthly_revenue}</p>
+          {/* Business & Technical Analytics */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {/* Business Intel */}
+            <Card className="rounded-[40px] border-border/50 group overflow-hidden">
+              <CardHeader className="p-8 border-b border-border/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 border border-purple-500/20 shadow-inner">
+                    <Gear weight="duotone" className="w-6 h-6" />
                   </div>
+                  <CardTitle className="text-lg font-black uppercase tracking-tight">Business Node</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-8 space-y-6">
+                {clinic.metadata.business_info ? (
+                  <>
+                    <div className="flex justify-between items-center px-1">
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Company Type</span>
+                      <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase px-3">{clinic.metadata.business_info.type}</Badge>
+                    </div>
+                    <div className="flex justify-between items-center px-1">
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Registry Year</span>
+                      <span className="text-sm font-bold text-foreground">{clinic.metadata.business_info.established_year || 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center px-1">
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Network Branches</span>
+                      <span className="text-sm font-bold text-foreground">{clinic.metadata.business_info.number_of_branches || '1'} Nodes</span>
+                    </div>
+                    {clinic.metadata.business_info.website && (
+                      <div className="pt-4 border-t border-border/30">
+                        <Button variant="outline" className="w-full justify-between rounded-xl px-4 py-3 border-border/50 hover:bg-secondary">
+                          <span className="text-[10px] font-black uppercase tracking-widest">Public Domain Node</span>
+                          <ArrowSquareOut weight="bold" className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="py-10 text-center opacity-30 italic text-xs">No business metadata synchronized.</div>
                 )}
+              </CardContent>
+            </Card>
 
-                {clinic.metadata.financial.it_budget && (
-                  <div>
-                    <label className="text-sm text-white/60">IT Budget (Yearly)</label>
-                    <p className="text-white mt-1">{clinic.metadata.financial.it_budget}</p>
+            {/* Technical Parameters */}
+            <Card className="rounded-[40px] border-border/50 group overflow-hidden">
+              <CardHeader className="p-8 border-b border-border/50">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20 shadow-inner">
+                    <Lightning weight="duotone" className="w-6 h-6" />
                   </div>
+                  <CardTitle className="text-lg font-black uppercase tracking-tight">System Parameters</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="p-8 space-y-6">
+                {clinic.metadata.technical ? (
+                  <>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Architecture</label>
+                      <div className="p-3 bg-secondary/30 border border-border/50 rounded-xl text-xs font-bold text-foreground">{clinic.metadata.technical.current_system || 'Vanilla Architecture'}</div>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Deployment Pipeline</label>
+                      <div className="p-3 bg-secondary/30 border border-border/50 rounded-xl text-xs font-bold text-foreground capitalize">{clinic.metadata.technical.timeline || 'Immediate Sync'}</div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="py-10 text-center opacity-30 italic text-xs">No technical telemetry synchronized.</div>
                 )}
-
-                {clinic.metadata.financial.payment_method && (
-                  <div>
-                    <label className="text-sm text-white/60">Payment Method</label>
-                    <p className="text-white mt-1 capitalize">
-                      {clinic.metadata.financial.payment_method.replace('_', ' ')}
-                    </p>
-                  </div>
-                )}
-
-                {clinic.metadata.financial.payment_term && (
-                  <div>
-                    <label className="text-sm text-white/60">Payment Term</label>
-                    <p className="text-white mt-1 capitalize">{clinic.metadata.financial.payment_term}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Marketing Information */}
-          {clinic.metadata.marketing && (
-            <div className="glass-card p-8 rounded-3xl border border-white/10">
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <Target className="w-5 h-5 text-primary" />
-                Marketing Information
-              </h2>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {clinic.metadata.marketing.lead_source && (
-                  <div>
-                    <label className="text-sm text-white/60">Lead Source</label>
-                    <p className="text-white mt-1 capitalize">
-                      {clinic.metadata.marketing.lead_source.replace('_', ' ')}
-                    </p>
-                  </div>
-                )}
-
-                {clinic.metadata.marketing.assigned_sales && (
-                  <div>
-                    <label className="text-sm text-white/60">Assigned Sales</label>
-                    <p className="text-white mt-1">{clinic.metadata.marketing.assigned_sales}</p>
-                  </div>
-                )}
-
-                {clinic.metadata.marketing.referred_by && (
-                  <div className="md:col-span-2">
-                    <label className="text-sm text-white/60">Referred By</label>
-                    <p className="text-white mt-1">{clinic.metadata.marketing.referred_by}</p>
-                  </div>
-                )}
-
-                {clinic.metadata.marketing.competitors && (
-                  <div className="md:col-span-2">
-                    <label className="text-sm text-white/60">Competitors</label>
-                    <p className="text-white mt-1">{clinic.metadata.marketing.competitors}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Technical Information */}
-          {clinic.metadata.technical && (
-            <div className="glass-card p-8 rounded-3xl border border-white/10">
-              <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
-                <Gear className="w-5 h-5 text-primary" />
-                Technical Information
-              </h2>
-
-              <div className="space-y-4">
-                {clinic.metadata.technical.current_system && (
-                  <div>
-                    <label className="text-sm text-white/60">Current System</label>
-                    <p className="text-white mt-1">{clinic.metadata.technical.current_system}</p>
-                  </div>
-                )}
-
-                {clinic.metadata.technical.integration_needs && (
-                  <div>
-                    <label className="text-sm text-white/60">Integration Needs</label>
-                    <p className="text-white mt-1">{clinic.metadata.technical.integration_needs}</p>
-                  </div>
-                )}
-
-                {clinic.metadata.technical.timeline && (
-                  <div>
-                    <label className="text-sm text-white/60">Implementation Timeline</label>
-                    <p className="text-white mt-1 capitalize">
-                      {clinic.metadata.technical.timeline.replace('_', ' ')}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Status Card */}
-          <div className="glass-card p-6 rounded-2xl border border-white/10">
-            <h3 className="text-lg font-bold text-white mb-4">Status</h3>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-white/60">Clinic Status</span>
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  clinic.is_active 
-                    ? 'bg-emerald-500/20 text-emerald-400' 
-                    : 'bg-rose-500/20 text-rose-400'
-                }`}>
-                  {clinic.is_active ? 'Active' : 'Inactive'}
-                </span>
+        {/* Sidebar Intel */}
+        <div className="space-y-8">
+          {/* Status & Security Cluster */}
+          <Card className="p-8 rounded-[40px] border-border shadow-card relative overflow-hidden group">
+            <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
+            <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3 mb-8 relative z-10">
+              <Shield weight="duotone" className="w-5 h-5" />
+              Security Protocol
+            </h4>
+            
+            <div className="space-y-6 relative z-10">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Node Status</span>
+                <Badge variant={clinic.is_active ? 'success' : 'destructive'} className="font-black text-[9px] uppercase px-3 py-1 tracking-widest">
+                  {clinic.is_active ? 'OPERATIONAL' : 'OFFLINE'}
+                </Badge>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-white/60">Created</span>
-                <span className="text-white text-sm">
-                  {new Date(clinic.created_at).toLocaleDateString()}
-                </span>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Node Initialized</span>
+                <span className="text-xs font-bold text-foreground tabular-nums">{new Date(clinic.created_at).toLocaleDateString()}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-white/60">Last Updated</span>
-                <span className="text-white text-sm">
-                  {new Date(clinic.updated_at).toLocaleDateString()}
-                </span>
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Last Sync</span>
+                <span className="text-xs font-bold text-foreground tabular-nums">{new Date(clinic.updated_at).toLocaleDateString()}</span>
+              </div>
+              
+              <div className="pt-6 border-t border-border/30">
+                <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl flex items-start gap-4">
+                  <div className="mt-1">
+                    <ShieldCheck weight="fill" className="w-4 h-4 text-primary" />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground font-medium italic leading-relaxed">
+                    Identity access managed via Row Level Security (RLS) cluster alpha.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </Card>
 
-          {/* Quick Actions */}
-          <div className="glass-card p-6 rounded-2xl border border-white/10">
-            <h3 className="text-lg font-bold text-white mb-4">Quick Actions</h3>
+          {/* Quick Control Center */}
+          <Card className="p-8 rounded-[40px] border-border shadow-card overflow-hidden group">
+            <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em] flex items-center gap-3 mb-6">
+              <Briefcase weight="duotone" className="w-5 h-5 text-primary" />
+              Control Center
+            </h4>
             <div className="space-y-3">
-              <button className="w-full py-2 px-4 bg-white/5 text-white rounded-lg hover:bg-white/10 transition-all text-sm">
-                View All Staff
-              </button>
-              <button className="w-full py-2 px-4 bg-white/5 text-white rounded-lg hover:bg-white/10 transition-all text-sm">
-                View All Customers
-              </button>
-              <button className="w-full py-2 px-4 bg-white/5 text-white rounded-lg hover:bg-white/10 transition-all text-sm">
-                Change Subscription Plan
-              </button>
-              <button className="w-full py-2 px-4 bg-white/5 text-white rounded-lg hover:bg-white/10 transition-all text-sm">
-                Export Clinic Data
-              </button>
+              <Button variant="outline" className="w-full justify-between rounded-2xl px-5 py-4 border-border/50 hover:bg-secondary group/btn">
+                <span className="text-[10px] font-black uppercase tracking-widest">Personnel Matrix</span>
+                <CaretRight weight="bold" className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+              </Button>
+              <Button variant="outline" className="w-full justify-between rounded-2xl px-5 py-4 border-border/50 hover:bg-secondary group/btn">
+                <span className="text-[10px] font-black uppercase tracking-widest">Identity Registry</span>
+                <CaretRight weight="bold" className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+              </Button>
+              <Button variant="outline" className="w-full justify-between rounded-2xl px-5 py-4 border-border/50 hover:bg-secondary group/btn">
+                <span className="text-[10px] font-black uppercase tracking-widest">Scaling Parameters</span>
+                <CaretRight weight="bold" className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+              </Button>
+              <Button variant="outline" className="w-full justify-between rounded-2xl px-5 py-4 border-border/50 hover:bg-secondary group/btn">
+                <span className="text-[10px] font-black uppercase tracking-widest">Ledger Export</span>
+                <CaretRight weight="bold" className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+              </Button>
             </div>
-          </div>
+          </Card>
         </div>
       </div>
     </motion.div>

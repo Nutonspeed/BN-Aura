@@ -1,6 +1,9 @@
 'use client';
 
-import { Gear, FloppyDisk, ArrowsClockwise } from '@phosphor-icons/react';
+import { Gear, FloppyDisk, ArrowsClockwise, ShieldCheck, Pulse } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/Badge';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsContext } from '../context';
 
 interface SettingsHeaderProps {
@@ -16,35 +19,67 @@ export default function SettingsHeader({ onSave, hasUnsavedChanges }: SettingsHe
   };
 
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-          <Gear className="w-8 h-8 text-primary" />
-          Global Settings Management
-        </h1>
-        <p className="text-white/60 mt-1">Configure system-wide settings and preferences</p>
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+      <div className="space-y-1">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+        >
+          <Pulse weight="duotone" className="w-4 h-4" />
+          System Control Node
+        </motion.div>
+        <motion.h1 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+        >
+          Global <span className="text-primary">Settings</span>
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-muted-foreground font-light text-sm italic"
+        >
+          Configuring global parameters, feature flags, and clinical orchestration.
+        </motion.p>
       </div>
       
       <div className="flex items-center gap-3">
-        <button
+        <AnimatePresence>
+          {hasUnsavedChanges && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.9, x: 20 }}
+              className="flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-xl"
+            >
+              <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Unsaved Changes</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <Button
+          variant="outline"
           onClick={handleRefresh}
           disabled={loading}
-          className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 disabled:opacity-50"
+          className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
         >
-          <ArrowsClockwise className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
+          <ArrowsClockwise weight="bold" className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          Sync Intel
+        </Button>
 
-        {hasUnsavedChanges && (
-          <button
-            onClick={onSave}
-            disabled={loading}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2 disabled:opacity-50"
-          >
-            <FloppyDisk className="w-4 h-4" />
-            Save Changes
-          </button>
-        )}
+        <Button
+          onClick={onSave}
+          disabled={!hasUnsavedChanges || loading}
+          className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium group"
+        >
+          <FloppyDisk weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          Commit Changes
+        </Button>
       </div>
     </div>
   );

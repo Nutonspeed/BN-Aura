@@ -13,8 +13,17 @@ import {
   Pulse,
   Lightning,
   Camera,
-  ListChecks
+  ListChecks,
+  CaretRight,
+  ArrowLeft
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
 import { createClient } from '@/lib/supabase/client';
 import TaskQueue from '@/components/beautician/TaskQueue';
 import ProtocolInsights from '@/components/beautician/ProtocolInsights';
@@ -24,6 +33,8 @@ import { useBeauticianTasks, useStartTreatment, useCompleteTreatment, useTaskRea
 import { toast } from 'sonner';
 
 export default function BeauticianDashboard() {
+  const { goBack } = useBackNavigation();
+  const t = useTranslations('beautician' as any);
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [staffName, setStaffName] = useState('');
@@ -37,6 +48,8 @@ export default function BeauticianDashboard() {
   } | null>(null);
   const [throughput, setThroughput] = useState({ completed: 0, total: 0 });
   const [checklist, setChecklist] = useState<any[]>([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [automatedTasks, setAutomatedTasks] = useState<any[]>([]);
 
   const supabase = useMemo(() => createClient(), []);
 
@@ -47,6 +60,180 @@ export default function BeauticianDashboard() {
   
   // Setup real-time updates
   useTaskRealtime(userId || '');
+
+  // Fetch appointments and create automated workflow tasks
+  const fetchAppointmentsAndTasks = useCallback(async () => {
+    if (!userId) return;
+    
+    try {
+      // Fetch today's and upcoming appointments
+      const { data: appointments, error: appointmentsError } = await supabase
+        .from('appointments')
+        .select(`
+          *,
+          customers(
+            id, first_name, last_name, phone, email
+          )
+        `)
+        .eq('staff_id', userId)
+        .gte('appointment_date', new Date().toISOString().split('T')[0])
+        .order('appointment_date', { ascending: true })
+        .limit(10);
+
+      if (!appointmentsError && appointments) {
+        setUpcomingAppointments(appointments);
+        
+        // Auto-create workflow tasks for appointments that don't have them yet
+        const tasksToCreate = [];
+        for (const appointment of appointments) {
+          if (appointment.status === 'confirmed' && !appointment.metadata?.workflow_id) {
+            tasksToCreate.push({
+              appointment_id: appointment.id,
+              customer_id: appointment.customers?.id,
+              treatment_names: appointment.services || [],
+              appointment_time: appointment.appointment_date,
+              start_time: appointment.start_time
+            });
+          }
+        }
+
+        if (tasksToCreate.length > 0) {
+          await createAutomatedWorkflowTasks(tasksToCreate);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    }
+  }, [userId, supabase]);
+
+  // Create automated workflow tasks for appointments
+  const createAutomatedWorkflowTasks = async (appointments: any[]) => {
+    for (const appointment of appointments) {
+      try {
+        // Get beautician's clinic_id first
+        const { data: beauticianInfo } = await supabase
+          .from('clinic_staff')
+          .select('clinic_id')
+          .eq('user_id', userId)
+          .single();
+
+        if (!beauticianInfo?.clinic_id) {
+          console.error('Beautician clinic_id not found');
+          continue;
+        }
+
+        // Create workflow state
+        const { data: workflow, error: workflowError } = await supabase
+          .from('workflow_states')
+          .insert({
+            customer_id: appointment.customer_id,
+            current_stage: 'treatment_planned',
+            assigned_beautician_id: userId,
+            treatment_plan: {
+              appointment_id: appointment.appointment_id,
+              treatment_names: appointment.treatment_names,
+              scheduled_time: appointment.appointment_time,
+              start_time: appointment.start_time
+            },
+            clinic_id: beauticianInfo.clinic_id
+          })
+          .select()
+          .single();
+
+        if (workflowError) {
+          console.error('❌ Workflow creation failed:', {
+            error: workflowError,
+            appointment: appointment.appointment_id,
+            customer: appointment.customer_id
+          });
+          continue;
+        }
+
+        if (workflow) {
+          console.log(`✅ Created workflow ${workflow.id} for appointment ${appointment.appointment_id}`);
+          
+          // Create initial tasks via API
+          const treatmentName = Array.isArray(appointment.treatment_names) 
+            ? appointment.treatment_names.join(', ') 
+            : Array.isArray(appointment.services)
+            ? appointment.services.map((s: any) => s.name || s).join(', ')
+            : 'Treatment Session';
+
+          const appointmentDateTime = appointment.start_time 
+            ? new Date(`${appointment.appointment_time}T${appointment.start_time}`)
+            : new Date(appointment.appointment_time);
+
+          const tasksToCreate = [
+            {
+              workflow_id: workflow.id,
+              assigned_to: userId,
+              task_type: 'preparation',
+              title: `Prepare for ${treatmentName}`,
+              description: `Set up equipment and materials for ${treatmentName}`,
+              priority: 'medium',
+              due_date: appointmentDateTime.toISOString()
+            },
+            {
+              workflow_id: workflow.id,
+              assigned_to: userId,
+              task_type: 'consultation',
+              title: 'Customer Consultation',
+              description: 'Review customer skin analysis and treatment plan',
+              priority: 'high',
+              due_date: appointmentDateTime.toISOString()
+            }
+          ];
+
+          // Create tasks using API
+          let tasksCreated = 0;
+          for (const taskData of tasksToCreate) {
+            try {
+              console.log('🔄 Creating task:', taskData.title);
+              const taskResponse = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskData)
+              });
+
+              const taskResult = await taskResponse.json();
+              
+              if (!taskResponse.ok) {
+                console.error('❌ Task creation failed:', {
+                  status: taskResponse.status,
+                  error: taskResult.error || taskResult,
+                  task: taskData.title
+                });
+              } else {
+                console.log(`✅ Created task: ${taskData.title}`);
+                tasksCreated++;
+              }
+            } catch (taskError) {
+              console.error('❌ Task creation API error:', {
+                error: taskError,
+                task: taskData.title
+              });
+            }
+          }
+          
+          console.log(`📊 Workflow automation summary: ${tasksCreated}/${tasksToCreate.length} tasks created for appointment ${appointment.appointment_id}`);
+          
+          // Update appointment metadata with workflow_id
+          const updatedMetadata = {
+            ...appointment.metadata,
+            workflow_id: workflow.id,
+            workflow_created: new Date().toISOString()
+          };
+          
+          await supabase
+            .from('appointments')
+            .update({ metadata: updatedMetadata })
+            .eq('id', appointment.appointment_id);
+        }
+      } catch (error) {
+        console.error('Error creating automated tasks:', error);
+      }
+    }
+  };
 
   const fetchStaffData = useCallback(async () => {
     setLoading(true);
@@ -144,6 +331,15 @@ export default function BeauticianDashboard() {
     fetchStaffData();
   }, [fetchStaffData]);
 
+  useEffect(() => {
+    if (userId) {
+      fetchAppointmentsAndTasks();
+      // Refresh appointments every 2 minutes
+      const interval = setInterval(fetchAppointmentsAndTasks, 120000);
+      return () => clearInterval(interval);
+    }
+  }, [userId, fetchAppointmentsAndTasks]);
+
   const handleStartTreatment = async (taskId: string, workflowId: string) => {
     if (!userId) return;
     try {
@@ -193,8 +389,10 @@ export default function BeauticianDashboard() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20"
+      className="space-y-8 pb-20 font-sans"
     >
+      <Breadcrumb />
+      
       <ComparisonModal 
         isOpen={isCompareModalOpen}
         onClose={() => setIsCompareModalOpen(false)}
@@ -208,9 +406,9 @@ export default function BeauticianDashboard() {
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-emerald-400 text-xs font-black uppercase tracking-[0.3em]"
+            className="flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            <Stethoscope className="w-4 h-4" />
+            <Stethoscope weight="duotone" className="w-4 h-4" />
             Clinical Operations Node
           </motion.div>
           <motion.h1 
@@ -227,7 +425,7 @@ export default function BeauticianDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Delivering high-precision aesthetic treatments via cognitive protocols.
+            Delivering high-precision aesthetic treatments via clinical cognitive protocols.
           </motion.p>
         </div>
 
@@ -237,20 +435,22 @@ export default function BeauticianDashboard() {
           transition={{ delay: 0.3 }}
           className="flex gap-3"
         >
-          <div className="px-5 py-3 bg-card border border-border rounded-xl flex items-center gap-6">
-            <div className="flex flex-col">
-              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Shift Status</span>
-              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5 uppercase">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-                On Duty
-              </span>
+          <Card className="px-6 py-3 border-emerald-500/20 bg-emerald-500/5">
+            <div className="flex items-center gap-8">
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Shift Status</span>
+                <span className="text-xs font-bold text-emerald-500 flex items-center gap-1.5 uppercase">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                  On Duty
+                </span>
+              </div>
+              <div className="h-8 w-px bg-emerald-500/10" />
+              <div className="flex flex-col">
+                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Session Output</span>
+                <span className="text-xs font-bold text-foreground uppercase tabular-nums">{throughput.completed}/{throughput.total} Cases</span>
+              </div>
             </div>
-            <div className="h-8 w-px bg-white/10" />
-            <div className="flex flex-col">
-              <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Throughput</span>
-              <span className="text-xs font-bold text-foreground uppercase tabular-nums">{throughput.completed}/{throughput.total} Cases</span>
-            </div>
-          </div>
+          </Card>
         </motion.div>
       </div>
 
@@ -272,8 +472,109 @@ export default function BeauticianDashboard() {
           )}
         </div>
 
+        {/* Center: Upcoming Appointments */}
+        <div className="lg:col-span-1">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Card className="h-[500px] bg-gradient-to-br from-blue-500/5 to-purple-500/5 border-blue-500/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-lg font-black uppercase tracking-tight">
+                  <ClockCounterClockwise weight="duotone" className="w-6 h-6 text-blue-500" />
+                  Upcoming Sessions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 overflow-y-auto max-h-[400px]">
+                {upcomingAppointments.length > 0 ? (
+                  upcomingAppointments.map((appointment, idx) => (
+                    <motion.div
+                      key={appointment.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="p-4 bg-card border border-border/50 rounded-xl hover:border-blue-500/30 transition-all"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-semibold text-sm">
+                              {appointment.customer?.first_name} {appointment.customer?.last_name}
+                            </h4>
+                            <Badge className={`text-xs ${
+                              appointment.workflow_id 
+                                ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' 
+                                : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
+                            }`}>
+                              {appointment.workflow_id ? '✓ Workflow Ready' : '⚠ Setting Up...'}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {appointment.treatment?.name || 'Treatment'}
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span>
+                              {new Date(appointment.appointment_date).toLocaleDateString()}
+                            </span>
+                            <span>
+                              {new Date(appointment.appointment_date).toLocaleTimeString([], {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                              })}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-end gap-2">
+                          <div className={`w-3 h-3 rounded-full ${
+                            appointment.status === 'confirmed' ? 'bg-emerald-500' :
+                            appointment.status === 'pending' ? 'bg-amber-500' :
+                            'bg-gray-400'
+                          }`} />
+                          {appointment.workflow_id && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="text-xs h-6 px-2 border-blue-500/30 text-blue-600 hover:bg-blue-500/10"
+                              onClick={() => {
+                                // Navigate to workflow or start preparation
+                                toast.info('Opening workflow management...');
+                              }}
+                            >
+                              View Tasks
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                      
+                      {/* Workflow Progress Indicator */}
+                      {appointment.workflow_id && (
+                        <div className="mt-3 pt-3 border-t border-border/50">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 bg-secondary rounded-full h-1.5">
+                              <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full transition-all duration-500"
+                                   style={{ width: '25%' }} />
+                            </div>
+                            <span className="text-xs text-muted-foreground">Pre-prep</span>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 text-muted-foreground">
+                    <ClockCounterClockwise className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                    <p className="text-sm">No upcoming appointments</p>
+                    <p className="text-xs mt-2">Check your schedule or contact management</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
+
         {/* Right: Protocol and Insights */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-1 space-y-8">
           {/* Case Context Header */}
           <AnimatePresence mode="wait">
             {activeCase ? (
@@ -282,55 +583,54 @@ export default function BeauticianDashboard() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="bg-card p-6 rounded-2xl border border-border shadow-card flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden group"
               >
-                <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                  <Pulse className="w-32 h-32 text-primary" />
-                </div>
+                <Card className="relative overflow-hidden group border-primary/20">
+                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700">
+                    <Pulse className="w-48 h-48 text-primary" />
+                  </div>
 
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                    <User className="w-8 h-8" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-semibold text-foreground">
-                      {activeCase.customers?.name || 'Customer'}
-                    </h3>
-                    <div className="flex items-center gap-3">
-                      <p className="text-xs text-muted-foreground font-medium uppercase tracking-widest flex items-center gap-2">
-                        Active Case: <span className="text-primary font-black">{activeCase.treatment_name || 'Protocol Registry'}</span>
-                      </p>
-                      <div className="w-1 h-1 rounded-full bg-white/20" />
-                      <p className="text-[10px] text-muted-foreground font-light italic">ID: {activeCase.id.slice(0,8)}</p>
+                  <CardContent className="p-8">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                      <div className="flex items-center gap-6">
+                        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
+                          <User weight="duotone" className="w-8 h-8" />
+                        </div>
+                        <div className="space-y-1">
+                          <h3 className="text-2xl font-bold text-foreground tracking-tight">
+                            {activeCase.customers?.name || 'Customer'}
+                          </h3>
+                          <div className="flex items-center gap-3">
+                            <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest flex items-center gap-2">
+                              Protocol: <span className="text-primary">{activeCase.treatment_name || 'Registry'}</span>
+                            </p>
+                            <div className="w-1 h-1 rounded-full bg-border" />
+                            <span className="text-[10px] text-muted-foreground font-mono">ID: {activeCase.id.slice(0,8)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <Badge variant={activeCase.priority === 'high' ? 'destructive' : 'default'} pulse={activeCase.priority === 'high'} className="font-black uppercase tracking-widest py-1.5 px-4">
+                        <Lightning weight="fill" className="w-3 h-3 mr-2" />
+                        {activeCase.priority || 'Normal'} Priority
+                      </Badge>
                     </div>
-                  </div>
-                </div>
-                <div className="flex gap-3 relative z-10">
-                  <span className={cn(
-                    "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 border",
-                    activeCase.priority === 'high' 
-                      ? "bg-rose-500/20 text-rose-400 border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.2)]" 
-                      : "bg-white/5 text-white border-white/10"
-                  )}>
-                    <Lightning className={cn("w-3 h-3", activeCase.priority === 'high' ? "animate-pulse" : "")} /> 
-                    {activeCase.priority || 'Normal'} Priority
-                  </span>
-                </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             ) : (
               <motion.div 
                 key="no-case"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="glass-card p-16 rounded-[40px] border border-white/5 text-center flex flex-col items-center justify-center space-y-6"
               >
-                <div className="w-20 h-20 rounded-[30px] bg-white/5 border border-white/5 flex items-center justify-center text-muted-foreground opacity-20 animate-float">
-                  <ClockCounterClockwise className="w-10 h-10" />
-                </div>
-                <div className="space-y-2">
-                  <h4 className="text-xl font-bold text-white/40 uppercase tracking-widest">Awaiting Case Assignment</h4>
-                  <p className="text-xs text-muted-foreground italic font-light tracking-widest">Select a prioritized case from your registry node to begin treatment.</p>
-                </div>
+                <Card variant="ghost" className="p-16 border-2 border-dashed border-border/50 text-center flex flex-col items-center justify-center space-y-6">
+                  <div className="w-20 h-20 rounded-[30px] bg-secondary border border-border flex items-center justify-center text-muted-foreground opacity-20">
+                    <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-black text-foreground/30 uppercase tracking-[0.2em]">Awaiting Case Node</h4>
+                    <p className="text-xs text-muted-foreground italic font-light tracking-widest">Assign a prioritized identity from your clinical registry to initiate protocol.</p>
+                  </div>
+                </Card>
               </motion.div>
             )}
           </AnimatePresence>
@@ -343,54 +643,56 @@ export default function BeauticianDashboard() {
             className="space-y-8"
           >
             {activeCase && checklist.length > 0 && (
-              <div className="glass-premium p-8 rounded-[40px] border border-primary/30 bg-primary/[0.02] space-y-8 relative overflow-hidden group">
-                <div className="flex items-center justify-between relative z-10">
+              <Card className="relative overflow-hidden group border-primary/10">
+                <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 pb-6 px-8">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20 shadow-premium">
-                      <ListChecks className="w-6 h-6" />
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                      <ListChecks weight="duotone" className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-white uppercase tracking-tight">Active <span className="text-primary">Checklist</span></h3>
-                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Session Progress Tracking</p>
+                      <CardTitle>Active Protocol Checklist</CardTitle>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Surgical precision tracking</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Completion</p>
-                    <p className="text-xl font-black text-white">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Session Progress</p>
+                    <Badge variant="default" className="font-black text-base">
                       {checklist.filter(c => c.completed).length}/{checklist.length}
-                    </p>
+                    </Badge>
                   </div>
-                </div>
+                </CardHeader>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
-                  {checklist.map((step, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => handleToggleChecklist(idx)}
-                      className={cn(
-                        "flex items-center gap-4 p-5 rounded-3xl border transition-all duration-300 text-left",
-                        step.completed 
-                          ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" 
-                          : "bg-white/5 border-white/10 hover:border-white/20 text-white/60"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black border transition-all",
-                        step.completed ? "bg-emerald-500 text-white border-emerald-400" : "bg-white/10 border-white/10"
-                      )}>
-                        {step.completed ? <CheckCircle className="w-4 h-4" /> : step.step}
-                      </div>
-                      <div className="flex-1">
-                        <p className={cn(
-                          "text-sm font-bold uppercase tracking-tight",
-                          step.completed ? "line-through opacity-50" : ""
-                        )}>{step.action}</p>
-                        <p className="text-[10px] opacity-60 font-light italic line-clamp-1">{step.notes}</p>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
+                <CardContent className="p-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                    {checklist.map((step, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => handleToggleChecklist(idx)}
+                        className={cn(
+                          "flex items-center gap-4 p-5 rounded-3xl border transition-all duration-300 text-left group/step",
+                          step.completed 
+                            ? "bg-emerald-500/5 border-emerald-500/20 text-emerald-600" 
+                            : "bg-secondary/30 border-border/50 hover:border-primary/30 text-foreground/60 hover:text-foreground"
+                        )}
+                      >
+                        <div className={cn(
+                          "w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black border transition-all shadow-sm shrink-0",
+                          step.completed ? "bg-emerald-500 text-white border-emerald-400" : "bg-card border-border group-hover/step:border-primary/30"
+                        )}>
+                          {step.completed ? <CheckCircle weight="fill" className="w-5 h-5" /> : idx + 1}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={cn(
+                            "text-sm font-bold uppercase tracking-tight truncate",
+                            step.completed ? "line-through opacity-50 text-muted-foreground" : ""
+                          )}>{step.action}</p>
+                          <p className="text-[10px] opacity-60 font-medium italic truncate">{step.notes}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             )}
 
             <ProtocolInsights 
@@ -410,32 +712,32 @@ export default function BeauticianDashboard() {
               >
                 <button 
                   onClick={() => handleCompleteTreatment(activeCase.id)}
-                  className="p-8 glass-premium rounded-[40px] border border-white/5 hover:border-emerald-500/40 transition-all group text-center relative overflow-hidden"
+                  className="p-8 bg-card border border-border rounded-[32px] hover:border-emerald-500/40 hover:shadow-card-hover transition-all group text-center relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/[0.03] transition-colors" />
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.1)] border border-emerald-500/20">
-                    <CheckCircle className="w-6 h-6" />
+                  <div className="absolute inset-0 bg-emerald-500/0 group-hover:bg-emerald-500/[0.02] transition-colors" />
+                  <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm border border-emerald-500/20">
+                    <CheckCircle weight="duotone" className="w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-black text-white uppercase tracking-[0.25em] group-hover:text-emerald-400 transition-colors">Mark Session Complete</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-emerald-600 transition-colors">Finalize Session</span>
                 </button>
 
                 <button 
                   onClick={() => setIsCompareModalOpen(true)}
-                  className="p-8 glass-premium rounded-[40px] border border-white/5 hover:border-primary/40 transition-all group text-center relative overflow-hidden"
+                  className="p-8 bg-card border border-border rounded-[32px] hover:border-primary/40 hover:shadow-card-hover transition-all group text-center relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/[0.03] transition-colors" />
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(var(--primary),0.1)] border border-primary/20">
-                    <Camera className="w-6 h-6" />
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/[0.02] transition-colors" />
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm border border-primary/20">
+                    <Camera weight="duotone" className="w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-black text-white uppercase tracking-[0.25em] group-hover:text-primary transition-colors">Compare Evolution</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Visual Evolution</span>
                 </button>
 
-                <button className="p-8 glass-premium rounded-[40px] border border-white/5 hover:border-rose-500/40 transition-all group text-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/[0.03] transition-colors" />
-                  <div className="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-400 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(244,63,94,0.1)] border border-rose-500/20">
-                    <ChatCircle className="w-6 h-6" />
+                <button className="p-8 bg-card border border-border rounded-[32px] hover:border-rose-500/40 hover:shadow-card-hover transition-all group text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-rose-500/0 group-hover:bg-rose-500/[0.02] transition-colors" />
+                  <div className="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm border border-rose-500/20">
+                    <ChatCircle weight="duotone" className="w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-black text-white uppercase tracking-[0.25em] group-hover:text-rose-400 transition-colors">Consult Sales Lead</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-rose-600 transition-colors">Sales Intel Node</span>
                 </button>
               </motion.div>
             )}

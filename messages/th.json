@@ -1,4 +1,28 @@
 {
+  "navigation": {
+    "back": "กลับ",
+    "home": "หน้าหลัก",
+    "dashboard": "แดชบอร์ด",
+    "admin": "ผู้ดูแลระบบ",
+    "clinic": "คลินิก",
+    "sales": "ฝ่ายขาย",
+    "customer": "ลูกค้า",
+    "beautician": "ผู้ให้บริการ",
+    "pos": "จุดขาย (POS)",
+    "appointments": "นัดหมาย",
+    "inventory": "คลังสินค้า",
+    "staff": "พนักงาน",
+    "reports": "รายงาน",
+    "settings": "ตั้งค่า",
+    "customers": "ลูกค้า",
+    "analysis": "การวิเคราะห์",
+    "proposals": "ข้อเสนอ",
+    "leads": "ลีด",
+    "skin_profile": "โปรไฟล์ผิว",
+    "booking": "จองบริการ",
+    "rewards": "รางวัล",
+    "loyalty": "สมาชิก"
+  },
   "common": {
     "title": "BN-Aura",
     "description": "Premium Aesthetic Intelligence",
@@ -422,5 +446,52 @@
       "message_sent": "ส่งข้อความสำเร็จ",
       "message_scheduled": "กำหนดการส่งข้อความสำเร็จ"
     }
+  },
+  "ai_analysis": {
+    "title": "AI วิเคราะห์ผิว",
+    "scan_face": "สแกนใบหน้า",
+    "results": "ผลวิเคราะห์",
+    "booking": "จอง Treatment",
+    "report": "สร้างรายงาน",
+    "start_scan": "เริ่มสแกน",
+    "stop_scan": "หยุดสแกน",
+    "analyzing": "กำลังวิเคราะห์...",
+    "metrics": {
+      "spots": "จุดด่างดำ",
+      "wrinkles": "ริ้วรอย",
+      "texture": "เนื้อผิว",
+      "pores": "รูขุมขน",
+      "uv_damage": "ความเสียหายจาก UV",
+      "brown_spots": "ฝ้า กระ",
+      "red_areas": "รอยแดง",
+      "bacteria": "แบคทีเรีย"
+    },
+    "score": "คะแนนผิว",
+    "skin_age": "อายุผิว",
+    "recommendations": "คำแนะนำ",
+    "treatments": "Treatment แนะนำ"
+  },
+  "quota": {
+    "title": "โควต้าการใช้งาน",
+    "remaining": "เหลือ",
+    "used": "ใช้ไปแล้ว",
+    "limit": "จำกัด",
+    "reset_date": "รีเซ็ตวันที่",
+    "low_warning": "โควต้าเหลือน้อย",
+    "upgrade": "อัพเกรดแพ็กเกจ",
+    "topup": "เติมโควต้า"
+  },
+  "notifications": {
+    "title": "การแจ้งเตือน",
+    "mark_read": "อ่านแล้ว",
+    "mark_all_read": "อ่านทั้งหมด",
+    "no_notifications": "ไม่มีการแจ้งเตือน",
+    "push_enabled": "เปิดการแจ้งเตือน Push",
+    "push_disabled": "ปิดการแจ้งเตือน Push"
+  },
+  "realtime": {
+    "connected": "เชื่อมต่อแล้ว",
+    "disconnected": "ไม่ได้เชื่อมต่อ",
+    "reconnecting": "กำลังเชื่อมต่อใหม่..."
   }
 }

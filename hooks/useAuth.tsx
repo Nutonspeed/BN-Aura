@@ -68,15 +68,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       let clinicName = 'Bangkok Premium Clinic';
       let clinicMeta: any = null;
 
-      // If user is in clinic_staff, use that role for clinic access
-      if (staffData) {
+      console.log('useAuth: userData role:', userData?.role);
+      console.log('useAuth: staffData:', staffData);
+
+      // Super admin takes precedence
+      if (userData?.role === 'super_admin') {
+        effectiveRole = 'super_admin';
+        console.log('useAuth: Set effectiveRole to super_admin');
+      } else if (staffData) {
+        // If user is in clinic_staff, use that role for clinic access
         effectiveRole = staffData.role;
         effectiveClinicId = staffData.clinic_id;
         
         // Skip clinic info fetch to avoid 406 errors - use fallback name
         try {
-          // TODO: Fix clinics table RLS policies to allow proper access
-          // For now, skip the clinic query to prevent 406 errors during login
           console.log('useAuth: Skipping clinic info fetch to avoid 406 errors');
           clinicName = 'Bangkok Premium Clinic'; // Fallback clinic name
           clinicMeta = { test_clinic: false }; // Default metadata
@@ -87,11 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Super admin keeps their role but can access clinic if in clinic_staff
-      if (userData?.role === 'super_admin') {
-        effectiveRole = 'super_admin';
-      }
-
       setUser(prev => {
         if (!prev) return prev;
         return {
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             ...prev.user_metadata,
             role: effectiveRole,
             clinic_id: effectiveClinicId,
-            full_name: userData?.full_name || prev.email?.split('@')[0],
+            full_name: userData?.full_name || prev.email?.split('@')[0] || 'User',
             clinic_name: clinicName,
             clinic_metadata: clinicMeta,
           }

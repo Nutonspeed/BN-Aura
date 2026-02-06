@@ -76,13 +76,13 @@ export default function LandingPage() {
           </div>
 
           {/* Main Headline - Bold & Direct */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-white leading-[1.1]">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-bold tracking-tight text-foreground leading-[1.1]">
             The platform where
             <span className="block text-primary">skin analysis happens in seconds.</span>
           </h1>
           
           {/* Problem Statement - Minitap style */}
-          <p className="text-2xl md:text-3xl text-white/80 max-w-4xl mx-auto font-light leading-relaxed">
+          <p className="text-2xl md:text-3xl text-foreground/80 max-w-4xl mx-auto font-light leading-relaxed">
             If skin consultation takes 30 minutes and customers still can&apos;t see results, 
             <span className="text-primary font-medium"> it&apos;s not your team. It&apos;s the tools.</span>
           </p>
@@ -103,7 +103,7 @@ export default function LandingPage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-10 py-5 bg-white/5 text-white rounded-xl font-bold text-lg border border-white/10 backdrop-blur-xl transition-all hover:bg-white/10"
+                className="w-full sm:w-auto px-10 py-5 bg-secondary text-foreground rounded-xl font-bold text-lg border border-border backdrop-blur-xl transition-all hover:bg-secondary/80"
               >
                 ติดต่อทีมขาย
               </motion.button>
@@ -113,7 +113,7 @@ export default function LandingPage() {
           {/* Social Proof */}
           <div className="pt-12 flex flex-col items-center gap-4">
             <div className="text-sm text-muted-foreground uppercase tracking-widest">Trusted by leading clinics</div>
-            <div className="flex items-center gap-6 text-white/60">
+            <div className="flex items-center gap-6 text-foreground/70">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-400" />
                 <span className="text-sm">10+ คลินิกชั้นนำ</span>
@@ -141,14 +141,14 @@ export default function LandingPage() {
             className="text-center space-y-6"
           >
             <motion.h2 
-              className="text-3xl md:text-4xl font-bold text-white/60 uppercase tracking-wider"
+              className="text-3xl md:text-4xl font-bold text-foreground/60 uppercase tracking-wider"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
             >
               the next layer of aesthetic consultation
             </motion.h2>
-            <h3 className="text-4xl md:text-6xl font-bold text-white leading-tight">
+            <h3 className="text-4xl md:text-6xl font-bold text-foreground leading-tight">
               Automate how you <span className="text-primary">analyze, present,</span> and <span className="text-primary">close sales</span>
               <br />
               with real-time AI + AR.
@@ -156,7 +156,7 @@ export default function LandingPage() {
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               No manual skin analysis, no guesswork, no lost customers.
               <br />
-              <span className="text-white font-medium">If consultation takes hours and customers still hesitate, it&apos;s not your team. It&apos;s the tools!</span>
+              <span className="text-foreground font-medium">If consultation takes hours and customers still hesitate, it&apos;s not your team. It&apos;s the tools!</span>
             </p>
           </motion.div>
         </div>
@@ -177,12 +177,12 @@ export default function LandingPage() {
               <div className="inline-block px-4 py-2 bg-primary/10 border border-primary/20 rounded-full">
                 <span className="text-primary font-bold uppercase tracking-wider text-sm">For Clinic Owners</span>
               </div>
-              <h3 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              <h3 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
                 Run your clinic without engineering bottlenecks.
               </h3>
               <p className="text-xl text-muted-foreground leading-relaxed">
                 Launch new treatments, manage staff, and monitor AI usage. 
-                <span className="text-white"> Get insights in real-time, not next week.</span>
+                <span className="text-foreground font-medium"> Get insights in real-time, not next week.</span>
               </p>
               <ul className="space-y-4">
                 {[
@@ -200,7 +200,7 @@ export default function LandingPage() {
                     className="flex items-start gap-3"
                   >
                     <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                    <span className="text-lg text-white/80">{item}</span>
+                    <span className="text-lg text-foreground/90">{item}</span>
                   </motion.li>
                 ))}
               </ul>
@@ -222,7 +222,7 @@ export default function LandingPage() {
             >
               <div className="text-center space-y-4">
                 <Users className="w-16 h-16 text-primary mx-auto" />
-                <div className="text-6xl font-bold text-white">10+</div>
+                <div className="text-6xl font-bold text-foreground">10+</div>
                 <div className="text-xl text-muted-foreground">Clinics Trust Us</div>
               </div>
             </motion.div>
@@ -243,7 +243,7 @@ export default function LandingPage() {
             >
               <div className="text-center space-y-4">
                 <Lightning className="w-16 h-16 text-primary mx-auto" />
-                <div className="text-6xl font-bold text-white">30s</div>
+                <div className="text-6xl font-bold text-foreground">30s</div>
                 <div className="text-xl text-muted-foreground">Analysis Time</div>
               </div>
             </motion.div>
@@ -252,12 +252,12 @@ export default function LandingPage() {
               <div className="inline-block px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
                 <span className="text-emerald-400 font-bold uppercase tracking-wider text-sm">For Sales Staff</span>
               </div>
-              <h3 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              <h3 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
                 10x your closing rate with AI that shows results.
               </h3>
               <p className="text-xl text-muted-foreground leading-relaxed">
                 Scan faces, see AI results instantly, and show AR simulations. 
-                <span className="text-white"> Close deals in minutes, not hours.</span>
+                <span className="text-foreground font-medium"> Close deals in minutes, not hours.</span>
               </p>
               <ul className="space-y-4">
                 {[
@@ -275,7 +275,7 @@ export default function LandingPage() {
                     className="flex items-start gap-3"
                   >
                     <CheckCircle className="w-6 h-6 text-emerald-400 flex-shrink-0 mt-1" />
-                    <span className="text-lg text-white/80">{item}</span>
+                    <span className="text-lg text-foreground/90">{item}</span>
                   </motion.li>
                 ))}
               </ul>
@@ -302,7 +302,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               วิธีการทำงาน
             </h2>
             <p className="text-xl text-muted-foreground">
@@ -346,7 +346,7 @@ export default function LandingPage() {
                   <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
                     <step.icon className="w-7 h-7 text-primary" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">{step.title}</h3>
+                  <h3 className="text-2xl font-bold text-foreground">{step.title}</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     {step.desc}
                   </p>
@@ -365,7 +365,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
               เทคโนโลยีชั้นนำระดับโลก
             </h2>
             <p className="text-xl text-muted-foreground mb-12">
@@ -387,7 +387,7 @@ export default function LandingPage() {
                   transition={{ delay: i * 0.1 }}
                   className="glass-card p-6 rounded-2xl"
                 >
-                  <div className="text-lg font-bold text-white mb-1">{tech.name}</div>
+                  <div className="text-lg font-bold text-foreground mb-1">{tech.name}</div>
                   <div className="text-sm text-muted-foreground">{tech.desc}</div>
                 </motion.div>
               ))}
@@ -405,7 +405,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-20 space-y-4"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-white uppercase tracking-tight">
+            <h2 className="text-4xl md:text-6xl font-bold text-foreground uppercase tracking-tight">
               Deployment <span className="text-primary text-glow">Tiers</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light">
@@ -484,24 +484,24 @@ export default function LandingPage() {
 
                   <div className="flex items-baseline gap-1">
                     <span className="text-[10px] font-black text-muted-foreground uppercase mr-1">฿</span>
-                    <span className="text-5xl font-black text-white tracking-tighter tabular-nums">{plan.price}</span>
+                    <span className="text-5xl font-black text-foreground tracking-tighter tabular-nums">{plan.price}</span>
                     <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">/ เดือน</span>
                   </div>
 
                   <div className="space-y-4 pt-6 border-t border-white/5 font-medium">
                     <div className="flex justify-between items-center text-[11px] uppercase tracking-widest">
-                      <span className="text-white/40">AI Bandwidth</span>
-                      <span className="text-white font-bold">{plan.scans} Scans</span>
+                      <span className="text-foreground/40">AI Bandwidth</span>
+                      <span className="text-foreground font-bold">{plan.scans} Scans</span>
                     </div>
                     <div className="flex justify-between items-center text-[11px] uppercase tracking-widest">
-                      <span className="text-white/40">Capacity</span>
-                      <span className="text-white font-bold">{plan.staff}</span>
+                      <span className="text-foreground/40">Capacity</span>
+                      <span className="text-foreground font-bold">{plan.staff}</span>
                     </div>
                   </div>
 
                   <ul className="space-y-3 pt-4">
                     {plan.features.map((f, fi) => (
-                      <li key={fi} className="flex items-center gap-3 text-xs text-white/60">
+                      <li key={fi} className="flex items-center gap-3 text-xs text-foreground/60">
                         <CheckCircle className={cn("w-4 h-4 shrink-0", plan.color)} />
                         <span className="line-clamp-1">{f}</span>
                       </li>
@@ -515,7 +515,7 @@ export default function LandingPage() {
                       "w-full py-5 rounded-[24px] text-xs font-black uppercase tracking-[0.2em] transition-all",
                       plan.recommended 
                         ? "bg-primary text-primary-foreground shadow-premium" 
-                        : "bg-white/5 text-white hover:bg-white/10"
+                        : "bg-secondary text-foreground hover:bg-secondary/80"
                     )}
                   >
                     เริ่มใช้งานเลย
@@ -535,7 +535,7 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto text-center space-y-8"
         >
-          <h2 className="text-4xl md:text-6xl font-bold text-white">
+          <h2 className="text-4xl md:text-6xl font-bold text-foreground">
             พร้อมยกระดับคลินิกของคุณ?
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -557,7 +557,7 @@ export default function LandingPage() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="px-10 py-5 bg-white/5 text-white rounded-xl font-bold text-lg border border-white/10 hover:bg-white/10 transition-all"
+                className="px-10 py-5 bg-secondary text-foreground rounded-xl font-bold text-lg border border-border hover:bg-secondary/80 transition-all"
               >
                 ติดต่อทีมขาย
               </motion.button>
@@ -575,7 +575,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">ติดต่อเรา</h2>
+            <h2 className="text-4xl font-bold text-foreground mb-4">ติดต่อเรา</h2>
             <p className="text-xl text-muted-foreground">
               สนใจใช้งานหรือมีคำถาม? ติดต่อทีมเราได้เลย
             </p>
@@ -600,7 +600,7 @@ export default function LandingPage() {
               >
                 <contact.icon className="w-8 h-8 text-primary mx-auto mb-3 group-hover:scale-110 transition-transform" />
                 <div className="text-sm text-muted-foreground mb-1">{contact.title}</div>
-                <div className="text-lg font-bold text-white">{contact.value}</div>
+                <div className="text-lg font-bold text-foreground">{contact.value}</div>
               </motion.a>
             ))}
           </div>
@@ -613,17 +613,17 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
               <Sparkle className="w-5 h-5 text-primary" />
-              <span className="font-bold text-white text-xl">BN-Aura</span>
+              <span className="font-bold text-foreground text-xl">BN-Aura</span>
             </div>
             
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="/demo" className="hover:text-white transition-colors">
+              <Link href="/demo" className="hover:text-foreground transition-colors">
                 Demo
               </Link>
-              <Link href="/login" className="hover:text-white transition-colors">
+              <Link href="/login" className="hover:text-foreground transition-colors">
                 Login
               </Link>
-              <a href="#contact" className="hover:text-white transition-colors">
+              <a href="#contact" className="hover:text-foreground transition-colors">
                 Contact
               </a>
             </div>

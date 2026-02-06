@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Play, Pause, ArrowCounterClockwise, Lightning, Sparkle, SpinnerGap, WarningCircle } from '@phosphor-icons/react';
+import { Camera, Play, Pause, ArrowCounterClockwise, Pulse, Sparkle, SpinnerGap, WarningCircle } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import AR3DSimulator from '@/components/AR3DSimulator';
 import { type Landmark } from '@/lib/mediapipe';
@@ -381,7 +381,7 @@ export default function DemoPage() {
               <div className="glass-card p-6 rounded-[40px] border border-white/10">
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <Lightning className="w-4 h-4 text-primary" />
+                    <Pulse className="w-4 h-4 text-primary" />
                     แนะนำการรักษาจาก AI
                   </h3>
                   <div className="space-y-3">

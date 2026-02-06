@@ -1,4 +1,28 @@
 {
+  "navigation": {
+    "back": "Back",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "clinic": "Clinic",
+    "sales": "Sales",
+    "customer": "Customer",
+    "beautician": "Beautician",
+    "pos": "POS",
+    "appointments": "Appointments",
+    "inventory": "Inventory",
+    "staff": "Staff",
+    "reports": "Reports",
+    "settings": "Settings",
+    "customers": "Customers",
+    "analysis": "Analysis",
+    "proposals": "Proposals",
+    "leads": "Leads",
+    "skin_profile": "Skin Profile",
+    "booking": "Booking",
+    "rewards": "Rewards",
+    "loyalty": "Loyalty"
+  },
   "common": {
     "title": "BN-Aura",
     "description": "Premium Aesthetic Intelligence",
@@ -187,8 +211,7 @@
       "password_strength": "Password Strength",
       "security_incidents": "Security Incidents",
       "recent_events": "Recent Events",
-      "api_key_management": "API Key Management"
-    },
+      "api_key_management": "API Key Management",
       "view_details": "View Details",
       "close": "Close",
       "strong": "Strong",
@@ -302,80 +325,6 @@
         "plans": "Plans"
       }
     },
-    "settings": {
-      "title": "Global Settings",
-      "description": "Manage system settings and configurations",
-      "save_changes": "Save Changes",
-      "unsaved_changes": "You have unsaved changes",
-      "dont_forget_save": "Don't forget to save your settings",
-      "save_now": "Save Now",
-      "sections": {
-        "company": "Company Information",
-        "regional": "Regional Settings",
-        "features": "Features",
-        "ai": "AI Configuration",
-        "email": "Email",
-        "security": "Security",
-        "subscriptions": "Subscriptions",
-        "storage": "Storage & Files"
-      },
-      "company": {
-        "name": "Company Name",
-        "logo_url": "Logo URL",
-        "contact_email": "Contact Email",
-        "contact_phone": "Contact Phone",
-        "support_email": "Support Email"
-      },
-      "regional": {
-        "default_language": "Default Language",
-        "default_timezone": "Default Timezone",
-        "default_currency": "Default Currency",
-        "tax_rate": "Tax Rate (%)"
-      },
-      "features": {
-        "ai_analysis": "AI Analysis",
-        "subscription_billing": "Subscription Billing",
-        "multi_branch": "Multi-Branch Support",
-        "appointment_booking": "Appointment Booking",
-        "inventory_management": "Inventory Management",
-        "analytics_dashboard": "Analytics Dashboard",
-        "support_tickets": "Support Tickets",
-        "audit_logs": "Audit Logs"
-      },
-      "ai": {
-        "default_model": "Default Model",
-        "max_requests_per_day": "Max Requests Per Day",
-        "confidence_threshold": "Confidence Threshold",
-        "enabled_models": "Enabled Models"
-      },
-      "email": {
-        "smtp_host": "SMTP Host",
-        "smtp_port": "SMTP Port",
-        "smtp_username": "SMTP Username",
-        "smtp_password": "SMTP Password",
-        "from_email": "From Email",
-        "from_name": "From Name"
-      },
-      "security": {
-        "max_login_attempts": "Max Login Attempts",
-        "session_timeout": "Session Timeout (minutes)",
-        "password_min_length": "Password Min Length",
-        "require_2fa_admin": "Require 2FA for Admin",
-        "allowed_domains": "Allowed Domains"
-      },
-      "storage": {
-        "provider": "Provider",
-        "max_file_size": "Max File Size (MB)",
-        "allowed_file_types": "Allowed File Types"
-      }
-    },
-    "announcements": {
-      "title": "Announcements",
-      "description": "Manage announcements for clinics",
-      "create": "Create Announcement",
-      "published": "Published",
-      "draft": "Draft"
-    },
     "system": {
       "title": "System Monitoring",
       "description": "Real-time system health and performance monitoring",
@@ -456,4 +405,3 @@
     }
   }
 }
-

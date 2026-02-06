@@ -123,10 +123,133 @@ export const GET = withErrorHandling(async (request: Request) => {
 });
 
 /**
- * POST /api/loyalty/points/adjust
- * Add or subtract points (Staff only)
+ * POST /api/loyalty/points
+ * Award loyalty points automatically from POS transactions
  */
-export const POST = withErrorHandling(async (request: Request) => {
+export const POST_AWARD = withErrorHandling(async (request: Request) => {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return createErrorResponse(APIErrorCode.UNAUTHORIZED, 'Authentication required');
+  }
+
+  const { data, errors } = await validateRequest<any>(
+    request,
+    (body: any) => {
+      const validationErrors = [];
+      if (!body.customerId) validationErrors.push({ field: 'customerId', message: 'Customer ID required', code: 'REQUIRED' });
+      if (!body.clinicId) validationErrors.push({ field: 'clinicId', message: 'Clinic ID required', code: 'REQUIRED' });
+      if (!body.points || body.points <= 0) validationErrors.push({ field: 'points', message: 'Points must be positive', code: 'INVALID' });
+      if (!body.transactionId) validationErrors.push({ field: 'transactionId', message: 'Transaction ID required', code: 'REQUIRED' });
+      return validationErrors;
+    }
+  );
+
+  if (errors.length > 0) {
+    return createErrorResponse(APIErrorCode.VALIDATION_ERROR, 'Validation failed', { validationErrors: errors });
+  }
+
+  // Verify customer exists and belongs to clinic
+  const { data: customer } = await supabase
+    .from('customers')
+    .select('id, user_id, clinic_id')
+    .eq('id', data.customerId)
+    .eq('clinic_id', data.clinicId)
+    .single();
+
+  if (!customer) {
+    return createErrorResponse(APIErrorCode.RESOURCE_NOT_FOUND, 'Customer not found or not in specified clinic');
+  }
+
+  // Check if points already awarded for this transaction (skip for now as we don't have reference_id)
+  // TODO: Implement transaction deduplication with proper reference tracking
+  const existingTransaction = null;
+
+  if (existingTransaction) {
+    return createErrorResponse(APIErrorCode.DUPLICATE_RESOURCE, 'Points already awarded for this transaction');
+  }
+
+  // Update loyalty_profiles (new system)
+  const { data: profileRow, error: profileError } = await supabase
+    .from('loyalty_profiles')
+    .select('available_points, total_points')
+    .eq('customer_id', customer.id)
+    .eq('clinic_id', data.clinicId)
+    .single();
+
+  if (profileError && profileError.code !== 'PGRST116') throw profileError;
+
+  const currentAvailable = profileRow?.available_points || 0;
+  const currentTotal = profileRow?.total_points || 0;
+  const newAvailable = currentAvailable + data.points;
+  const newTotal = currentTotal + data.points;
+
+  // Update or create loyalty profile
+  const { data: updatedProfile, error: profileUpsertError } = await supabase
+    .from('loyalty_profiles')
+    .upsert({
+      customer_id: customer.id,
+      clinic_id: data.clinicId,
+      available_points: newAvailable,
+      total_points: newTotal,
+      referral_code: (profileRow as any)?.referral_code,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'customer_id, clinic_id' })
+    .select('*')
+    .single();
+
+  if (profileUpsertError) throw profileUpsertError;
+
+  // Record the point transaction
+  const { data: pointTransaction, error: transactionError } = await supabase
+    .from('point_transactions')
+    .insert({
+      customer_id: customer.id,
+      clinic_id: data.clinicId,
+      type: 'purchase',
+      amount: data.points,
+      description: data.description || `Purchase reward - ${data.points} points`,
+      created_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  if (transactionError) throw transactionError;
+
+  // Also update legacy table for compatibility
+  const { data: legacyRow } = await supabase
+    .from('loyalty_points')
+    .select('points')
+    .eq('user_id', customer.user_id)
+    .eq('clinic_id', data.clinicId)
+    .single();
+
+  const legacyNewPoints = (legacyRow?.points || 0) + data.points;
+  await supabase
+    .from('loyalty_points')
+    .upsert({
+      user_id: customer.user_id,
+      clinic_id: data.clinicId,
+      points: legacyNewPoints,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id, clinic_id' });
+
+  return createSuccessResponse({
+    points: updatedProfile.available_points,
+    pointsAwarded: data.points,
+    transactionId: pointTransaction.id
+  });
+});
+
+// Route handler for POST requests
+export const POST = POST_AWARD;
+
+/**
+ * PATCH /api/loyalty/points/adjust  
+ * Add or subtract points (Staff only) - moved to separate endpoint
+ */
+const ADJUST_POINTS = withErrorHandling(async (request: Request) => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 

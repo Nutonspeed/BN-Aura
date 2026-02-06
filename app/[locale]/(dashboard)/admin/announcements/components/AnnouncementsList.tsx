@@ -1,7 +1,11 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Trash, PencilSimple, Eye, EyeSlash, CalendarDots, Target, Monitor, Flag, Users, ChartBar } from '@phosphor-icons/react';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Trash, PencilSimple, Eye, EyeSlash, CalendarDots, Target, Monitor, Flag, Users, ChartBar, SpinnerGap } from '@phosphor-icons/react';
 import { useAnnouncementContext } from '../context';
 import { Announcement } from '../types';
 
@@ -69,15 +73,26 @@ export default function AnnouncementsList() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         {[...Array(3)].map((_, index) => (
-          <div key={index} className="glass-card p-6 rounded-2xl border border-white/10">
-            <div className="animate-pulse">
-              <div className="h-4 bg-white/10 rounded w-3/4 mb-4"></div>
-              <div className="h-3 bg-white/10 rounded w-1/2 mb-2"></div>
-              <div className="h-3 bg-white/10 rounded w-1/4"></div>
-            </div>
-          </div>
+          <Card key={index} className="rounded-[32px] border-border/50 shadow-sm overflow-hidden">
+            <CardContent className="p-8">
+              <div className="animate-pulse space-y-6">
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-3">
+                    <div className="h-6 w-20 bg-secondary rounded-lg"></div>
+                    <div className="h-6 w-20 bg-secondary rounded-lg"></div>
+                  </div>
+                  <div className="h-8 w-8 bg-secondary rounded-xl"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-6 bg-secondary rounded-xl w-3/4"></div>
+                  <div className="h-4 bg-secondary rounded-lg w-1/2"></div>
+                </div>
+                <div className="h-20 bg-secondary/50 rounded-2xl w-full"></div>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     );
@@ -85,11 +100,17 @@ export default function AnnouncementsList() {
 
   if (announcements.length === 0) {
     return (
-      <div className="glass-card p-12 rounded-2xl border border-white/10 text-center">
-        <Target className="w-16 h-16 text-white/20 mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-white mb-2">No announcements yet</h3>
-        <p className="text-white/60">Create your first announcement to get started</p>
-      </div>
+      <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-8 opacity-40 rounded-[40px]">
+        <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground shadow-inner">
+          <Target weight="duotone" className="w-10 h-10" />
+        </div>
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">Registry Nominal</h3>
+          <p className="text-sm text-muted-foreground font-medium italic max-w-sm mx-auto">
+            No system broadcasts established in current operational registry.
+          </p>
+        </div>
+      </Card>
     );
   }
 
@@ -97,7 +118,7 @@ export default function AnnouncementsList() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-4"
+      className="space-y-6"
     >
       {announcements.map((announcement, index) => (
         <motion.div
@@ -105,99 +126,114 @@ export default function AnnouncementsList() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
         >
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${getPriorityColor(announcement.priority)}`}>
-                  {announcement.priority}
-                </span>
-                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1 ${
-                  announcement.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-gray-500/20 text-gray-400'
-                }`}>
-                  {announcement.is_active ? <Eye className="w-3 h-3" /> : <EyeSlash className="w-3 h-3" />}
-                  {announcement.is_active ? 'Active' : 'Inactive'}
-                </span>
-                <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-white/10 text-white/60 flex items-center gap-1">
-                  {getLocationIcon(announcement.display_location)}
-                  {announcement.display_location}
-                </span>
-              </div>
-
-              <h3 className="text-lg font-bold text-white mb-2">{announcement.title}</h3>
-              <p className="text-white/60 text-sm mb-4 line-clamp-2">{announcement.content}</p>
-
-              <div className="flex items-center gap-6 text-sm text-white/50 mb-4">
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  <span>{getTargetSummary(announcement)}</span>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <CalendarDots className="w-4 h-4" />
-                  <span>
-                    {new Date(announcement.start_date) > new Date() 
-                      ? `Starts ${formatDate(announcement.start_date)}`
-                      : announcement.end_date && new Date(announcement.end_date) < new Date()
-                      ? `Ended ${formatDate(announcement.end_date)}`
-                      : announcement.end_date
-                      ? `Ends ${formatDate(announcement.end_date)}`
-                      : `Started ${formatDate(announcement.start_date)}`
-                    }
-                  </span>
-                </div>
-
-                {announcement.read_count !== undefined && (
-                  <div className="flex items-center gap-2">
-                    <ChartBar className="w-4 h-4" />
-                    <span>{announcement.read_count} views</span>
+          <Card className="rounded-[32px] border-border/50 hover:border-primary/30 transition-all group overflow-hidden shadow-card hover:shadow-card-hover">
+            <CardContent className="p-8">
+              <div className="flex items-start justify-between gap-8">
+                <div className="flex-1 space-y-6">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge variant={announcement.priority === 'high' ? 'destructive' : announcement.priority === 'normal' ? 'warning' : 'secondary'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-3 py-1">
+                      {announcement.priority} PRIORITY
+                    </Badge>
+                    <Badge variant={announcement.is_active ? 'success' : 'secondary'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-3 py-1 gap-1.5">
+                      {announcement.is_active ? <Eye weight="bold" className="w-3 h-3" /> : <EyeSlash weight="bold" className="w-3 h-3" />}
+                      {announcement.is_active ? 'OPERATIONAL' : 'OFFLINE'}
+                    </Badge>
+                    <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] tracking-widest uppercase px-3 py-1 gap-1.5">
+                      {getLocationIcon(announcement.display_location)}
+                      {announcement.display_location} NODE
+                    </Badge>
                   </div>
-                )}
-              </div>
 
-              {/* Schedule Info */}
-              <div className="p-3 bg-white/5 rounded-xl">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-white/40">Start</p>
-                    <p className="text-white/80">{formatDate(announcement.start_date)}</p>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{announcement.title}</h3>
+                    <p className="text-muted-foreground text-sm font-medium italic leading-relaxed line-clamp-2">{announcement.content}</p>
                   </div>
-                  <div>
-                    <p className="text-white/40">End</p>
-                    <p className="text-white/80">
-                      {announcement.end_date ? formatDate(announcement.end_date) : 'No end date'}
-                    </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                    <div className="flex items-center gap-3 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center">
+                        <Users weight="bold" className="w-4 h-4 opacity-60" />
+                      </div>
+                      <span>{getTargetSummary(announcement)}</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-3 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center">
+                        <CalendarDots weight="bold" className="w-4 h-4 opacity-60" />
+                      </div>
+                      <span>
+                        {new Date(announcement.start_date) > new Date() 
+                          ? `INITIALIZING: ${formatDate(announcement.start_date)}` 
+                          : announcement.end_date && new Date(announcement.end_date) < new Date() 
+                          ? `ARCHIVED: ${formatDate(announcement.end_date)}` 
+                          : announcement.end_date 
+                          ? `EXPIRING: ${formatDate(announcement.end_date)}` 
+                          : `ESTABLISHED: ${formatDate(announcement.start_date)}` 
+                        }
+                      </span>
+                    </div>
+
+                    {announcement.read_count !== undefined && (
+                      <div className="flex items-center gap-3 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                        <div className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center">
+                          <ChartBar weight="bold" className="w-4 h-4 opacity-60" />
+                        </div>
+                        <span>{announcement.read_count} NODE_VIEWS</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Schedule Node Info */}
+                  <div className="p-5 bg-secondary/30 rounded-2xl border border-border/50 shadow-inner">
+                    <div className="grid grid-cols-2 gap-8 text-[10px] font-black uppercase tracking-widest">
+                      <div className="space-y-1">
+                        <p className="text-muted-foreground opacity-60">Transmission Start</p>
+                        <p className="text-foreground">{formatDate(announcement.start_date)}</p>
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <p className="text-muted-foreground opacity-60">Lifecycle End</p>
+                        <p className="text-foreground">
+                          {announcement.end_date ? formatDate(announcement.end_date) : 'PERPETUAL_NODE'}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="ml-4 flex items-center gap-2">
-              <button
-                onClick={() => toggleActive(announcement.id)}
-                className="p-2 text-white/60 hover:text-yellow-400 hover:bg-yellow-400/10 rounded-lg transition-all"
-                title={announcement.is_active ? 'Deactivate' : 'Activate'}
-              >
-                {announcement.is_active ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-              
-              <button
-                className="p-2 text-white/60 hover:text-primary hover:bg-primary/10 rounded-lg transition-all"
-                title="PencilSimple"
-              >
-                <PencilSimple className="w-4 h-4" />
-              </button>
-              
-              <button
-                onClick={() => handleDelete(announcement.id)}
-                className="p-2 text-white/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
-                title="Delete"
-              >
-                <Trash className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+                <div className="flex flex-col gap-2 shrink-0">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => toggleActive(announcement.id)}
+                    className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-secondary text-muted-foreground hover:text-amber-500 transition-all"
+                    title={announcement.is_active ? 'Deactivate' : 'Activate'}
+                  >
+                    {announcement.is_active ? <EyeSlash weight="bold" className="w-5 h-5" /> : <Eye weight="bold" className="w-5 h-5" />}
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-secondary text-muted-foreground hover:text-primary transition-all"
+                    title="Modify Protocol"
+                  >
+                    <PencilSimple weight="bold" className="w-5 h-5" />
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(announcement.id)}
+                    className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 hover:border-rose-500/30 transition-all"
+                    title="Delete Node"
+                  >
+                    <Trash weight="bold" className="w-5 h-5" />
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       ))}
     </motion.div>

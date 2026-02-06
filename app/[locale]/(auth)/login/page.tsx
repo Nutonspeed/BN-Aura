@@ -49,7 +49,8 @@ export default function LoginPage() {
           if (userError) {
             console.log('Login: User data error:', userError);
             // Fallback to customer dashboard if user query fails
-            window.location.href = '/th/customer';
+            setLoading(false);
+            router.push('/customer');
             return;
           }
 
@@ -58,7 +59,8 @@ export default function LoginPage() {
           // Check if super_admin
           if (userData?.role === 'super_admin') {
             console.log('Login: Super admin detected, redirecting to /admin');
-            window.location.href = '/th/admin';
+            setLoading(false);
+            router.push('/admin');
             return;
           }
 
@@ -77,27 +79,31 @@ export default function LoginPage() {
 
             if (staffError) {
               console.log('Login: Staff query error, defaulting to customer');
-              window.location.href = '/th/customer';
+              setLoading(false);
+              router.push('/customer');
               return;
             }
 
+            setLoading(false);
             if (staffData?.role === 'sales_staff') {
               console.log('Login: Sales staff detected, redirecting to /sales');
-              window.location.href = '/th/sales';
+              router.push('/sales');
             } else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) {
               console.log('Login: Clinic staff detected, redirecting to /clinic');
-              window.location.href = '/th/clinic';
+              router.push('/clinic');
             } else {
               console.log('Login: No staff role found, redirecting to customer dashboard');
-              window.location.href = '/th/customer';
+              router.push('/customer');
             }
           } catch (staffQueryError) {
             console.error('Login: Staff query exception:', staffQueryError);
-            window.location.href = '/th/customer';
+            setLoading(false);
+            router.push('/customer');
           }
         } catch (userQueryError) {
           console.error('Login: User query exception:', userQueryError);
-          window.location.href = '/th/customer';
+          setLoading(false);
+          router.push('/customer');
         }
       }
     } catch (err) {

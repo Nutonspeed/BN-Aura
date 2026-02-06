@@ -5,11 +5,6 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { createClient } from '@/lib/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
-import { useWorkflowEvents } from '@/hooks/useWorkflowEvents';
 import { 
   Clock, 
   User, 
@@ -17,11 +12,33 @@ import {
   CheckCircle, 
   Play, 
   Pause,
-  ChatCircle,
+  ChatCircle, 
   WarningCircle,
   Scissors,
-  Sparkle
+  Sparkle,
+  Monitor,
+  IdentificationBadge,
+  Pulse,
+  Briefcase,
+  X,
+  ArrowsClockwise,
+  ArrowRight,
+  DotsThreeVertical,
+  IdentificationCard,
+  MagnifyingGlass,
+  Funnel
 } from '@phosphor-icons/react';
+import { useSettingsContext } from '../context';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { StatCard } from '@/components/ui/StatCard';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { createClient } from '@/lib/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
+import { useWorkflowEvents } from '@/hooks/useWorkflowEvents';
 
 interface TaskItem {
   id: string;
@@ -176,204 +193,319 @@ export default function WorkflowTaskQueue() {
   }
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Treatment Queue</h1>
-        <p className="text-gray-400">Manage your scheduled treatments</p>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex gap-2 mb-6">
-        {[
-          { id: 'all', label: 'All Tasks', count: tasks.length },
-          { id: 'scheduled', label: 'Scheduled', count: tasks.filter(t => t.status === 'scheduled').length },
-          { id: 'in_progress', label: 'In Progress', count: tasks.filter(t => t.status === 'in_progress').length },
-          { id: 'completed', label: 'Completed', count: tasks.filter(t => t.status === 'completed').length }
-        ].map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setFilter(tab.id as any)}
-            className={`px-4 py-2 rounded-lg font-medium transition-all ${
-              filter === tab.id
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white/5 text-gray-400 hover:bg-white/10'
-            }`}
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-10 pb-20 font-sans"
+    >
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            {tab.label} ({tab.count})
-          </button>
-        ))}
+            <Scissors weight="duotone" className="w-4 h-4" />
+            Clinical Task Queue
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            Treatment <span className="text-primary">Registry</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating your scheduled clinical sessions and active treatment protocols.
+          </motion.p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline"
+            onClick={loadTasks}
+            disabled={loading}
+            className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
+          >
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+            Sync Queue
+          </Button>
+        </div>
       </div>
 
-      {/* Task List */}
-      <div className="space-y-4">
-        <AnimatePresence>
-          {filteredTasks.map(task => (
-            <motion.div
-              key={task.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="bg-[#1a1a1a] border border-white/10 rounded-lg p-6 hover:border-primary/50 transition-all"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(task.status)}`}>
-                      {task.status.replace('_', ' ').toUpperCase()}
-                    </div>
-                    {task.room_number && (
-                      <span className="text-gray-400 text-sm">Room {task.room_number}</span>
-                    )}
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold text-white mb-2">
-                    {task.customer_name}
-                  </h3>
-                  
-                  <div className="flex items-center gap-4 text-gray-400 mb-3">
-                    <div className="flex items-center gap-2">
-                      <Scissors className="w-4 h-4" />
-                      <span>{task.treatment_type}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      <span>{task.estimated_duration} min</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <CalendarDots className="w-4 h-4" />
-                      <span>{new Date(task.scheduled_time).toLocaleString()}</span>
-                    </div>
-                  </div>
-                  
-                  {task.notes && (
-                    <p className="text-gray-400 text-sm">{task.notes}</p>
-                  )}
-                </div>
-                
-                <div className="flex gap-2">
-                  {task.status === 'scheduled' && (
-                    <button
-                      onClick={() => {
-                        setSelectedTask(task);
-                        updateTaskStatus(task.id, 'in_progress');
-                      }}
-                      className="p-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors"
-                    >
-                      <Play className="w-5 h-5" />
-                    </button>
-                  )}
-                  
-                  {task.status === 'in_progress' && (
-                    <>
-                      <button
-                        onClick={() => updateTaskStatus(task.id, 'paused')}
-                        className="p-2 bg-orange-500/20 text-orange-400 rounded-lg hover:bg-orange-500/30 transition-colors"
-                      >
-                        <Pause className="w-5 h-5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setSelectedTask(task);
-                          updateTaskStatus(task.id, 'completed');
-                        }}
-                        className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/30 transition-colors"
-                      >
-                        <WarningCircle className="w-5 h-5" />
-                      </button>
-                    </>
-                  )}
-                  
-                  <button
-                    onClick={() => setSelectedTask(task)}
-                    className="p-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"
-                  >
-                    <ChatCircle className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        
-        {filteredTasks.length === 0 && (
-          <div className="text-center py-12">
-            <Sparkle className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-            <p className="text-gray-400">No tasks found</p>
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Total Payload"
+          value={tasks.length}
+          icon={Briefcase}
+          className="p-4"
+        />
+        <StatCard
+          title="Scheduled Nodes"
+          value={tasks.filter(t => t.status === 'scheduled').length}
+          icon={CalendarDots}
+          iconColor="text-blue-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Active Cycles"
+          value={tasks.filter(t => t.status === 'in_progress').length}
+          icon={Pulse}
+          iconColor="text-orange-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Completed Nodes"
+          value={tasks.filter(t => t.status === 'completed').length}
+          icon={CheckCircle}
+          iconColor="text-emerald-500"
+          className="p-4"
+        />
+      </div>
+
+      {/* Filter and Content Area */}
+      <div className="space-y-8 px-2">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex bg-secondary/50 border border-border p-1.5 rounded-[24px] w-fit shadow-inner">
+            {[
+              { id: 'all', label: 'All Tasks', icon: Monitor },
+              { id: 'scheduled', label: 'Scheduled', icon: CalendarDots },
+              { id: 'in_progress', label: 'Active', icon: Pulse },
+              { id: 'completed', label: 'Completed', icon: CheckCircle }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setFilter(tab.id as any)}
+                className={cn(
+                  "flex items-center gap-3 px-8 py-3 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest border whitespace-nowrap",
+                  filter === tab.id
+                    ? "bg-primary text-primary-foreground border-primary shadow-premium"
+                    : "bg-transparent text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground"
+                )}
+              >
+                <tab.icon weight={filter === tab.id ? "fill" : "bold"} className="w-4 h-4" />
+                {tab.label}
+              </button>
+            ))}
           </div>
-        )}
+
+          <div className="relative group w-full sm:w-72">
+            <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
+            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Query identity node..." 
+              className="w-full bg-secondary/50 border border-border/50 rounded-2xl py-3 pl-11 pr-4 text-[10px] font-black uppercase tracking-widest text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-6">
+          <AnimatePresence mode="popLayout">
+            {filteredTasks.length === 0 ? (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="py-32 flex flex-col items-center justify-center gap-6 opacity-20"
+              >
+                <div className="w-24 h-24 rounded-[48px] bg-secondary flex items-center justify-center text-muted-foreground shadow-inner">
+                  <Monitor weight="duotone" className="w-12 h-12" />
+                </div>
+                <p className="text-sm font-black uppercase tracking-[0.3em]">Zero protocol nodes detected in registry.</p>
+              </motion.div>
+            ) : (
+              filteredTasks.map((task, idx) => (
+                <motion.div
+                  key={task.id}
+                  layout
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <Card className="rounded-[40px] border-border/50 hover:border-primary/30 transition-all group overflow-hidden">
+                    <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                      <IdentificationBadge className="w-64 h-64 text-primary" />
+                    </div>
+
+                    <div className="p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
+                      <div className="flex items-center gap-6">
+                        <div className={cn(
+                          "w-16 h-16 rounded-3xl flex items-center justify-center border transition-all duration-500 shadow-inner",
+                          task.status === 'in_progress' ? "bg-primary/10 border-primary/20 text-primary animate-pulse" : "bg-secondary/50 border-border/50 text-muted-foreground"
+                        )}>
+                          <User weight="duotone" className="w-8 h-8" />
+                        </div>
+                        <div className="space-y-1.5 min-w-0">
+                          <h4 className="text-xl font-black text-foreground group-hover:text-primary transition-colors uppercase tracking-tight truncate">{task.customer_name}</h4>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <Badge variant="ghost" className={cn("border-none font-black text-[8px] uppercase tracking-widest px-3 py-1", getStatusColor(task.status))}>
+                              {task.status.replace('_', ' ')}
+                            </Badge>
+                            {task.room_number && (
+                              <Badge variant="ghost" className="bg-secondary text-muted-foreground border-none font-black text-[8px] uppercase px-3 py-1">Room {task.room_number}</Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 sm:flex items-center gap-8 md:gap-12">
+                        <div className="space-y-1">
+                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Protocol Type</p>
+                          <div className="flex items-center gap-2">
+                            <Scissors weight="bold" className="w-3.5 h-3.5 text-primary/60" />
+                            <span className="text-sm font-bold text-foreground truncate max-w-[120px] uppercase">{task.treatment_type}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Temporal Cycle</p>
+                          <div className="flex items-center gap-2">
+                            <Clock weight="bold" className="w-3.5 h-3.5 text-primary/60" />
+                            <span className="text-sm font-bold text-foreground tabular-nums uppercase">{new Date(task.scheduled_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3 col-span-2 sm:col-span-1 sm:ml-4">
+                          {task.status === 'scheduled' && (
+                            <Button 
+                              onClick={() => { setSelectedTask(task); updateTaskStatus(task.id, 'in_progress'); }}
+                              className="px-6 py-4 rounded-2xl text-[9px] font-black uppercase tracking-widest shadow-premium gap-2 hover:scale-105 transition-all"
+                            >
+                              <Play weight="bold" className="w-3.5 h-3.5" />
+                              Initialize
+                            </Button>
+                          )}
+                          
+                          {task.status === 'in_progress' && (
+                            <div className="flex gap-2">
+                              <Button 
+                                variant="outline"
+                                onClick={() => updateTaskStatus(task.id, 'paused')}
+                                className="h-12 w-12 p-0 rounded-2xl border-border/50 hover:bg-orange-500/10 hover:text-orange-500 hover:border-orange-500/20"
+                              >
+                                <Pause weight="bold" className="w-4 h-4" />
+                              </Button>
+                              <Button 
+                                onClick={() => { setSelectedTask(task); updateTaskStatus(task.id, 'completed'); }}
+                                className="px-6 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white border-none shadow-premium gap-2 hover:scale-105 transition-all text-[9px] font-black uppercase tracking-widest"
+                              >
+                                <CheckCircle weight="bold" className="w-3.5 h-3.5" />
+                                Finalize
+                              </Button>
+                            </div>
+                          )}
+                          
+                          <Button 
+                            variant="outline"
+                            onClick={() => setSelectedTask(task)}
+                            className="h-12 w-12 p-0 rounded-2xl border-border/50 hover:bg-secondary"
+                          >
+                            <ChatCircle weight="bold" className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Task Detail Modal */}
+      {/* Task Detail Modal - Premiumized */}
       <AnimatePresence>
         {selectedTask && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50"
-            onClick={() => setSelectedTask(null)}
-          >
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 overflow-y-auto">
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 max-w-md w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setSelectedTask(null)}
+            />
+            
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="relative w-full max-w-lg bg-card border border-border rounded-[40px] overflow-hidden shadow-premium group p-10"
               onClick={e => e.stopPropagation()}
             >
-              <h3 className="text-xl font-bold text-white mb-4">
-                {selectedTask.customer_name}
-              </h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Treatment</p>
-                  <p className="text-white">{selectedTask.treatment_type}</p>
-                </div>
-                
-                <div>
-                  <p className="text-gray-400 text-sm mb-1">Duration</p>
-                  <p className="text-white">{selectedTask.estimated_duration} minutes</p>
-                </div>
-                
-                {selectedTask.room_number && (
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Room</p>
-                    <p className="text-white">{selectedTask.room_number}</p>
-                  </div>
-                )}
-                
-                {selectedTask.notes && (
-                  <div>
-                    <p className="text-gray-400 text-sm mb-1">Notes</p>
-                    <p className="text-white">{selectedTask.notes}</p>
-                  </div>
-                )}
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <Briefcase className="w-64 h-64 text-primary" />
               </div>
-              
-              <div className="flex gap-2 mt-6">
-                <button
-                  onClick={() => setSelectedTask(null)}
-                  className="flex-1 px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors"
-                >
-                  Close
-                </button>
-                
-                {selectedTask.status === 'scheduled' && (
-                  <button
-                    onClick={() => {
-                      updateTaskStatus(selectedTask.id, 'in_progress');
-                      setSelectedTask(null);
-                    }}
-                    className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
-                  >
-                    Start Treatment
-                  </button>
+
+              <div className="relative z-10 space-y-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                      <IdentificationCard weight="duotone" className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">{selectedTask.customer_name}</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Identity node active</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setSelectedTask(null)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
+                    <X weight="bold" className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Protocol node</p>
+                    <p className="text-sm font-bold text-foreground uppercase truncate">{selectedTask.treatment_type}</p>
+                  </div>
+                  <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50">
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Cycle Duration</p>
+                    <p className="text-sm font-bold text-foreground tabular-nums uppercase">{selectedTask.estimated_duration} MINS</p>
+                  </div>
+                </div>
+
+                {selectedTask.notes && (
+                  <div className="p-6 bg-secondary/30 rounded-3xl border border-border/50 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Info weight="duotone" className="w-5 h-5 text-primary" />
+                      <h4 className="text-[10px] font-black text-foreground uppercase tracking-widest">Protocol Directives</h4>
+                    </div>
+                    <p className="text-sm text-muted-foreground font-medium italic leading-relaxed">
+                      {selectedTask.notes}
+                    </p>
+                  </div>
                 )}
+
+                <div className="flex gap-4 pt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setSelectedTask(null)}
+                    className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary"
+                  >
+                    Abort Review
+                  </Button>
+                  {selectedTask.status === 'scheduled' && (
+                    <Button
+                      onClick={() => { updateTaskStatus(selectedTask.id, 'in_progress'); setSelectedTask(null); }}
+                      className="flex-[2] py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest shadow-premium gap-3"
+                    >
+                      <Play weight="bold" className="w-4 h-4" />
+                      Initialize Protocol
+                    </Button>
+                  )}
+                </div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

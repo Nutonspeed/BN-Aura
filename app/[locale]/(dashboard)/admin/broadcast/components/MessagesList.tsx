@@ -1,7 +1,11 @@
 'use client';
 
+import { Card, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Trash, Clock, CheckCircle, XCircle, WarningCircle, Users, CalendarDots, SpinnerGap } from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
-import { Trash, Clock, CheckCircle, XCircle, WarningCircle, Users, CalendarDots } from '@phosphor-icons/react';
 import { useBroadcastContext } from '../context';
 import { BroadcastMessage } from '../types';
 
@@ -56,15 +60,26 @@ export default function MessagesList() {
 
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-6">
         {[...Array(3)].map((_, index) => (
-          <div key={index} className="glass-card p-6 rounded-2xl border border-white/10">
-            <div className="animate-pulse">
-              <div className="h-4 bg-white/10 rounded w-3/4 mb-4"></div>
-              <div className="h-3 bg-white/10 rounded w-1/2 mb-2"></div>
-              <div className="h-3 bg-white/10 rounded w-1/4"></div>
-            </div>
-          </div>
+          <Card key={index} className="rounded-[32px] border-border/50 shadow-sm overflow-hidden">
+            <CardContent className="p-8">
+              <div className="animate-pulse space-y-6">
+                <div className="flex justify-between items-start">
+                  <div className="flex gap-3">
+                    <div className="h-6 w-20 bg-secondary rounded-lg"></div>
+                    <div className="h-6 w-20 bg-secondary rounded-lg"></div>
+                  </div>
+                  <div className="h-8 w-8 bg-secondary rounded-xl"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="h-6 bg-secondary rounded-xl w-3/4"></div>
+                  <div className="h-4 bg-secondary rounded-lg w-1/2"></div>
+                </div>
+                <div className="h-20 bg-secondary/50 rounded-2xl w-full"></div>
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
     );
@@ -72,11 +87,17 @@ export default function MessagesList() {
 
   if (messages.length === 0) {
     return (
-      <div className="glass-card p-12 rounded-2xl border border-white/10 text-center">
-        <WarningCircle className="w-16 h-16 text-white/20 mx-auto mb-4" />
-        <h3 className="text-xl font-bold text-white mb-2">No messages sent yet</h3>
-        <p className="text-white/60">Your broadcast history will appear here</p>
-      </div>
+      <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-8 opacity-40 rounded-[40px]">
+        <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground shadow-inner">
+          <WarningCircle weight="duotone" className="w-10 h-10" />
+        </div>
+        <div className="text-center space-y-2">
+          <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">Archive Nominal</h3>
+          <p className="text-sm text-muted-foreground font-medium italic max-w-sm mx-auto">
+            Your broadcast transmission history will manifest here once initialized.
+          </p>
+        </div>
+      </Card>
     );
   }
 
@@ -84,7 +105,7 @@ export default function MessagesList() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-4"
+      className="space-y-6"
     >
       {messages.map((message, index) => (
         <motion.div
@@ -92,71 +113,88 @@ export default function MessagesList() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
         >
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                {getStatusIcon(message.status)}
-                <span className={`px-2 py-1 rounded-full text-xs font-bold uppercase ${getStatusColor(message.status)}`}>
-                  {message.status}
-                </span>
-                <span className="px-2 py-1 rounded-full text-xs font-bold uppercase bg-white/10 text-white/60">
-                  {message.message_type}
-                </span>
-              </div>
-
-              <h3 className="text-lg font-bold text-white mb-2">{message.title}</h3>
-              <p className="text-white/60 text-sm mb-4 line-clamp-2">{message.content}</p>
-
-              <div className="flex items-center gap-6 text-sm text-white/50">
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  <span>{message.delivery_stats.total} recipients</span>
-                </div>
-                
-                {message.scheduled_at && (
-                  <div className="flex items-center gap-2">
-                    <CalendarDots className="w-4 h-4" />
-                    <span>
-                      {message.status === 'scheduled' ? 'Scheduled for' : 'Sent at'} {formatDate(message.scheduled_at)}
-                    </span>
+          <Card className="rounded-[32px] border-border/50 hover:border-primary/30 transition-all group overflow-hidden shadow-card hover:shadow-card-hover">
+            <CardContent className="p-8">
+              <div className="flex items-start justify-between gap-8">
+                <div className="flex-1 space-y-6">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-2 px-3 py-1 bg-secondary/50 rounded-lg">
+                      {getStatusIcon(message.status)}
+                      <span className={cn("text-[10px] font-black uppercase tracking-widest", 
+                        message.status === 'sent' ? 'text-emerald-500' : 
+                        message.status === 'failed' ? 'text-rose-500' : 
+                        'text-amber-500'
+                      )}>
+                        {message.status}
+                      </span>
+                    </div>
+                    <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] tracking-widest uppercase px-3">
+                      {message.message_type} NODE
+                    </Badge>
                   </div>
-                )}
 
-                <div className="flex items-center gap-2">
-                  <span>Created {formatDate(message.created_at)}</span>
-                </div>
-              </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{message.title}</h3>
+                    <p className="text-muted-foreground text-sm font-medium italic leading-relaxed line-clamp-2">{message.content}</p>
+                  </div>
 
-              {/* Delivery Stats */}
-              {message.delivery_stats.total > 0 && (
-                <div className="mt-4 p-3 bg-white/5 rounded-xl">
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <p className="text-emerald-400 font-bold">{message.delivery_stats.sent}</p>
-                      <p className="text-white/40 text-xs">Sent</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="flex items-center gap-6 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                      <div className="flex items-center gap-2">
+                        <Users weight="bold" className="w-4 h-4 opacity-60" />
+                        <span>{message.delivery_stats.total} RECIPIENTS</span>
+                      </div>
+                      
+                      {message.scheduled_at && (
+                        <div className="flex items-center gap-2">
+                          <CalendarDots weight="bold" className="w-4 h-4 opacity-60" />
+                          <span>
+                            {message.status === 'scheduled' ? 'PLAN:' : 'SENT:'} {formatDate(message.scheduled_at)}
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    <div>
-                      <p className="text-amber-400 font-bold">{message.delivery_stats.pending}</p>
-                      <p className="text-white/40 text-xs">Pending</p>
-                    </div>
-                    <div>
-                      <p className="text-red-400 font-bold">{message.delivery_stats.failed}</p>
-                      <p className="text-white/40 text-xs">Failed</p>
+
+                    <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest md:justify-end">
+                      <Clock weight="bold" className="w-3.5 h-3.5 opacity-40" />
+                      INITIALIZED: {formatDate(message.created_at)}
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
 
-            <button
-              onClick={() => handleDelete(message.id)}
-              className="ml-4 p-2 text-white/60 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
-            >
-              <Trash className="w-4 h-4" />
-            </button>
-          </div>
+                  {/* Delivery Stats Node */}
+                  {message.delivery_stats.total > 0 && (
+                    <div className="p-5 bg-secondary/30 rounded-2xl border border-border/50 shadow-inner">
+                      <div className="grid grid-cols-3 gap-8 text-center">
+                        <div className="space-y-1">
+                          <p className="text-xl font-black text-emerald-500 tabular-nums">{message.delivery_stats.sent}</p>
+                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Success</p>
+                        </div>
+                        <div className="space-y-1 border-x border-border/30">
+                          <p className="text-xl font-black text-amber-500 tabular-nums">{message.delivery_stats.pending}</p>
+                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Pending</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-xl font-black text-rose-500 tabular-nums">{message.delivery_stats.failed}</p>
+                          <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest">Exception</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDelete(message.id)}
+                  className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 hover:border-rose-500/30 transition-all shrink-0"
+                  title="Purge Node"
+                >
+                  <Trash weight="bold" className="w-5 h-5" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
       ))}
     </motion.div>

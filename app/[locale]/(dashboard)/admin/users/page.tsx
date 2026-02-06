@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import {
   Users,
   MagnifyingGlass,
@@ -13,8 +11,26 @@ import {
   Crown,
   UserCheck,
   UserMinus,
-  PencilSimple
+  PencilSimple,
+  IdentificationCard,
+  ShieldCheck,
+  Lightning,
+  Funnel,
+  CaretRight,
+  UserList,
+  Eye,
+  ArrowsClockwise
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import ResponsiveTable from '@/components/ui/ResponsiveTable';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface User {
   id: string;
@@ -29,12 +45,21 @@ interface User {
 }
 
 export default function UserManagementPage() {
+  const { goBack } = useBackNavigation();
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [createLoading, setCreateLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    fullName: '',
+    role: 'free_user' as 'super_admin' | 'premium_customer' | 'free_user',
+    tier: 'free' as 'free' | 'premium' | 'clinical'
+  });
 
   const fetchData = useCallback(async () => {
     setLoading(true);
@@ -80,6 +105,45 @@ export default function UserManagementPage() {
     }
   };
 
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCreateLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/admin/create-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          fullName: formData.fullName,
+          role: formData.role,
+          tier: formData.tier
+        })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setSuccess(`User created successfully! ${data.tempPassword ? `Temporary password: ${data.tempPassword}` : ''}`);
+        setShowCreateForm(false);
+        setFormData({
+          email: '',
+          fullName: '',
+          role: 'free_user',
+          tier: 'free'
+        });
+        await fetchData(); // Refresh user list
+      } else {
+        setError(data.error || 'Failed to create user');
+      }
+    } catch (err) {
+      setError('An error occurred while creating user');
+    } finally {
+      setCreateLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -91,17 +155,96 @@ export default function UserManagementPage() {
 
   const getRoleBadge = (role: string) => {
     const configs: Record<string, { bg: string; label: string }> = {
-      super_admin: { bg: 'bg-red-500/20 text-red-400', label: 'Super Admin' },
-      premium_customer: { bg: 'bg-purple-500/20 text-purple-400', label: 'Premium' },
-      free_user: { bg: 'bg-gray-500/20 text-gray-400', label: 'Free User' }
+      super_admin: { bg: 'bg-red-500/10 text-red-500', label: 'Super Admin' },
+      premium_customer: { bg: 'bg-purple-500/10 text-purple-500', label: 'Premium' },
+      free_user: { bg: 'bg-secondary text-muted-foreground', label: 'Free User' }
     };
     const config = configs[role] || configs.free_user;
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-bold ${config.bg}`}>
+      <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${config.bg}`}>
         {config.label}
       </span>
     );
   };
+
+  const columns = [
+    {
+      header: 'User',
+      accessor: (user: User) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+            {user.role === 'super_admin' ? (
+              <Crown className="w-5 h-5" />
+            ) : (
+              <Users className="w-5 h-5" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <p className="font-semibold text-foreground truncate">{user.full_name || 'No Name'}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: 'Role',
+      accessor: (user: User) => getRoleBadge(user.role)
+    },
+    {
+      header: 'Status',
+      accessor: (user: User) => (
+        <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
+          user.is_active ? 'bg-emerald-500/10 text-emerald-500' : 'bg-red-500/10 text-red-500'
+        }`}>
+          {user.is_active ? 'Active' : 'Inactive'}
+        </span>
+      )
+    },
+    {
+      header: 'Created',
+      accessor: (user: User) => (
+        <p className="text-sm text-muted-foreground">
+          {new Date(user.created_at).toLocaleDateString()}
+        </p>
+      )
+    },
+    {
+      header: 'Actions',
+      className: 'text-right',
+      accessor: (user: User) => (
+        <div className="flex items-center justify-end gap-2">
+          <button 
+            disabled={isProcessing === user.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleUpdateStatus(user.id, user.is_active);
+            }}
+            className={`p-2 rounded-lg transition-all border border-border bg-secondary ${
+              user.is_active 
+                ? 'text-red-500 hover:bg-red-500/10' 
+                : 'text-emerald-500 hover:bg-emerald-500/10'
+            }`}
+            title={user.is_active ? 'Suspend User' : 'Activate User'}
+          >
+            {isProcessing === user.id ? (
+              <SpinnerGap className="w-4 h-4 animate-spin" />
+            ) : user.is_active ? (
+              <UserMinus className="w-4 h-4" />
+            ) : (
+              <UserCheck className="w-4 h-4" />
+            )}
+          </button>
+          <button 
+            onClick={(e) => e.stopPropagation()}
+            className="p-2 bg-secondary border border-border text-muted-foreground hover:text-foreground rounded-lg transition-all"
+            title="Edit User"
+          >
+            <PencilSimple className="w-4 h-4" />
+          </button>
+        </div>
+      )
+    }
+  ];
 
   if (loading) {
     return (
@@ -112,140 +255,333 @@ export default function UserManagementPage() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Users className="w-8 h-8 text-primary" />
-            User Management
-          </h1>
-          <p className="text-white/60 mt-1">Manage all system users and permissions</p>
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      className="space-y-8 pb-20 font-sans"
+    >
+      <Breadcrumb />
+      
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <Users weight="duotone" className="w-4 h-4" />
+            Identity Management
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            Network <span className="text-primary">Entities</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating global system users, access credentials, and identity protocols.
+          </motion.p>
         </div>
-        <button className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2">
-          <Plus className="w-4 h-4" />
-          Create User
-        </button>
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <Button 
+            onClick={() => setShowCreateForm(true)}
+            className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
+          >
+            <Plus weight="bold" className="w-4 h-4" />
+            <span>Initialize Identity</span>
+          </Button>
+        </motion.div>
+      </div>
+
+      {/* Stats Summary Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Total Registry"
+          value={users.length}
+          icon={Users}
+          className="p-4"
+        />
+        <StatCard
+          title="Active Nodes"
+          value={users.filter(u => u.is_active).length}
+          icon={UserCheck}
+          trend="up"
+          change={4.2}
+          className="p-4"
+        />
+        <StatCard
+          title="Privileged Access"
+          value={users.filter(u => u.role === 'super_admin').length}
+          icon={Crown}
+          iconColor="text-red-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Live Sessions"
+          value={Math.floor(users.length * 0.4)}
+          icon={Lightning}
+          iconColor="text-emerald-500"
+          className="p-4"
+        />
       </div>
 
       {/* Alerts */}
-      {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-          <WarningCircle className="w-5 h-5 text-red-400" />
-          <p className="text-red-400">{error}</p>
-          <button onClick={() => setError(null)} className="ml-auto">
-            <X className="w-4 h-4 text-red-400" />
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mx-2 p-4 bg-destructive/10 border border-destructive/20 rounded-2xl flex items-center gap-3"
+          >
+            <WarningCircle weight="fill" className="w-5 h-5 text-destructive" />
+            <p className="text-destructive text-xs font-bold uppercase tracking-widest">Exception: {error}</p>
+            <Button variant="ghost" size="sm" onClick={() => setError(null)} className="ml-auto p-2 h-auto text-destructive hover:bg-destructive/10">
+              <X weight="bold" className="w-4 h-4" />
+            </Button>
+          </motion.div>
+        )}
+        {success && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mx-2 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3"
+          >
+            <CheckCircle weight="fill" className="w-5 h-5 text-emerald-500" />
+            <p className="text-emerald-500 text-xs font-bold uppercase tracking-widest">Sync Complete: {success}</p>
+            <Button variant="ghost" size="sm" onClick={() => setSuccess(null)} className="ml-auto p-2 h-auto text-emerald-500 hover:bg-emerald-500/10">
+              <X weight="bold" className="w-4 h-4" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {success && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
-          <CheckCircle className="w-5 h-5 text-emerald-400" />
-          <p className="text-emerald-400">{success}</p>
-          <button onClick={() => setSuccess(null)} className="ml-auto">
-            <X className="w-4 h-4 text-emerald-400" />
-          </button>
-        </div>
-      )}
-
-      {/* Search */}
-      <div className="glass-card p-6 rounded-2xl border border-white/10">
-        <div className="relative">
-          <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-          <input
-            type="text"
-            placeholder="Search users by name or email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
-          />
-        </div>
-        <p className="text-white/60 text-sm mt-4">
-          Showing {filteredUsers.length} of {users.length} users
-        </p>
+      {/* Search & Intelligence Controls */}
+      <div className="px-2">
+        <Card className="p-6 rounded-[32px] border-border/50 shadow-card">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="relative flex-1 group">
+              <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
+              <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder="Query identity name, neural address, or access node..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
+              />
+            </div>
+            
+            <div className="flex items-center gap-3">
+              <Button variant="outline" className="gap-2 px-6 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary">
+                <Funnel weight="bold" className="w-4 h-4" />
+                Filters
+              </Button>
+              <Button variant="outline" onClick={() => fetchData()} className="p-3.5 border-border/50 rounded-2xl hover:bg-secondary transition-all">
+                <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+              </Button>
+            </div>
+          </div>
+        </Card>
       </div>
 
-      {/* Users Table */}
-      <div className="glass-card rounded-2xl border border-white/10 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-white/5">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">User</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">Role</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">Created</th>
-                <th className="px-6 py-4 text-right text-xs font-bold text-white/70 uppercase">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {filteredUsers.slice(0, 20).map((user) => (
-                <motion.tr key={user.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="hover:bg-white/5">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                        {user.role === 'super_admin' ? (
-                          <Crown className="w-5 h-5 text-primary" />
-                        ) : (
-                          <Users className="w-5 h-5 text-primary" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-medium text-white">{user.full_name || 'No Name'}</p>
-                        <p className="text-sm text-white/60">{user.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">{getRoleBadge(user.role)}</td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      user.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
-                    }`}>
-                      {user.is_active ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-white/60">
-                    {new Date(user.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button 
-                        disabled={isProcessing === user.id}
-                        onClick={() => handleUpdateStatus(user.id, user.is_active)}
-                        className={`p-2 rounded-lg transition-all ${
-                          user.is_active 
-                            ? 'text-red-400 hover:bg-red-500/10' 
-                            : 'text-emerald-400 hover:bg-emerald-500/10'
-                        }`}
-                        title={user.is_active ? 'Suspend User' : 'Activate User'}
-                      >
-                        {isProcessing === user.id ? (
+      {/* Create User Modal */}
+      <AnimatePresence>
+        {showCreateForm && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setShowCreateForm(false)}
+          >
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-card border border-border rounded-3xl p-8 w-full max-w-md shadow-premium"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="space-y-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-foreground uppercase tracking-tight">Initialize Identity</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Create new system user with access credentials</p>
+                </div>
+
+                <form onSubmit={handleCreateUser} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Email Address</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                      className="w-full bg-secondary border border-border rounded-xl py-3 px-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
+                      placeholder="user@domain.com"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Full Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.fullName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                      className="w-full bg-secondary border border-border rounded-xl py-3 px-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
+                      placeholder="John Doe"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Access Role</label>
+                    <select
+                      value={formData.role}
+                      onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as any }))}
+                      className="w-full bg-secondary border border-border rounded-xl py-3 px-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
+                    >
+                      <option value="free_user">Free User</option>
+                      <option value="premium_customer">Premium Customer</option>
+                      <option value="super_admin">Super Admin</option>
+                    </select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Service Tier</label>
+                    <select
+                      value={formData.tier}
+                      onChange={(e) => setFormData(prev => ({ ...prev, tier: e.target.value as any }))}
+                      className="w-full bg-secondary border border-border rounded-xl py-3 px-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
+                    >
+                      <option value="free">Free</option>
+                      <option value="premium">Premium</option>
+                      <option value="clinical">Clinical</option>
+                    </select>
+                  </div>
+
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowCreateForm(false)}
+                      className="flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-widest"
+                      disabled={createLoading}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-widest gap-2"
+                      disabled={createLoading}
+                    >
+                      {createLoading ? (
+                        <>
                           <SpinnerGap className="w-4 h-4 animate-spin" />
-                        ) : user.is_active ? (
-                          <UserMinus className="w-4 h-4" />
-                        ) : (
-                          <UserCheck className="w-4 h-4" />
-                        )}
-                      </button>
-                      <button 
-                        className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-                        title="Edit User"
-                      >
-                        <PencilSimple className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        {filteredUsers.length > 20 && (
-          <div className="p-4 text-center border-t border-white/10">
-            <p className="text-white/60 text-sm">Showing first 20 of {filteredUsers.length} users</p>
-          </div>
+                          Initializing...
+                        </>
+                      ) : (
+                        <>
+                          <Plus weight="bold" className="w-4 h-4" />
+                          Initialize
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* Users Table */}
+      <div className="px-2">
+        <Card className="rounded-[40px] border-border/50 overflow-hidden shadow-premium">
+          <ResponsiveTable
+            columns={columns}
+            data={filteredUsers}
+            loading={loading}
+            rowKey={(user) => user.id}
+            emptyMessage="No identity nodes detected in current neural registry."
+            mobileCard={(user) => (
+              <div className="space-y-5">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary shadow-inner">
+                      {user.role === 'super_admin' ? (
+                        <Crown weight="duotone" className="w-7 h-7 text-red-500" />
+                      ) : (
+                        <Users weight="duotone" className="w-7 h-7" />
+                      )}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-bold text-foreground truncate uppercase tracking-tight">{user.full_name || 'ANONYMOUS_NODE'}</p>
+                      <p className="text-[10px] font-black text-muted-foreground truncate uppercase tracking-widest">{user.email}</p>
+                    </div>
+                  </div>
+                  {getRoleBadge(user.role)}
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 py-4 border-y border-border/50">
+                  <div>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Initialized</p>
+                    <p className="text-xs font-bold text-foreground tabular-nums">{new Date(user.created_at).toLocaleDateString()}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Status</p>
+                    <Badge variant={user.is_active ? 'success' : 'destructive'} size="sm" className="font-black text-[8px] uppercase tracking-widest px-2">
+                      {user.is_active ? 'OPERATIONAL' : 'OFFLINE'}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-2">
+                    <div className={cn("w-1.5 h-1.5 rounded-full", user.is_active ? "bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-muted")} />
+                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{user.tier} Protocol</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      disabled={isProcessing === user.id}
+                      onClick={() => handleUpdateStatus(user.id, user.is_active)}
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "h-10 w-10 p-0 border-border/50 rounded-xl transition-all",
+                        user.is_active ? 'text-rose-500 hover:bg-rose-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'
+                      )}
+                    >
+                      {isProcessing === user.id ? (
+                        <SpinnerGap weight="bold" className="w-4 h-4 animate-spin" />
+                      ) : user.is_active ? (
+                        <UserMinus weight="bold" className="w-4 h-4" />
+                      ) : (
+                        <UserCheck weight="bold" className="w-4 h-4" />
+                      )}
+                    </Button>
+                    <Button variant="outline" size="sm" className="h-10 w-10 p-0 border-border/50 rounded-xl hover:bg-secondary">
+                      <PencilSimple weight="bold" className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
+        </Card>
       </div>
     </motion.div>
   );

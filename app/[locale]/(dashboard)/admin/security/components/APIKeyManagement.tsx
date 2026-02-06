@@ -2,7 +2,30 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Key, Plus, Trash, Copy, Check, Eye, EyeSlash, Shield, Clock, WarningCircle, ArrowsClockwise, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  Key, 
+  Plus, 
+  Trash, 
+  Copy, 
+  Check, 
+  Eye, 
+  EyeSlash, 
+  Shield, 
+  Clock, 
+  WarningCircle, 
+  ArrowsClockwise, 
+  SpinnerGap,
+  Monitor,
+  Lightning,
+  CheckCircle,
+  X,
+  DotsThreeVertical,
+  IdentificationBadge
+} from '@phosphor-icons/react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface APIKey {
   id: string;
@@ -35,12 +58,9 @@ export default function APIKeyManagement() {
     setLoading(true);
     setError(null);
     try {
-      // Get token from localStorage the same way we did in Support/Security pages
       let token = null;
-      
       try {
         const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
-        
         if (sessionStr) {
           const base64Data = sessionStr.replace('base64-', '');
           const decodedSession = JSON.parse(atob(base64Data));
@@ -50,7 +70,6 @@ export default function APIKeyManagement() {
         console.warn('Failed to get token from localStorage:', tokenError);
       }
       
-      // Fallback: Try to get session from Supabase client
       if (!token) {
         try {
           const { createClient } = await import('@/lib/supabase/client');
@@ -65,7 +84,6 @@ export default function APIKeyManagement() {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       };
-      
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -115,12 +133,9 @@ export default function APIKeyManagement() {
     setIsProcessing(true);
     setError(null);
     try {
-      // Get token from localStorage the same way we did in fetchKeys
       let token = null;
-      
       try {
         const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
-        
         if (sessionStr) {
           const base64Data = sessionStr.replace('base64-', '');
           const decodedSession = JSON.parse(atob(base64Data));
@@ -130,7 +145,6 @@ export default function APIKeyManagement() {
         console.warn('Failed to get token from localStorage:', tokenError);
       }
       
-      // Fallback: Try to get session from Supabase client
       if (!token) {
         try {
           const { createClient } = await import('@/lib/supabase/client');
@@ -145,7 +159,6 @@ export default function APIKeyManagement() {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       };
-      
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -181,12 +194,9 @@ export default function APIKeyManagement() {
     
     setIsProcessing(true);
     try {
-      // Get token from localStorage the same way we did in fetchKeys
       let token = null;
-      
       try {
         const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
-        
         if (sessionStr) {
           const base64Data = sessionStr.replace('base64-', '');
           const decodedSession = JSON.parse(atob(base64Data));
@@ -196,7 +206,6 @@ export default function APIKeyManagement() {
         console.warn('Failed to get token from localStorage:', tokenError);
       }
       
-      // Fallback: Try to get session from Supabase client
       if (!token) {
         try {
           const { createClient } = await import('@/lib/supabase/client');
@@ -211,7 +220,6 @@ export default function APIKeyManagement() {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json'
       };
-      
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
@@ -236,9 +244,9 @@ export default function APIKeyManagement() {
 
   if (loading) {
     return (
-      <div className="bg-slate-800 p-12 rounded-xl border-2 border-slate-600 shadow-lg mt-6 flex flex-col items-center justify-center">
-        <SpinnerGap className="w-10 h-10 text-primary animate-spin mb-4" />
-        <p className="text-gray-400">Loading API keys...</p>
+      <div className="p-12 flex flex-col items-center justify-center space-y-6">
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse text-center">Synchronizing Encryption Keys...</p>
       </div>
     );
   }
@@ -247,208 +255,269 @@ export default function APIKeyManagement() {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-slate-800 p-6 rounded-xl border-2 border-slate-600 shadow-lg mt-6"
+      className="space-y-8"
     >
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h2 className="text-xl font-bold text-white flex items-center gap-3">
-            <Key className="w-6 h-6 text-primary" />
-            API Key Management
-          </h2>
-          <p className="text-gray-400 text-sm mt-1">Manage external access to your system</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={fetchKeys}
-            className="p-2 text-gray-400 hover:text-white transition-colors"
-            title="Refresh"
-          >
-            <ArrowsClockwise className={`w-5 h-5 ${isProcessing ? 'animate-spin' : ''}`} />
-          </button>
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:brightness-110 transition-all font-medium flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Create New Key
-          </button>
-        </div>
-      </div>
-
-      {error && (
-        <div className="mb-6 p-4 bg-red-500/10 border-2 border-red-500/20 rounded-xl flex items-center gap-3">
-          <WarningCircle className="w-5 h-5 text-red-400" />
-          <p className="text-red-300 text-sm">{error}</p>
-        </div>
-      )}
-
-      {keys.length === 0 ? (
-        <div className="text-center py-12 bg-slate-900/50 rounded-xl border-2 border-dashed border-slate-700">
-          <Key className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-          <p className="text-gray-400">No API keys found. Create one to get started.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {keys.map((apiKey) => (
-            <div
-              key={apiKey.id}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                apiKey.status === 'revoked' ? 'bg-slate-900/50 border-slate-700 opacity-60' : 'bg-slate-700/50 border-slate-600'
-              }`}
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-bold text-white">{apiKey.name}</h3>
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                      apiKey.status === 'active' ? 'bg-emerald-500/20 text-emerald-400' :
-                      apiKey.status === 'expired' ? 'bg-amber-500/20 text-amber-400' :
-                      'bg-rose-500/20 text-rose-400'
-                    }`}>
-                      {apiKey.status}
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 bg-slate-900/80 p-2 rounded border border-slate-600 mb-3">
-                    <code className="text-xs font-mono text-primary flex-1 truncate">
-                      {visibleKeys[apiKey.id] ? apiKey.key : `${apiKey.prefix}_••••••••••••••••`}
-                    </code>
-                    <button
-                      onClick={() => toggleKeyVisibility(apiKey.id)}
-                      className="p-1 hover:text-white text-gray-400 transition-colors"
-                    >
-                      {visibleKeys[apiKey.id] ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                    <button
-                      onClick={() => handleCopy(apiKey.id, apiKey.key)}
-                      className="p-1 hover:text-white text-gray-400 transition-colors"
-                    >
-                      {copiedId === apiKey.id ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {apiKey.scopes.map(scope => (
-                      <span key={scope} className="px-2 py-0.5 bg-slate-800 text-slate-300 rounded text-[10px] border border-slate-600">
-                        {scope}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex flex-row md:flex-col items-end gap-4 md:gap-2 text-xs text-gray-400">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    <span>Created: {new Date(apiKey.created_at).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <ArrowsClockwise className="w-3 h-3" />
-                    <span>Last used: {apiKey.last_used_at ? new Date(apiKey.last_used_at).toLocaleDateString() : 'Never'}</span>
-                  </div>
-                  {apiKey.status === 'active' && (
-                    <button
-                      onClick={() => handleRevokeKey(apiKey.id)}
-                      className="mt-2 flex items-center gap-1 text-rose-400 hover:text-rose-300 transition-colors"
-                    >
-                      <Trash className="w-3 h-3" />
-                      Revoke Key
-                    </button>
-                  )}
-                </div>
+      <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+        <CardHeader className="p-8 border-b border-border/50 bg-secondary/30 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+            <Key weight="fill" className="w-64 h-64 text-primary" />
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div className="flex items-center gap-5">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                <Key weight="duotone" className="w-7 h-7" />
+              </div>
+              <div>
+                <CardTitle className="text-2xl font-black uppercase tracking-tight">API Key Management</CardTitle>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-1">Global external access nodes</p>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={fetchKeys}
+                className="p-4 h-14 w-14 border-border/50 rounded-2xl text-muted-foreground hover:text-primary transition-all"
+              >
+                <ArrowsClockwise weight="bold" className={cn("w-5 h-5", isProcessing && "animate-spin")} />
+              </Button>
+              <Button
+                onClick={() => setShowCreateModal(true)}
+                className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest group"
+              >
+                <Plus weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                Generate Access Token
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
 
-      {/* Create Key Modal */}
+        <CardContent className="p-8 md:p-10 space-y-8 relative z-10">
+          {error && (
+            <div className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3">
+              <WarningCircle weight="fill" className="w-5 h-5 text-rose-500" />
+              <p className="text-rose-500 text-xs font-black uppercase tracking-widest">Exception: {error}</p>
+            </div>
+          )}
+
+          {keys.length === 0 ? (
+            <div className="text-center py-20 bg-secondary/20 border-2 border-dashed border-border/50 rounded-[40px] opacity-40">
+              <Key weight="duotone" className="w-16 h-16 text-muted-foreground mx-auto mb-6 shadow-inner" />
+              <div className="space-y-2">
+                <h3 className="text-xl font-black text-foreground uppercase tracking-widest">Registry Empty</h3>
+                <p className="text-sm text-muted-foreground font-medium italic max-w-sm mx-auto">No API keys establishing external links in current node.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6">
+              {keys.map((apiKey) => (
+                <div
+                  key={apiKey.id}
+                  className={cn(
+                    "p-6 rounded-[32px] border transition-all duration-500 group/item relative overflow-hidden",
+                    apiKey.status === 'revoked' 
+                      ? 'bg-secondary/10 border-border/30 opacity-60 grayscale' 
+                      : 'bg-secondary/20 border-border/50 hover:border-primary/30 shadow-card hover:shadow-card-hover'
+                  )}
+                >
+                  <div className="absolute top-0 right-0 p-6 opacity-[0.02] group-hover/item:scale-110 transition-transform duration-700 pointer-events-none">
+                    <Lightning weight="fill" className="w-32 h-32 text-primary" />
+                  </div>
+
+                  <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-8 relative z-10">
+                    <div className="flex-1 space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className={cn(
+                          "w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-500 shadow-inner",
+                          apiKey.status === 'active' ? "bg-primary/10 border-primary/20 text-primary" : "bg-secondary border-border text-muted-foreground"
+                        )}>
+                          <Shield weight="duotone" className="w-6 h-6" />
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-3 mb-1">
+                            <h3 className="text-lg font-black text-foreground uppercase tracking-tight truncate">{apiKey.name}</h3>
+                            <Badge variant={apiKey.status === 'active' ? 'success' : apiKey.status === 'expired' ? 'warning' : 'secondary'} size="sm" className="font-black text-[8px] tracking-widest px-2.5 py-1">
+                              {apiKey.status.toUpperCase()}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-4 text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-60">
+                            <span className="flex items-center gap-1.5"><Clock weight="bold" className="w-3 h-3" /> Initialized: {new Date(apiKey.created_at).toLocaleDateString()}</span>
+                            <span className="flex items-center gap-1.5"><Lightning weight="bold" className="w-3 h-3" /> Last Payload: {apiKey.last_used_at ? new Date(apiKey.last_used_at).toLocaleDateString() : 'Never'}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 bg-card border border-border/50 p-4 rounded-2xl shadow-inner group/key relative overflow-hidden">
+                        <div className="absolute inset-0 bg-primary/5 opacity-0 group-focus-within/key:opacity-100 transition-opacity" />
+                        <code className="text-xs font-mono text-primary flex-1 truncate relative z-10 font-bold tracking-wider">
+                          {visibleKeys[apiKey.id] ? apiKey.key : '••••••••••••••••'}
+                        </code>
+                        <div className="flex items-center gap-1.5 relative z-10">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleKeyVisibility(apiKey.id)}
+                            className="h-9 w-9 p-0 rounded-xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all"
+                          >
+                            {visibleKeys[apiKey.id] ? <EyeSlash weight="bold" className="w-4.5 h-4.5" /> : <Eye weight="bold" className="w-4.5 h-4.5" />}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopy(apiKey.id, apiKey.key)}
+                            className="h-9 w-9 p-0 rounded-xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all"
+                          >
+                            {copiedId === apiKey.id ? <CheckCircle weight="bold" className="w-4.5 h-4.5 text-emerald-500" /> : <Copy weight="bold" className="w-4.5 h-4.5" />}
+                          </Button>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        {apiKey.scopes.map(scope => (
+                          <Badge key={scope} variant="ghost" className="bg-primary/5 text-primary border border-primary/10 font-black text-[7px] tracking-widest px-2.5 py-1">
+                            {scope.toUpperCase()}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex xl:flex-col items-center xl:items-end gap-4 shrink-0">
+                      {apiKey.status === 'active' && (
+                        <Button
+                          variant="outline"
+                          onClick={() => handleRevokeKey(apiKey.id)}
+                          className="px-6 py-3 h-auto rounded-xl text-[9px] font-black uppercase tracking-widest border-rose-500/20 text-rose-500 hover:bg-rose-500/10 hover:border-rose-500/30 transition-all gap-2"
+                        >
+                          <Trash weight="bold" className="w-3.5 h-3.5" />
+                          Revoke Access
+                        </Button>
+                      )}
+                      <div className="hidden xl:flex items-center gap-2 text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-40">
+                        <IdentificationBadge weight="bold" className="w-3 h-3" />
+                        ID-{apiKey.id.slice(0, 8).toUpperCase()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Create Key Modal Protocol */}
       <AnimatePresence>
         {showCreateModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-slate-800 p-8 rounded-2xl border-2 border-slate-600 w-full max-w-lg shadow-2xl"
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-card border border-border rounded-[40px] w-full max-w-lg shadow-premium relative overflow-hidden group p-10"
+              onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                <Shield className="w-6 h-6 text-primary" />
-                Create New API Key
-              </h3>
+              <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <Shield weight="fill" className="w-48 h-48 text-primary" />
+              </div>
 
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Key Name</label>
-                  <input
-                    type="text"
-                    value={newKeyData.name}
-                    onChange={(e) => setNewKeyData({ ...newKeyData, name: e.target.value })}
-                    placeholder="e.g. Website Widget"
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Rate Limit (Requests per hour)</label>
-                  <input
-                    type="number"
-                    value={newKeyData.rateLimit}
-                    onChange={(e) => setNewKeyData({ ...newKeyData, rateLimit: parseInt(e.target.value) })}
-                    className="w-full bg-slate-900 border-2 border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary transition-all"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Select Scopes</label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {availableScopes.map(scope => (
-                      <label
-                        key={scope.id}
-                        className={`flex items-center gap-2 p-3 rounded-lg border-2 cursor-pointer transition-all ${
-                          newKeyData.scopes.includes(scope.id)
-                            ? 'bg-primary/10 border-primary text-white'
-                            : 'bg-slate-900 border-slate-700 text-gray-400 hover:border-slate-500'
-                        }`}
-                      >
-                        <input
-                          type="checkbox"
-                          className="hidden"
-                          checked={newKeyData.scopes.includes(scope.id)}
-                          onChange={() => {
-                            const scopes = newKeyData.scopes.includes(scope.id)
-                              ? newKeyData.scopes.filter(s => s !== scope.id)
-                              : [...newKeyData.scopes, scope.id];
-                            setNewKeyData({ ...newKeyData, scopes });
-                          }}
-                        />
-                        <span className="text-xs font-medium">{scope.label}</span>
-                      </label>
-                    ))}
+              <div className="relative z-10 space-y-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm shadow-inner">
+                      <Key weight="duotone" className="w-7 h-7" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase leading-tight">Key Synthesis</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Initialize external access node</p>
+                    </div>
                   </div>
+                  <Button variant="ghost" onClick={() => setShowCreateModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
+                    <X weight="bold" className="w-5 h-5" />
+                  </Button>
                 </div>
 
-                <div className="bg-amber-500/10 border-2 border-amber-500/20 p-4 rounded-xl flex gap-3">
-                  <WarningCircle className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                  <p className="text-xs text-amber-300 leading-relaxed">
-                    API keys provide full access to the selected scopes. Never share keys in client-side code or public repositories.
-                  </p>
-                </div>
+                <div className="space-y-8">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Key Designation *</label>
+                    <div className="relative group/input">
+                      <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-xl" />
+                      <input
+                        type="text"
+                        value={newKeyData.name}
+                        onChange={(e) => setNewKeyData({ ...newKeyData, name: e.target.value })}
+                        placeholder="e.g. Clinical Widget Protocol"
+                        className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold shadow-inner relative z-10"
+                      />
+                    </div>
+                  </div>
 
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={handleCreateKey}
-                    disabled={!newKeyData.name || newKeyData.scopes.length === 0 || isProcessing}
-                    className="flex-1 py-3 bg-primary text-primary-foreground rounded-xl font-bold hover:brightness-110 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                  >
-                    {isProcessing && <SpinnerGap className="w-4 h-4 animate-spin" />}
-                    Generate API Key
-                  </button>
-                  <button
-                    onClick={() => setShowCreateModal(false)}
-                    className="flex-1 py-3 bg-slate-700 text-white rounded-xl font-bold hover:bg-slate-600 transition-all"
-                  >
-                    Cancel
-                  </button>
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Consumption Limit (Req/Hour)</label>
+                    <input
+                      type="number"
+                      value={newKeyData.rateLimit}
+                      onChange={(e) => setNewKeyData({ ...newKeyData, rateLimit: parseInt(e.target.value) })}
+                      className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold tabular-nums shadow-inner"
+                    />
+                  </div>
+
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Authorized Protocol Scopes</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {availableScopes.map(scope => (
+                        <label
+                          key={scope.id}
+                          className={cn(
+                            "flex items-center gap-3 p-3.5 rounded-xl border-2 cursor-pointer transition-all",
+                            newKeyData.scopes.includes(scope.id)
+                              ? "bg-primary/10 border-primary text-primary shadow-glow-sm"
+                              : "bg-secondary/30 border-border/50 text-muted-foreground hover:bg-secondary/50"
+                          )}
+                        >
+                          <input
+                            type="checkbox"
+                            className="hidden"
+                            checked={newKeyData.scopes.includes(scope.id)}
+                            onChange={() => {
+                              const scopes = newKeyData.scopes.includes(scope.id)
+                                ? newKeyData.scopes.filter(s => s !== scope.id)
+                                : [...newKeyData.scopes, scope.id];
+                              setNewKeyData({ ...newKeyData, scopes });
+                            }}
+                          />
+                          <span className="text-[10px] font-black uppercase tracking-tight">{scope.label}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="p-5 bg-amber-500/5 rounded-[28px] border border-amber-500/10 flex gap-4 shadow-inner relative overflow-hidden group/warning">
+                    <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover/warning:scale-110 transition-transform">
+                      <WarningCircle weight="fill" className="w-10 h-10 text-amber-500" />
+                    </div>
+                    <WarningCircle weight="duotone" className="w-5 h-5 text-amber-500 flex-shrink-0 relative z-10" />
+                    <p className="text-[10px] text-muted-foreground font-medium italic leading-relaxed relative z-10 uppercase tracking-widest">
+                      Encryption keys grant global level access. Protocol requires secure vault storage only. Never distribute via public channels.
+                    </p>
+                  </div>
+
+                  <div className="flex gap-4 pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowCreateModal(false)}
+                      className="flex-1 py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
+                    >
+                      Abort
+                    </Button>
+                    <Button
+                      onClick={handleCreateKey}
+                      disabled={!newKeyData.name || newKeyData.scopes.length === 0 || isProcessing}
+                      className="flex-[2] py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] shadow-premium gap-3 relative overflow-hidden group/btn"
+                    >
+                      <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
+                      {isProcessing ? <SpinnerGap className="w-4 h-4 animate-spin" /> : <Shield weight="bold" className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />}
+                      Commit Synthesis
+                    </Button>
+                  </div>
                 </div>
               </div>
             </motion.div>

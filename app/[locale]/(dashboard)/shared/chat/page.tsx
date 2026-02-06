@@ -11,11 +11,23 @@ import {
   DotsThreeVertical,
   Phone,
   VideoCamera,
-  ArrowLeft
+  ArrowLeft,
+  Monitor,
+  Lightning,
+  CheckCircle,
+  Clock,
+  Plus,
+  Funnel,
+  IdentificationCard,
+  Icon,
+  SpinnerGap
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
-import { createClient } from '@/lib/supabase/client';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/Badge';
+import Breadcrumb from '@/components/ui/Breadcrumb';
 
 interface ChatSession {
   id: string;
@@ -73,7 +85,6 @@ export default function SharedChatPage() {
   const userRole = getUserRole();
   const isCustomer = ['customer', 'free_user', 'free_customer', 'premium_customer'].includes(userRole);
   const isSales = userRole === 'sales_staff';
-  const isOwnerOrAdmin = ['clinic_owner', 'clinic_admin'].includes(userRole);
 
   useEffect(() => {
     setIsClient(true);
@@ -87,7 +98,7 @@ export default function SharedChatPage() {
 
   useEffect(() => {
     if (selectedSession) {
-      fetchMessages(selectedSession.id);
+      fetchMessages(selectedSession.customer_id);
     }
   }, [selectedSession]);
 
@@ -114,9 +125,9 @@ export default function SharedChatPage() {
     }
   };
 
-  const fetchMessages = async (sessionId: string) => {
+  const fetchMessages = async (customerId: string) => {
     try {
-      const response = await fetch(`/api/chat?action=history&sessionId=${sessionId}`);
+      const response = await fetch(`/api/chat?action=history&customerId=${customerId}`);
       if (response.ok) {
         const data = await response.json();
         setMessages(data.messages || []);
@@ -146,9 +157,9 @@ export default function SharedChatPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'send',
-          sessionId: selectedSession.id,
-          content: input
+          customerId: selectedSession.customer_id,
+          messageText: input,
+          messageType: 'text'
         })
       });
     } catch (error) {
@@ -168,8 +179,9 @@ export default function SharedChatPage() {
 
   if (!isClient) {
     return (
-      <div className="h-[calc(100vh-160px)] flex items-center justify-center">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      <div className="h-[calc(100vh-160px)] flex flex-col items-center justify-center space-y-6">
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">Initializing Neural Link...</p>
       </div>
     );
   }
@@ -178,56 +190,75 @@ export default function SharedChatPage() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-[calc(100vh-160px)] flex flex-col"
+      className="h-[calc(100vh-120px)] flex flex-col space-y-6 pb-4 font-sans"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-            <ChatCircle className="w-5 h-5 text-primary" />
-          </div>
-          <div>
-            <h1 className="text-lg font-bold text-white">
-              {isCustomer ? 'Chat with Your Advisor' : 'Customer Messages'}
-            </h1>
-            <p className="text-xs text-muted-foreground">
-              {isCustomer ? 'Direct line to your sales representative' : `${sessions.length} conversations`}
-            </p>
-          </div>
+      <Breadcrumb />
+
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <ChatCircle weight="duotone" className="w-4 h-4" />
+            Neural Communication Node
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            Global <span className="text-primary">Chat</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            {isCustomer ? 'Synchronizing with your dedicated clinical advisor.' : 'Orchestrating active customer dialogue streams and identity nodes.'}
+          </motion.p>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Sessions List */}
+      {/* Main Chat Interface Matrix */}
+      <div className="flex-1 flex overflow-hidden rounded-[40px] border border-border/50 shadow-premium bg-card relative">
+        <div className="absolute inset-0 bg-scanner-grid opacity-[0.02] pointer-events-none" />
+        
+        {/* Sessions List Hub */}
         <div className={cn(
-          "w-full md:w-80 border-r border-white/10 flex flex-col bg-white/[0.02]",
+          "w-full md:w-96 border-r border-border/50 flex flex-col bg-secondary/10 relative z-10",
           selectedSession && "hidden md:flex"
         )}>
-          {/* Search */}
-          <div className="p-3 border-b border-white/10">
-            <div className="relative">
-              <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search conversations..."
+          {/* Registry Search */}
+          <div className="p-6 border-b border-border/50">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-2xl" />
+              <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Query identity nodes..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-lg py-2 pl-9 pr-4 text-sm text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                className="w-full bg-card border border-border/50 rounded-2xl py-3 pl-11 pr-4 text-xs font-black uppercase tracking-widest text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
               />
             </div>
           </div>
 
-          {/* Sessions */}
-          <div className="flex-1 overflow-y-auto">
+          {/* Session Registry */}
+          <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-2">
             {loading ? (
-              <div className="p-4 text-center text-muted-foreground">
-                Loading conversations...
+              <div className="py-20 flex flex-col items-center gap-4 opacity-40">
+                <SpinnerGap className="w-8 h-8 text-primary animate-spin" />
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Syncing Matrix...</p>
               </div>
             ) : filteredSessions.length === 0 ? (
-              <div className="p-4 text-center text-muted-foreground">
-                <ChatCircle className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                <p>No conversations yet</p>
+              <div className="py-20 text-center opacity-40 space-y-4">
+                <ChatCircle weight="duotone" className="w-12 h-12 mx-auto mb-3" />
+                <p className="text-[10px] font-black uppercase tracking-[0.2em]">Registry Nominal</p>
               </div>
             ) : (
               filteredSessions.map((session) => (
@@ -235,28 +266,30 @@ export default function SharedChatPage() {
                   key={session.id}
                   onClick={() => setSelectedSession(session)}
                   className={cn(
-                    "w-full p-4 flex items-start gap-3 hover:bg-white/5 transition-colors border-b border-white/5",
-                    selectedSession?.id === session.id && "bg-primary/10"
+                    "w-full p-5 flex items-start gap-4 rounded-[28px] transition-all duration-500 group relative overflow-hidden border border-transparent",
+                    selectedSession?.id === session.id 
+                      ? "bg-primary/10 border-primary/20 shadow-sm" 
+                      : "hover:bg-card hover:border-border/50 shadow-none"
                   )}
                 >
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                    <User className="w-5 h-5 text-primary" />
+                  <div className="w-12 h-12 rounded-2xl bg-secondary border border-border/50 flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                    <User weight="duotone" className="w-6 h-6 text-primary" />
                   </div>
-                  <div className="flex-1 min-w-0 text-left">
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-white truncate">
+                  <div className="flex-1 min-w-0 text-left relative z-10">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-black text-foreground truncate uppercase tracking-tight">
                         {getOtherPartyName(session)}
                       </span>
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className="text-[9px] font-bold text-muted-foreground tabular-nums uppercase">
                         {formatDate(session.last_message_at)}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground truncate mt-0.5">
-                      {session.last_message || 'No messages yet'}
+                    <p className="text-[11px] text-muted-foreground font-medium italic truncate opacity-80 leading-relaxed">
+                      {session.last_message || 'Awaiting transmission...'}
                     </p>
                   </div>
                   {session.unread_count > 0 && (
-                    <span className="w-5 h-5 rounded-full bg-primary text-[10px] font-bold flex items-center justify-center text-primary-foreground">
+                    <span className="w-5 h-5 rounded-full bg-primary text-[9px] font-black flex items-center justify-center text-primary-foreground shadow-glow-sm relative z-10">
                       {session.unread_count}
                     </span>
                   )}
@@ -266,71 +299,87 @@ export default function SharedChatPage() {
           </div>
         </div>
 
-        {/* Chat Area */}
+        {/* Terminal Chat Node Area */}
         <div className={cn(
-          "flex-1 flex flex-col",
+          "flex-1 flex flex-col bg-card/50 relative z-10",
           !selectedSession && "hidden md:flex"
         )}>
           {selectedSession ? (
             <>
-              {/* Chat Header */}
-              <div className="p-4 border-b border-white/10 flex items-center gap-3">
-                <button
+              {/* Node Header */}
+              <div className="p-6 border-b border-border/50 flex items-center gap-5 bg-secondary/10 backdrop-blur-md">
+                <Button
+                  variant="ghost"
                   onClick={() => setSelectedSession(null)}
-                  className="md:hidden p-2 hover:bg-white/5 rounded-lg"
+                  className="md:hidden p-3 h-11 w-11 rounded-xl hover:bg-card border-border/50"
                 >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
+                  <ArrowLeft weight="bold" className="w-5 h-5" />
+                </Button>
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20 shadow-inner">
+                  <User weight="duotone" className="w-6 h-6 text-primary" />
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-medium text-white">
-                    {getOtherPartyName(selectedSession)}
-                  </h3>
-                  <p className="text-xs text-muted-foreground">
-                    {isCustomer ? 'Your dedicated advisor' : 'Customer'}
-                  </p>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-base font-black text-foreground uppercase tracking-tight truncate">
+                      {getOtherPartyName(selectedSession)}
+                    </h3>
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                  </div>
+                  <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-widest opacity-60">
+                    <Badge variant="ghost" className="bg-primary/5 text-primary border-none text-[8px] px-2 py-0.5 tracking-tighter uppercase">LINK_ESTABLISHED</Badge>
+                    <span>ID: {selectedSession.id.slice(0, 8).toUpperCase()}</span>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button className="p-2 hover:bg-white/5 rounded-lg text-muted-foreground">
-                    <Phone className="w-5 h-5" />
-                  </button>
-                  <button className="p-2 hover:bg-white/5 rounded-lg text-muted-foreground">
-                    <DotsThreeVertical className="w-5 h-5" />
-                  </button>
+                <div className="flex gap-2.5">
+                  <Button variant="outline" size="sm" className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-secondary">
+                    <Phone weight="bold" className="w-4.5 h-4.5 text-muted-foreground hover:text-primary transition-colors" />
+                  </Button>
+                  <Button variant="outline" size="sm" className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-secondary">
+                    <DotsThreeVertical weight="bold" className="w-4.5 h-4.5 text-muted-foreground hover:text-primary transition-colors" />
+                  </Button>
                 </div>
               </div>
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {/* Message Matrix Stream */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-8 space-y-6">
                 <AnimatePresence mode="popLayout">
-                  {messages.map((msg) => {
+                  {messages.map((msg, i) => {
                     const isOwnMessage = (isCustomer && msg.sender_type === 'customer') || 
-                                         (isSales && msg.sender_type === 'sales');
+                                         (!isCustomer && msg.sender_type === 'sales');
                     return (
                       <motion.div
                         key={msg.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ delay: i * 0.05 }}
                         className={cn(
-                          "flex",
+                          "flex group/msg",
                           isOwnMessage ? "justify-end" : "justify-start"
                         )}
                       >
                         <div className={cn(
-                          "max-w-[75%] rounded-2xl px-4 py-3",
-                          isOwnMessage 
-                            ? "bg-primary text-primary-foreground rounded-br-sm" 
-                            : "bg-white/10 text-white rounded-bl-sm"
+                          "max-w-[70%] space-y-2",
+                          isOwnMessage ? "items-end" : "items-start"
                         )}>
-                          <p className="text-sm">{msg.content}</p>
-                          <p className={cn(
-                            "text-[10px] mt-1",
-                            isOwnMessage ? "text-primary-foreground/60" : "text-muted-foreground"
+                          <div className={cn(
+                            "rounded-[28px] px-6 py-4 shadow-card transition-all relative overflow-hidden",
+                            isOwnMessage 
+                              ? "bg-primary text-primary-foreground rounded-br-sm shadow-glow-sm" 
+                              : "bg-secondary/50 border border-border/50 text-foreground rounded-bl-sm shadow-inner"
                           )}>
-                            {formatTime(msg.created_at)}
-                          </p>
+                            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover/msg:opacity-100 transition-opacity" />
+                            <p className="text-sm font-medium leading-relaxed relative z-10">{msg.content}</p>
+                          </div>
+                          <div className={cn(
+                            "flex items-center gap-3 px-2 text-[9px] font-black uppercase tracking-[0.2em] opacity-40 group-hover/msg:opacity-100 transition-opacity",
+                            isOwnMessage ? "justify-end" : "justify-start"
+                          )}>
+                            <Clock weight="bold" className="w-3 h-3" />
+                            <span>{formatTime(msg.created_at)}</span>
+                            {isOwnMessage && msg.is_read && (
+                              <CheckCircle weight="fill" className="w-3 h-3 text-emerald-500" />
+                            )}
+                          </div>
                         </div>
                       </motion.div>
                     );
@@ -339,33 +388,40 @@ export default function SharedChatPage() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Input */}
-              <div className="p-4 border-t border-white/10">
-                <div className="flex gap-3">
+              {/* Payload Transmission Interface */}
+              <div className="p-6 border-t border-border/50 bg-secondary/10">
+                <div className="flex gap-4 relative">
+                  <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 focus-within:opacity-100 transition-opacity rounded-3xl" />
                   <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Type a message..."
-                    className="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                    placeholder="Compose neural payload..."
+                    className="flex-1 bg-card border border-border/50 rounded-[24px] py-4 px-8 text-sm font-bold text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
                   />
-                  <button
+                  <Button
                     onClick={handleSend}
                     disabled={!input.trim()}
-                    className="px-4 bg-primary text-primary-foreground rounded-xl hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    className="h-[52px] w-[52px] p-0 rounded-2xl shadow-premium shrink-0 relative z-10 group/send"
                   >
-                    <PaperPlaneTilt className="w-5 h-5" />
-                  </button>
+                    <PaperPlaneTilt weight="bold" className="w-5 h-5 group-hover/send:-rotate-12 group-hover/send:scale-110 transition-all" />
+                  </Button>
                 </div>
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <ChatCircle className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                <h3 className="text-lg font-medium text-white mb-2">Select a conversation</h3>
-                <p className="text-sm">Choose a conversation from the list to start chatting</p>
+            <div className="flex-1 flex items-center justify-center p-10">
+              <div className="text-center space-y-8 opacity-40">
+                <div className="w-24 h-24 rounded-[48px] bg-secondary border border-border flex items-center justify-center mx-auto shadow-inner group">
+                  <ChatCircle weight="duotone" className="w-12 h-12 text-muted-foreground group-hover:text-primary transition-colors" />
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">Select Protocol</h3>
+                  <p className="text-sm text-muted-foreground font-medium max-w-xs mx-auto leading-relaxed italic">
+                    Choose a conversation from the identity hub to establish a secure communication uplink.
+                  </p>
+                </div>
               </div>
             </div>
           )}

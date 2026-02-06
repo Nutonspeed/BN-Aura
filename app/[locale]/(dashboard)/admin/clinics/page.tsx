@@ -1,8 +1,5 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { useTranslations } from 'next-intl';
 import {
   Buildings,
   MagnifyingGlass,
@@ -21,8 +18,25 @@ import {
   Gear,
   Pulse,
   CurrencyDollar,
-  WarningCircle
+  WarningCircle,
+  ArrowLeft,
+  TrendUp,
+  X,
+  Funnel,
+  IdentificationCard,
+  Briefcase
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import ResponsiveTable from '@/components/ui/ResponsiveTable';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
+import { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Clinic {
   id: string;
@@ -58,6 +72,7 @@ interface Clinic {
 }
 
 export default function ClinicManagementPage() {
+  const { goBack } = useBackNavigation();
   const t = useTranslations('admin.clinics');
   const tCommon = useTranslations('common');
   const [loading, setLoading] = useState(true);
@@ -162,6 +177,94 @@ export default function ClinicManagementPage() {
     return clinic.display_name.th || clinic.display_name.en || 'Unknown Clinic';
   };
 
+  const columns = [
+    {
+      header: t('clinic'),
+      accessor: (clinic: Clinic) => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+            <Buildings className="w-5 h-5" />
+          </div>
+          <div className="min-w-0">
+            <p className="font-bold text-foreground truncate">{getClinicName(clinic)}</p>
+            <p className="text-[10px] text-muted-foreground truncate">{clinic.clinic_code}</p>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: t('tier'),
+      accessor: (clinic: Clinic) => getTierBadge(clinic.subscription_tier)
+    },
+    {
+      header: t('staff'),
+      accessor: (clinic: Clinic) => (
+        <span className="text-sm text-muted-foreground font-medium">
+          {clinic.staff_count || 0} / {clinic.max_sales_staff}
+        </span>
+      )
+    },
+    {
+      header: t('customers'),
+      accessor: (clinic: Clinic) => (
+        <span className="text-sm text-muted-foreground font-medium">
+          {clinic.customer_count || 0}
+        </span>
+      )
+    },
+    {
+      header: t('status'),
+      accessor: (clinic: Clinic) => (
+        <span className={cn(
+          "px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
+          clinic.is_active ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'
+        )}>
+          {t(clinic.is_active ? 'active' : 'inactive')}
+        </span>
+      )
+    },
+    {
+      header: t('created'),
+      accessor: (clinic: Clinic) => (
+        <span className="text-sm text-muted-foreground">
+          {new Date(clinic.created_at).toLocaleDateString()}
+        </span>
+      )
+    },
+    {
+      header: t('actions'),
+      className: 'text-right',
+      accessor: (clinic: Clinic) => (
+        <div className="flex items-center justify-end gap-2">
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleViewClinic(clinic); }}
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-all border border-transparent hover:border-border"
+            title={t('view_details')}
+          >
+            <Eye className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={(e) => e.stopPropagation()}
+            className="p-2 text-muted-foreground hover:text-foreground hover:bg-secondary rounded-lg transition-all border border-transparent hover:border-border"
+            title={t('edit_clinic')}
+          >
+            <PencilSimple className="w-4 h-4" />
+          </button>
+          <button 
+            onClick={(e) => { e.stopPropagation(); handleUpdateStatus(clinic.id, clinic.is_active); }}
+            className={cn(
+              "p-2 rounded-lg transition-all border border-transparent hover:border-border bg-secondary",
+              clinic.is_active ? 'text-rose-500 hover:bg-rose-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'
+            )}
+            title={clinic.is_active ? t('deactivate_clinic') : t('activate_clinic')}
+          >
+            {clinic.is_active ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+          </button>
+        </div>
+      )
+    }
+  ];
+
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
@@ -171,367 +274,349 @@ export default function ClinicManagementPage() {
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Buildings className="w-8 h-8 text-primary" />
-            {t('title')}
-          </h1>
-          <p className="text-white/60 mt-1">{t('description')}</p>
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      className="space-y-8 pb-20 font-sans"
+    >
+      <Breadcrumb />
+      
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <Buildings weight="duotone" className="w-4 h-4" />
+            Cluster Management
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            Clinic <span className="text-primary">Clusters</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating clinical infrastructure nodes and regional data clusters.
+          </motion.p>
         </div>
-        <button 
-          onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2"
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
         >
-          <Plus className="w-4 h-4" />
-          {t('create_clinic')}
-        </button>
+          <Button 
+            onClick={() => setShowCreateModal(true)}
+            className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
+          >
+            <Plus weight="bold" className="w-4 h-4" />
+            <span>Initialize New Node</span>
+          </Button>
+        </motion.div>
+      </div>
+
+      {/* Stats Summary Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Active Nodes"
+          value={clinics.filter(c => c.is_active).length}
+          icon={Buildings}
+          className="p-4"
+        />
+        <StatCard
+          title="Total Personnel"
+          value={clinics.reduce((sum, c) => sum + (c.staff_count || 0), 0)}
+          icon={Users}
+          trend="up"
+          change={12}
+          className="p-4"
+        />
+        <StatCard
+          title="Network Population"
+          value={clinics.reduce((sum, c) => sum + (c.customer_count || 0), 0)}
+          icon={Users}
+          className="p-4"
+        />
+        <StatCard
+          title="Yield Forecast"
+          value={clinics.reduce((sum, c) => sum + (c.usage_stats?.revenue || 0), 0)}
+          prefix="฿"
+          trend="up"
+          change={8.4}
+          icon={CurrencyDollar}
+          className="p-4"
+        />
       </div>
 
       {/* Alerts */}
-      {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3">
-          <WarningCircle className="w-5 h-5 text-red-400" />
-          <p className="text-red-400">{error}</p>
-          <button onClick={() => setError(null)} className="ml-auto">
-            <XCircle className="w-4 h-4 text-red-400" />
-          </button>
-        </div>
-      )}
+      <AnimatePresence>
+        {error && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mx-2 p-4 bg-destructive/10 border border-destructive/20 rounded-2xl flex items-center gap-3"
+          >
+            <WarningCircle weight="fill" className="w-5 h-5 text-destructive" />
+            <p className="text-destructive text-xs font-bold uppercase tracking-widest">Exception: {error}</p>
+            <Button variant="ghost" size="sm" onClick={() => setError(null)} className="ml-auto p-2 h-auto text-destructive hover:bg-destructive/10">
+              <X weight="bold" className="w-4 h-4" />
+            </Button>
+          </motion.div>
+        )}
+        {success && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mx-2 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center gap-3"
+          >
+            <CheckCircle weight="fill" className="w-5 h-5 text-emerald-500" />
+            <p className="text-emerald-500 text-xs font-bold uppercase tracking-widest">Sync Complete: {success}</p>
+            <Button variant="ghost" size="sm" onClick={() => setSuccess(null)} className="ml-auto p-2 h-auto text-emerald-500 hover:bg-emerald-500/10">
+              <X weight="bold" className="w-4 h-4" />
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {success && (
-        <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-3">
-          <CheckCircle className="w-5 h-5 text-emerald-400" />
-          <p className="text-emerald-400">{success}</p>
-          <button onClick={() => setSuccess(null)} className="ml-auto">
-            <XCircle className="w-4 h-4 text-emerald-400" />
-          </button>
-        </div>
-      )}
+      {/* Search & Filters */}
+      <div className="px-2">
+        <Card className="p-6 rounded-[32px] border-border/50 shadow-card">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
+              <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder="Query cluster identity, node code, or registry..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
+              />
+            </div>
+            
+            <div className="relative">
+              <select
+                value={filterTier}
+                onChange={(e) => setFilterTier(e.target.value)}
+                className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 px-6 text-sm text-foreground focus:border-primary outline-none transition-all appearance-none font-bold"
+              >
+                <option value="all">Protocol: ALL TIERS</option>
+                <option value="starter">STARTER</option>
+                <option value="professional">PROFESSIONAL</option>
+                <option value="enterprise">ENTERPRISE</option>
+              </select>
+              <Funnel weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
+            </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-blue-500/20 rounded-xl">
-              <Buildings className="w-6 h-6 text-blue-400" />
+            <div className="relative">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 px-6 text-sm text-foreground focus:border-primary outline-none transition-all appearance-none font-bold"
+              >
+                <option value="all">Status: ALL NODES</option>
+                <option value="active">OPERATIONAL</option>
+                <option value="inactive">OFFLINE</option>
+              </select>
+              <Pulse weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
             </div>
-            <div>
-              <p className="text-3xl font-bold text-white">{clinics.length}</p>
-              <p className="text-white/60 text-sm">{t('total_clinics')}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-emerald-500/20 rounded-xl">
-              <CheckCircle className="w-6 h-6 text-emerald-400" />
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-white">
-                {clinics.filter(c => c.is_active).length}
-              </p>
-              <p className="text-white/60 text-sm">{t('active_clinics')}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-purple-500/20 rounded-xl">
-              <Users className="w-6 h-6 text-purple-400" />
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-white">
-                {clinics.reduce((sum, c) => sum + (c.staff_count || 0), 0)}
-              </p>
-              <p className="text-white/60 text-sm">{t('total_staff')}</p>
-            </div>
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="glass-card p-6 rounded-2xl border border-white/10"
-        >
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-amber-500/20 rounded-xl">
-              <CurrencyDollar className="w-6 h-6 text-amber-400" />
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-white">
-                {clinics.reduce((sum, c) => sum + (c.usage_stats?.revenue || 0), 0).toLocaleString()}
-              </p>
-              <p className="text-white/60 text-sm">{t('total_revenue')}</p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Filters */}
-      <div className="glass-card p-6 rounded-2xl border border-white/10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
-            <input
-              type="text"
-              placeholder={t('search_clinics')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
-            />
           </div>
           
-          <select
-            value={filterTier}
-            onChange={(e) => setFilterTier(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
-          >
-            <option value="all">{t('all_tiers')}</option>
-            <option value="starter">{t('starter')}</option>
-            <option value="professional">{t('professional')}</option>
-            <option value="enterprise">{t('enterprise')}</option>
-          </select>
-
-          <select
-            value={filterStatus}
-            onChange={(e) => setFilterStatus(e.target.value)}
-            className="bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
-          >
-            <option value="all">{t('all_status')}</option>
-            <option value="active">{t('active')}</option>
-            <option value="inactive">{t('inactive')}</option>
-          </select>
-        </div>
-        
-        <p className="text-white/60 text-sm mt-4">
-          {t('showing_results', { filtered: filteredClinics.length, total: clinics.length })}
-        </p>
+          <div className="flex items-center justify-between mt-6 px-1">
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+              Matrix Synchronization: {filteredClinics.length} of {clinics.length} Clusters Detected
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Global Sync Active</span>
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Clinics Table */}
-      <div className="glass-card rounded-2xl border border-white/10 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-white/5">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('clinic')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('tier')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('staff')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('customers')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('status')}</th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-white/70 uppercase">{t('created')}</th>
-                <th className="px-6 py-4 text-right text-xs font-bold text-white/70 uppercase">{t('actions')}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {filteredClinics.map((clinic) => (
-                <motion.tr key={clinic.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="hover:bg-white/5">
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                        <Buildings className="w-5 h-5 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium text-white">{getClinicName(clinic)}</p>
-                        <p className="text-sm text-white/60">{clinic.clinic_code}</p>
-                        {clinic.metadata?.contact?.email && (
-                          <p className="text-xs text-white/40">{clinic.metadata.contact.email}</p>
-                        )}
-                      </div>
+      <div className="px-2">
+        <Card className="rounded-[40px] border-border/50 overflow-hidden shadow-premium">
+          <ResponsiveTable
+            columns={columns}
+            data={filteredClinics}
+            loading={loading}
+            rowKey={(c) => c.id}
+            emptyMessage="No clinical infrastructure nodes detected in current matrix."
+            onRowClick={(c) => window.location.href = `/admin/clinics/${c.id}`}
+            mobileCard={(clinic) => (
+              <div className="space-y-5">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary shadow-inner">
+                      <Buildings weight="duotone" className="w-7 h-7" />
                     </div>
-                  </td>
-                  <td className="px-6 py-4">{getTierBadge(clinic.subscription_tier)}</td>
-                  <td className="px-6 py-4 text-white/60">
-                    {clinic.staff_count || 0} / {clinic.max_sales_staff}
-                  </td>
-                  <td className="px-6 py-4 text-white/60">
-                    {clinic.customer_count || 0}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                      clinic.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
-                    }`}>
-                      {t(clinic.is_active ? 'active' : 'inactive')}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-white/60">
-                    {new Date(clinic.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <button 
-                        onClick={() => handleViewClinic(clinic)}
-                        className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-                        title={t('view_details')}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button 
-                        className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-                        title={t('edit_clinic')}
-                      >
-                        <PencilSimple className="w-4 h-4" />
-                      </button>
-                      <button 
-                        onClick={() => handleUpdateStatus(clinic.id, clinic.is_active)}
-                        className={`p-2 rounded-lg transition-all ${
-                          clinic.is_active 
-                            ? 'text-red-400 hover:bg-red-500/10' 
-                            : 'text-emerald-400 hover:bg-emerald-500/10'
-                        }`}
-                        title={clinic.is_active ? t('deactivate_clinic') : t('activate_clinic')}
-                      >
-                        {clinic.is_active ? <XCircle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
-                      </button>
+                    <div className="min-w-0">
+                      <p className="font-bold text-foreground truncate uppercase tracking-tight">{getClinicName(clinic)}</p>
+                      <p className="text-[10px] font-black text-muted-foreground truncate uppercase tracking-widest">{clinic.clinic_code}</p>
                     </div>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                  <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[9px] uppercase px-3 py-1">
+                    {clinic.subscription_tier}
+                  </Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-6 py-4 border-y border-border/50">
+                  <div>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Personnel</p>
+                    <p className="text-xs font-bold text-foreground tabular-nums">{clinic.staff_count || 0} / {clinic.max_sales_staff}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Node Status</p>
+                    <Badge variant={clinic.is_active ? 'success' : 'destructive'} size="sm" className="font-black text-[8px] uppercase tracking-widest px-2">
+                      {clinic.is_active ? 'OPERATIONAL' : 'OFFLINE'}
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em]">Node Population</p>
+                    <p className="text-xs font-bold text-foreground tabular-nums">{clinic.customer_count || 0} Entities</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" onClick={() => window.location.href = `/admin/clinics/${clinic.id}`} className="h-10 w-10 p-0 border-border/50 rounded-xl hover:bg-secondary">
+                      <Eye weight="bold" className="w-4 h-4" />
+                    </Button>
+                    <Button 
+                      onClick={(e) => { e.stopPropagation(); handleUpdateStatus(clinic.id, clinic.is_active); }}
+                      variant="outline"
+                      size="sm"
+                      className={cn(
+                        "h-10 w-10 p-0 border-border/50 rounded-xl transition-all",
+                        clinic.is_active ? 'text-rose-500 hover:bg-rose-500/10' : 'text-emerald-500 hover:bg-emerald-500/10'
+                      )}
+                    >
+                      {clinic.is_active ? <XCircle weight="bold" className="w-4 h-4" /> : <CheckCircle weight="bold" className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
+        </Card>
       </div>
 
-      {/* Clinic Detail Modal */}
-      {showDetailModal && selectedClinic && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-900 border border-white/10 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">{getClinicName(selectedClinic)}</h2>
-              <button
-                onClick={() => setShowDetailModal(false)}
-                className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-              >
-                <XCircle className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              {/* Overview */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-white/60 text-sm">{t('clinic_code')}</p>
-                  <p className="text-white font-medium">{selectedClinic.clinic_code}</p>
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">{t('subscription_tier')}</p>
-                  <div className="mt-1">{getTierBadge(selectedClinic.subscription_tier)}</div>
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">{t('max_staff')}</p>
-                  <p className="text-white font-medium">{selectedClinic.max_sales_staff}</p>
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">{t('status')}</p>
-                  <span className={`px-2 py-1 rounded-full text-xs font-bold ${
-                    selectedClinic.is_active ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'
-                  }`}>
-                    {t(selectedClinic.is_active ? 'active' : 'inactive')}
-                  </span>
-                </div>
+      {/* Clinic Detail Modal Overhaul - Consider making this a separate component or refining */}
+      <AnimatePresence>
+        {showDetailModal && selectedClinic && (
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 overflow-y-auto">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowDetailModal(false)}
+            />
+            
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="relative w-full max-w-2xl bg-card border border-border rounded-[40px] overflow-hidden shadow-premium group p-10"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <Briefcase className="w-64 h-64 text-primary" />
               </div>
 
-              {/* Contact Information */}
-              {selectedClinic.metadata?.contact && (
-                <div>
-                  <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                    <EnvelopeSimple className="w-4 h-4" />
-                    {t('contact_information')}
-                  </h3>
-                  <div className="space-y-2">
-                    {selectedClinic.metadata.contact.email && (
-                      <div className="flex items-center gap-2">
-                        <EnvelopeSimple className="w-4 h-4 text-white/40" />
-                        <span className="text-white/80">{selectedClinic.metadata.contact.email}</span>
-                      </div>
-                    )}
-                    {selectedClinic.metadata.contact.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-white/40" />
-                        <span className="text-white/80">{selectedClinic.metadata.contact.phone}</span>
-                      </div>
-                    )}
-                    {selectedClinic.metadata.contact.address && (
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4 text-white/40" />
-                        <span className="text-white/80">{selectedClinic.metadata.contact.address}</span>
-                      </div>
-                    )}
+              <div className="relative z-10 space-y-10">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-5">
+                    <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                      <Buildings weight="duotone" className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">{getClinicName(selectedClinic)}</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Identity Node: {selectedClinic.clinic_code}</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setShowDetailModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
+                    <X weight="bold" className="w-5 h-5" />
+                  </Button>
+                </div>
+
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="space-y-6">
+                    <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Protocol Architecture</p>
+                      <Badge variant="ghost" className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-widest px-3 py-1.5">
+                        {selectedClinic.subscription_tier}
+                      </Badge>
+                    </div>
+                    <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Personnel Quota</p>
+                      <p className="text-xl font-bold text-foreground tabular-nums">
+                        {selectedClinic.staff_count || 0} / {selectedClinic.max_sales_staff}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Operating Status</p>
+                      <Badge variant={selectedClinic.is_active ? 'success' : 'destructive'} className="font-black text-[9px] uppercase px-3 py-1 tracking-widest">
+                        {selectedClinic.is_active ? 'OPERATIONAL' : 'OFFLINE'}
+                      </Badge>
+                    </div>
+                    <div className="p-5 bg-secondary/30 rounded-3xl border border-border/50">
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Network Reach</p>
+                      <p className="text-xl font-bold text-foreground tabular-nums">
+                        {selectedClinic.customer_count || 0} <span className="text-xs font-medium text-muted-foreground">Entities</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              )}
 
-              {/* Usage Statistics */}
-              <div>
-                <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-                  <Pulse className="w-4 h-4" />
-                  {t('usage_statistics')}
-                </h3>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-white/5 rounded-xl p-4">
-                    <p className="text-white/60 text-sm">{t('ai_analyses')}</p>
-                    <p className="text-white font-bold text-xl">
-                      {selectedClinic.usage_stats?.ai_analyses || 0}
-                    </p>
+                <div className="space-y-6 pt-4 border-t border-border/30">
+                  <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em] flex items-center gap-3">
+                    <Pulse weight="bold" className="w-4 h-4 text-primary" />
+                    Telemetry Analytics
+                  </h4>
+                  <div className="grid grid-cols-3 gap-6">
+                    {[
+                      { label: 'AI Scans', value: selectedClinic.usage_stats?.ai_analyses || 0 },
+                      { label: 'Cycles', value: selectedClinic.usage_stats?.appointments || 0 },
+                      { label: 'Yield', value: `฿${selectedClinic.usage_stats?.revenue?.toLocaleString() || 0}` }
+                    ].map((stat) => (
+                      <div key={stat.label} className="text-center p-4 bg-secondary/30 rounded-2xl border border-border/50 shadow-inner">
+                        <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{stat.label}</p>
+                        <p className="text-sm font-black text-foreground tabular-nums">{stat.value}</p>
+                      </div>
+                    ))}
                   </div>
-                  <div className="bg-white/5 rounded-xl p-4">
-                    <p className="text-white/60 text-sm">{t('appointments')}</p>
-                    <p className="text-white font-bold text-xl">
-                      {selectedClinic.usage_stats?.appointments || 0}
-                    </p>
-                  </div>
-                  <div className="bg-white/5 rounded-xl p-4">
-                    <p className="text-white/60 text-sm">{t('revenue')}</p>
-                    <p className="text-white font-bold text-xl">
-                      ฿{selectedClinic.usage_stats?.revenue?.toLocaleString() || 0}
-                    </p>
-                  </div>
+                </div>
+
+                <div className="flex gap-4 pt-6">
+                  <Button variant="outline" className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary">
+                    Access Cluster Detail
+                  </Button>
+                  <Button className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest shadow-premium">
+                    Establish Connection
+                  </Button>
                 </div>
               </div>
-
-              {/* Dates */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-white/60 text-sm">{t('created_date')}</p>
-                  <p className="text-white font-medium">
-                    {new Date(selectedClinic.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-white/60 text-sm">{t('updated_date')}</p>
-                  <p className="text-white font-medium">
-                    {new Date(selectedClinic.updated_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

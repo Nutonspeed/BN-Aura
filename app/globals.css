@@ -106,12 +106,30 @@
 }
 
 @layer base {
+  /* Define font variables */
+  :root {
+    --font-ibm-thai: 'IBM Plex Sans Thai', system-ui, -apple-system, sans-serif;
+    --font-anuphan: 'Anuphan', system-ui, -apple-system, sans-serif;
+    --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-ibm-thai), system-ui, -apple-system, sans-serif;
+  }
+  
+  /* Ensure Thai fonts are loaded and applied */
+  html {
+    font-family: var(--font-ibm-thai), var(--font-anuphan), system-ui, -apple-system, sans-serif;
+  }
+  
+  /* Fallback for Thai text */
+  :lang(th) {
+    font-family: var(--font-ibm-thai), var(--font-anuphan), "Sarabun", "Krub", "Prompt", sans-serif;
   }
 }
 
@@ -197,6 +215,61 @@
   }
 }
 
+@layer utilities {
+  /* Design System Typography Scale */
+  .text-display {
+    @apply font-bold text-4xl tracking-tight uppercase;
+  }
+
+  .text-heading-1 {
+    @apply font-semibold text-2xl tracking-tight uppercase;
+  }
+
+  .text-heading-2 {
+    @apply font-semibold text-xl tracking-tight uppercase;
+  }
+
+  .text-heading-3 {
+    @apply font-medium text-lg tracking-tight;
+  }
+
+  .text-body {
+    @apply font-normal text-base leading-relaxed;
+  }
+
+  .text-caption {
+    @apply font-medium text-sm;
+  }
+
+  .text-micro {
+    @apply font-bold text-xs uppercase tracking-widest;
+  }
+
+  .text-label {
+    @apply font-black text-xs uppercase tracking-[0.2em];
+  }
+
+  /* Design System Spacing Scale */
+  .space-xs { @apply gap-2; }    /* 8px - tight elements */
+  .space-sm { @apply gap-4; }    /* 16px - standard spacing */
+  .space-md { @apply gap-6; }    /* 24px - section spacing */
+  .space-lg { @apply gap-8; }    /* 32px - large spacing */
+  .space-xl { @apply gap-12; }   /* 48px - component separation */
+
+  /* Padding Scale */
+  .pad-xs { @apply p-2; }    /* 8px */
+  .pad-sm { @apply p-4; }    /* 16px */
+  .pad-md { @apply p-6; }    /* 24px */
+  .pad-lg { @apply p-8; }    /* 32px */
+  .pad-xl { @apply p-10; }   /* 40px */
+
+  /* Border Radius Scale */
+  .radius-sm { @apply rounded-lg; }    /* 8px - small components */
+  .radius-md { @apply rounded-xl; }    /* 12px - standard components */
+  .radius-lg { @apply rounded-2xl; }   /* 16px - cards, containers */
+  .radius-xl { @apply rounded-3xl; }   /* 24px - large components */
+}
+
 /* Light mode compatibility - convert hardcoded text-white to theme-aware */
 :root:not(.dark) {
   /* Override text-white in main content area (not sidebar) */
@@ -218,6 +291,33 @@
     background: hsl(var(--card)) !important;
     border-color: hsl(var(--border)) !important;
   }
+}
+
+/* Font loading optimization */
+@font-face {
+  font-family: 'IBM Plex Sans Thai';
+  font-display: swap;
+  src: local('IBM Plex Sans Thai');
+}
+
+@font-face {
+  font-family: 'Anuphan';
+  font-display: swap;
+  src: local('Anuphan');
+}
+
+/* Force font application */
+* {
+  font-family: inherit !important;
+}
+
+body, .font-sans {
+  font-family: var(--font-ibm-thai), var(--font-anuphan), system-ui, -apple-system, sans-serif !important;
+}
+
+/* Thai text specific styling */
+[class*="th"], [lang="th"] {
+  font-family: var(--font-ibm-thai), var(--font-anuphan), "Sarabun", "Krub", "Prompt", sans-serif !important;
 }
 
 @keyframes glow-pulse {

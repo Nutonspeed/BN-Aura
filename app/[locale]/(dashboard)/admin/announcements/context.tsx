@@ -3,6 +3,8 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { AnnouncementContextType, Announcement, AnnouncementFormData } from './types';
 
+export type { AnnouncementFormData } from './types';
+
 const AnnouncementContext = createContext<AnnouncementContextType | undefined>(undefined);
 
 export const useAnnouncementContext = () => {

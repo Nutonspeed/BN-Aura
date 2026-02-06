@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Lock, Check } from '@phosphor-icons/react';
+import { ShieldCheck, Lock, Check, X, ArrowRight, Shield, Pulse, Fingerprint } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
 
 export default function PDPAModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,7 +37,7 @@ export default function PDPAModal() {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 overflow-y-auto">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -42,33 +46,41 @@ export default function PDPAModal() {
           />
           
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-2xl glass-premium rounded-[40px] overflow-hidden"
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="relative w-full max-w-2xl bg-card border border-border rounded-[40px] overflow-hidden shadow-premium group"
           >
-            <div className="p-8 md:p-12 space-y-8">
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+              <ShieldCheck className="w-64 h-64 text-primary" />
+            </div>
+
+            <div className="p-10 md:p-14 space-y-10 relative z-10">
               {/* Header */}
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary border border-primary/20">
-                  <ShieldCheck className="w-8 h-8" />
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                  <ShieldCheck weight="duotone" className="w-8 h-8" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-black text-white uppercase tracking-tight">Data Privacy & Protection</h2>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">PDPA Compliance Protocol</p>
+                  <h2 className="text-3xl font-heading font-bold text-foreground tracking-tight">Privacy Architecture</h2>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-1">Clinical PDPA Compliance Protocol</p>
                 </div>
               </div>
 
-              <div className="space-y-6">
-                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="mt-1 p-2 bg-primary/10 rounded-lg">
-                      <Lock className="w-4 h-4 text-primary" />
+              <div className="space-y-8">
+                <div className="p-6 bg-secondary/30 rounded-[32px] border border-border/50 relative overflow-hidden group/box">
+                  <div className="absolute top-0 right-0 p-4 opacity-[0.05] group-hover/box:text-primary transition-colors">
+                    <Fingerprint weight="bold" className="w-8 h-8" />
+                  </div>
+                  <div className="flex items-start gap-5">
+                    <div className="mt-1 p-2.5 bg-primary/10 rounded-xl border border-primary/20">
+                      <Lock weight="bold" className="w-5 h-5 text-primary" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-sm font-bold text-white uppercase tracking-wider">Our Commitment to Your Privacy</h3>
-                      <p className="text-xs text-muted-foreground font-light leading-relaxed">
-                        BN-Aura uses advanced AI encryption to secure your clinical data. By continuing, you agree to our processing of your aesthetic data for personalized treatment recommendations.
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Identity Integrity Commitment</h3>
+                      <p className="text-xs text-muted-foreground font-medium leading-relaxed italic">
+                        BN-Aura utilizes advanced cryptographic hashing to secure your clinical identity nodes. By initializing the suite, you authorize aesthetic data processing for personalized diagnostic refinement.
                       </p>
                     </div>
                   </div>
@@ -76,54 +88,67 @@ export default function PDPAModal() {
 
                 <div className="space-y-3">
                   {[
-                    { id: 'terms', label: 'Terms of Service', desc: 'I agree to the BN-Aura terms of usage and AI processing.' },
-                    { id: 'privacy', label: 'Privacy Policy', desc: 'I accept how my personal and clinical data is stored.' },
-                    { id: 'marketing', label: 'Marketing Communications', desc: 'Send me personalized aesthetic offers and skin tips.' }
+                    { id: 'terms', label: 'Clinical Terms of Service', desc: 'I authorize BN-Aura usage parameters and neural processing protocols.' },
+                    { id: 'privacy', label: 'Data Sovereignty Policy', desc: 'I accept the clinical identity storage and encryption architecture.' },
+                    { id: 'marketing', label: 'Intelligence Stream', desc: 'Authorize personalized aesthetic nodes and protocol updates via digital link.' }
                   ].map((item) => (
                     <button
                       key={item.id}
                       onClick={() => setAgreed(prev => ({ ...prev, [item.id]: !prev[item.id as keyof typeof agreed] }))}
-                      className="w-full p-4 bg-white/5 border border-white/5 rounded-2xl flex items-center justify-between group hover:bg-white/10 transition-all"
-                    >
-                      <div className="flex flex-col text-left">
-                        <span className="text-xs font-bold text-white uppercase tracking-widest">{item.label}</span>
-                        <span className="text-[10px] text-muted-foreground font-light">{item.desc}</span>
-                      </div>
-                      <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
+                      className={cn(
+                        "w-full p-5 rounded-[24px] border transition-all duration-300 flex items-center justify-between group/item",
                         agreed[item.id as keyof typeof agreed] 
-                          ? 'bg-primary border-primary shadow-[0_0_10px_rgba(var(--primary),0.5)]' 
-                          : 'border-white/20'
-                      }`}>
-                        {agreed[item.id as keyof typeof agreed] && <Check className="w-3 h-3 text-primary-foreground stroke-[4px]" />}
+                          ? "bg-primary/5 border-primary/30 shadow-sm" 
+                          : "bg-secondary/30 border-border/50 hover:bg-secondary/50"
+                      )}
+                    >
+                      <div className="flex flex-col text-left space-y-0.5">
+                        <span className={cn(
+                          "text-xs font-bold uppercase tracking-widest transition-colors",
+                          agreed[item.id as keyof typeof agreed] ? "text-primary" : "text-foreground/80"
+                        )}>{item.label}</span>
+                        <span className="text-[10px] text-muted-foreground font-medium italic opacity-60">{item.desc}</span>
+                      </div>
+                      <div className={cn(
+                        "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-500",
+                        agreed[item.id as keyof typeof agreed] 
+                          ? "bg-primary border-primary shadow-glow-sm scale-110" 
+                          : "border-border bg-card group-hover/item:border-primary/30"
+                      )}>
+                        {agreed[item.id as keyof typeof agreed] && <Check weight="bold" className="w-3.5 h-3.5 text-white" />}
                       </div>
                     </button>
                   ))}
                 </div>
               </div>
 
-              <div className="flex flex-col md:flex-row gap-4 pt-4">
-                <button
+              <div className="flex flex-col md:flex-row gap-4 pt-6">
+                <Button
                   onClick={handleAgreeAll}
-                  className="flex-1 py-4 bg-primary text-primary-foreground rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-premium hover:brightness-110 active:scale-95 transition-all"
+                  className="flex-1 py-7 rounded-[24px] shadow-premium group/btn overflow-hidden relative"
                 >
-                  Accept & Initialize Suite
-                </button>
-                <button
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
+                  <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.2em]">Authorize & Initialize Suite</span>
+                </Button>
+                <Button
+                  variant="outline"
                   onClick={saveAgreement}
                   disabled={!agreed.terms || !agreed.privacy}
-                  className="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-white/10 active:scale-95 transition-all disabled:opacity-30 disabled:active:scale-100"
+                  className="px-10 py-7 rounded-[24px] text-[11px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary transition-all disabled:opacity-20"
                 >
-                  Save Selection
-                </button>
+                  Sync Selection
+                </Button>
               </div>
 
-              <p className="text-[9px] text-center text-muted-foreground uppercase tracking-widest font-medium">
-                ISO 27001 Certified Infrastructure & PDPA 2025 Standard
-              </p>
+              <div className="flex items-center justify-center gap-4 pt-4 border-t border-border/50">
+                <Badge variant="ghost" size="sm" className="font-mono text-[8px] tracking-[0.2em] opacity-40">ISO 27001 SECURE</Badge>
+                <div className="w-1 h-1 rounded-full bg-border" />
+                <Badge variant="ghost" size="sm" className="font-mono text-[8px] tracking-[0.2em] opacity-40">PDPA 2025 COMPLIANT</Badge>
+              </div>
             </div>
           </motion.div>
         </div>
       )}
     </AnimatePresence>
-  );
+    );
 }

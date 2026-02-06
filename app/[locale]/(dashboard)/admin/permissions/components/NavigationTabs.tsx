@@ -1,8 +1,10 @@
 'use client';
 
-import { Shield, Users, Lock } from '@phosphor-icons/react';
+import { Shield, Users, Lock, Icon } from '@phosphor-icons/react';
 import { usePermissionsContext } from '../context';
 import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 export default function NavigationTabs() {
   const { activeTab, setActiveTab } = usePermissionsContext();
@@ -15,21 +17,31 @@ export default function NavigationTabs() {
   ];
 
   return (
-    <div className="flex space-x-1 bg-white/10 rounded-xl p-1">
-      {tabs.map((tab) => (
-        <button
-          key={tab.id}
-          onClick={() => setActiveTab(tab.id)}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg transition-all ${
-            activeTab === tab.id
-              ? 'bg-primary text-primary-foreground shadow-lg'
-              : 'text-white/60 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <tab.icon className="w-4 h-4" />
-          <span className="font-medium">{tab.label}</span>
-        </button>
-      ))}
+    <div className="flex bg-secondary/50 border border-border/50 p-1.5 rounded-[24px] shadow-inner relative overflow-hidden">
+      <div className="flex w-full items-center gap-2 relative z-10">
+        {tabs.map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-3 py-3 px-6 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest border relative group",
+              activeTab === tab.id
+                ? "bg-card text-primary border-border/50 shadow-sm"
+                : "text-muted-foreground border-transparent hover:text-foreground hover:bg-secondary/50"
+            )}
+          >
+            <tab.icon weight={activeTab === tab.id ? "fill" : "bold"} className={cn("w-4 h-4 transition-transform group-hover:scale-110", activeTab === tab.id ? "text-primary" : "opacity-60")} />
+            <span className="relative z-10">{tab.label}</span>
+            {activeTab === tab.id && (
+              <motion.div 
+                layoutId="active-permission-tab"
+                className="absolute inset-0 bg-primary/5 rounded-2xl z-[-1]"
+                transition={{ type: "spring", stiffness: 500, damping: 35 }}
+              />
+            )}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

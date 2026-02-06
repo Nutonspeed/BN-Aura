@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, 
@@ -13,13 +13,26 @@ import {
   SpinnerGap,
   Clock,
   ShieldCheck,
-  UserCheck
+  UserCheck,
+  ArrowLeft,
+  CaretRight,
+  CaretDown,
+  IdentificationCard,
+  IdentificationBadge,
+  X,
+  DotsThreeVertical,
+  CheckCircle,
+  Funnel,
+  Monitor
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
-
-/**
- * M1.1: Staff Profile Management Component
- */
 
 interface StaffProfile {
   id: string;
@@ -34,6 +47,8 @@ interface StaffProfile {
 }
 
 export default function StaffProfileManager({ clinicId }: { clinicId?: string }) {
+  const { goBack } = useBackNavigation();
+  const t = useTranslations('clinic.staff' as any);
   const [profiles, setProfiles] = useState<StaffProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -81,11 +96,8 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
       if (response.ok) {
         const data = await response.json();
         
-        // For E2E testing: log and alert temp password if provided
         if (data.tempPassword) {
-          console.log('🔐 Temporary Password for E2E Testing:', data.tempPassword);
-          console.log('📧 Email:', formData.email);
-          alert(`✅ Staff created successfully!\n\n🔐 Temporary Password: ${data.tempPassword}\n📧 Email: ${formData.email}\n\n(For E2E testing purposes)`);
+          alert(`Staff created successfully!\n\nTemporary Password: ${data.tempPassword}\nEmail: ${formData.email}`);
         }
         
         await fetchProfiles();
@@ -107,173 +119,217 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
     p.role.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const stats = {
+  const stats = useMemo(() => ({
     total: profiles.length,
     active: profiles.filter(p => p.is_active).length,
-    admins: profiles.filter(p => p.role === 'clinic_admin' || p.role === 'clinic_owner').length
-  };
+    admins: profiles.filter(p => p.role === 'clinic_admin' || p.role === 'clinic_owner').length,
+    practitioners: profiles.filter(p => p.role === 'beautician').length
+  }), [profiles]);
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20 font-sans"
+      className="space-y-8 pb-20 font-sans"
     >
+      <Breadcrumb />
+
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-            <ShieldCheck className="w-4 h-4" />
-            Personnel Management
-          </div>
-          <h1 className="text-4xl font-black text-white uppercase tracking-tight font-heading">Staff <span className="text-primary text-glow font-heading">Directory</span></h1>
-          <p className="text-muted-foreground font-light text-sm italic">Managing clinic personnel, roles, and access permissions.</p>
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+          >
+            <ShieldCheck weight="duotone" className="w-4 h-4" />
+            Personnel Management Node
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            Staff <span className="text-primary">Registry</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating clinical personnel, operational roles, and identity access protocols.
+          </motion.p>
         </div>
 
-        <motion.button 
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => setShowForm(true)}
-          className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.3 }}
         >
-          <Plus className="w-4 h-4 stroke-[3px]" />
-          <span>Initialize New Staff Node</span>
-        </motion.button>
+          <Button 
+            onClick={() => setShowForm(true)}
+            className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest group"
+          >
+            <Plus weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            <span>Initialize Staff Node</span>
+          </Button>
+        </motion.div>
       </div>
 
-      {/* Search & Stats */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        <div className="lg:col-span-2">
-          <div className="relative group">
-            <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-            <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Filter by name, email, or role..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 pl-14 pr-6 text-sm text-white focus:outline-none focus:border-primary/50 transition-all shadow-inner backdrop-blur-md relative z-10"
-            />
-          </div>
-        </div>
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 flex items-center justify-between group overflow-hidden relative">
-          <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-            <Users className="w-16 h-16 text-white" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Active Staff</p>
-            <p className="text-3xl font-black text-white tracking-tighter tabular-nums">{stats.active} / {stats.total}</p>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20 shadow-premium">
-            <UserCheck className="w-7 h-7" />
-          </div>
-        </div>
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 flex items-center justify-between group overflow-hidden relative">
-          <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-            <Shield className="w-16 h-16 text-white" />
-          </div>
-          <div>
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Authorities</p>
-            <p className="text-3xl font-black text-white tracking-tighter tabular-nums">{stats.admins}</p>
-          </div>
-          <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20 shadow-premium">
-            <Shield className="w-7 h-7" />
-          </div>
-        </div>
+      {/* Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Active Personnel"
+          value={stats.active}
+          suffix={` / ${stats.total}`}
+          icon={UserCheck as Icon}
+          iconColor="text-emerald-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Authority Nodes"
+          value={stats.admins}
+          icon={Shield as Icon}
+          iconColor="text-blue-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Operational Staff"
+          value={profiles.filter(p => p.role === 'clinic_staff').length}
+          icon={Users as Icon}
+          iconColor="text-primary"
+          className="p-4"
+        />
+        <StatCard
+          title="Practitioners"
+          value={stats.practitioners}
+          icon={IdentificationBadge as Icon}
+          iconColor="text-purple-500"
+          className="p-4"
+        />
       </div>
 
-      {/* Staff Grid */}
-      {loading ? (
-        <div className="py-32 flex flex-col items-center justify-center space-y-6">
-          <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-          <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Synchronizing Personnel Data...</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          <AnimatePresence>
-            {filteredProfiles.map((profile, i) => (
-              <motion.div
-                key={profile.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ delay: i * 0.05 }}
-                whileHover={{ y: -8 }}
-                className="glass-premium p-8 rounded-[40px] border border-white/10 flex flex-col justify-between group hover:border-primary/40 transition-all duration-500 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none">
-                  <User className="w-24 h-24 text-white" />
-                </div>
-
-                <div className="space-y-6 relative z-10">
-                  <div className="flex justify-between items-start">
-                    <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 font-black text-2xl shadow-sm group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500">
-                      {profile.users?.full_name?.charAt(0)?.toUpperCase() || '?'}
-                    </div>
-                    <div className="flex gap-2">
-                      <motion.button 
-                        whileHover={{ scale: 1.1, rotate: 5 }} 
-                        whileTap={{ scale: 0.9 }} 
-                        className="p-2.5 bg-white/5 rounded-xl text-rose-500/30 hover:text-rose-400 hover:bg-rose-500/10 transition-all border border-transparent hover:border-white/10"
-                        title="TERMINATE NODE"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[10px] font-mono text-primary font-bold tracking-[0.2em] bg-primary/10 px-2 py-0.5 rounded-md border border-primary/20">
-                        {profile.role.replace('_', ' ').toUpperCase()}
-                      </span>
-                      <span className={cn(
-                        "text-[9px] font-black uppercase tracking-[0.2em] px-2 py-0.5 rounded-md border",
-                        profile.is_active ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-rose-500/10 border-rose-500/20 text-rose-400"
-                      )}>
-                        {profile.is_active ? 'OPERATIONAL' : 'OFFLINE'}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-black text-white group-hover:text-primary transition-colors tracking-tight leading-tight uppercase">
-                      {profile.users?.full_name || 'ANONYMOUS NODE'}
-                    </h3>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <EnvelopeSimple className="w-4 h-4 text-primary/60 shrink-0" />
-                      <p className="text-xs text-muted-foreground font-light leading-relaxed truncate italic">{profile.users?.email}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-10 pt-8 border-t border-white/5 flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5 text-muted-foreground" />
-                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                      Registry: {new Date(profile.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {filteredProfiles.length === 0 && !loading && (
-            <div className="col-span-full py-32 text-center relative overflow-hidden glass-card rounded-[48px] border border-white/5">
-              <div className="flex flex-col items-center justify-center space-y-6 relative z-10 opacity-30 text-white">
-                <User className="w-16 h-16" />
-                <p className="text-sm font-black uppercase tracking-[0.2em]">No Personnel Nodes Detected</p>
-              </div>
+      {/* Search & Intelligence Controls */}
+      <div className="px-2">
+        <Card className="p-6 rounded-[32px] border-border/50 shadow-card relative overflow-hidden group">
+          <div className="flex flex-col md:flex-row gap-6 relative z-10">
+            <div className="relative flex-1 group/input">
+              <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-xl" />
+              <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
+              <input 
+                type="text" 
+                placeholder="Filter by personnel name, email, or role node..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3.5 bg-secondary/50 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10 font-bold text-sm"
+              />
             </div>
-          )}
-        </div>
-      )}
+            <Button variant="outline" className="gap-2 px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary shrink-0">
+              <Funnel weight="bold" className="w-4 h-4" />
+              Protocol Filter
+            </Button>
+          </div>
+        </Card>
+      </div>
 
-      {/* Initialize Staff Modal */}
+      {/* Staff Matrix Grid */}
+      <div className="px-2">
+        {loading ? (
+          <div className="py-48 flex flex-col items-center justify-center gap-6 bg-card border border-border/50 rounded-[40px] shadow-inner opacity-60">
+            <SpinnerGap weight="bold" className="w-12 h-12 text-primary animate-spin" />
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] text-center">Synchronizing Personnel Matrix...</p>
+          </div>
+        ) : filteredProfiles.length === 0 ? (
+          <Card variant="ghost" className="py-48 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-8 opacity-40 rounded-[40px]">
+            <IdentificationCard weight="duotone" className="w-20 h-20 text-muted-foreground" />
+            <div className="text-center space-y-3">
+              <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">Registry Empty</h3>
+              <p className="text-sm text-muted-foreground font-medium italic max-w-sm mx-auto">No clinical personnel established in this matrix node.</p>
+            </div>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <AnimatePresence mode="popLayout">
+              {filteredProfiles.map((profile, i) => (
+                <motion.div
+                  key={profile.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <Card className="h-full border-border/50 hover:border-primary/30 transition-all group overflow-hidden flex flex-col shadow-card hover:shadow-premium">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                      <IdentificationCard weight="fill" className="w-32 h-32 text-primary" />
+                    </div>
+
+                    <CardHeader className="pb-4 relative z-10">
+                      <div className="flex justify-between items-start gap-4">
+                        <div className="w-16 h-16 rounded-2xl bg-secondary/50 border border-border flex items-center justify-center text-primary group-hover:bg-primary/10 transition-all duration-500 shadow-inner text-2xl font-black">
+                          {profile.users?.full_name?.charAt(0)?.toUpperCase() || '?'}
+                        </div>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="p-2 h-9 w-9 text-muted-foreground hover:text-rose-500 hover:bg-rose-500/5 rounded-xl transition-all"
+                            title="TERMINATE NODE"
+                          >
+                            <Trash weight="bold" className="w-4.5 h-4.5" />
+                          </Button>
+                        </div>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="flex-1 space-y-6 relative z-10 flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-mono text-[9px] px-2 py-0.5 tracking-widest uppercase shadow-sm shadow-inner">
+                              {profile.role.replace('_', ' ').toUpperCase()}
+                            </Badge>
+                            <Badge variant={profile.is_active ? 'success' : 'secondary'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-2.5 py-1">
+                              {profile.is_active ? 'OPERATIONAL' : 'OFFLINE'}
+                            </Badge>
+                          </div>
+                          <h3 className="text-xl font-black text-foreground group-hover:text-primary transition-colors tracking-tight truncate uppercase leading-tight">
+                            {profile.users?.full_name || 'Anonymous Node'}
+                          </h3>
+                        </div>
+
+                        <div className="p-4 bg-secondary/30 rounded-2xl border border-border/50 group-hover:border-primary/20 transition-all shadow-inner">
+                          <div className="flex items-center gap-3">
+                            <EnvelopeSimple weight="duotone" className="w-4 h-4 text-primary/60 shrink-0" />
+                            <p className="text-xs text-foreground/70 font-medium truncate italic leading-none">{profile.users?.email}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-6 border-t border-border/30 flex items-center justify-between">
+                        <div className="flex items-center gap-2.5 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
+                          <Clock weight="bold" className="w-3.5 h-3.5 opacity-40" />
+                          Registry: {new Date(profile.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </div>
+                        <Button variant="ghost" size="sm" className="text-primary font-black uppercase text-[10px] tracking-widest gap-2 hover:bg-primary/5 rounded-xl">
+                          View Intel <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
+
+      {/* Initialize Staff Modal Protocol */}
       <AnimatePresence>
         {showForm && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 overflow-y-auto">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -282,110 +338,121 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             />
             <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-2xl bg-[#0A0A0A] border border-white/10 rounded-[32px] p-8 shadow-2xl relative z-10 overflow-hidden group"
+              className="w-full max-w-2xl bg-card border border-border rounded-[40px] p-10 shadow-premium relative z-10 overflow-hidden group my-8"
             >
-              <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none text-primary">
-                <User className="w-32 h-32" />
+              <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <User weight="fill" className="w-64 h-64 text-primary" />
               </div>
 
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/20 border border-primary/20 flex items-center justify-center text-primary shadow-premium">
-                    <User className="w-6 h-6" />
+              <div className="flex items-center justify-between mb-10 relative z-10">
+                <div className="flex items-center gap-5">
+                  <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm shadow-inner">
+                    <Plus weight="duotone" className="w-8 h-8" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-white uppercase tracking-tight">Initialize Staff Node</h3>
-                    <p className="text-sm text-muted-foreground italic font-light">Establishing new operational personnel linkage.</p>
+                    <h2 className="text-2xl font-black text-foreground tracking-tight uppercase leading-tight">Identity Synthesis</h2>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Initializing new personnel linkage</p>
                   </div>
                 </div>
-                <button
+                <Button
+                  variant="ghost"
                   onClick={() => setShowForm(false)}
-                  className="p-3 hover:bg-white/5 rounded-2xl transition-all border border-transparent hover:border-white/10"
+                  className="h-11 w-11 p-0 rounded-xl hover:bg-secondary transition-all"
                 >
-                  <Plus className="w-6 h-6 text-muted-foreground rotate-45" />
-                </button>
+                  <X weight="bold" className="w-6 h-6" />
+                </Button>
               </div>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
+              <form onSubmit={handleSubmit} className="space-y-10 relative z-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                      Email Designation *
+                      Identity Email Node *
                     </label>
                     <div className="relative group/input">
-                      <EnvelopeSimple className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within/input:text-primary transition-colors" />
+                      <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-xl" />
+                      <EnvelopeSimple weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
                       <input
                         type="email"
-                        placeholder="e.g. node.alpha@clinic.com"
+                        placeholder="node.alpha@clinic.network"
                         required
                         value={formData.email}
                         onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                        className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all text-sm font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary outline-none transition-all font-bold shadow-inner relative z-10"
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                      Personnel Full Name *
+                      Full Identity Alias *
                     </label>
                     <div className="relative group/input">
-                      <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20 group-focus-within/input:text-primary transition-colors" />
+                      <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-xl" />
+                      <User weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
                       <input
                         type="text"
-                        placeholder="e.g. Sarah Wilson"
+                        placeholder="Sarah Wilson"
                         required
                         value={formData.full_name}
                         onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
-                        className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all text-sm font-medium"
+                        className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary outline-none transition-all font-bold tracking-tight shadow-inner relative z-10"
                       />
                     </div>
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Operational Role *
+                    Authorized Protocol Tier *
                   </label>
-                  <select
-                    value={formData.role}
-                    onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
-                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-primary/50 transition-all appearance-none text-sm font-medium"
-                  >
-                    <option value="clinic_staff" className="bg-[#0A0A0A]">CLINIC STAFF</option>
-                    <option value="sales_staff" className="bg-[#0A0A0A]">SALES STAFF</option>
-                    <option value="clinic_admin" className="bg-[#0A0A0A]">CLINIC ADMIN</option>
-                  </select>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Operational Status
-                  </label>
-                  <div className="px-6 py-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-sm font-black uppercase tracking-[0.1em] text-emerald-400">Active Operational Node</span>
+                  <div className="relative group/input">
+                    <Shield weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
+                    <select
+                      value={formData.role}
+                      onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
+                      className="w-full pl-12 pr-12 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest text-xs shadow-inner relative z-10"
+                    >
+                      <option value="clinic_staff" className="bg-card">CLINIC_OPERATIONAL</option>
+                      <option value="sales_staff" className="bg-card">COMMERCIAL_INTEL</option>
+                      <option value="clinic_admin" className="bg-card">ADMIN_OVERSIGHT</option>
+                      <option value="beautician" className="bg-card">CLINICAL_PRACTITIONER</option>
+                    </select>
+                    <CaretDown weight="bold" className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none z-20" />
                   </div>
                 </div>
+                
+                <div className="p-6 bg-emerald-500/5 border border-emerald-500/10 rounded-[32px] flex items-center justify-between shadow-inner">
+                  <div className="flex items-center gap-5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.6)]" />
+                    <div>
+                      <span className="text-xs font-black uppercase tracking-widest text-emerald-500">Active Operational Matrix</span>
+                      <p className="text-[10px] text-muted-foreground font-medium italic mt-0.5 uppercase tracking-widest opacity-60">Identity will be initialized as a functional node</p>
+                    </div>
+                  </div>
+                  <UserCheck weight="duotone" className="w-8 h-8 text-emerald-500/40" />
+                </div>
 
-                <div className="flex gap-4 pt-4">
-                  <button
+                <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-border/30">
+                  <Button
                     type="button"
+                    variant="outline"
                     onClick={() => setShowForm(false)}
-                    className="flex-1 px-6 py-4 bg-white/5 border border-white/10 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-white/10 transition-all text-[10px] shadow-sm active:scale-95"
+                    className="w-full sm:flex-1 py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                   >
-                    Abort
-                  </button>
-                  <button
+                    Abort Synthesis
+                  </Button>
+                  <Button
                     type="submit"
-                    className="flex-[2] px-6 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-3 text-[10px] shadow-premium active:scale-95"
+                    className="w-full sm:flex-[2] py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] shadow-premium gap-3 relative overflow-hidden group/btn"
                   >
-                    <Plus className="w-4 h-4 stroke-[3px]" />
-                    Initialize Node
-                  </button>
+                    <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
+                    <Plus weight="bold" className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
+                    Commit Identity node
+                  </Button>
                 </div>
               </form>
             </motion.div>
@@ -395,4 +462,3 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
     </motion.div>
   );
 }
-

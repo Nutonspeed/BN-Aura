@@ -18,12 +18,23 @@ import {
   Tag,
   Clock,
   ArrowRight,
-  SquaresFour
+  SquaresFour,
+  ArrowsCounterClockwise,
+  IdentificationCard,
+  Briefcase,
+  TrendUp
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import CustomerModal from '@/components/CustomerModal';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { useRouter, useParams } from 'next/navigation';
 import { Link } from '@/i18n/routing';
-import CustomerModal from '@/components/CustomerModal';
 
 interface CustomerDetails {
   id: string;
@@ -44,7 +55,7 @@ interface CustomerDetails {
 }
 
 function CustomerDetailPageContent() {
-  const router = useRouter();
+  const { goBack } = useBackNavigation();
   const params = useParams();
   const customerId = params.id as string;
   
@@ -99,7 +110,7 @@ function CustomerDetailPageContent() {
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <ShieldCheck className="w-12 h-12 text-rose-500" />
         <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground">Patient Node Not Detected</p>
-        <button onClick={() => router.back()} className="text-primary font-bold uppercase text-xs tracking-widest hover:underline">Return to Cluster</button>
+        <button onClick={() => goBack('/clinic/customers')} className="text-primary font-bold uppercase text-xs tracking-widest hover:underline">Return to Cluster</button>
       </div>
     );
   }
@@ -108,8 +119,14 @@ function CustomerDetailPageContent() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20 font-sans"
+      className="space-y-8 pb-20 font-sans"
     >
+      <Breadcrumb 
+        customLabels={{ 
+          [customerId]: customer?.full_name || 'Patient Detail'
+        }} 
+      />
+
       <CustomerModal 
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
@@ -120,91 +137,102 @@ function CustomerDetailPageContent() {
       {/* Header & Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex items-center gap-6">
-          <button 
-            onClick={() => router.back()}
-            className="p-4 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all"
+          <Button 
+            variant="outline"
+            onClick={() => goBack('/clinic/customers')}
+            className="p-4 h-14 w-14 border-border rounded-2xl text-muted-foreground hover:text-foreground transition-all"
           >
-            <CaretLeft className="w-5 h-5" />
-          </button>
+            <CaretLeft weight="bold" className="w-5 h-5" />
+          </Button>
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
-              <User className="w-4 h-4" />
+              <User weight="duotone" className="w-4 h-4" />
               Patient Identity Node
             </div>
-            <h1 className="text-4xl font-black text-white uppercase tracking-tight">{customer.full_name} <span className="text-primary/40 font-light italic">({customer.nickname || 'Node'})</span></h1>
+            <h1 className="text-4xl font-bold text-foreground tracking-tight uppercase">
+              {customer.full_name} 
+              <span className="text-primary/40 font-light italic ml-3">({customer.nickname || 'NODE'})</span>
+            </h1>
           </div>
         </div>
 
         <div className="flex gap-3">
-          <button 
+          <Button 
+            variant="outline"
             onClick={() => setIsEditModalOpen(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-white/5 border border-white/10 rounded-2xl text-xs font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all"
+            className="flex items-center gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
           >
-            <PencilSimple className="w-4 h-4" />
+            <PencilSimple weight="bold" className="w-4 h-4" />
             Modify Protocol
-          </button>
-          <button className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium hover:brightness-110 transition-all">
-            <ChatCircle className="w-4 h-4" />
-            Direct Link
-          </button>
+          </Button>
+          <Button className="flex items-center gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
+            <ChatCircle weight="bold" className="w-4 h-4" />
+            Establish Direct Link
+          </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-10">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
         {/* Left Column: ID Card */}
         <div className="xl:col-span-1 space-y-8">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass-premium p-8 rounded-[40px] border border-white/10 relative overflow-hidden"
           >
-            <div className="absolute -top-12 -left-12 w-48 h-48 bg-primary/10 blur-[60px] rounded-full" />
-            
-            <div className="relative z-10 space-y-8">
-              <div className="w-24 h-24 rounded-[32px] bg-gradient-to-br from-primary/20 to-transparent border border-primary/20 flex items-center justify-center mx-auto text-3xl font-black text-primary shadow-premium">
-                {customer.full_name.charAt(0)}
+            <Card className="p-8 rounded-[40px] border-border shadow-premium relative overflow-hidden group">
+              <div className="absolute -top-12 -left-12 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
+              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                <IdentificationCard className="w-32 h-32 text-primary" />
               </div>
-
-              <div className="space-y-6">
-                <div className="space-y-1">
-                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]">Temporal Node</p>
-                  <div className="flex items-center gap-3 text-white font-bold">
-                    <CalendarDots className="w-4 h-4 text-primary/60" />
-                    <span>{customer.date_of_birth ? new Date(customer.date_of_birth).toLocaleDateString() : 'Undefined'}</span>
-                  </div>
+              
+              <div className="relative z-10 space-y-10">
+                <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/20 flex items-center justify-center mx-auto text-4xl font-black text-primary shadow-premium group-hover:scale-105 transition-transform duration-500">
+                  {customer.full_name.charAt(0)}
                 </div>
 
-                <div className="space-y-1">
-                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]">Neural Address</p>
-                  <div className="flex items-center gap-3 text-white font-bold">
-                    <EnvelopeSimple className="w-4 h-4 text-primary/60" />
-                    <span className="truncate">{customer.email || 'None'}</span>
+                <div className="space-y-6">
+                  <div className="space-y-1.5">
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Temporal Node</p>
+                    <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-2xl border border-border/50">
+                      <CalendarDots weight="duotone" className="w-4 h-4 text-primary/60" />
+                      <span className="text-sm font-bold text-foreground">{customer.date_of_birth ? new Date(customer.date_of_birth).toLocaleDateString() : 'UNDEFINED'}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="space-y-1">
-                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em]">Comm Channel</p>
-                  <div className="flex items-center gap-3 text-white font-bold">
-                    <Phone className="w-4 h-4 text-primary/60" />
-                    <span>{customer.phone || 'None'}</span>
+                  <div className="space-y-1.5">
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Neural Address</p>
+                    <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-2xl border border-border/50">
+                      <EnvelopeSimple weight="duotone" className="w-4 h-4 text-primary/60" />
+                      <span className="text-sm font-bold text-foreground truncate">{customer.email || 'NONE'}</span>
+                    </div>
                   </div>
-                </div>
 
-                <div className="pt-6 border-t border-white/5 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase">Security Tier</span>
-                    <span className="px-2 py-1 rounded-md bg-primary/10 border border-primary/20 text-[9px] font-black text-primary uppercase">{customer.customer_type}</span>
+                  <div className="space-y-1.5">
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Comm Channel</p>
+                    <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-2xl border border-border/50">
+                      <Phone weight="duotone" className="w-4 h-4 text-primary/60" />
+                      <span className="text-sm font-bold text-foreground">{customer.phone || 'NONE'}</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-black text-muted-foreground uppercase">Node Status</span>
-                    <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-400 uppercase">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                      {customer.status}
-                    </span>
+
+                  <div className="pt-6 border-t border-border/50 space-y-4">
+                    <div className="flex justify-between items-center px-1">
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Security Tier</span>
+                      <Badge variant="ghost" size="sm" className="bg-primary/5 border-none text-primary font-black uppercase text-[9px] px-3">
+                        {customer.customer_type}
+                      </Badge>
+                    </div>
+                    <div className="flex justify-between items-center px-1">
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Node Status</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
+                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{customer.status}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Card>
           </motion.div>
 
           {/* Clinical Alerts / Notes */}
@@ -212,25 +240,26 @@ function CustomerDetailPageContent() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
-            className="glass-card p-8 rounded-[40px] border border-rose-500/10 bg-rose-500/[0.02] space-y-4"
           >
-            <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4" />
-              Critical Telemetry
-            </h4>
-            <p className="text-xs text-muted-foreground italic font-light leading-relaxed">
-              {customer.notes || 'No critical contraindications detected in current registry node.'}
-            </p>
+            <Card className="p-8 rounded-[40px] border-rose-500/10 bg-rose-500/[0.02] space-y-4 group">
+              <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] flex items-center gap-3">
+                <ShieldCheck weight="duotone" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                Critical Telemetry
+              </h4>
+              <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
+                {customer.notes || 'No critical contraindications detected in current registry node.'}
+              </p>
+            </Card>
           </motion.div>
         </div>
 
         {/* Right Column: Tabbed Content */}
         <div className="xl:col-span-3 space-y-8">
           {/* Section Navigation */}
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide bg-secondary/30 p-1.5 rounded-[24px] border border-border/50">
             {[
               { id: 'overview', label: 'Clinical Overview', icon: SquaresFour },
-              { id: 'journey', label: 'Treatment Cycles', icon: History },
+              { id: 'journey', label: 'Treatment Cycles', icon: ClockCounterClockwise },
               { id: 'analysis', label: 'Neural Diagnostics', icon: Sparkle },
               { id: 'transactions', label: 'Fiscal Node', icon: CreditCard },
             ].map((tab) => (
@@ -238,13 +267,13 @@ function CustomerDetailPageContent() {
                 key={tab.id}
                 onClick={() => setActiveSection(tab.id)}
                 className={cn(
-                  "flex items-center gap-3 px-6 py-3 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest border whitespace-nowrap",
+                  "flex items-center gap-3 px-6 py-3.5 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest border whitespace-nowrap",
                   activeTab === tab.id 
-                    ? "bg-primary text-primary-foreground border-primary shadow-glow-sm" 
-                    : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:text-white"
+                    ? "bg-primary text-primary-foreground border-primary shadow-premium" 
+                    : "bg-transparent text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground"
                 )}
               >
-                <tab.icon className="w-4 h-4" />
+                <tab.icon weight={activeTab === tab.id ? "fill" : "bold"} className="w-4 h-4" />
                 {tab.label}
               </button>
             ))}
@@ -260,54 +289,68 @@ function CustomerDetailPageContent() {
                 className="space-y-8"
               >
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {[
-                    { label: 'Latest Score', value: '84/100', icon: Sparkle, color: 'text-primary' },
-                    { label: 'Total Nodes', value: customer.sales_commissions.length.toString(), icon: History, color: 'text-blue-400' },
-                    { label: 'Fiscal Value', value: `฿${customer.sales_commissions.reduce((acc, c) => acc + Number(c.base_amount), 0).toLocaleString()}`, icon: CreditCard, color: 'text-emerald-400' },
-                  ].map((stat, i) => (
-                    <div key={i} className="glass-card p-6 rounded-3xl border border-white/5 flex items-center gap-5">
-                      <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10", stat.color)}>
-                        <stat.icon className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stat.label}</p>
-                        <p className="text-xl font-black text-white">{stat.value}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                  <StatCard
+                    title="Latest Aura Score"
+                    value="84%"
+                    icon={Sparkle}
+                    trend="up"
+                    change={4.2}
+                    className="p-4"
+                  />
+                  <StatCard
+                    title="Protocol Density"
+                    value={customer.sales_commissions.length.toString()}
+                    icon={ClockCounterClockwise}
+                    className="p-4"
+                  />
+                  <StatCard
+                    title="Lifetime Valuation"
+                    value={`฿${customer.sales_commissions.reduce((acc, c) => acc + Number(c.base_amount), 0).toLocaleString()}`}
+                    icon={CreditCard}
+                    trend="up"
+                    change={12.5}
+                    className="p-4"
+                  />
                 </div>
 
                 {/* Recent Activity */}
-                <div className="glass-premium p-10 rounded-[48px] border border-white/5 space-y-8">
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight">Recent Activity Stream</h3>
-                  <div className="space-y-6">
-                    {customer.sales_commissions.slice(0, 5).map((txn, i) => (
-                      <div key={i} className="flex gap-6 group">
-                        <div className="flex flex-col items-center gap-2">
-                          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-primary">
-                            <Clock className="w-5 h-5" />
+                <Card className="rounded-[40px] border-border/50 overflow-hidden">
+                  <CardHeader className="p-8 border-b border-border/50 flex flex-row items-center justify-between">
+                    <CardTitle className="text-xl font-black uppercase tracking-tight">Recent Activity Stream</CardTitle>
+                    <Badge variant="ghost" className="font-black text-[10px] tracking-widest uppercase bg-primary/5 text-primary border-none">Live Sync</Badge>
+                  </CardHeader>
+                  <CardContent className="p-8">
+                    <div className="space-y-8">
+                      {customer.sales_commissions.slice(0, 5).map((txn, i) => (
+                        <div key={i} className="flex gap-8 group">
+                          <div className="flex flex-col items-center gap-3">
+                            <div className="w-12 h-12 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary group-hover:bg-primary/10 transition-all duration-500 shadow-inner shrink-0">
+                              <Clock weight="duotone" className="w-6 h-6" />
+                            </div>
+                            {i !== (Math.min(customer.sales_commissions.length, 5) - 1) && <div className="w-0.5 h-full bg-border/50 group-hover:bg-primary/30 transition-colors" />}
                           </div>
-                          {i !== 4 && <div className="w-0.5 h-full bg-white/5" />}
-                        </div>
-                        <div className="flex-1 pb-8 border-b border-white/5">
-                          <div className="flex justify-between items-start mb-1">
-                            <h4 className="text-sm font-bold text-white uppercase tracking-wider">{txn.transaction_type}</h4>
-                            <span className="text-[10px] font-medium text-muted-foreground">{new Date(txn.transaction_date).toLocaleDateString()}</span>
+                          <div className="flex-1 pb-8 group-last:pb-0">
+                            <div className="flex justify-between items-start mb-2">
+                              <h4 className="text-base font-bold text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{txn.transaction_type}</h4>
+                              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{new Date(txn.transaction_date).toLocaleDateString()}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground font-medium mb-4 italic opacity-80">Execution confirmed at clinical terminal alpha-node.</p>
+                            <span className="text-2xl font-black text-foreground tabular-nums tracking-tight">฿{Number(txn.base_amount).toLocaleString()}</span>
                           </div>
-                          <p className="text-xs text-muted-foreground font-light mb-3 italic">Processed at clinical node via terminal execution.</p>
-                          <span className="text-lg font-black text-primary tabular-nums">฿{Number(txn.base_amount).toLocaleString()}</span>
                         </div>
-                      </div>
-                    ))}
-                    {customer.sales_commissions.length === 0 && (
-                      <div className="py-10 text-center opacity-20">
-                        <ClockCounterClockwise className="w-12 h-12 mx-auto mb-4 stroke-[1px]" />
-                        <p className="text-xs font-black uppercase tracking-widest">No Activity Records</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                      ))}
+                      {customer.sales_commissions.length === 0 && (
+                        <div className="py-20 text-center opacity-20 flex flex-col items-center gap-6">
+                          <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
+                            <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
+                          </div>
+                          <p className="text-sm font-black uppercase tracking-[0.3em]">No activity records detected in current sector.</p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               </motion.div>
             )}
 
@@ -322,83 +365,87 @@ function CustomerDetailPageContent() {
                 {/* Comparison History */}
                 {customer.comparisons && customer.comparisons.length > 0 && (
                   <div className="space-y-6">
-                    <h3 className="text-xl font-black text-white uppercase tracking-[0.2em] px-4 flex items-center gap-3">
-                      <ClockCounterClockwise className="w-5 h-5 text-primary" />
+                    <h3 className="text-xl font-black text-foreground uppercase tracking-[0.2em] px-4 flex items-center gap-4">
+                      <ArrowsCounterClockwise weight="bold" className="w-6 h-6 text-primary" />
                       Evolution Deltas
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {customer.comparisons.map((comp, i) => (
-                        <div key={i} className="glass-premium p-6 rounded-[32px] border border-emerald-500/20 bg-emerald-500/[0.02] flex items-center justify-between">
+                        <Card key={i} className="p-6 rounded-[32px] border-emerald-500/20 bg-emerald-500/[0.02] flex items-center justify-between hover:border-emerald-500/40 transition-all group/comp">
                           <div className="flex items-center gap-6">
-                            <div className="flex -space-x-4">
-                              <div className="w-12 h-12 rounded-xl border border-background overflow-hidden relative z-10">
-                                <img src={comp.before.image_url} className="w-full h-full object-cover opacity-60" />
+                            <div className="flex -space-x-6">
+                              <div className="w-16 h-16 rounded-2xl border-4 border-card overflow-hidden relative z-10 shadow-premium group-hover/comp:-translate-x-2 transition-transform duration-500">
+                                <img src={comp.before.image_url} className="w-full h-full object-cover grayscale opacity-60" alt="Before" />
                               </div>
-                              <div className="w-12 h-12 rounded-xl border border-background overflow-hidden relative z-20">
-                                <img src={comp.after.image_url} className="w-full h-full object-cover" />
+                              <div className="w-16 h-16 rounded-2xl border-4 border-card overflow-hidden relative z-20 shadow-premium group-hover/comp:translate-x-2 transition-transform duration-500">
+                                <img src={comp.after.image_url} className="w-full h-full object-cover" alt="After" />
                               </div>
                             </div>
                             <div>
-                              <p className="text-[10px] font-black text-white uppercase tracking-widest">Aesthetic Delta</p>
-                              <p className="text-[9px] text-muted-foreground">{new Date(comp.created_at).toLocaleDateString()}</p>
+                              <p className="text-xs font-black text-foreground uppercase tracking-widest">Aesthetic Delta</p>
+                              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest mt-1">TS-{new Date(comp.created_at).toLocaleDateString()}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Improvement</p>
-                            <p className="text-xl font-black text-emerald-400">+{comp.overall_improvement}%</p>
+                            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Improvement</p>
+                            <div className="flex items-center gap-2 justify-end">
+                              <TrendUp weight="bold" className="w-4 h-4 text-emerald-500" />
+                              <p className="text-2xl font-black text-emerald-500">+{comp.overall_improvement}%</p>
+                            </div>
                           </div>
-                        </div>
+                        </Card>
                       ))}
                     </div>
                   </div>
                 )}
 
                 {/* Individual Analyses */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {customer.skin_analyses.map((scan, i) => (
-                    <div key={i} className="glass-premium p-8 rounded-[40px] border border-white/5 space-y-6 group hover:border-primary/30 transition-all">
+                    <Card key={i} className="p-8 rounded-[40px] border-border/50 space-y-8 group hover:border-primary/30 transition-all">
                       <div className="flex justify-between items-start">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                            <Sparkle className="w-6 h-6" />
+                        <div className="flex items-center gap-5">
+                          <div className="w-14 h-14 rounded-2xl bg-secondary border border-border flex items-center justify-center text-primary group-hover:bg-primary/10 transition-all duration-500 shadow-inner">
+                            <Sparkle weight="duotone" className="w-7 h-7" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-bold text-white uppercase tracking-widest">Diagnostic Node</h4>
-                            <p className="text-[10px] text-muted-foreground font-medium italic">{new Date(scan.analyzed_at).toLocaleString()}</p>
+                            <h4 className="text-base font-bold text-foreground uppercase tracking-tight">Diagnostic Node</h4>
+                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1">{new Date(scan.analyzed_at).toLocaleString()}</p>
                           </div>
                         </div>
                         <div className="text-center">
-                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Aura Score</p>
-                          <p className="text-2xl font-black text-primary">{scan.overall_score}</p>
+                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Aura Score</p>
+                          <p className="text-3xl font-black text-primary tracking-tighter">{scan.overall_score}</p>
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/5">
-                        <div className="text-center p-3 bg-white/5 rounded-2xl">
-                          <p className="text-[8px] font-black text-muted-foreground uppercase mb-1">Pores</p>
-                          <p className="text-sm font-black text-white">{scan.pores_score}</p>
-                        </div>
-                        <div className="text-center p-3 bg-white/5 rounded-2xl">
-                          <p className="text-[8px] font-black text-muted-foreground uppercase mb-1">Wrinkles</p>
-                          <p className="text-sm font-black text-white">{scan.wrinkles_score}</p>
-                        </div>
-                        <div className="text-center p-3 bg-white/5 rounded-2xl">
-                          <p className="text-[8px] font-black text-muted-foreground uppercase mb-1">Texture</p>
-                          <p className="text-sm font-black text-white">{scan.texture_score}</p>
-                        </div>
+                      <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border/50">
+                        {[
+                          { label: 'Pores', value: scan.pores_score },
+                          { label: 'Wrinkles', value: scan.wrinkles_score },
+                          { label: 'Texture', value: scan.texture_score }
+                        ].map((metric) => (
+                          <div key={metric.label} className="text-center p-4 bg-secondary/30 rounded-2xl border border-border/50">
+                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{metric.label}</p>
+                            <p className="text-lg font-black text-foreground">{metric.value}</p>
+                          </div>
+                        ))}
                       </div>
 
-                      <button className="w-full py-3 bg-white/5 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-white hover:bg-white/10 transition-all flex items-center justify-center gap-2">
-                        Full Diagnostic Payload <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                      <Button variant="outline" className="w-full py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] gap-3 border-border/50 hover:bg-secondary">
+                        Access Full Diagnostic Payload
+                        <ArrowRight weight="bold" className="w-4 h-4" />
+                      </Button>
+                    </Card>
                   ))}
                 </div>
                 {customer.skin_analyses.length === 0 && (
-                  <div className="col-span-full py-20 text-center glass-card rounded-[40px] border border-white/5 opacity-20">
-                    <Sparkle className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
-                    <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Diagnostic Data Detected</p>
-                  </div>
+                  <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40">
+                    <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
+                      <Sparkle weight="duotone" className="w-10 h-10" />
+                    </div>
+                    <p className="text-sm font-black uppercase tracking-[0.3em]">Zero diagnostic data detected in sector.</p>
+                  </Card>
                 )}
               </motion.div>
             )}
@@ -409,36 +456,47 @@ function CustomerDetailPageContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="space-y-6"
+                className="space-y-8"
               >
                 {customer.customer_treatment_journeys?.map((journey, i) => (
-                  <div key={i} className="glass-premium p-8 rounded-[40px] border border-white/5 space-y-6">
+                  <Card key={i} className="p-8 rounded-[40px] border-border/50 space-y-8 group">
                     <div className="flex justify-between items-start">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                          <ClockCounterClockwise className="w-6 h-6" />
+                      <div className="flex items-center gap-5">
+                        <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-inner group-hover:scale-105 transition-transform duration-500">
+                          <ClockCounterClockwise weight="duotone" className="w-7 h-7" />
                         </div>
                         <div>
-                          <h4 className="text-sm font-bold text-white uppercase tracking-widest">
-                            {(journey.treatment_plan as any)?.treatment_name || 'Protocol Execution'}
+                          <h4 className="text-lg font-bold text-foreground uppercase tracking-tight">
+                            {(journey.treatment_plan as any)?.treatment_name || 'Protocol Execution Node'}
                           </h4>
-                          <p className="text-[10px] text-muted-foreground font-medium italic">Status: {journey.journey_status.replace('_', ' ')}</p>
+                          <div className="flex items-center gap-3 mt-1">
+                            <Badge variant="success" size="sm" className="bg-emerald-500/5 text-emerald-500 border-none font-black text-[8px] tracking-widest uppercase">
+                              {journey.journey_status.replace('_', ' ')}
+                            </Badge>
+                            <div className="w-1 h-1 rounded-full bg-border" />
+                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Active Cycle</p>
+                          </div>
                         </div>
                       </div>
-                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{new Date(journey.created_at).toLocaleDateString()}</span>
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-2">{new Date(journey.created_at).toLocaleDateString()}</span>
                     </div>
-                    <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-                      <p className="text-xs text-muted-foreground font-light leading-relaxed italic">
-                        {journey.progress_notes || 'No operational notes recorded for this cycle.'}
+                    <div className="p-6 bg-secondary/30 rounded-3xl border border-border/50 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+                        <FileText weight="duotone" className="w-12 h-12 text-primary" />
+                      </div>
+                      <p className="text-sm text-muted-foreground font-medium leading-relaxed italic relative z-10">
+                        {journey.progress_notes || 'No operational notes recorded for this cycle execution node.'}
                       </p>
                     </div>
-                  </div>
+                  </Card>
                 ))}
                 {(!customer.customer_treatment_journeys || customer.customer_treatment_journeys.length === 0) && (
-                  <div className="py-20 text-center glass-card rounded-[40px] border border-white/5 opacity-20">
-                    <ClockCounterClockwise className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
-                    <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Cycle History Detected</p>
-                  </div>
+                  <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40">
+                    <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
+                      <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
+                    </div>
+                    <p className="text-sm font-black uppercase tracking-[0.3em]">Zero cycle history detected in neural registry.</p>
+                  </Card>
                 )}
               </motion.div>
             )}
@@ -449,41 +507,53 @@ function CustomerDetailPageContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
-                className="glass-premium rounded-[40px] border border-white/5 overflow-hidden"
               >
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-white/[0.03] border-b border-white/5">
-                      <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">TXN Code</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Protocol Type</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Fiscal Value</th>
-                      <th className="px-8 py-5 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5">
-                    {customer.sales_commissions.map((txn, i) => (
-                      <tr key={i} className="group hover:bg-white/[0.02] transition-colors">
-                        <td className="px-8 py-5 text-xs font-mono text-white/40">TXN-{txn.id.slice(0, 8)}</td>
-                        <td className="px-8 py-5 text-sm font-bold text-white uppercase tracking-tight">{txn.transaction_type}</td>
-                        <td className="px-8 py-5 text-sm font-black text-primary tabular-nums">฿{Number(txn.base_amount).toLocaleString()}</td>
-                        <td className="px-8 py-5">
-                          <span className={cn(
-                            "px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border",
-                            txn.payment_status === 'paid' ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400"
-                          )}>
-                            {txn.payment_status}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {customer.sales_commissions.length === 0 && (
-                  <div className="py-20 text-center opacity-20">
-                    <CreditCard className="w-16 h-16 mx-auto mb-4 stroke-[1px]" />
-                    <p className="text-sm font-black uppercase tracking-[0.2em]">Zero Fiscal Telemetry</p>
+                <Card className="rounded-[40px] border-border/50 overflow-hidden shadow-premium">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                      <thead>
+                        <tr className="bg-secondary/50 border-b border-border/50">
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">TXN Identity</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Protocol Node</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Fiscal Valuation</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Verification</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/30">
+                        {customer.sales_commissions.map((txn, i) => (
+                          <tr key={i} className="group hover:bg-primary/[0.02] transition-colors">
+                            <td className="px-10 py-6">
+                              <span className="text-xs font-mono font-black text-primary/40 group-hover:text-primary transition-colors">TXN-{txn.id.slice(0, 8).toUpperCase()}</span>
+                            </td>
+                            <td className="px-10 py-6">
+                              <p className="text-sm font-bold text-foreground uppercase tracking-tight">{txn.transaction_type}</p>
+                              <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-1">Processed Node Alpha</p>
+                            </td>
+                            <td className="px-10 py-6">
+                              <span className="text-lg font-black text-foreground tabular-nums tracking-tight">฿{Number(txn.base_amount).toLocaleString()}</span>
+                            </td>
+                            <td className="px-10 py-6">
+                              <Badge 
+                                variant={txn.payment_status === 'paid' ? 'success' : 'warning'}
+                                className="font-black uppercase text-[8px] tracking-[0.2em] px-3 py-1"
+                              >
+                                {txn.payment_status}
+                              </Badge>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                )}
+                  {customer.sales_commissions.length === 0 && (
+                    <div className="py-32 text-center opacity-20 flex flex-col items-center gap-6">
+                      <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
+                        <CreditCard weight="duotone" className="w-10 h-10" />
+                      </div>
+                      <p className="text-sm font-black uppercase tracking-[0.3em]">Zero fiscal telemetry detected.</p>
+                    </div>
+                  )}
+                </Card>
               </motion.div>
             )}
           </AnimatePresence>

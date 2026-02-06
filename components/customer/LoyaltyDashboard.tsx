@@ -1,23 +1,37 @@
-'use client';
+﻿'use client';
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
-import { 
-  Crown, 
-  Star, 
-  Gift, 
-  TrendUp, 
-  CalendarDots, 
-  Users, 
+import {
+  Crown,
+  Star,
+  Gift,
+  TrendUp,
+  CalendarDots,
+  Users,
   Medal,
   Sparkle,
   CaretRight,
   Trophy,
   Lightning,
   Copy,
-  Check
+  Check,
+  ArrowsClockwise,
+  IdentificationBadge,
+  ShieldCheck,
+  ClockCounterClockwise,
+  Coins,
+  TrendDown,
+  Icon,
+  CheckCircle,
+  X
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { LoyaltyProfile, LoyaltyTier, Achievement, PointTransaction } from '@/lib/customer/loyaltySystem';
 
@@ -38,446 +52,258 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
   }, [customerId, clinicId]);
 
   const fetchLoyaltyData = async () => {
+    setLoading(true);
     try {
-      const supabase = createClient();
-
-      const generateReferralCode = () => {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        let result = 'BN';
-        for (let i = 0; i < 8; i++) {
-          result += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return result;
-      };
-
-      // Load or create loyalty profile
-      const { data: profileRow, error: profileError } = await supabase
-        .from('loyalty_profiles')
-        .select('*')
-        .eq('customer_id', customerId)
-        .eq('clinic_id', clinicId)
-        .single();
-
-      let ensuredProfileRow = profileRow;
-
-      if (!ensuredProfileRow && profileError?.code === 'PGRST116') {
-        const { data: createdProfile, error: createError } = await supabase
-          .from('loyalty_profiles')
-          .insert({
-            customer_id: customerId,
-            clinic_id: clinicId,
-            referral_code: generateReferralCode()
-          })
-          .select('*')
-          .single();
-
-        if (createError) throw createError;
-        ensuredProfileRow = createdProfile;
-      } else if (profileError && profileError.code !== 'PGRST116') {
-        throw profileError;
+      const response = await fetch(`/api/customer/loyalty?customerId=${customerId}&clinicId=${clinicId}`);
+      const data = await response.json();
+      if (data.success) {
+        setProfile(data.profile);
+        setAchievements(data.achievements);
+        setTransactions(data.transactions.map((t: any) => ({
+          ...t,
+          createdAt: new Date(t.created_at)
+        })));
       }
-
-      if (!ensuredProfileRow) {
-        setProfile(null);
-        setAchievements([]);
-        setTransactions([]);
-        return;
-      }
-
-      const mappedProfile: LoyaltyProfile = {
-        customerId: ensuredProfileRow.customer_id,
-        clinicId: ensuredProfileRow.clinic_id,
-        totalPoints: ensuredProfileRow.total_points ?? 0,
-        availablePoints: ensuredProfileRow.available_points ?? 0,
-        currentTier: (ensuredProfileRow.current_tier ?? 'bronze') as LoyaltyTier,
-        tierProgress: Number(ensuredProfileRow.tier_progress ?? 0),
-        totalSpent: Number(ensuredProfileRow.total_spent ?? 0),
-        totalVisits: ensuredProfileRow.total_visits ?? 0,
-        averageSpend: Number(ensuredProfileRow.average_spend ?? 0),
-        lastVisit: ensuredProfileRow.last_visit ? new Date(ensuredProfileRow.last_visit) : new Date(),
-        unlockedAchievements: ensuredProfileRow.unlocked_achievements ?? [],
-        totalAchievements: ensuredProfileRow.total_achievements ?? 0,
-        successfulReferrals: ensuredProfileRow.successful_referrals ?? 0,
-        referralCode: ensuredProfileRow.referral_code,
-        joinedAt: ensuredProfileRow.joined_at ? new Date(ensuredProfileRow.joined_at) : new Date(),
-        lastUpdated: ensuredProfileRow.updated_at ? new Date(ensuredProfileRow.updated_at) : new Date()
-      };
-
-      // Load achievements
-      const { data: achievementRows, error: achievementsError } = await supabase
-        .from('achievements')
-        .select('*')
-        .eq('clinic_id', clinicId)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
-
-      if (achievementsError) throw achievementsError;
-
-      const unlockedSet = new Set(mappedProfile.unlockedAchievements);
-      const mappedAchievements: Achievement[] = (achievementRows || [])
-        .filter((a: any) => !a.is_secret || unlockedSet.has(a.id))
-        .map((a: any) => ({
-          id: a.id,
-          clinicId: a.clinic_id,
-          name: a.name,
-          description: a.description,
-          category: a.category,
-          conditions: a.conditions,
-          pointsReward: a.points_reward,
-          badgeIcon: a.badge_icon,
-          specialReward: a.special_reward,
-          isActive: a.is_active,
-          isSecret: a.is_secret,
-          createdAt: new Date(a.created_at)
-        }));
-
-      // Load recent point transactions
-      const { data: transactionRows, error: transactionsError } = await supabase
-        .from('point_transactions')
-        .select('*')
-        .eq('customer_id', customerId)
-        .eq('clinic_id', clinicId)
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (transactionsError) throw transactionsError;
-
-      const mappedTransactions: PointTransaction[] = (transactionRows || []).map((t: any) => ({
-        id: t.id,
-        customerId: t.customer_id,
-        clinicId: t.clinic_id,
-        type: t.type,
-        amount: t.amount,
-        description: t.description,
-        workflowId: t.workflow_id,
-        achievementId: t.achievement_id,
-        rewardId: t.reward_id,
-        createdAt: new Date(t.created_at),
-        expiresAt: t.expires_at ? new Date(t.expires_at) : undefined
-      }));
-
-      setProfile(mappedProfile);
-      setAchievements(mappedAchievements);
-      setTransactions(mappedTransactions);
     } catch (error) {
-      console.error('Failed to fetch loyalty data:', error);
-      toast.error('ไม่สามารถโหลดข้อมูลสมาชิกได้');
+      console.error('Loyalty data sync error:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const getTierConfig = (tier: LoyaltyTier) => {
-    const configs = {
-      bronze: { color: '#CD7F32', icon: '🥉', name: 'Bronze', nextTier: 'Silver' },
-      silver: { color: '#C0C0C0', icon: '🥈', name: 'Silver', nextTier: 'Gold' },
-      gold: { color: '#FFD700', icon: '🥇', name: 'Gold', nextTier: 'Platinum' },
-      platinum: { color: '#E5E4E2', icon: '💎', name: 'Platinum', nextTier: 'Diamond' },
-      diamond: { color: '#B9F2FF', icon: '💠', name: 'Diamond', nextTier: null }
-    };
-    return configs[tier];
-  };
-
-  const getTierPoints = (tier: LoyaltyTier) => {
-    const thresholds = {
-      bronze: 0,
-      silver: 10000,
-      gold: 30000,
-      platinum: 60000,
-      diamond: 100000
-    };
-    return thresholds[tier];
-  };
-
-  const copyReferralCode = async () => {
-    if (!profile) return;
-    try {
-      await navigator.clipboard.writeText(profile.referralCode);
+  const copyRefCode = () => {
+    if (profile?.referralCode) {
+      navigator.clipboard.writeText(profile.referralCode);
       setCopied(true);
-      toast.success('คัดลอกรหัสแนะนำแล้ว!');
+      toast.success('Referral code synchronized to clipboard');
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      toast.error('ไม่สามารถคัดลอกได้');
     }
   };
 
-  if (loading || !profile) {
+  if (loading) {
     return (
-      <div className="min-h-[600px] flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="text-muted-foreground">กำลังโหลดข้อมูลสมาชิก...</p>
-        </div>
+      <div className="py-48 flex flex-col items-center justify-center gap-6 bg-card border border-border/50 rounded-[40px] shadow-inner opacity-60">
+        <SpinnerGap weight="bold" className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] text-center">Synchronizing Loyalty Matrix...</p>
       </div>
     );
   }
 
-  const tierConfig = getTierConfig(profile.currentTier);
-  const currentTierPoints = getTierPoints(profile.currentTier);
-  const nextTierPoints = tierConfig.nextTier ? getTierPoints(tierConfig.nextTier as LoyaltyTier) : null;
-
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-center gap-3 text-primary text-sm font-bold uppercase tracking-wider"
-        >
-          <Crown className="w-5 h-5" />
-          BN-Aura Loyalty Program
-        </motion.div>
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="text-4xl font-heading font-bold text-white"
-        >
-          สมาชิก <span className="text-primary">{tierConfig.name}</span> {tierConfig.icon}
-        </motion.h1>
-      </div>
-
-      {/* Main Stats Grid */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-      >
-        {/* Available Points */}
-        <div className="bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-primary mb-2">
-            {profile.availablePoints.toLocaleString()}
+    <div className="space-y-8 animate-in fade-in duration-700">
+      {/* Tier Status Node */}
+      <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden group">
+        <CardHeader className="p-8 md:p-12 border-b border-border/50 bg-secondary/30 relative">
+          <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+            <Crown weight="fill" className="w-64 h-64 text-primary" />
           </div>
-          <div className="text-sm text-muted-foreground uppercase tracking-wide">
-            แต้มที่ใช้ได้
-          </div>
-        </div>
-
-        {/* Total Spent */}
-        <div className="bg-card border border-border rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-foreground mb-2">
-            ฿{profile.totalSpent.toLocaleString()}
-          </div>
-          <div className="text-sm text-muted-foreground uppercase tracking-wide">
-            ยอดใช้จ่ายรวม
-          </div>
-          <div className="mt-3 text-xs text-muted-foreground">
-            เฉลี่ย ฿{profile.averageSpend.toLocaleString()}/ครั้ง
-          </div>
-        </div>
-
-        {/* Total Visits */}
-        <div className="bg-card border border-border rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-foreground mb-2">
-            {profile.totalVisits}
-          </div>
-          <div className="text-sm text-muted-foreground uppercase tracking-wide">
-            ครั้งที่มาใช้บริการ
-          </div>
-          <div className="mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground">
-            <CalendarDots className="w-3 h-3" />
-            ล่าสุด {profile.lastVisit.toLocaleDateString('th-TH')}
-          </div>
-        </div>
-
-        {/* Referrals */}
-        <div className="bg-card border border-border rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-foreground mb-2">
-            {profile.successfulReferrals}
-          </div>
-          <div className="text-sm text-muted-foreground uppercase tracking-wide">
-            เพื่อนที่แนะนำ
-          </div>
-          <div className="mt-3 text-xs text-primary font-medium">
-            โค้ด: {profile.referralCode}
-          </div>
-        </div>
-      </motion.div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Tier Progress */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-card border border-border rounded-2xl p-6"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Crown className="w-5 h-5 text-primary" />
-                ระดับสมาชิก
-              </h3>
-              {nextTierPoints && (
-                <div className="text-sm text-muted-foreground">
-                  อีก ฿{(nextTierPoints - profile.totalSpent).toLocaleString()} → {tierConfig.nextTier}
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-10 relative z-10">
+            <div className="flex items-center gap-8">
+              <div className="w-20 h-20 rounded-3xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner group-hover:bg-primary/20 transition-all duration-500">
+                <Crown weight="duotone" className="w-10 h-10 shadow-glow-sm" />
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">{profile?.tier || 'Aura Basic'} Protocol</h2>
+                  <Badge variant="success" className="font-black text-[10px] tracking-widest px-4 py-1.5 shadow-sm">ACTIVE_NODE</Badge>
                 </div>
-              )}
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Identity Tier Status & Evolution Progress</p>
+              </div>
             </div>
 
-            {/* Progress Bar */}
-            {nextTierPoints && (
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span>{tierConfig.name}</span>
-                  <span>{profile.tierProgress.toFixed(0)}%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${profile.tierProgress}%` }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className="h-full bg-gradient-to-r from-primary to-primary/80 rounded-full"
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>฿{currentTierPoints.toLocaleString()}</span>
-                  <span>฿{nextTierPoints.toLocaleString()}</span>
+            <div className="flex items-center gap-8">
+              <div className="text-right">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Accumulated Flux</p>
+                <div className="flex items-center justify-end gap-2">
+                  <Coins weight="fill" className="w-5 h-5 text-amber-500" />
+                  <span className="text-4xl font-black text-foreground tabular-nums tracking-tighter">{profile?.points || 0}</span>
                 </div>
               </div>
-            )}
-          </motion.div>
+              <div className="h-12 w-px bg-border/50" />
+              <div className="text-right">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Next Evolution</p>
+                <span className="text-xl font-bold text-foreground/60 uppercase tracking-tighter italic">Elite Tier</span>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
 
-          {/* Recent Activity */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-card border border-border rounded-2xl p-6"
-          >
-            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Lightning className="w-5 h-5 text-primary" />
-              กิจกรรมล่าสุด
-            </h3>
-            
-            <div className="space-y-4">
-              {transactions.length === 0 ? (
-                <div className="py-8 text-center text-muted-foreground text-sm">
-                  ยังไม่มีประวัติการใช้แต้ม
-                </div>
-              ) : (
-                transactions.map((tx) => (
-                  <div key={tx.id} className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold ${
-                        tx.type === 'earned' ? 'bg-green-500/20 text-green-500' :
-                        tx.type === 'redeemed' ? 'bg-red-500/20 text-red-500' :
-                        'bg-blue-500/20 text-blue-500'
-                      }`}>
-                        {tx.type === 'earned' ? '+' : tx.type === 'redeemed' ? '-' : '🎁'}
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">{tx.description}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {tx.createdAt.toLocaleDateString('th-TH')}
-                        </div>
-                      </div>
+        <CardContent className="p-10 md:p-12 space-y-10 relative z-10">
+          <div className="space-y-6">
+            <div className="flex justify-between items-center px-2">
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Evolution Trajectory</span>
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">750 / 1000 Flux Units</span>
+            </div>
+            <div className="h-3 w-full bg-secondary/50 rounded-full overflow-hidden p-0.5 border border-border shadow-inner">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: '75%' }}
+                transition={{ duration: 2, ease: "circOut" }}
+                className="h-full bg-primary rounded-full shadow-glow-sm"
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground font-medium italic text-center opacity-60">
+              Increase engagement delta by 250 units to establish high-fidelity status node.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Achievements Matrix */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="flex items-center justify-between px-4">
+            <div className="flex items-center gap-3">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(var(--primary),0.6)]" />
+              <h3 className="text-xl font-black text-foreground uppercase tracking-tight">Privilege <span className="text-primary text-glow">Matrix</span></h3>
+            </div>
+            <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">
+              {achievements.length} Nodes Unlocked
+            </Badge>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {achievements.map((achievement, idx) => (
+              <motion.div
+                key={achievement.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <Card className={cn(
+                  "p-6 rounded-[32px] border transition-all duration-500 relative overflow-hidden group/achieve",
+                  achievement.unlocked ? "border-primary/30 bg-primary/5 shadow-card" : "border-border/50 bg-secondary/20 opacity-60 grayscale"
+                )}>
+                  <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-hover/achieve:scale-110 transition-transform">
+                    <Trophy weight="fill" className="w-20 h-20 text-primary" />
+                  </div>
+                  
+                  <div className="flex items-center gap-5 relative z-10">
+                    <div className={cn(
+                      "w-14 h-14 rounded-2xl border flex items-center justify-center shadow-inner transition-all duration-500",
+                      achievement.unlocked ? "bg-primary/10 border-primary/20 text-primary" : "bg-secondary border-border text-muted-foreground"
+                    )}>
+                      {achievement.unlocked ? <Medal weight="duotone" className="w-7 h-7" /> : <ShieldCheck weight="duotone" className="w-7 h-7" />}
                     </div>
-                    <div className={`font-bold ${
-                      tx.type === 'earned' ? 'text-green-500' :
-                      tx.type === 'redeemed' ? 'text-red-500' :
-                      'text-blue-500'
-                    }`}>
-                      {tx.type === 'earned' ? '+' : '-'}{tx.amount}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base font-black text-foreground uppercase tracking-tight truncate leading-tight">{achievement.name}</h4>
+                      <p className="text-[10px] text-muted-foreground font-medium italic mt-1 leading-relaxed opacity-80">{achievement.description}</p>
                     </div>
                   </div>
-                ))
-              )}
-            </div>
-          </motion.div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-6">
-          {/* Achievements */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-card border border-border rounded-2xl p-6"
-          >
-            <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-primary" />
-              Achievements
-              <span className="ml-auto text-sm bg-primary/20 text-primary px-2 py-1 rounded-full">
-                {profile.totalAchievements}
-              </span>
-            </h3>
+        {/* Transaction Ledger Hub */}
+        <div className="space-y-8">
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardHeader className="p-8 border-b border-border/50 bg-secondary/30 relative">
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                    <History weight="duotone" className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="text-sm font-black uppercase tracking-widest">Protocol Ledger</CardTitle>
+                </div>
+                <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] uppercase tracking-widest px-3 py-1">LATEST_SYNC</Badge>
+              </div>
+            </CardHeader>
 
-            <div className="space-y-3">
-              {achievements.length === 0 ? (
-                <div className="py-8 text-center text-muted-foreground text-sm">
-                  ยังไม่มี achievements
+            <CardContent className="p-8 space-y-8 relative z-10">
+              {transactions.length === 0 ? (
+                <div className="py-20 text-center opacity-40">
+                  <div className="w-16 h-16 rounded-[32px] bg-secondary flex items-center justify-center mx-auto mb-4 shadow-inner">
+                    <History weight="duotone" className="w-8 h-8" />
+                  </div>
+                  <p className="text-[10px] font-black uppercase tracking-widest">No Protocol Logs</p>
                 </div>
               ) : (
-                achievements.slice(0, 3).map((achievement, index) => {
-                  const unlocked = profile.unlockedAchievements.includes(achievement.id);
-                  return (
+                <div className="space-y-6">
+                  {transactions.slice(0, 8).map((txn, i) => (
                     <motion.div
-                      key={achievement.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 * index }}
-                      className={`p-3 rounded-lg flex items-center gap-3 ${
-                        unlocked 
-                          ? 'bg-gradient-to-r from-primary/10 to-transparent border border-primary/20' 
-                          : 'bg-muted/20 border border-border opacity-60'
-                      }`}
+                      key={txn.id}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * i }}
+                      className="flex gap-4 group/log"
                     >
-                      <div className="text-2xl">{achievement.badgeIcon || '🏆'}</div>
-                      <div className="flex-1">
-                        <div className="font-medium text-foreground">{achievement.name}</div>
-                        <div className="text-xs text-muted-foreground">{achievement.description}</div>
-                        <div className="text-xs text-primary font-medium">+{achievement.pointsReward} แต้ม</div>
+                      <div className="flex flex-col items-center gap-2 pt-1">
+                        <div className={cn(
+                          "w-2.5 h-2.5 rounded-full shadow-sm",
+                          txn.type === 'earn' ? "bg-emerald-500 shadow-glow-sm" : "bg-rose-500 shadow-glow-sm"
+                        )} />
+                        {i !== (Math.min(transactions.length, 8) - 1) && <div className="w-px h-full bg-border/50 group-hover/log:bg-primary/20 transition-colors" />}
                       </div>
-                      {unlocked && (
-                        <div className="text-green-500">
-                          <Medal className="w-4 h-4" />
+                      <div className="flex-1 pb-6 group-last/log:pb-0">
+                        <div className="flex justify-between items-start mb-1">
+                          <p className="text-xs font-bold text-foreground group-hover/log:text-primary transition-colors tracking-tight uppercase">{txn.description}</p>
+                          <span className={cn(
+                            "text-[10px] font-black tabular-nums",
+                            txn.type === 'earn' ? "text-emerald-500" : "text-rose-500"
+                          )}>
+                            {txn.type === 'earn' ? '+' : '-'}{txn.amount}
+                          </span>
                         </div>
-                      )}
+                        <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-tighter opacity-60">NODE_TS: {txn.createdAt.toLocaleDateString()}</p>
+                      </div>
                     </motion.div>
-                  );
-                })
+                  ))}
+                </div>
               )}
-            </div>
-          </motion.div>
 
-          {/* Referral Code */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/30 rounded-2xl p-6 text-center"
-          >
-            <div className="text-2xl mb-2">👥</div>
-            <h4 className="font-semibold text-foreground mb-2">แนะนำเพื่อน รับแต้มฟรี!</h4>
-            <p className="text-sm text-muted-foreground mb-4">
-              แนะนำเพื่อนมาใช้บริการ รับ 500 แต้ม ทันที!
+              <Button variant="ghost" className="w-full mt-4 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary border border-dashed border-border/50 py-5 rounded-[24px] shadow-sm transition-all hover:bg-primary/5">
+                Access Full Archives
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Referral Protocol Node */}
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardContent className="p-8 space-y-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-secondary border border-border/50 flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500 shadow-inner">
+                  <Users weight="duotone" className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-foreground uppercase tracking-[0.2em]">Identity Propagation</h3>
+                  <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">Referral Protocol</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="flex items-center gap-3 bg-secondary/30 border border-border/50 p-4 rounded-2xl shadow-inner group/code relative overflow-hidden">
+                  <div className="absolute inset-0 bg-primary/5 opacity-0 group-focus-within/code:opacity-100 transition-opacity" />
+                  <code className="text-sm font-black text-primary flex-1 truncate relative z-10 tracking-[0.2em]">
+                    {profile?.referralCode || 'NODE_PENDING'}
+                  </code>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={copyRefCode}
+                    className="h-9 w-9 p-0 rounded-xl hover:bg-primary/10 text-muted-foreground hover:text-primary transition-all relative z-10"
+                  >
+                    {copied ? <Check weight="bold" className="w-4.5 h-4.5 text-emerald-500" /> : <Copy weight="bold" className="w-4.5 h-4.5" />}
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground font-medium italic opacity-60 px-1 leading-relaxed">
+                  Propagate your identity node to earn 50 flux units for every clinical synchronization established.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Integrity Note */}
+          <Card className="p-8 rounded-[40px] border-emerald-500/10 bg-emerald-500/[0.02] space-y-4 group shadow-inner">
+            <h4 className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.3em] flex items-center gap-3">
+              <ShieldCheck weight="duotone" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              Protocol Integrity
+            </h4>
+            <p className="text-[11px] text-muted-foreground italic font-medium leading-relaxed opacity-80">
+              All loyalty nodes are synchronized with clinical ERP cluster alpha. Privilege points carry zero fiscal valuation outside the BN-Aura ecosystem.
             </p>
-            <div className="bg-background/50 border border-primary/20 rounded-lg p-3 mb-4">
-              <div className="text-xs text-muted-foreground mb-1">รหัสแนะนำของคุณ</div>
-              <div className="text-lg font-bold text-primary font-mono">{profile.referralCode}</div>
-            </div>
-            <button 
-              onClick={copyReferralCode}
-              className="w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all flex items-center justify-center gap-2"
-            >
-              {copied ? (
-                <>
-                  <Check className="w-4 h-4" />
-                  คัดลอกแล้ว!
-                </>
-              ) : (
-                <>
-                  <Copy className="w-4 h-4" />
-                  คัดลอกรหัส
-                </>
-              )}
-            </button>
-          </motion.div>
+          </Card>
         </div>
       </div>
     </div>

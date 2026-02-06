@@ -1,5 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, DownloadSimple, XCircle } from '@phosphor-icons/react';
+import { FileText, DownloadSimple, X, Receipt, Clock, CheckCircle, Buildings, MapPin, User, IdentificationBadge, Briefcase } from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { cn } from '@/lib/utils';
 
 interface InvoiceModalProps {
   invoice: {
@@ -17,65 +21,99 @@ export default function InvoiceModal({ invoice, onClose, onDownload, formatCurre
   return (
     <AnimatePresence>
       {invoice && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[200] p-4 overflow-y-auto">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="bg-slate-800 p-8 rounded-[32px] border-2 border-slate-600 w-full max-w-lg shadow-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0"
+            onClick={onClose}
+          />
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-card border border-border rounded-[40px] w-full max-w-lg shadow-premium relative z-10 my-8 overflow-hidden group"
           >
-            <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                  <FileText className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-black text-white uppercase tracking-tight">Invoice Detail</h3>
-                  <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest">{invoice.id}</p>
-                </div>
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 bg-slate-700 text-gray-400 hover:text-white rounded-xl transition-all"
-              >
-                <XCircle className="w-5 h-5" />
-              </button>
+            {/* Background Decor */}
+            <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+              <Receipt className="w-64 h-64 text-primary" />
             </div>
 
-            <div className="space-y-6">
-              <div className="p-6 bg-slate-900 border-2 border-slate-700 rounded-3xl space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Clinic</span>
-                  <span className="text-white font-bold">{invoice.clinic}</span>
+            <div className="p-10 relative z-10 space-y-10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
+                    <FileText weight="duotone" className="w-7 h-7" />
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">Invoice Node</h3>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1 font-mono">{invoice.id}</p>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Billing Date</span>
-                  <span className="text-white font-bold">{invoice.date}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Status</span>
-                  <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest">PAID</span>
-                </div>
-                <div className="pt-4 border-t border-slate-700 flex justify-between items-center">
-                  <span className="text-sm font-black text-white uppercase tracking-widest">Total Amount</span>
-                  <span className="text-2xl font-black text-primary">{formatCurrency(invoice.amount)}</span>
-                </div>
+                <Button
+                  variant="ghost"
+                  onClick={onClose}
+                  className="p-2 h-10 w-10 rounded-xl hover:bg-secondary text-muted-foreground hover:text-foreground transition-all"
+                >
+                  <X weight="bold" className="w-6 h-6" />
+                </Button>
               </div>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => onDownload(invoice.id)}
-                  className="flex-1 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-widest text-xs hover:brightness-110 transition-all flex items-center justify-center gap-2"
-                >
-                  <DownloadSimple className="w-4 h-4 stroke-[3px]" />
-                  Download PDF
-                </button>
-                <button
-                  onClick={onClose}
-                  className="flex-1 py-4 bg-slate-700 text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-slate-600 transition-all"
-                >
-                  Close
-                </button>
+              <div className="space-y-8">
+                <Card className="bg-secondary/30 border border-border/50 rounded-[32px] overflow-hidden">
+                  <CardContent className="p-8 space-y-6">
+                    <div className="flex justify-between items-center group/item">
+                      <div className="flex items-center gap-3">
+                        <Buildings weight="duotone" className="w-4 h-4 text-primary/60" />
+                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Cluster Node</span>
+                      </div>
+                      <span className="text-sm font-bold text-foreground uppercase tracking-tight">{invoice.clinic}</span>
+                    </div>
+                    
+                    <div className="flex justify-between items-center group/item">
+                      <div className="flex items-center gap-3">
+                        <Clock weight="duotone" className="w-4 h-4 text-primary/60" />
+                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Billing Cycle</span>
+                      </div>
+                      <span className="text-sm font-bold text-foreground tabular-nums">{invoice.date}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center group/item">
+                      <div className="flex items-center gap-3">
+                        <CheckCircle weight="duotone" className="w-4 h-4 text-emerald-500/60" />
+                        <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Sync Status</span>
+                      </div>
+                      <Badge variant="success" size="sm" className="font-black text-[8px] uppercase tracking-widest px-3">PAID_OK</Badge>
+                    </div>
+
+                    <div className="pt-6 border-t border-border/30 flex justify-between items-center">
+                      <div className="space-y-1">
+                        <span className="text-sm font-black text-foreground uppercase tracking-widest">Fiscal Yield</span>
+                        <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest opacity-60 leading-none">Global settlement value</p>
+                      </div>
+                      <span className="text-3xl font-black text-primary tabular-nums tracking-tighter">{formatCurrency(invoice.amount)}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  <Button
+                    onClick={() => onDownload(invoice.id)}
+                    className="w-full sm:flex-[2] py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] shadow-premium gap-3 group"
+                  >
+                    <DownloadSimple weight="bold" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                    Archive PDF node
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={onClose}
+                    className="w-full sm:flex-1 py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
+                  >
+                    Close
+                  </Button>
+                </div>
               </div>
             </div>
           </motion.div>

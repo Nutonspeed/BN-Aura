@@ -1,6 +1,5 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Package, 
   Plus, 
@@ -10,12 +9,39 @@ import {
   PencilSimple, 
   Trash,
   ChartBar,
-  SpinnerGap
+  SpinnerGap,
+  ArrowLeft,
+  ArrowsClockwise,
+  CheckCircle,
+  XCircle,
+  CaretRight,
+  Briefcase,
+  Monitor,
+  IdentificationBadge,
+  Stack,
+  Archive,
+  Tag,
+  WarningCircle,
+  Funnel,
+  Cube,
+  ListBullets,
+  ArrowsLeftRight,
+  Truck,
+  Buildings
 } from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { cn } from '@/lib/utils';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProductModal from '@/components/ProductModal';
 import StockMovementModal from '@/components/StockMovementModal';
+import { Link } from '@/i18n/routing';
+import ResponsiveTable from '@/components/ui/ResponsiveTable';
 
 interface Product {
   id: string;
@@ -31,6 +57,7 @@ interface Product {
 }
 
 export default function InventoryManagement() {
+  const { goBack } = useBackNavigation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -39,6 +66,19 @@ export default function InventoryManagement() {
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(undefined);
   const [isMovementModalOpen, setIsMovementModalOpen] = useState(false);
   const [selectedProductForMovement, setSelectedProductForMovement] = useState<Product | undefined>(undefined);
+
+  const categories = useMemo(() => {
+    const cats = ['all', ...new Set(products.map(p => p.category))];
+    return cats;
+  }, [products]);
+
+  const lowStockProducts = useMemo(() => {
+    return products.filter(p => p.stock_quantity <= p.min_stock_level);
+  }, [products]);
+
+  const totalValue = useMemo(() => {
+    return products.reduce((sum, p) => sum + (p.stock_quantity * p.cost_price), 0);
+  }, [products]);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -96,16 +136,120 @@ export default function InventoryManagement() {
     return matchesSearch && matchesCategory;
   });
 
-  const lowStockProducts = products.filter(p => p.stock_quantity <= p.min_stock_level);
-  const totalValue = products.reduce((acc, curr) => acc + (curr.stock_quantity * curr.cost_price), 0);
-  const categories = ['all', ...Array.from(new Set(products.map(p => p.category).filter(Boolean)))];
+  const columns = [
+    {
+      header: 'Asset Intelligence',
+      accessor: (product: Product) => (
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-xl bg-secondary border border-border flex items-center justify-center text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500 shadow-sm shrink-0">
+            <Package className="w-6 h-6" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate block">{product.name}</span>
+            <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{product.category}</span>
+          </div>
+        </div>
+      )
+    },
+    {
+      header: 'Serial SKU',
+      accessor: (product: Product) => (
+        <span className="text-[11px] text-muted-foreground font-mono bg-secondary px-3 py-1.5 rounded-lg border border-border group-hover:border-primary/20 transition-colors uppercase">
+          {product.sku || 'N/A'}
+        </span>
+      )
+    },
+    {
+      header: 'Stock Level',
+      accessor: (product: Product) => {
+        const isLowStock = product.stock_quantity <= product.min_stock_level;
+        return (
+          <div className="space-y-1.5 w-32">
+            <div className="flex items-center gap-2">
+              <span className={cn("text-base font-bold tabular-nums", isLowStock ? "text-rose-500" : "text-foreground")}>
+                {product.stock_quantity}
+              </span>
+              {isLowStock && <Warning className="w-4 h-4 text-rose-500 animate-pulse" />}
+            </div>
+            <div className="h-1 w-full bg-secondary rounded-full overflow-hidden border border-border">
+              <div 
+                className={cn("h-full rounded-full", isLowStock ? 'bg-rose-500' : 'bg-emerald-500')} 
+                style={{ width: `${Math.min(100, (product.stock_quantity / (product.min_stock_level * 2)) * 100)}%` }} 
+              />
+            </div>
+          </div>
+        );
+      }
+    },
+    {
+      header: 'Unit Cost',
+      accessor: (product: Product) => (
+        <span className="text-sm text-muted-foreground font-medium tabular-nums">
+          ฿{product.cost_price?.toLocaleString() || '0'}
+        </span>
+      )
+    },
+    {
+      header: 'Market Val',
+      accessor: (product: Product) => (
+        <span className="text-sm text-emerald-500 font-bold tabular-nums">
+          ฿{product.sale_price?.toLocaleString() || '0'}
+        </span>
+      )
+    },
+    {
+      header: 'Total Eq.',
+      accessor: (product: Product) => (
+        <span className="text-sm font-bold text-foreground tracking-tight tabular-nums">
+          ฿{(product.stock_quantity * product.cost_price).toLocaleString()}
+        </span>
+      )
+    },
+    {
+      header: '',
+      className: 'text-right',
+      accessor: (product: Product) => (
+        <div className="flex items-center justify-end gap-2">
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => handleAdjustStock(product)}
+            className="p-2 text-primary/60 hover:text-primary transition-all rounded-lg hover:bg-primary/10 border border-transparent hover:border-primary/10"
+            title="Adjust Stock"
+          >
+            <TrendUp className="w-4 h-4" />
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => handleEditProduct(product)}
+            className="p-2 text-muted-foreground hover:text-foreground transition-all rounded-lg hover:bg-accent border border-transparent hover:border-border"
+            title="Edit Asset"
+          >
+            <PencilSimple className="w-4 h-4" />
+          </motion.button>
+          <motion.button 
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => handleDeleteProduct(product.id)}
+            className="p-2 text-rose-500/40 hover:text-rose-500 transition-all rounded-lg hover:bg-rose-500/10 border border-transparent hover:border-rose-500/10"
+            title="Terminate Asset"
+          >
+            <Trash className="w-4 h-4" />
+          </motion.button>
+        </div>
+      )
+    }
+  ];
 
   return (
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-10 pb-20 font-sans"
+      className="space-y-8 pb-20 font-sans"
     >
+      <Breadcrumb />
+
       <ProductModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -120,24 +264,24 @@ export default function InventoryManagement() {
         product={selectedProductForMovement}
       />
 
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
         <div className="space-y-1">
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2 text-primary text-xs font-black uppercase tracking-[0.3em]"
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            <Package className="w-4 h-4" />
-            Supply Chain Intelligence
+            <Package weight="duotone" className="w-4 h-4" />
+            Supply Chain Intelligence Node
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl font-heading font-bold text-white uppercase tracking-tight"
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Inventory <span className="text-primary text-glow">Control</span>
+            Inventory <span className="text-primary">Matrix</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -145,280 +289,244 @@ export default function InventoryManagement() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Real-time asset tracking and clinical supply optimization.
+            Real-time asset tracking, clinical supply orchestration, and stock optimization.
           </motion.p>
         </div>
-        <motion.button 
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={handleAddProduct}
-          className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
-        >
-          <Plus className="w-4 h-4 stroke-[3px]" />
-          <span>Register New Product</span>
-        </motion.button>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex bg-secondary/50 border border-border/50 p-1.5 rounded-[24px] shadow-inner mr-2">
+            {[
+              { id: 'main', label: 'Vault', icon: Archive, href: '/clinic/inventory' },
+              { id: 'orders', label: 'Orders', icon: Truck, href: '/clinic/inventory/orders' },
+              { id: 'alerts', label: 'Alerts', icon: WarningCircle, href: '/clinic/inventory/alerts' },
+              { id: 'suppliers', label: 'Network', icon: Buildings, href: '/clinic/inventory/suppliers' }
+            ].map((node) => (
+              <Link key={node.id} href={node.href}>
+                <button
+                  className={cn(
+                    "px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border whitespace-nowrap flex items-center gap-2",
+                    node.id === 'main'
+                      ? "bg-primary text-primary-foreground border-primary shadow-premium"
+                      : "bg-transparent text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground"
+                  )}
+                >
+                  <node.icon weight={node.id === 'main' ? "fill" : "bold"} className="w-3.5 h-3.5" />
+                  {node.label}
+                </button>
+              </Link>
+            ))}
+          </div>
+          <Button 
+            variant="outline"
+            onClick={fetchProducts}
+            disabled={loading}
+            className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
+          >
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+            Sync Vault
+          </Button>
+          <Button 
+            onClick={handleAddProduct}
+            className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
+          >
+            <Plus weight="bold" className="w-4 h-4" />
+            Initialize Asset
+          </Button>
+        </div>
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: 'Asset Inventory', value: products.length.toString(), icon: Package, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-          { label: 'Low Stock Nodes', value: lowStockProducts.length.toString(), icon: Warning, color: lowStockProducts.length > 0 ? 'text-rose-400' : 'text-emerald-400', bg: lowStockProducts.length > 0 ? 'bg-rose-500/10' : 'bg-emerald-500/10' },
-          { label: 'Consolidated Value', value: '฿' + totalValue.toLocaleString(), icon: ChartBar, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-          { label: 'Categories', value: (categories.length - 1).toString(), icon: TrendUp, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-        ].map((stat, i) => (
-          <motion.div 
-            key={i} 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 + i * 0.1 }}
-            whileHover={{ y: -5 }}
-            className="glass-card p-6 rounded-3xl border border-white/5 flex items-center gap-5 group overflow-hidden relative"
-          >
-            <div className="absolute -top-2 -right-2 opacity-5 group-hover:opacity-10 transition-opacity">
-              <stat.icon className="w-16 h-16 text-white" />
-            </div>
-            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform", stat.bg, stat.color)}>
-              <stat.icon className="w-7 h-7" />
-            </div>
-            <div className="relative z-10">
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{stat.label}</p>
-              <p className="text-2xl font-black text-white">{stat.value}</p>
-            </div>
-          </motion.div>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Total Assets"
+          value={products.length}
+          icon={Cube}
+          className="p-4"
+        />
+        <StatCard
+          title="Critical Depletion"
+          value={lowStockProducts.length}
+          icon={WarningCircle}
+          iconColor="text-rose-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Consolidated Value"
+          value={totalValue}
+          prefix="฿"
+          icon={ChartBar}
+          iconColor="text-emerald-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Category Clusters"
+          value={categories.length - 1}
+          icon={Tag}
+          iconColor="text-purple-500"
+          className="p-4"
+        />
       </div>
 
-      {/* Low Stock Alert */}
+      {/* Low Stock Alert Hub */}
       <AnimatePresence>
         {lowStockProducts.length > 0 && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="glass-premium p-6 rounded-[32px] border border-rose-500/30 bg-rose-500/5 relative overflow-hidden"
+            initial={{ opacity: 0, y: -20, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            className="px-2"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 via-transparent to-transparent" />
-            <div className="flex items-start gap-6 relative z-10">
-              <div className="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-500/20 flex items-center justify-center text-rose-400 shadow-lg">
-                <Warning className="w-6 h-6 animate-pulse" />
-              </div>
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h3 className="text-lg font-black text-rose-400 uppercase tracking-tight">Critical Depletion Alert</h3>
-                  <p className="text-rose-300/60 text-sm font-light italic">
-                    The following assets have reached critical minimum thresholds and require immediate replenishment.
-                  </p>
+            <Card className="border-none relative overflow-hidden bg-rose-500/10 shadow-glow-sm">
+              <div className="absolute inset-0 bg-gradient-to-r from-rose-500/5 via-transparent to-transparent" />
+              <CardContent className="p-6 relative z-10">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                  <div className="flex items-center gap-5">
+                    <div className="w-14 h-14 rounded-2xl bg-rose-500/20 flex items-center justify-center text-rose-500 border border-rose-500/30 shadow-inner">
+                      <Warning weight="fill" className="w-7 h-7 animate-pulse" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-black text-rose-500 uppercase tracking-tight">Critical Depletion Detected</h3>
+                      <p className="text-rose-500/70 text-xs font-medium italic">
+                        {lowStockProducts.length} asset nodes have reached critical operational thresholds.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex -space-x-3">
+                      {lowStockProducts.slice(0, 3).map((p, idx) => (
+                        <div key={p.id} className="w-10 h-10 rounded-full border-2 border-rose-900 bg-secondary flex items-center justify-center text-[10px] font-black uppercase text-rose-500 shadow-lg relative z-[30-idx]">
+                          {p.name.charAt(0)}
+                        </div>
+                      ))}
+                      {lowStockProducts.length > 3 && (
+                        <div className="w-10 h-10 rounded-full border-2 border-rose-900 bg-rose-500 text-white flex items-center justify-center text-[10px] font-black shadow-lg relative z-0">
+                          +{lowStockProducts.length - 3}
+                        </div>
+                      )}
+                    </div>
+                    <Button className="bg-rose-500 hover:bg-rose-600 text-white border-none shadow-premium px-8 py-6 rounded-2xl text-[10px] font-black uppercase tracking-widest ml-4">
+                      Initialize Replenishment
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-3">
-                  {lowStockProducts.slice(0, 5).map(product => (
-                    <motion.span 
-                      key={product.id} 
-                      whileHover={{ scale: 1.05 }}
-                      className="px-4 py-2 bg-white/5 border border-rose-500/20 text-rose-300 text-[10px] font-black uppercase tracking-widest rounded-xl backdrop-blur-md"
-                    >
-                      {product.name} ({product.stock_quantity} unit{product.stock_quantity > 1 ? 's' : ''})
-                    </motion.span>
-                  ))}
-                  {lowStockProducts.length > 5 && (
-                    <span className="px-4 py-2 bg-white/5 border border-white/10 text-muted-foreground text-[10px] font-black uppercase tracking-widest rounded-xl">
-                      +{lowStockProducts.length - 5} More Nodes
-                    </span>
-                  )}
-                </div>
-              </div>
-              <button className="px-6 py-3 bg-rose-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:brightness-110 transition-all active:scale-95">
-                Bulk Order
-              </button>
-            </div>
+              </CardContent>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* MagnifyingGlass & Filters */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="relative flex-1 group"
-        >
-          <div className="absolute inset-0 bg-primary/10 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-3xl" />
-          <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within:text-primary transition-colors" />
-          <input 
-            type="text" 
-            placeholder="Search products by name, SKU, or category..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 rounded-3xl py-4 pl-14 pr-6 text-sm text-white focus:outline-none focus:border-primary/50 transition-all shadow-inner backdrop-blur-md relative z-10"
-          />
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="flex gap-4"
-        >
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-6 py-4 bg-white/5 border border-white/10 rounded-[24px] text-xs font-black uppercase tracking-widest text-white focus:outline-none focus:border-primary/50 transition-all backdrop-blur-md shadow-sm min-w-[200px]"
-          >
-            {categories.map(category => (
-              <option key={category} value={category} className="bg-[#121212] text-white">
-                {category === 'all' ? 'All Operational Nodes' : category.toUpperCase()}
-              </option>
-            ))}
-          </select>
-          
-          <button className="p-4 bg-white/5 border border-white/10 rounded-2xl text-muted-foreground hover:text-white transition-all group">
-            <ChartBar className="w-5 h-5 group-hover:scale-110 transition-transform" />
-          </button>
-        </motion.div>
+      {/* Search & Intelligence Controls */}
+      <div className="px-2">
+        <Card className="p-6 rounded-[32px] border-border/50 shadow-card">
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="relative flex-1 group">
+              <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within:opacity-100 transition-opacity rounded-xl" />
+              <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+              <input 
+                type="text" 
+                placeholder="Query asset name, SKU identity, or cluster category..." 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
+              />
+            </div>
+            
+            <div className="relative">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full sm:w-64 bg-secondary/50 border border-border rounded-2xl py-3.5 px-6 text-xs font-black uppercase tracking-widest text-foreground focus:border-primary outline-none transition-all appearance-none font-bold"
+              >
+                {categories.map(category => (
+                  <option key={category} value={category} className="bg-card">
+                    {category === 'all' ? 'Protocol: ALL CATEGORIES' : `CLUSTER: ${category.toUpperCase()}`}
+                  </option>
+                ))}
+              </select>
+              <Funnel weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/40 pointer-events-none" />
+            </div>
+          </div>
+        </Card>
       </div>
 
-      {/* Products Table */}
-      {loading ? (
-        <div className="py-32 flex flex-col items-center justify-center space-y-6">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-            <Package className="absolute inset-0 m-auto w-6 h-6 text-primary animate-pulse" />
-          </div>
-          <p className="text-muted-foreground animate-pulse font-bold uppercase tracking-[0.3em] text-[10px]">Accessing Supply Chain Nodes...</p>
-        </div>
-      ) : (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7 }}
-          className="glass-premium rounded-[40px] overflow-hidden border border-white/5 shadow-2xl relative"
-        >
-          <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-left border-collapse min-w-[1000px]">
-              <thead>
-                <tr className="border-b border-white/5 bg-white/[0.03]">
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Asset Intelligence</th>
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Serial SKU</th>
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Stock Level</th>
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Unit Cost</th>
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Market Val</th>
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Total Eq.</th>
-                  <th className="px-8 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]"></th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/5">
-                {filteredProducts.length > 0 ? (
-                  filteredProducts.map((product, i) => {
-                    const isLowStock = product.stock_quantity <= product.min_stock_level;
-                    const rowTotalValue = product.stock_quantity * product.cost_price;
-
-                    return (
-                      <motion.tr 
-                        key={product.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.03 }}
-                        className="group hover:bg-white/[0.05] transition-all relative overflow-hidden"
-                      >
-                        <td className="px-8 py-6 relative">
-                          <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all" />
-                          <div className="flex items-center gap-5">
-                            <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/20 group-hover:bg-primary/10 group-hover:text-primary transition-all duration-500 shadow-sm">
-                              <Package className="w-7 h-7" />
-                            </div>
-                            <div className="flex flex-col space-y-1">
-                              <span className="text-base font-black text-white group-hover:text-primary transition-colors tracking-tight">{product.name}</span>
-                              <div className="flex items-center gap-2">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary/40" />
-                                <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest">{product.category}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-8 py-6">
-                          <span className="text-[11px] text-white/40 font-mono bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 group-hover:border-white/10 transition-colors uppercase">{product.sku || 'N/A'}</span>
-                        </td>
-                        <td className="px-8 py-6">
-                          <div className="flex flex-col gap-1.5">
-                            <div className="flex items-center gap-2.5">
-                              <span className={cn("text-lg font-black tracking-tighter tabular-nums", isLowStock ? "text-rose-400" : "text-white")}>
-                                {product.stock_quantity}
-                              </span>
-                              {isLowStock && <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }}><Warning className="w-4 h-4 text-rose-400" /></motion.div>}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="flex-1 h-1 w-16 bg-white/5 rounded-full overflow-hidden">
-                                <div className={cn("h-full rounded-full", isLowStock ? 'bg-rose-500' : 'bg-emerald-500')} style={{ width: `${Math.min(100, (product.stock_quantity / (product.min_stock_level * 2)) * 100)}%` }} />
-                              </div>
-                              <span className="text-[9px] text-muted-foreground uppercase font-black">Min: {product.min_stock_level}</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-8 py-6 text-sm text-white/60 font-medium tabular-nums">
-                          ฿{product.cost_price?.toLocaleString() || '0'}
-                        </td>
-                        <td className="px-8 py-6 text-sm text-emerald-400/80 font-black tabular-nums">
-                          ฿{product.sale_price?.toLocaleString() || '0'}
-                        </td>
-                        <td className="px-8 py-6 text-lg font-black text-white tracking-tight tabular-nums">
-                          ฿{rowTotalValue.toLocaleString()}
-                        </td>
-                        <td className="px-8 py-6 text-right">
-                          <div className="flex items-center justify-end gap-3">
-                            <motion.button 
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => handleAdjustStock(product)}
-                              className="p-3 text-primary/30 hover:text-primary transition-all rounded-xl hover:bg-primary/10 border border-transparent hover:border-primary/10 shadow-sm"
-                              title="Adjust Stock"
-                            >
-                              <TrendUp className="w-4 h-4" />
-                            </motion.button>
-                            <motion.button 
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => handleEditProduct(product)}
-                              className="p-3 text-white/30 hover:text-white transition-all rounded-xl hover:bg-white/10 border border-transparent hover:border-white/5 shadow-sm"
-                              title="Edit Asset"
-                            >
-                              <PencilSimple className="w-4 h-4" />
-                            </motion.button>
-                            <motion.button 
-                              whileHover={{ scale: 1.1, rotate: 5 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => handleDeleteProduct(product.id)}
-                              className="p-3 text-rose-500/30 hover:text-rose-400 transition-all rounded-xl hover:bg-rose-500/10 border border-transparent hover:border-rose-500/10 shadow-sm"
-                              title="Terminate Asset"
-                            >
-                              <Trash className="w-4 h-4" />
-                            </motion.button>
-                          </div>
-                        </td>
-                      </motion.tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={7} className="px-8 py-32 text-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none" />
-                      <div className="flex flex-col items-center justify-center space-y-6 relative z-10">
-                        <div className="w-20 h-20 rounded-[32px] bg-white/5 border border-white/5 flex items-center justify-center text-white/10 animate-float">
-                          <Package className="w-10 h-10" />
-                        </div>
-                        <div className="space-y-2">
-                          <p className="text-xl font-black text-white/40 uppercase tracking-widest">Inventory Node Empty</p>
-                          <p className="text-sm text-muted-foreground font-light max-w-sm mx-auto italic">No operational assets detected within the selected parameters. Initialize new registry to begin tracking.</p>
+      {/* Asset Registry Table */}
+      <div className="px-2">
+        <Card className="rounded-[40px] border-border/50 overflow-hidden shadow-premium">
+          <ResponsiveTable
+            columns={columns}
+            data={filteredProducts}
+            loading={loading}
+            rowKey={(p) => p.id}
+            emptyMessage="Zero asset nodes detected in current clinical registry."
+            mobileCard={(p) => {
+              const isLowStock = p.stock_quantity <= p.min_stock_level;
+              return (
+                <div className="space-y-5">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-4">
+                      <div className={cn(
+                        "w-14 h-14 rounded-2xl border flex items-center justify-center transition-all duration-500 shadow-inner",
+                        isLowStock ? "bg-rose-500/10 border-rose-500/20 text-rose-500" : "bg-primary/10 border-primary/20 text-primary"
+                      )}>
+                        <Package weight="duotone" className="w-7 h-7" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold text-foreground truncate uppercase tracking-tight">{p.name}</p>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] tracking-widest uppercase px-2 py-0.5">{p.category}</Badge>
+                          <span className="text-[10px] font-mono text-muted-foreground tracking-widest uppercase">{p.sku || 'NO_SKU'}</span>
                         </div>
                       </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
-      )}
+                    </div>
+                    <Badge variant={isLowStock ? 'destructive' : 'success'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-3">
+                      {isLowStock ? 'DEPLETED' : 'OPERATIONAL'}
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-6 py-4 border-y border-border/50">
+                    <div>
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Available Units</p>
+                      <div className="flex items-center gap-2">
+                        <p className={cn("text-lg font-black tabular-nums", isLowStock ? "text-rose-500" : "text-foreground")}>{p.stock_quantity}</p>
+                        {isLowStock && <Warning weight="fill" className="w-3.5 h-3.5 text-rose-500" />}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Market Valuation</p>
+                      <p className="text-lg font-black text-emerald-500 tabular-nums">฿{p.sale_price?.toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-1">
+                    <div className="space-y-0.5">
+                      <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest opacity-60">Consolidated Equity</p>
+                      <p className="text-sm font-black text-foreground tabular-nums tracking-tighter">฿{(p.stock_quantity * p.cost_price).toLocaleString()}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={() => handleAdjustStock(p)} 
+                        variant="outline"
+                        size="sm"
+                        className="h-10 w-10 p-0 border-border/50 rounded-xl text-primary hover:bg-primary/5"
+                      >
+                        <ArrowsLeftRight weight="bold" className="w-4 h-4" />
+                      </Button>
+                      <Button 
+                        onClick={() => handleEditProduct(p)} 
+                        variant="outline"
+                        size="sm"
+                        className="h-10 w-10 p-0 border-border/50 rounded-xl text-muted-foreground hover:bg-secondary"
+                      >
+                        <PencilSimple weight="bold" className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            }}
+          />
+        </Card>
+      </div>
     </motion.div>
   );
 }

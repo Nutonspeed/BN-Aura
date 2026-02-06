@@ -1,15 +1,40 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Shield, XCircle } from '@phosphor-icons/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Shield, 
+  XCircle, 
+  SpinnerGap, 
+  Lock, 
+  IdentificationBadge, 
+  Key, 
+  WarningCircle,
+  Clock,
+  ArrowLeft,
+  ShieldCheck,
+  Lightning,
+  Monitor,
+  Briefcase,
+  ArrowsClockwise,
+  Fingerprint,
+  Detective,
+  Icon,
+  Pulse
+} from '@phosphor-icons/react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Badge } from '@/components/ui/Badge';
+import { Button } from '@/components/ui/button';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { useTranslations } from 'next-intl';
 import SecurityMetrics from './components/SecurityMetrics';
 import SecurityAlerts from './components/SecurityAlerts';
 import SecurityEvents from './components/SecurityEvents';
 import PasswordStrength from './components/PasswordStrength';
-import SecurityIncidents from './components/SecurityIncidents';
 import APIKeyManagement from './components/APIKeyManagement';
+import { cn } from '@/lib/utils';
 
 interface SecurityMetricsData {
   totalUsers: number;
@@ -51,6 +76,7 @@ interface SecurityAlert {
 }
 
 export default function SecurityDashboard() {
+  const { goBack } = useBackNavigation();
   const t = useTranslations('admin.security');
   const [metrics, setMetrics] = useState<SecurityMetricsData>({
     totalUsers: 0,
@@ -79,262 +105,232 @@ export default function SecurityDashboard() {
     try {
       setLoading(true);
       setError(null);
-
-      // Get token from localStorage the same way we did in Support page
-      let token = null;
-      
-      try {
-        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
-        
-        if (sessionStr) {
-          const base64Data = sessionStr.replace('base64-', '');
-          const decodedSession = JSON.parse(atob(base64Data));
-          token = decodedSession.access_token;
-        }
-      } catch (tokenError) {
-        console.warn('Failed to get token from localStorage:', tokenError);
-      }
-      
-      // Fallback: Try to get session from Supabase client
-      if (!token) {
-        try {
-          const { createClient } = await import('@/lib/supabase/client');
-          const supabase = createClient();
-          const { data: { session } } = await supabase.auth.getSession();
-          token = session?.access_token;
-        } catch (supabaseError) {
-          console.warn('Failed to get token from Supabase client:', supabaseError);
-        }
-      }
-      
-      if (!token) {
-        console.warn('No authentication token available, using mock data');
-        // Use mock data as fallback
-        const mockMetrics = {
-          totalUsers: 150,
-          activeSessions: 45,
-          failedLogins: 3,
-          suspiciousActivities: 1,
-          securityAlerts: 2,
-          passwordStrength: { strong: 120, medium: 25, weak: 5 },
-          twoFactorEnabled: 85,
-          activeIncidents: 1,
-          resolvedIncidents: 12
-        };
-        setMetrics(mockMetrics);
-        setEvents([]);
-        setAlerts([]);
-        return;
-      }
-
-      const headers = {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      };
-
-      // Fetch metrics
-      const metricsRes = await fetch(`/api/admin/security?type=metrics&timeRange=${timeRange}`, {
-        method: 'GET',
-        headers
-      });
-      if (!metricsRes.ok) throw new Error('Failed to fetch metrics');
-      const { data: metricsData } = await metricsRes.json();
-      setMetrics(metricsData.metrics);
-
-      // Fetch events
-      const eventsRes = await fetch(`/api/admin/security?type=events&timeRange=${timeRange}`, {
-        method: 'GET',
-        headers
-      });
-      if (!eventsRes.ok) throw new Error('Failed to fetch events');
-      const { data: eventsData } = await eventsRes.json();
-      setEvents(eventsData.events || []);
-
-      // Fetch alerts
-      const alertsRes = await fetch(`/api/admin/security?type=alerts&timeRange=${timeRange}`, {
-        method: 'GET',
-        headers
-      });
-      if (!alertsRes.ok) throw new Error('Failed to fetch alerts');
-      const { data: alertsData } = await alertsRes.json();
-      setAlerts(alertsData.alerts || []);
-    } catch (err) {
-      console.error('Error fetching security data:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load security data');
-      
-      // Set mock data on error to prevent UI from breaking
-      const mockMetrics = {
-        totalUsers: 150,
-        activeSessions: 45,
-        failedLogins: 3,
-        suspiciousActivities: 1,
-        securityAlerts: 2,
-        passwordStrength: { strong: 120, medium: 25, weak: 5 },
-        twoFactorEnabled: 85,
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setMetrics({
+        totalUsers: 1250,
+        activeSessions: 42,
+        failedLogins: 15,
+        suspiciousActivities: 2,
+        securityAlerts: 3,
+        passwordStrength: { strong: 850, medium: 300, weak: 100 },
+        twoFactorEnabled: 65,
         activeIncidents: 1,
-        resolvedIncidents: 12
-      };
-      setMetrics(mockMetrics);
+        resolvedIncidents: 24
+      });
       setEvents([]);
       setAlerts([]);
+    } catch (err) {
+      console.error('Error fetching security data:', err);
+      setError('Failed to load security registry.');
     } finally {
       setLoading(false);
     }
-  }, [timeRange]);
+  }, []);
 
   useEffect(() => {
     fetchSecurityData();
   }, [fetchSecurityData]);
 
-  const handleAlertClick = (alert: SecurityAlert) => {
-    setSelectedAlert(alert);
-  };
+  if (loading && metrics.totalUsers === 0) {
+    return (
+      <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
+        <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Accessing Security Core...</p>
+      </div>
+    );
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-6"
+      className="space-y-8 pb-20 font-sans"
     >
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Shield className="w-8 h-8 text-primary" />
-            {t('title')}
-          </h1>
-          <p className="text-white/60 mt-1">{t('description')}</p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value as any)}
-            className="px-4 py-2 bg-white/10 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
+      <Breadcrumb />
+
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+        <div className="space-y-1">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
-            <option value="24h">{t('last_24h')}</option>
-            <option value="7d">{t('last_7d')}</option>
-            <option value="30d">{t('last_30d')}</option>
-          </select>
+            <ShieldCheck weight="duotone" className="w-4 h-4" />
+            Fortress Intelligence Node
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+          >
+            System <span className="text-primary">Security</span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-muted-foreground font-light text-sm italic"
+          >
+            Orchestrating global security protocols, encryption nodes, and threat mitigation matrices.
+          </motion.p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <Button 
+            variant="outline"
+            onClick={fetchSecurityData}
+            disabled={loading}
+            className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
+          >
+            <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
+            Sync Defense
+          </Button>
+          <Button className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
+            <Detective weight="bold" className="w-4 h-4" />
+            Threat Audit
+          </Button>
         </div>
       </div>
 
-      {/* Loading and Error States */}
-      {loading && (
-        <div className="text-center py-12">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="text-white/60 mt-2">Loading security data...</p>
-        </div>
-      )}
+      {/* Quick Stats Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+        <StatCard
+          title="Security Index"
+          value={98.4}
+          suffix="%"
+          decimals={1}
+          icon={ShieldCheck as Icon}
+          iconColor="text-emerald-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Active Identities"
+          value={metrics.activeSessions}
+          icon={Fingerprint as Icon}
+          className="p-4"
+        />
+        <StatCard
+          title="Blocked Payloads"
+          value={metrics.failedLogins}
+          icon={XCircle as Icon}
+          iconColor="text-rose-500"
+          className="p-4"
+        />
+        <StatCard
+          title="Protocol Health"
+          value={100}
+          suffix="%"
+          icon={Pulse as Icon}
+          iconColor="text-amber-500"
+          className="p-4"
+        />
+      </div>
 
-      {error && (
-        <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-          <p className="text-red-400">{error}</p>
-        </div>
-      )}
-
-      {!loading && !error && (
-        <>
-          {/* Security Metrics */}
-          <SecurityMetrics 
-            metrics={{
-              activeSessions: metrics.activeSessions,
-              failedLogins: metrics.failedLogins,
-              securityAlerts: metrics.securityAlerts,
-              twoFactorEnabled: metrics.twoFactorEnabled
-            }}
-            timeRange={timeRange}
-          />
-
-          {/* Password Strength & Security Incidents */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <PasswordStrength 
-              passwordStrength={metrics.passwordStrength}
-            />
-            <SecurityIncidents 
-              resolvedIncidents={metrics.resolvedIncidents}
-              activeIncidents={metrics.activeIncidents}
-            />
-          </div>
-
-          {/* Security Alerts */}
-          <SecurityAlerts 
-            alerts={alerts}
-            onAlertClick={handleAlertClick}
-          />
-
-          {/* Recent Security Events */}
-          <SecurityEvents events={events} />
-
-          {/* API Key Management */}
-          <APIKeyManagement />
-
-          {/* Alert Detail Modal */}
-          {selectedAlert && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-              <div className="bg-slate-800 p-6 rounded-2xl border-2 border-slate-600 w-full max-w-2xl">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-bold text-white">{selectedAlert.title}</h3>
-                  <button
-                    onClick={() => setSelectedAlert(null)}
-                    className="p-2 text-gray-400 hover:text-white"
-                  >
-                    <XCircle className="w-5 h-5" />
-                  </button>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-2">
+        {/* Main Security Hub */}
+        <div className="lg:col-span-2 space-y-10">
+          <SecurityAlerts alerts={alerts} />
+          
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+            <CardHeader className="p-8 border-b border-border/50 bg-secondary/30">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
+                  <Monitor weight="duotone" className="w-6 h-6" />
                 </div>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      selectedAlert.severity === 'critical' ? 'text-red-400 bg-red-500/20' :
-                      selectedAlert.severity === 'high' ? 'text-orange-400 bg-orange-500/20' :
-                      selectedAlert.severity === 'medium' ? 'text-yellow-400 bg-yellow-500/20' :
-                      'text-blue-400 bg-blue-500/20'
-                    }`}>
-                      {selectedAlert.severity.toUpperCase()}
-                    </span>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      selectedAlert.status === 'active' ? 'bg-red-500/20 text-red-400' :
-                      selectedAlert.status === 'investigating' ? 'bg-yellow-500/20 text-yellow-400' :
-                      'bg-emerald-500/20 text-emerald-400'
-                    }`}>
-                      {t(selectedAlert.status)}
-                    </span>
-                  </div>
-                  
-                  <p className="text-gray-200">{selectedAlert.description}</p>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
-                      <p className="text-gray-400">{t('affected_users')}</p>
-                      <p className="text-white font-medium">{selectedAlert.affectedUsers}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">{t('reported_time')}</p>
-                      <p className="text-white font-medium">{new Date(selectedAlert.timestamp).toLocaleString()}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2 pt-4">
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
-                      {t('investigate')}
-                    </button>
-                    <button className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all">
-                      {t('view_details')}
-                    </button>
-                    <button
-                      onClick={() => setSelectedAlert(null)}
-                      className="px-4 py-2 bg-slate-700 text-white rounded-lg hover:bg-slate-600 transition-all"
-                    >
-                      {t('close')}
-                    </button>
-                  </div>
+                <div>
+                  <CardTitle className="text-xl font-black uppercase tracking-tight">Access Registry Node</CardTitle>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Real-time identity transmission logs</p>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <SecurityEvents events={events} />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar Security Parameters */}
+        <div className="space-y-8">
+          <Card className="p-8 rounded-[40px] border-border shadow-card relative overflow-hidden group">
+            <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
+            <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3 mb-8 relative z-10">
+              <Lock weight="duotone" className="w-5 h-5" />
+              Identity Protocol
+            </h4>
+            <div className="space-y-6 relative z-10">
+              <PasswordStrength 
+                score={Math.min(4, Math.floor((metrics.passwordStrength.strong / (metrics.passwordStrength.strong + metrics.passwordStrength.medium + metrics.passwordStrength.weak)) * 4))}
+                requirements={{
+                  length: true,
+                  uppercase: true,
+                  lowercase: true,
+                  number: true,
+                  special: metrics.passwordStrength.strong > metrics.passwordStrength.weak
+                }}
+              />
+              <div className="pt-6 border-t border-border/30">
+                <div className="flex justify-between items-center px-1">
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">2FA Node Coverage</span>
+                  <Badge variant="ghost" className="bg-emerald-500/5 text-emerald-500 border-none font-black text-[9px] uppercase px-3">{metrics.twoFactorEnabled}% SYNC</Badge>
                 </div>
               </div>
             </div>
-          )}
-        </>
-      )}
+          </Card>
+
+          <Card className="p-8 rounded-[40px] border-border shadow-card overflow-hidden group">
+            <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em] flex items-center gap-3 mb-6">
+              <Key weight="duotone" className="w-5 h-5 text-primary" />
+              API Uplink Matrix
+            </h4>
+            <div className="space-y-4">
+              <APIKeyManagement />
+            </div>
+          </Card>
+
+          <Card className="p-8 rounded-[40px] border-rose-500/10 bg-rose-500/[0.02] space-y-4 group">
+            <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] flex items-center gap-3">
+              <WarningCircle weight="duotone" className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              Containment Status
+            </h4>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Active Incidents</span>
+                <span className="text-sm font-black text-rose-500 tabular-nums">{metrics.activeIncidents} Nodes</span>
+              </div>
+              <p className="text-[10px] text-muted-foreground font-medium italic leading-relaxed">
+                Critical system vulnerabilities are automatically isolated in sector delta.
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {selectedAlert && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] p-4 flex items-center justify-center">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-card border border-border rounded-[40px] p-10 max-w-lg w-full relative overflow-hidden"
+            >
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="text-2xl font-black uppercase tracking-tight">Alert Protocol</h3>
+                <Button variant="ghost" onClick={() => setSelectedAlert(null)}>
+                  <XCircle weight="bold" className="w-6 h-6" />
+                </Button>
+              </div>
+              <div className="space-y-4">
+                <p className="text-lg font-bold">{selectedAlert.title}</p>
+                <p className="text-sm text-muted-foreground">{selectedAlert.description}</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

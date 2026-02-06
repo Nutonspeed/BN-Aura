@@ -37,14 +37,48 @@ class RedisCache {
   }
 
   private initializeMemoryCache() {
-    try {
-      const { getMemoryCache } = require('./memory-cache');
-      this.memoryCache = getMemoryCache();
-    } catch (error) {
-      console.error('Failed to initialize memory cache:', error);
-      // Create inline simple cache
-      this.memoryCache = new Map();
-    }
+    // Create simple inline memory cache
+    const cache = new Map<string, { value: any; expiresAt: number }>();
+    
+    this.memoryCache = {
+      async get(key: string) {
+        const entry = cache.get(key);
+        if (!entry) return null;
+        if (Date.now() > entry.expiresAt) {
+          cache.delete(key);
+          return null;
+        }
+        return entry.value;
+      },
+      async set(key: string, value: any, ttl: number) {
+        cache.set(key, {
+          value,
+          expiresAt: Date.now() + (ttl * 1000)
+        });
+      },
+      async del(key: string) {
+        cache.delete(key);
+      },
+      async exists(key: string) {
+        const entry = cache.get(key);
+        if (!entry) return false;
+        if (Date.now() > entry.expiresAt) {
+          cache.delete(key);
+          return false;
+        }
+        return true;
+      },
+      async ttl(key: string) {
+        const entry = cache.get(key);
+        if (!entry) return -2;
+        const remaining = Math.floor((entry.expiresAt - Date.now()) / 1000);
+        return remaining > 0 ? remaining : -2;
+      },
+      async keys(pattern: string) {
+        const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+        return Array.from(cache.keys()).filter(k => regex.test(k));
+      }
+    };
   }
 
   private async initializeRedis() {

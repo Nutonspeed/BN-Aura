@@ -3,7 +3,7 @@
  * Real-time messaging between customers and their assigned sales staff
  */
 
-import { createClient } from '@/lib/supabase/client';
+import { createAdminClient } from '@/lib/supabase/admin';
 
 export interface ChatMessage {
   id: string;
@@ -36,11 +36,11 @@ export interface ChatContext {
 }
 
 export class ChatManager {
-  private _supabase: ReturnType<typeof createClient> | null = null;
+  private _supabase: ReturnType<typeof createAdminClient> | null = null;
 
   private get supabase() {
     if (!this._supabase) {
-      this._supabase = createClient();
+      this._supabase = createAdminClient();
     }
     return this._supabase;
   }
@@ -110,7 +110,7 @@ export class ChatManager {
         .from('customer_sales_messages')
         .select(`
           customer_id,
-          customers!customer_sales_messages_customer_id_fkey (name),
+          customers!customer_sales_messages_customer_id_fkey (full_name),
           created_at
         `)
         .eq('sales_staff_id', salesStaffId)
@@ -125,8 +125,8 @@ export class ChatManager {
       for (const [customerId, messages] of customerGroups.entries()) {
         const customerData = messages[0].customers;
         const customerName = Array.isArray(customerData) 
-          ? (customerData[0]?.name || 'Unknown') 
-          : (customerData?.name || 'Unknown');
+          ? (customerData[0]?.full_name || 'Unknown') 
+          : (customerData?.full_name || 'Unknown');
           
         const chatHistory = await this.getChatHistory(customerId, salesStaffId);
         const unreadCount = await this.getUnreadCount(customerId, salesStaffId, 'sales');
@@ -350,7 +350,7 @@ interface RawChatMessage {
 
 interface RawCustomerData {
   customer_id: string;
-  customers: { name: string } | { name: string }[] | null;
+  customers: { full_name: string } | { full_name: string }[] | null;
   created_at: string;
 }
 

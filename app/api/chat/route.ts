@@ -233,13 +233,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    // Also check clinic_staff for sales_staff role
+    const { data: staffData } = await supabase
+      .from('clinic_staff')
+      .select('role')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .maybeSingle();
+    
+    // Determine effective role (clinic_staff role takes precedence for sales)
+    const effectiveRole = staffData?.role || userData.role;
+
     if (action === 'markRead') {
       if (!customerId) {
         return NextResponse.json({ error: 'Missing customerId' }, { status: 400 });
       }
       
       // Validate ownership and determine reader type
-      if (userData.role === 'sales_staff') {
+      if (effectiveRole === 'sales_staff') {
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id')
@@ -252,7 +263,7 @@ export async function POST(request: Request) {
         
         await chatManager.markMessagesAsRead(customerId, user.id, 'sales');
         return successResponse({ message: 'Messages marked as read' });
-      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(userData.role)) {
+      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(effectiveRole)) {
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id, id')
@@ -270,7 +281,7 @@ export async function POST(request: Request) {
 
     if (action === 'recommendation') {
       // Only sales staff can send treatment recommendations
-      if (userData.role !== 'sales_staff') {
+      if (effectiveRole !== 'sales_staff') {
         return NextResponse.json({ error: 'Only sales staff can send recommendations' }, { status: 403 });
       }
       
@@ -296,7 +307,7 @@ export async function POST(request: Request) {
     // Send regular message
     if (customerId && messageText) {
       // Validate ownership and determine sender type based on role
-      if (userData.role === 'sales_staff') {
+      if (effectiveRole === 'sales_staff') {
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id')
@@ -316,7 +327,7 @@ export async function POST(request: Request) {
           contextData
         );
         return successResponse({ message });
-      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(userData.role)) {
+      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(effectiveRole)) {
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id, id')

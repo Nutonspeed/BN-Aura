@@ -174,6 +174,7 @@ export default function DashboardLayout({
       items: [
         { icon: Users, label: 'ลูกค้า', href: '/clinic/customers', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
         { icon: ShoppingCart, label: 'POS ขาย', href: '/clinic/pos', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
+        { icon: Sparkle, label: 'AI วิเคราะห์ผิว', href: '/sales/skin-analysis', roles: ['sales_staff'] },
         { icon: Clock, label: 'ประวัติ POS', href: '/clinic/pos/history', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: CalendarDots, label: 'นัดหมาย', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
         { icon: Clock, label: 'คิว', href: '/clinic/queue', roles: ['clinic_owner', 'clinic_admin', 'clinic_staff'] },
@@ -215,8 +216,6 @@ export default function DashboardLayout({
       roles: ['clinic_owner', 'clinic_admin'],
       items: [
         { icon: ChartBar, label: 'วิเคราะห์ขั้นสูง', href: '/clinic/analytics/advanced', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: Sparkle, label: 'AI วิเคราะห์ผิว', href: '/clinic/analytics/skin-analysis', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: Sparkle, label: 'สาธิต AI Skin', href: '/clinic/skin-analysis-demo', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
     {

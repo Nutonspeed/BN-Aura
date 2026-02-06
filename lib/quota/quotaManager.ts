@@ -43,6 +43,10 @@ export interface QuotaPlan {
   recommended?: boolean;
 }
 
+import { QuotaCache } from './quotaCache';
+import { QuotaMonitor } from '../monitoring/quotaMonitor';
+import { CriticalAlerts } from '../notifications/criticalAlerts';
+
 // Available Quota Plans
 export const QUOTA_PLANS: QuotaPlan[] = [
   {
@@ -114,6 +118,7 @@ export class QuotaManager {
     estimatedCost: number;
     message: string;
   }> {
+    const startTime = Date.now();
     try {
       const quota = await this.getQuotaConfig(clinicId);
       
@@ -130,6 +135,23 @@ export class QuotaManager {
       const remaining = quota.monthlyQuota - quota.currentUsage;
       const willIncurCharge = remaining <= 0;
       
+      // Record monitoring data
+      const duration = Date.now() - startTime;
+      QuotaMonitor.recordPerformance('checkQuotaAvailability', duration, clinicId, true);
+      QuotaMonitor.recordQuotaUsage(clinicId, quota.currentUsage, quota.monthlyQuota);
+      
+      // Critical Alerts: Check if quota < 5% and trigger notifications
+      try {
+        await CriticalAlerts.checkQuotaLevels(
+          clinicId, 
+          `Clinic ${clinicId}`, // In production, get real clinic name from database
+          quota.currentUsage, 
+          quota.monthlyQuota
+        );
+      } catch (alertError) {
+        console.warn('Failed to check critical alerts:', alertError);
+      }
+      
       return {
         canScan: true,
         quotaRemaining: Math.max(0, remaining),
@@ -141,6 +163,10 @@ export class QuotaManager {
       };
     } catch (error) {
       console.error('Error checking quota:', error);
+      const duration = Date.now() - startTime;
+      QuotaMonitor.recordPerformance('checkQuotaAvailability', duration, clinicId, false);
+      QuotaMonitor.recordError(error instanceof Error ? error : new Error('Unknown quota error'), { clinicId });
+      
       return {
         canScan: false,
         quotaRemaining: 0,
@@ -188,17 +214,35 @@ export class QuotaManager {
     return record;
   }
 
-  // Get quota configuration
+  // Get quota configuration with caching
   static async getQuotaConfig(clinicId: string): Promise<QuotaConfig | null> {
     try {
-      const { createClient } = await import('@/lib/supabase/client');
-      const supabase = createClient();
+      // Check cache first
+      const cached = await QuotaCache.getQuotaConfig(clinicId);
+      if (cached) {
+        return cached;
+      }
+
+      const { createClient } = await import('@supabase/supabase-js');
+      // Use service role client to bypass RLS for internal quota operations
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
+        }
+      );
       
       const { data: quota, error } = await supabase
         .from('clinic_quotas')
         .select('*')
         .eq('clinic_id', clinicId)
-        .single();
+        .eq('quota_type', 'ai_scans')
+        .eq('is_active', true)
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching quota config:', error);
@@ -222,22 +266,20 @@ export class QuotaManager {
 
       if (!quota) return null;
 
-      // Map database fields to interface
+      // Map database fields to interface (updated to match actual schema)
       const quotaConfig: QuotaConfig = {
         clinicId: quota.clinic_id,
-        plan: quota.plan,
-        monthlyQuota: quota.monthly_quota,
-        currentUsage: quota.current_usage || 0,
-        resetDate: quota.reset_date || this.getNextMonthReset(),
-        overage: quota.overage || 0,
-        overageRate: quota.overage_rate,
-        features: quota.features || {
-          advancedAnalysis: false,
-          proposalGeneration: false,
-          leadScoring: false,
-          realtimeSupport: false
-        }
+        plan: this.mapQuotaTypeToPlan(quota.quota_type),
+        monthlyQuota: quota.quota_limit || 200,
+        currentUsage: quota.quota_used || 0,
+        resetDate: quota.last_reset_date || this.getNextMonthReset(),
+        overage: 0, // TODO: Add overage field to database or calculate from usage
+        overageRate: this.getOverageRateForPlan(quota.quota_type),
+        features: this.getFeaturesForPlan(quota.quota_type)
       };
+
+      // Cache the result
+      QuotaCache.setQuotaConfig(clinicId, quotaConfig);
 
       return quotaConfig;
     } catch (error) {
@@ -261,21 +303,35 @@ export class QuotaManager {
     }
   }
 
-  // Update current usage
+  // Update current usage with cache invalidation
   static async updateCurrentUsage(clinicId: string, newUsage: number): Promise<void> {
     try {
-      const { createClient } = await import('@/lib/supabase/client');
-      const supabase = createClient();
+      const { createClient } = await import('@supabase/supabase-js');
+      // Use service role client to bypass RLS for internal quota operations
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
+        }
+      );
       
       const { error } = await supabase
         .from('clinic_quotas')
-        .update({ current_usage: newUsage, updated_at: new Date().toISOString() })
+        .update({ quota_used: newUsage, updated_at: new Date().toISOString() })
         .eq('clinic_id', clinicId);
 
       if (error) {
         console.error('Error updating current usage:', error);
         throw new Error('Failed to update current usage');
       }
+
+      // Invalidate cache after successful update
+      QuotaCache.invalidateClinic(clinicId);
+      console.log(`♻️  Cache invalidated after usage update for clinic: ${clinicId}`);
     } catch (error) {
       console.error('Database update error:', error);
       throw error;
@@ -285,8 +341,18 @@ export class QuotaManager {
   // Update overage charges
   static async updateOverage(clinicId: string, newOverage: number): Promise<void> {
     try {
-      const { createClient } = await import('@/lib/supabase/client');
-      const supabase = createClient();
+      const { createClient } = await import('@supabase/supabase-js');
+      // Use service role client to bypass RLS for internal quota operations
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
+        }
+      );
       
       const { error } = await supabase
         .from('clinic_quotas')
@@ -315,8 +381,18 @@ export class QuotaManager {
     utilizationRate: number; // percentage of quota used
   }> {
     try {
-      const { createClient } = await import('@/lib/supabase/client');
-      const supabase = createClient();
+      const { createClient } = await import('@supabase/supabase-js');
+      // Use service role client to bypass RLS for internal quota operations
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
+        }
+      );
       
       // Calculate date range based on period
       let startDate: Date;
@@ -494,6 +570,35 @@ export class QuotaManager {
     const now = new Date();
     const diffTime = reset.getTime() - now.getTime();
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  }
+
+  // Helper: Map quota_type from database to plan format
+  static mapQuotaTypeToPlan(quotaType: string): QuotaConfig['plan'] {
+    const typeMap: Record<string, QuotaConfig['plan']> = {
+      'starter': 'basic',
+      'professional': 'professional', 
+      'premium': 'premium',
+      'enterprise': 'enterprise',
+      'basic': 'basic'
+    };
+    return typeMap[quotaType] || 'professional';
+  }
+
+  // Helper: Get overage rate for plan type
+  static getOverageRateForPlan(quotaType: string): number {
+    const plan = QUOTA_PLANS.find(p => p.id === quotaType || p.name.toLowerCase().includes(quotaType));
+    return plan?.scanPrice || 60; // Default to professional plan rate
+  }
+
+  // Helper: Get features for plan type
+  static getFeaturesForPlan(quotaType: string): QuotaConfig['features'] {
+    const plan = QUOTA_PLANS.find(p => p.id === quotaType || p.name.toLowerCase().includes(quotaType));
+    return plan?.features || {
+      advancedAnalysis: true,
+      proposalGeneration: true,
+      leadScoring: true,
+      realtimeSupport: false
+    };
   }
 
   // Get recommendations based on usage patterns

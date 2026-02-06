@@ -116,7 +116,17 @@ export default function SharedChatPage() {
       const response = await fetch('/api/chat?action=sessions');
       if (response.ok) {
         const data = await response.json();
-        setSessions(data.sessions || []);
+        const rawSessions = data.data?.sessions || data.sessions || [];
+        setSessions(rawSessions.map((s: any) => ({
+          id: s.id || s.customerId || '',
+          customer_id: s.customer_id || s.customerId || '',
+          sales_staff_id: s.sales_staff_id || s.salesStaffId || '',
+          customer_name: s.customer_name || s.customerName || 'Unknown',
+          sales_name: s.sales_name || s.salesName || 'Advisor',
+          last_message: s.last_message || s.lastMessage || '',
+          last_message_at: s.last_message_at || s.lastActivity || new Date().toISOString(),
+          unread_count: s.unread_count || s.unreadCount || 0
+        })));
       }
     } catch (error) {
       console.error('Error fetching chat sessions:', error);
@@ -130,7 +140,15 @@ export default function SharedChatPage() {
       const response = await fetch(`/api/chat?action=history&customerId=${customerId}`);
       if (response.ok) {
         const data = await response.json();
-        setMessages(data.messages || []);
+        const rawMessages = data.data?.messages || data.messages || [];
+        setMessages(rawMessages.map((m: any) => ({
+          id: m.id,
+          content: m.messageText || m.content || '',
+          sender_type: m.senderType || m.sender_type,
+          sender_id: m.senderType === 'customer' ? m.customerId : m.salesStaffId || m.sender_id,
+          created_at: m.createdAt || m.created_at,
+          is_read: m.isRead ?? m.is_read ?? false
+        })));
       }
     } catch (error) {
       console.error('Error fetching messages:', error);
@@ -168,8 +186,8 @@ export default function SharedChatPage() {
   };
 
   const filteredSessions = sessions.filter(session => 
-    session.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    session.sales_name.toLowerCase().includes(searchQuery.toLowerCase())
+    (session.customer_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (session.sales_name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const getOtherPartyName = (session: ChatSession) => {

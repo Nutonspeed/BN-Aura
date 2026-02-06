@@ -37,16 +37,8 @@ export default function Breadcrumb({ className, customLabels = {} }: BreadcrumbP
         const href = `/${segments.slice(0, index + 1).join('/')}`;
         const isLast = index === segments.length - 1;
         
-        // Try translation, then custom label, then fallback to capitalized segment
-        let label = segment;
-        try {
-          // Attempt to translate the segment
-          const translationKey = segment.toLowerCase();
-          label = t(translationKey as any);
-        } catch (e) {
-          // If translation fails, use custom label or capitalize
-          label = customLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
-        }
+        // Use custom label or capitalize segment (avoid throwing IntlError)
+        let label = customLabels[segment] || segment.charAt(0).toUpperCase() + segment.slice(1);
 
         // Special handling for common UUID-like segments or IDs
         if (segment.length > 20 || /^[0-9a-fA-F-]+$/.test(segment)) {

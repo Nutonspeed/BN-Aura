@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { RevenueOptimizationEngine } from '@/lib/revenue/revenueOptimizationEngine';
 
 export async function GET(request: NextRequest) {
@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
     switch (reportType) {
       case 'metrics':
-        const metrics = RevenueOptimizationEngine.getRevenueMetrics();
+        const metrics = await RevenueOptimizationEngine.getRevenueMetrics();
         return NextResponse.json({
           success: true,
           data: metrics,
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         });
 
       case 'upsell':
-        const upsell = RevenueOptimizationEngine.getUpsellOpportunities();
+        const upsell = await RevenueOptimizationEngine.getUpsellOpportunities();
         const totalPotential = upsell.reduce((sum, o) => sum + o.potentialMRR, 0);
         return NextResponse.json({ 
           success: true, 
@@ -26,21 +26,23 @@ export async function GET(request: NextRequest) {
         });
 
       case 'expansion':
-        const expansion = RevenueOptimizationEngine.getExpansionMetrics();
+        const expansion = await RevenueOptimizationEngine.getExpansionMetrics();
         return NextResponse.json({ success: true, data: expansion });
 
       case 'tiers':
-        const tiers = RevenueOptimizationEngine.getTierAnalysis();
+        const tiers = await RevenueOptimizationEngine.getTierAnalysis();
         return NextResponse.json({ success: true, data: tiers });
 
       case 'forecast':
-        const forecast = RevenueOptimizationEngine.getRevenueForecast();
+        const forecast = await RevenueOptimizationEngine.getRevenueForecast();
         return NextResponse.json({ success: true, data: forecast });
 
       case 'executive':
-        const execMetrics = RevenueOptimizationEngine.getRevenueMetrics();
-        const execUpsell = RevenueOptimizationEngine.getUpsellOpportunities();
-        const execForecast = RevenueOptimizationEngine.getRevenueForecast();
+        const [execMetrics, execUpsell, execForecast] = await Promise.all([
+          RevenueOptimizationEngine.getRevenueMetrics(),
+          RevenueOptimizationEngine.getUpsellOpportunities(),
+          RevenueOptimizationEngine.getRevenueForecast()
+        ]);
         return NextResponse.json({
           success: true,
           data: {
@@ -59,6 +61,7 @@ export async function GET(request: NextRequest) {
     }
 
   } catch (error) {
+    console.error('Revenue optimization API error:', error);
     return NextResponse.json({ success: false, error: 'Failed to get data' }, { status: 500 });
   }
 }

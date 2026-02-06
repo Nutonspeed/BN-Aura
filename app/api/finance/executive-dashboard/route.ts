@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+﻿import { NextRequest, NextResponse } from 'next/server';
 import { ExecutiveFinanceDashboard } from '@/lib/finance/executiveFinanceDashboard';
 
 export async function GET(request: NextRequest) {
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
 
 async function getFinancialOverview(clinicId: string) {
   try {
-    const overview = ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
+    const overview = await ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
     
     // Calculate additional insights
     const insights = {
@@ -85,7 +85,7 @@ async function getFinancialOverview(clinicId: string) {
 
 async function getKPIs(clinicId: string) {
   try {
-    const overview = ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
+    const overview = await ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
     const kpis = overview.kpis;
     
     // Industry benchmarks for comparison
@@ -127,7 +127,7 @@ async function getKPIs(clinicId: string) {
 
 async function getCashFlow(clinicId: string) {
   try {
-    const overview = ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
+    const overview = await ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
     const cashFlow = overview.cashFlow;
     
     // Calculate trends
@@ -167,7 +167,7 @@ async function getCashFlow(clinicId: string) {
 
 async function getForecast(clinicId: string) {
   try {
-    const overview = ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
+    const overview = await ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
     const forecast = overview.forecast;
     
     // Calculate forecast metrics
@@ -214,7 +214,7 @@ async function getForecast(clinicId: string) {
 
 async function getAlerts(clinicId: string) {
   try {
-    const overview = ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
+    const overview = await ExecutiveFinanceDashboard.getFinancialOverview(clinicId);
     const alerts = overview.alerts;
     
     const alertSummary = {

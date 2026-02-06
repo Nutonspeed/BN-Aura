@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDateRange } from '@/lib/reports/reportBuilder';
+import { createClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { config, clinicId } = await request.json();
 
     if (!config || !clinicId) {
@@ -13,13 +21,13 @@ export async function POST(request: NextRequest) {
       ? { start: new Date(config.startDate), end: new Date(config.endDate) }
       : getDateRange(config.dateRange);
 
-    // Mock data generation - in production, query from database
-    const mockData = generateMockReportData(config.type, start, end);
+    // Fetch real data from database
+    const reportData = await generateReportFromDatabase(supabase, config.type, clinicId, start, end);
 
     return NextResponse.json({
       headers: config.columns,
-      rows: mockData.rows,
-      summary: mockData.summary,
+      rows: reportData.rows,
+      summary: reportData.summary,
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
@@ -28,44 +36,25 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function generateMockReportData(type: string, start: Date, end: Date) {
+async function generateReportFromDatabase(supabase: any, type: string, clinicId: string, start: Date, end: Date) {
   const rows: (string | number)[][] = [];
   const summary: Record<string, number> = {};
 
-  switch (type) {
-    case 'sales':
-      rows.push(
-        ['2026-02-06', 'คุณสมหญิง', 'HydraFacial', 3500, 'พนักงาน A', 'สำเร็จ'],
-        ['2026-02-05', 'คุณสมชาย', 'LED Therapy', 2500, 'พนักงาน B', 'สำเร็จ'],
-        ['2026-02-04', 'คุณมาลี', 'Botox', 8000, 'พนักงาน A', 'สำเร็จ'],
-      );
-      summary.totalRevenue = 14000;
-      summary.totalTransactions = 3;
-      break;
-
-    case 'analysis':
-      rows.push(
-        ['2026-02-06', 'คุณสมหญิง', 78, 32, 'มัน', 'HydraFacial'],
-        ['2026-02-05', 'คุณสมชาย', 85, 28, 'แห้ง', 'Vitamin C'],
-        ['2026-02-04', 'คุณมาลี', 72, 45, 'ผสม', 'Anti-aging'],
-      );
-      summary.avgScore = 78;
-      summary.totalScans = 3;
-      break;
-
-    case 'revenue':
-      rows.push(
-        ['2026-02-06', 45000, 12, 3750, '+15%'],
-        ['2026-02-05', 38000, 10, 3800, '+8%'],
-        ['2026-02-04', 52000, 15, 3467, '+22%'],
-      );
-      summary.totalRevenue = 135000;
-      summary.avgDaily = 45000;
-      break;
-
-    default:
-      rows.push(['No data available']);
+  if (type === 'sales') {
+    const { data } = await supabase.from('pos_transactions').select('*').eq('clinic_id', clinicId).gte('created_at', start.toISOString()).lte('created_at', end.toISOString());
+    if (data?.length) {
+      data.forEach((t: any) => rows.push([new Date(t.created_at).toLocaleDateString('th-TH'), '-', '-', t.total_amount, '-', t.payment_status]));
+      summary.totalRevenue = data.reduce((s: number, t: any) => s + (t.total_amount || 0), 0);
+      summary.totalTransactions = data.length;
+    }
+  } else if (type === 'revenue') {
+    const { data } = await supabase.from('pos_transactions').select('created_at, total_amount').eq('clinic_id', clinicId).eq('payment_status', 'completed').gte('created_at', start.toISOString()).lte('created_at', end.toISOString());
+    if (data?.length) {
+      summary.totalRevenue = data.reduce((s: number, t: any) => s + (t.total_amount || 0), 0);
+      summary.totalTransactions = data.length;
+    }
   }
 
+  if (!rows.length) rows.push(['ไม่พบข้อมูลในช่วงเวลาที่เลือก']);
   return { rows, summary };
 }

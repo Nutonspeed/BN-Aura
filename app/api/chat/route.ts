@@ -60,7 +60,7 @@ export async function GET(request: Request) {
           .from('customers')
           .select('id, assigned_sales_id, full_name')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
           
         if (!customer) {
           return successResponse({ sessions: [] });
@@ -148,13 +148,13 @@ export async function GET(request: Request) {
         
         const messages = await chatManager.getChatHistory(customerId, user.id);
         return successResponse({ messages });
-      } else if (['customer', 'premium_customer', 'free_customer'].includes(effectiveRole)) {
+      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(effectiveRole)) {
         // Customer can only see their own chat
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id, id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
           
         if (!customer || customer.id !== customerId) {
           return NextResponse.json({ error: 'Access denied to this chat' }, { status: 403 });
@@ -252,12 +252,12 @@ export async function POST(request: Request) {
         
         await chatManager.markMessagesAsRead(customerId, user.id, 'sales');
         return successResponse({ message: 'Messages marked as read' });
-      } else if (['customer', 'premium_customer', 'free_customer'].includes(userData.role)) {
+      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(userData.role)) {
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id, id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
           
         if (!customer || customer.id !== customerId) {
           return NextResponse.json({ error: 'Access denied to this chat' }, { status: 403 });
@@ -316,12 +316,12 @@ export async function POST(request: Request) {
           contextData
         );
         return successResponse({ message });
-      } else if (['customer', 'premium_customer', 'free_customer'].includes(userData.role)) {
+      } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(userData.role)) {
         const { data: customer } = await supabase
           .from('customers')
           .select('assigned_sales_id, id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
           
         if (!customer || customer.id !== customerId) {
           return NextResponse.json({ error: 'Access denied to this chat' }, { status: 403 });

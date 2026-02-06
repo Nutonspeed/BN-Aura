@@ -1,7 +1,10 @@
 'use client';
 
-import { ChartBar, ArrowsClockwise, DownloadSimple } from '@phosphor-icons/react';
+import { ChartBar, ArrowsClockwise, DownloadSimple, CaretDown, Pulse, Graph } from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface AnalyticsHeaderProps {
   selectedPeriod: string;
@@ -22,43 +25,66 @@ export default function AnalyticsHeader({
   const tCommon = useTranslations('common');
   
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-          <ChartBar className="w-8 h-8 text-primary" />
-          {t('title')}
-        </h1>
-        <p className="text-white/60 mt-1">{t('description')}</p>
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 px-2">
+      <div className="space-y-1">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
+        >
+          <Pulse weight="duotone" className="w-4 h-4" />
+          Intelligence Matrix Node
+        </motion.div>
+        <motion.h1 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
+        >
+          System <span className="text-primary">Analytics</span>
+        </motion.h1>
+        <motion.p 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-muted-foreground font-light text-sm italic"
+        >
+          Orchestrating global performance metrics, revenue trajectories, and cluster utilization data.
+        </motion.p>
       </div>
 
-      <div className="flex items-center gap-3">
-        <select
-          value={selectedPeriod}
-          onChange={(e) => setSelectedPeriod(e.target.value)}
-          className="bg-white/10 border border-white/10 rounded-xl py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50"
-        >
-          <option value="7d" className="bg-slate-800">{t('period_7d')}</option>
-          <option value="30d" className="bg-slate-800">{t('period_30d')}</option>
-          <option value="90d" className="bg-slate-800">{t('period_90d')}</option>
-          <option value="1y" className="bg-slate-800">{t('period_1y')}</option>
-        </select>
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative group/select">
+          <select
+            value={selectedPeriod}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
+            className="bg-secondary/50 border border-border/50 rounded-2xl py-3 px-6 pr-12 text-[10px] font-black uppercase tracking-widest text-foreground focus:border-primary outline-none transition-all appearance-none shadow-inner"
+          >
+            <option value="7d" className="bg-card">{t('period_7d').toUpperCase()}</option>
+            <option value="30d" className="bg-card">{t('period_30d').toUpperCase()}</option>
+            <option value="90d" className="bg-card">{t('period_90d').toUpperCase()}</option>
+            <option value="1y" className="bg-card">{t('period_1y').toUpperCase()}</option>
+          </select>
+          <CaretDown weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground/40 pointer-events-none" />
+        </div>
         
-        <button
+        <Button
+          variant="outline"
           onClick={onRefresh}
           disabled={refreshing}
-          className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all flex items-center gap-2 disabled:opacity-50"
+          className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
         >
-          <ArrowsClockwise className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-          {tCommon('refresh')}
-        </button>
+          <ArrowsClockwise weight="bold" className={cn("w-4 h-4", refreshing && "animate-spin")} />
+          Sync Intel
+        </Button>
 
-        <button 
+        <Button 
           onClick={onExport}
-          className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:brightness-110 transition-all flex items-center gap-2"
+          className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium group"
         >
-          <DownloadSimple className="w-4 h-4" />
-          {tCommon('export')}
-        </button>
+          <DownloadSimple weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
+          Export Matrix
+        </Button>
       </div>
     </div>
   );

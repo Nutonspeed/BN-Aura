@@ -2,7 +2,6 @@
 // Protects against XSS, SQL injection, and other injection attacks
 
 import { z } from 'zod';
-import { ErrorHandler } from '@/lib/monitoring/sentry';
 
 // Lazy load DOMPurify to avoid build issues with jsdom
 let DOMPurify: typeof import('isomorphic-dompurify').default | null = null;
@@ -173,7 +172,7 @@ class InputValidator {
         };
       }
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Validation error:', error);
       return {
         success: false,
         errors: ['Validation failed due to server error']
@@ -211,7 +210,7 @@ class InputValidator {
       }
       return DOMPurify.sanitize(html, config as any) as unknown as string;
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('HTML sanitization error:', error);
       return ''; // Return empty string if sanitization fails
     }
   }
@@ -256,7 +255,7 @@ class InputValidator {
       
       return sanitized;
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('String sanitization error:', error);
       return '';
     }
   }

@@ -2,7 +2,6 @@
 // Tracks all critical actions for security and compliance
 
 import { createAdminClient } from '@/lib/supabase/admin';
-import { ErrorHandler } from '@/lib/monitoring/sentry';
 import InputValidator from './input-validator';
 
 export interface AuditLogEntry {
@@ -78,7 +77,6 @@ class AuditLogger {
       }
 
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
       console.error('Audit logging error:', error);
     }
   }
@@ -144,7 +142,7 @@ class AuditLogger {
         total: count || 0
       };
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Get audit logs error:', error);
       return {
         logs: [],
         total: 0
@@ -218,7 +216,7 @@ class AuditLogger {
         recentActivity: recentLogs.slice(0, 10)
       };
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Get audit statistics error:', error);
       return {
         totalLogs: 0,
         criticalEvents: 0,
@@ -365,19 +363,6 @@ class AuditLogger {
         details: entry.details,
         timestamp: entry.timestamp
       });
-
-      // Log to Sentry as well
-      ErrorHandler.captureException(
-        new Error(`Critical Security Event: ${entry.action}`),
-        {
-          tags: {
-            security: 'critical',
-            action: entry.action,
-            user_id: entry.user_id || 'anonymous'
-          },
-          extra: entry.details
-        }
-      );
     } catch (error) {
       console.error('Failed to send security alert:', error);
     }
@@ -402,7 +387,6 @@ class AuditLogger {
 
       console.log(`Cleaned up audit logs older than ${retentionDays} days`);
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
       console.error('Failed to cleanup audit logs:', error);
     }
   }
@@ -427,7 +411,7 @@ class AuditLogger {
         mimeType: 'text/csv'
       };
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Failed to export audit logs:', error);
       throw new Error('Failed to export audit logs');
     }
   }

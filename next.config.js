@@ -15,7 +15,7 @@ const nextConfig = {
     // optimizeCss requires 'critters' package which is missing
     optimizeCss: false,
   },
-  serverExternalPackages: ['@google/generative-ai'],
+  serverExternalPackages: ['@google/generative-ai', 'ioredis', 'socket.io', 'puppeteer'],
 
   // Image optimization settings
   images: {

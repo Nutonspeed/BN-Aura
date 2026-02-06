@@ -3,7 +3,6 @@
 
 import { createAdminClient } from '@/lib/supabase/admin';
 import { cache } from '@/lib/cache/redis';
-import { ErrorHandler } from '@/lib/monitoring/sentry';
 import WebSocketService from '@/lib/services/websocket-service';
 
 export interface NotificationData {
@@ -132,7 +131,7 @@ class NotificationService {
 
       return notifications;
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Create notification error:', error);
       throw error;
     }
   }
@@ -215,7 +214,7 @@ class NotificationService {
 
       return result;
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Get notifications error:', error);
       return {
         notifications: [],
         total: 0,
@@ -248,7 +247,7 @@ class NotificationService {
         notificationId 
       });
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Mark as read error:', error);
       throw error;
     }
   }
@@ -305,7 +304,7 @@ class NotificationService {
         notificationId 
       });
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Mark as read error:', error);
       throw error;
     }
   }
@@ -447,7 +446,6 @@ class NotificationService {
 
       console.log('Cleaned up expired notifications');
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
       console.error('Failed to cleanup expired notifications:', error);
     }
   }

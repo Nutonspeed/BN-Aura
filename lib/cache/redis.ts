@@ -16,17 +16,69 @@ interface CacheStats {
 
 class RedisCache {
   private redis: any;
+  private memoryCache: any;
   private stats: Map<string, CacheStats> = new Map();
   private isEnabled: boolean;
+  private useMemoryFallback: boolean;
 
   constructor() {
     this.isEnabled = process.env.REDIS_URL !== undefined;
+    this.useMemoryFallback = false;
+    
+    // Always initialize memory cache as fallback
+    this.initializeMemoryCache();
     
     if (this.isEnabled) {
       this.initializeRedis();
     } else {
-      console.warn('Redis not configured - caching disabled');
+      console.log('[v0] Redis not configured - using memory cache');
+      this.useMemoryFallback = true;
     }
+  }
+
+  private initializeMemoryCache() {
+    // Create simple inline memory cache
+    const cache = new Map<string, { value: any; expiresAt: number }>();
+    
+    this.memoryCache = {
+      async get(key: string) {
+        const entry = cache.get(key);
+        if (!entry) return null;
+        if (Date.now() > entry.expiresAt) {
+          cache.delete(key);
+          return null;
+        }
+        return entry.value;
+      },
+      async set(key: string, value: any, ttl: number) {
+        cache.set(key, {
+          value,
+          expiresAt: Date.now() + (ttl * 1000)
+        });
+      },
+      async del(key: string) {
+        cache.delete(key);
+      },
+      async exists(key: string) {
+        const entry = cache.get(key);
+        if (!entry) return false;
+        if (Date.now() > entry.expiresAt) {
+          cache.delete(key);
+          return false;
+        }
+        return true;
+      },
+      async ttl(key: string) {
+        const entry = cache.get(key);
+        if (!entry) return -2;
+        const remaining = Math.floor((entry.expiresAt - Date.now()) / 1000);
+        return remaining > 0 ? remaining : -2;
+      },
+      async keys(pattern: string) {
+        const regex = new RegExp('^' + pattern.replace(/\*/g, '.*') + '$');
+        return Array.from(cache.keys()).filter(k => regex.test(k));
+      }
+    };
   }
 
   private async initializeRedis() {
@@ -39,18 +91,21 @@ class RedisCache {
       });
 
       this.redis.on('error', (error: Error) => {
-        console.error('Redis connection error:', error);
-        this.isEnabled = false;
+        console.error('[v0] Redis connection error:', error.message);
+        console.log('[v0] Falling back to memory cache');
+        this.useMemoryFallback = true;
       });
 
       this.redis.on('connect', () => {
-        console.log('Redis connected successfully');
+        console.log('[v0] Redis connected successfully');
+        this.useMemoryFallback = false;
       });
 
       await this.redis.connect();
     } catch (error) {
-      console.error('Failed to initialize Redis:', error);
-      this.isEnabled = false;
+      console.error('[v0] Failed to initialize Redis:', error);
+      console.log('[v0] Using memory cache fallback');
+      this.useMemoryFallback = true;
     }
   }
 
@@ -85,25 +140,33 @@ class RedisCache {
     fetchFunction: () => Promise<T>,
     options: CacheOptions = {}
   ): Promise<T> {
-    if (!this.isEnabled) {
-      return await fetchFunction();
-    }
-
     const key = options.key || this.generateKey(keyPrefix, { options });
     const ttl = options.ttl || 300;
 
     try {
-      // Try to get from cache
+      // Use memory cache if Redis is disabled or fallback is active
+      if (this.useMemoryFallback || !this.isEnabled) {
+        const cached = await this.memoryCache.get(key);
+        if (cached !== null && cached !== undefined) {
+          this.updateStats(keyPrefix, true);
+          return cached;
+        }
+
+        this.updateStats(keyPrefix, false);
+        const data = await fetchFunction();
+        await this.memoryCache.set(key, data, ttl);
+        return data;
+      }
+
+      // Try Redis
       const cached = await this.redis.get(key);
       if (cached) {
         this.updateStats(keyPrefix, true);
-        console.log(`Cache HIT: ${key}`);
         return JSON.parse(cached);
       }
 
       // Cache miss - fetch and cache
       this.updateStats(keyPrefix, false);
-      console.log(`Cache MISS: ${key}`);
       
       const data = await fetchFunction();
       
@@ -120,7 +183,7 @@ class RedisCache {
 
       return data;
     } catch (error) {
-      console.error('Cache error:', error);
+      console.error('[v0] Cache error:', error);
       // Fallback to direct fetch
       return await fetchFunction();
     }
@@ -130,15 +193,17 @@ class RedisCache {
    * Invalidate cache by key pattern
    */
   async invalidate(keyPrefix: string, params: any = {}): Promise<void> {
-    if (!this.isEnabled) return;
-
     const key = this.generateKey(keyPrefix, params);
     
     try {
+      if (this.useMemoryFallback || !this.isEnabled) {
+        await this.memoryCache.del(key);
+        return;
+      }
+      
       await this.redis.del(key);
-      console.log(`Cache invalidated: ${key}`);
     } catch (error) {
-      console.error('Cache invalidation error:', error);
+      console.error('[v0] Cache invalidation error:', error);
     }
   }
 
@@ -146,18 +211,24 @@ class RedisCache {
    * Invalidate cache by tags
    */
   async invalidateByTag(tag: string): Promise<void> {
-    if (!this.isEnabled) return;
-
     try {
+      if (this.useMemoryFallback || !this.isEnabled) {
+        // Memory cache doesn't support tags, clear all matching pattern
+        const keys = await this.memoryCache.keys(`*${tag}*`);
+        for (const key of keys) {
+          await this.memoryCache.del(key);
+        }
+        return;
+      }
+
       const keys = await this.redis.smembers(`tag:${tag}`);
       
       if (keys.length > 0) {
         await this.redis.del(...keys);
         await this.redis.del(`tag:${tag}`);
-        console.log(`Cache invalidated by tag ${tag}: ${keys.length} keys`);
       }
     } catch (error) {
-      console.error('Tag invalidation error:', error);
+      console.error('[v0] Tag invalidation error:', error);
     }
   }
 

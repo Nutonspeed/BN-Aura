@@ -42,6 +42,7 @@ import StrategicForecast from '@/components/analytics/StrategicForecast';
 import { useEffect, useState, useMemo } from 'react';
 import AnimatedNumber from '@/components/ui/premium/AnimatedNumber';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ClinicQuotaWidget } from '@/components/clinic';
 
 export default function ClinicDashboard() {
   const router = useRouter();
@@ -242,6 +243,17 @@ export default function ClinicDashboard() {
 
         {/* Sidebar Intelligence Nodes */}
         <div className="space-y-10">
+          {/* AI Quota Widget */}
+          {clinicId && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <ClinicQuotaWidget clinicId={clinicId} />
+            </motion.div>
+          )}
+
           <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
               <Package className="w-64 h-64 text-primary" />

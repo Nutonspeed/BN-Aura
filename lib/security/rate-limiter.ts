@@ -3,7 +3,6 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { ErrorHandler } from '@/lib/monitoring/sentry';
 
 interface RateLimitConfig {
   windowMs: number; // Time window in milliseconds
@@ -151,7 +150,7 @@ class RateLimiter {
         resetTime
       };
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Rate limit check error:', error);
       // Fail open - allow the request if rate limiting fails
       return {
         success: true,
@@ -250,7 +249,7 @@ class RateLimiter {
         topIdentifiers
       };
     } catch (error) {
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+      console.error('Rate limit stats error:', error);
       return {
         totalRequests: 0,
         blockedRequests: 0,

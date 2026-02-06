@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
@@ -19,8 +18,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid amount (min 20)' }, { status: 400 });
     }
 
-    // Use real Stripe if key is configured
+    // Use real Stripe if key is configured (dynamic import to avoid build error when stripe is not installed)
     if (STRIPE_SECRET_KEY && STRIPE_SECRET_KEY.startsWith('sk_')) {
+      const { default: Stripe } = await import('stripe');
       const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' });
       
       const paymentIntent = await stripe.paymentIntents.create({

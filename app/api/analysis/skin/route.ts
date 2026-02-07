@@ -3,6 +3,7 @@ import { FacialSymmetryAnalyzer } from '@/lib/analysis/facialSymmetryAnalyzer';
 import { SkinMetricsEngine } from '@/lib/analysis/skinMetricsEngine';
 import { WrinkleZoneMapper } from '@/lib/analysis/wrinkleZoneMapper';
 import { VercelAIGateway } from '@/lib/ai/vercelAIGateway';
+import { runHFMultiModelAnalysis, buildGeminiContext, hfToVISIASignals } from '@/lib/ai/huggingface';
 import { checkQuotaBeforeAnalysis, recordQuotaAfterAnalysis, QuotaExceededError } from '@/lib/quota/quotaMiddleware';
 import { NeuralCache } from '@/lib/quota/neuralCache';
 
@@ -48,6 +49,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+
   try {
     const body = await request.json();
     const { imageData, customerInfo, landmarks, useAI = false, clinicId, userId } = body;
@@ -60,6 +63,7 @@ export async function POST(request: NextRequest) {
     let aiCost = 0;
     let quotaInfo = null;
     let usedCache = false;
+    let hfResults = null;
 
     // If AI enabled, check quota and neural cache first
     if (useAI && clinicId) {
@@ -70,13 +74,12 @@ export async function POST(request: NextRequest) {
       );
 
       if (cacheResult.isHit) {
-        // Use cached analysis - no quota deduction
         usedCache = true;
         aiAnalysis = NeuralCache.getCachedAnalysis(clinicId, { 
           name: customerInfo.name || 'unknown',
           age: customerInfo.age 
         });
-        console.log(`🧠 Neural Cache HIT: Saved ${cacheResult.quotaSaved} quota`);
+        console.log(`\u{1F9E0} Neural Cache HIT: Saved ${cacheResult.quotaSaved} quota`);
       } else {
         // Check quota availability
         const scanType = imageData ? 'detailed' : 'quick';
@@ -99,12 +102,28 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // If image provided and AI enabled (not from cache), use Vision AI
+    // ─── Layer 2: HuggingFace Multi-Model Analysis ───
+    // Run HF models in parallel (skin type, age, conditions, acne, face parsing)
     if (imageData && useAI && !usedCache) {
       try {
+        console.log('\u{1F52C} Starting HuggingFace multi-model analysis...');
+        hfResults = await runHFMultiModelAnalysis(imageData);
+        console.log(`\u{2705} HF Analysis complete: ${hfResults.modelsUsed.length}/5 models, ${hfResults.processingTime}ms`);
+      } catch (hfError) {
+        console.warn('HF multi-model analysis failed, continuing with Gemini only:', hfError);
+      }
+    }
+
+    // ─── Layer 3: Gemini Vision AI with HF Context ───
+    if (imageData && useAI && !usedCache) {
+      try {
+        // Build enhanced prompt with HF context
+        const hfContext = hfResults ? buildGeminiContext(hfResults) : '';
+        
         const aiResult = await VercelAIGateway.analyzeSkinImage(
           imageData,
-          customerInfo.age
+          customerInfo.age,
+          hfContext // Pass HF context to enhance Gemini analysis
         );
         
         // Parse AI response
@@ -134,8 +153,8 @@ export async function POST(request: NextRequest) {
             aiAnalysis
           );
         }
-      } catch (aiError) {
-        console.warn('AI analysis failed, using fallback:', aiError);
+      } catch (aiError: any) {
+        console.warn('AI analysis failed, using HF results as fallback:', aiError);
         // Record failed attempt
         if (clinicId) {
           await recordQuotaAfterAnalysis(
@@ -146,21 +165,48 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Use AI results or fallback to sample data
+    // ─── Build Response: Combine HF + Gemini + Fallback ───
     const symmetry = FacialSymmetryAnalyzer.getSampleResult();
+    
+    // Enhance skin metrics with HF results
+    const baseSkinMetrics = SkinMetricsEngine.getSampleResult(customerInfo.age);
+    const hfSignals = hfResults ? hfToVISIASignals(hfResults, customerInfo.age) : null;
+    
     const skinMetrics = aiAnalysis?.metrics 
-      ? { ...SkinMetricsEngine.getSampleResult(customerInfo.age), ...aiAnalysis }
-      : SkinMetricsEngine.getSampleResult(customerInfo.age);
+      ? { ...baseSkinMetrics, ...aiAnalysis }
+      : hfSignals 
+        ? { ...baseSkinMetrics, visiaScores: hfSignals }
+        : baseSkinMetrics;
+
     const wrinkleAnalysis = WrinkleZoneMapper.getSampleResult();
 
-    // Calculate combined scores
-    const overallScore = aiAnalysis?.overallScore || Math.round(
-      symmetry.overallSymmetry * 0.15 +
-      skinMetrics.overallScore * 0.55 +
-      (100 - wrinkleAnalysis.overallAgingLevel * 10) * 0.30
-    );
+    // Calculate overall score with multi-model data
+    let overallScore: number;
+    if (aiAnalysis?.overallScore) {
+      overallScore = aiAnalysis.overallScore;
+    } else if (hfSignals) {
+      // Calculate from VISIA signals
+      const avgVisia = Object.values(hfSignals).reduce((a, b) => a + b, 0) / Object.keys(hfSignals).length;
+      overallScore = Math.round(avgVisia * 0.6 + symmetry.overallSymmetry * 0.15 + (100 - wrinkleAnalysis.overallAgingLevel * 10) * 0.25);
+    } else {
+      overallScore = Math.round(
+        symmetry.overallSymmetry * 0.15 +
+        skinMetrics.overallScore * 0.55 +
+        (100 - wrinkleAnalysis.overallAgingLevel * 10) * 0.30
+      );
+    }
 
-    const skinAge = aiAnalysis?.skinAge || skinMetrics.skinAge;
+    // Determine skin age from HF or AI or fallback
+    const skinAge = aiAnalysis?.skinAge 
+      || hfResults?.ageEstimation?.estimatedAge 
+      || skinMetrics.skinAge;
+
+    // Build enhanced summary with HF data
+    const detectedConditions = hfResults?.skinConditions?.map(c => c.condition) || [];
+    const skinType = hfResults?.skinType?.label || aiAnalysis?.skinType || 'combination';
+    const acneLevel = hfResults?.acneSeverity?.label || 'none';
+
+    const processingTime = Date.now() - startTime;
 
     const result = {
       analysisId: `COMP-${Date.now()}`,
@@ -173,37 +219,59 @@ export async function POST(request: NextRequest) {
       overallScore,
       skinAge,
       skinAgeDifference: skinAge - customerInfo.age,
+      skinType,
       symmetry,
       skinMetrics,
       wrinkleAnalysis,
+      visiaScores: hfSignals || null,
+      hfAnalysis: hfResults ? {
+        skinType: hfResults.skinType,
+        ageEstimation: hfResults.ageEstimation,
+        skinConditions: hfResults.skinConditions,
+        acneSeverity: hfResults.acneSeverity,
+        modelsUsed: hfResults.modelsUsed,
+        hfProcessingTime: hfResults.processingTime,
+      } : null,
       summary: {
         headlineThai: overallScore >= 70 
-          ? 'ผิวของคุณอยู่ในเกณฑ์ดี!' 
-          : 'ผิวของคุณต้องการการดูแลเพิ่มเติม',
+          ? '\u0e1c\u0e34\u0e27\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13\u0e2d\u0e22\u0e39\u0e48\u0e43\u0e19\u0e40\u0e01\u0e13\u0e11\u0e4c\u0e14\u0e35!' 
+          : '\u0e1c\u0e34\u0e27\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13\u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e01\u0e32\u0e23\u0e14\u0e39\u0e41\u0e25\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e40\u0e15\u0e34\u0e21',
+        skinType,
+        acneLevel,
+        detectedConditions,
         strengths: skinMetrics.summary?.strengths || [],
-        concerns: aiAnalysis?.concerns || skinMetrics.summary?.concerns || [],
+        concerns: aiAnalysis?.concerns || detectedConditions.length > 0 
+          ? detectedConditions 
+          : skinMetrics.summary?.concerns || [],
       },
       recommendations: {
         immediate: aiAnalysis?.recommendations || skinMetrics.summary?.priorityTreatments || [],
         homecare: [
-          'ใช้ครีมกันแดด SPF50+ ทุกวัน',
-          'ใช้ Vitamin C Serum ตอนเช้า',
-          'ดื่มน้ำ 2-3 ลิตร/วัน',
+          '\u0e43\u0e0a\u0e49\u0e04\u0e23\u0e35\u0e21\u0e01\u0e31\u0e19\u0e41\u0e14\u0e14 SPF50+ \u0e17\u0e38\u0e01\u0e27\u0e31\u0e19',
+          '\u0e43\u0e0a\u0e49 Vitamin C Serum \u0e15\u0e2d\u0e19\u0e40\u0e0a\u0e49\u0e32',
+          '\u0e14\u0e37\u0e48\u0e21\u0e19\u0e49\u0e33 2-3 \u0e25\u0e34\u0e15\u0e23/\u0e27\u0e31\u0e19',
         ],
       },
-      aiPowered: !!aiAnalysis,
+      aiPowered: !!(aiAnalysis || hfResults),
       aiCost,
       usedCache,
       quotaInfo: quotaInfo ? {
         remaining: quotaInfo.quotaRemaining,
         willIncurCharge: quotaInfo.willIncurCharge,
       } : null,
-      confidence: aiAnalysis ? 96.5 : 94.5,
-      processingTime: 345,
+      confidence: aiAnalysis ? 96.5 : hfResults ? 88.0 : 75.0,
+      processingTime,
+      modelsUsed: [
+        ...(hfResults?.modelsUsed || []),
+        ...(aiAnalysis ? ['gemini-2.5-flash'] : []),
+        'facial_symmetry',
+        'skin_metrics',
+        'wrinkle_mapper',
+      ],
     };
 
     return NextResponse.json({ success: true, data: result });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Skin analysis POST error:', error);
     return NextResponse.json({ success: false, error: 'Analysis failed' }, { status: 500 });
   }

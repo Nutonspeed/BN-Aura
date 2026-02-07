@@ -205,10 +205,15 @@ class VercelAIGateway {
    */
   static async analyzeSkinImage(
     imageBase64: string,
-    customerAge: number
+    customerAge: number,
+    hfContext?: string
   ): Promise<AIResponse> {
-    const prompt = `วิเคราะห์ภาพใบหน้านี้และให้คะแนนสภาพผิวแบบ VISIA 8 Metrics
+    const hfSection = hfContext 
+      ? `\n\nข้อมูลจาก AI Models อื่น (ใช้ประกอบการวิเคราะห์):\n${hfContext}\n`
+      : '';
     
+    const prompt = `วิเคราะห์ภาพใบหน้านี้และให้คะแนนสภาพผิวแบบ VISIA 8 Metrics
+${hfSection}    
 อายุลูกค้า: ${customerAge} ปี
 
 กรุณาวิเคราะห์และตอบเป็น JSON:

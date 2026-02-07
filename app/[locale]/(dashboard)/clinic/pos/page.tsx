@@ -189,6 +189,8 @@ export default function POSPage() {
     setIsCheckoutLoading(true);
     try {
       const subtotal = cartItems.reduce((acc, item) => acc + item.total, 0);
+      const pointsDiscount = redeemPoints;
+      const finalTotal = Math.max(0, subtotal - pointsDiscount);
       const res = await fetch('/api/pos/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -196,8 +198,9 @@ export default function POSPage() {
           customer_id: selectedCustomer.id,
           items: cartItems,
           subtotal,
-          total_amount: subtotal,
-          payment_status: 'pending' // Initialize as pending
+          total_amount: finalTotal,
+          points_redeemed: pointsDiscount,
+          payment_status: 'pending'
         })
       });
 
@@ -306,7 +309,7 @@ export default function POSPage() {
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
         onSuccess={handlePaymentSuccess}
-        amount={cartItems.reduce((acc, item) => acc + item.total, 0)}
+        amount={Math.max(0, cartItems.reduce((acc, item) => acc + item.total, 0) - redeemPoints)}
         transactionId={pendingTransactionId || ''}
         clinicId={clinicId}
         customer={selectedCustomer}
@@ -390,6 +393,9 @@ export default function POSPage() {
           loading={isCheckoutLoading}
           currency={currency}
           formatPrice={formatPrice}
+          customerPoints={customerPoints}
+          redeemPoints={redeemPoints}
+          onRedeemPointsChange={setRedeemPoints}
         />
       </div>
 
@@ -446,6 +452,8 @@ export default function POSPage() {
                     onClick={() => {
                       setSelectedCustomer(customer);
                       setIsCustomerSelectOpen(false);
+                      fetchCustomerPoints(customer.id);
+                      setRedeemPoints(0);
                     }}
                     className={cn(
                       "w-full flex items-center justify-between p-5 rounded-[24px] border transition-all group/item",

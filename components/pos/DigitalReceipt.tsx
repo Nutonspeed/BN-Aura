@@ -10,7 +10,8 @@ import {
   Buildings,
   MapPin,
   Phone,
-  User
+  User,
+  Calendar
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { QRCodeSVG } from 'qrcode.react';
@@ -186,6 +187,23 @@ export default function DigitalReceipt({
             {totalPoints !== undefined && (
               <p className="text-[10px] text-amber-400/60 mt-1">Balance: {totalPoints} pts</p>
             )}
+          </div>
+        )}
+
+        {/* Treatment Booking CTA */}
+        {bookingUrl && (
+          <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20 rounded-2xl p-4 text-center">
+            <Calendar weight="duotone" className="w-8 h-8 mx-auto mb-2 text-primary" />
+            <p className="text-xs font-black text-foreground uppercase tracking-wider mb-1">Book Your Next Treatment</p>
+            <p className="text-[9px] text-muted-foreground mb-3">Continue your skin journey with personalized treatments</p>
+            <a
+              href={bookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block px-6 py-2 bg-primary text-primary-foreground text-[10px] font-black uppercase tracking-widest rounded-xl hover:brightness-110 transition"
+            >
+              Book Now
+            </a>
           </div>
         )}
 

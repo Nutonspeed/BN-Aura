@@ -10,7 +10,8 @@ import {
   Minus,
   Plus,
   CreditCard,
-  Receipt
+  Receipt,
+  Star
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
@@ -162,7 +163,47 @@ export default function POSCart({
         </AnimatePresence>
       </div>
 
-      {/* Footer - Checkout */}
+      {/* Points Redemption */}
+      {customer && customerPoints > 0 && (
+        <div className="px-6 py-4 border-t border-border/50 bg-amber-500/[0.03]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
+              <Star weight="fill" className="w-3.5 h-3.5" />
+              Loyalty Points
+            </span>
+            <span className="text-xs font-bold text-amber-400 tabular-nums">{customerPoints.toLocaleString()} pts</span>
+          </div>
+          {onRedeemPointsChange && subtotal > 0 && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="range"
+                  min={0}
+                  max={Math.min(customerPoints, subtotal)}
+                  step={10}
+                  value={redeemPoints}
+                  onChange={e => onRedeemPointsChange(Number(e.target.value))}
+                  className="flex-1 h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-amber-400"
+                />
+                <span className="text-xs font-black text-amber-400 tabular-nums w-16 text-right">
+                  -{redeemPoints > 0 ? displayPrice(redeemPoints) : '0'}
+                </span>
+              </div>
+              <div className="flex justify-between text-[9px] text-muted-foreground">
+                <span>0 pts</span>
+                <button
+                  onClick={() => onRedeemPointsChange(Math.min(customerPoints, subtotal))}
+                  className="text-amber-400/70 hover:text-amber-400 transition font-bold"
+                >
+                  Use Max
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+            {/* Footer - Checkout */}
       <div className="p-8 bg-white/[0.02] border-t border-white/10 space-y-6">
         <div className="space-y-3">
           <div className="flex justify-between items-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
@@ -171,7 +212,7 @@ export default function POSCart({
           </div>
           <div className="flex justify-between items-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
             <span>Protocol Discounts</span>
-            <span className="text-emerald-400 tabular-nums">-{displayPrice(0)}</span>
+            <span className="text-emerald-400 tabular-nums">-{displayPrice(pointsDiscount)}</span>
           </div>
           <div className="pt-3 border-t border-white/5 flex justify-between items-center">
             <span className="text-sm font-black text-white uppercase tracking-[0.2em]">Total Value</span>

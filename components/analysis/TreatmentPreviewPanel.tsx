@@ -353,7 +353,63 @@ export default function TreatmentPreviewPanel({
         </div>
       )}
 
-      {/* Treatment List */}
+      {/* Side-by-Side Comparison */}
+      {selectedTreatments.size > 0 && (
+        <div className="rounded-2xl border border-purple-500/20 overflow-hidden">
+          <div className="grid grid-cols-2">
+            {/* Current */}
+            <div className="p-4 bg-gray-800/50 border-r border-purple-500/20">
+              <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-3 text-center">Current</p>
+              <div className="flex justify-center mb-3">
+                <div className="w-20 h-20 rounded-full border-2 border-gray-600 flex items-center justify-center">
+                  <span className="text-2xl font-black text-gray-300 tabular-nums">{skinMetrics.overallScore || 72}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {Object.entries(projectedScores.metrics).slice(0, 4).map(([key, val]) => {
+                  const orig = skinMetrics.visiaScores?.[key];
+                  if (orig === undefined) return null;
+                  const label = METRIC_LABELS[key];
+                  return (
+                    <div key={key} className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500 truncate">{label?.nameThai || key}</span>
+                      <span className="font-bold text-gray-300 tabular-nums">{orig}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            {/* Projected */}
+            <div className="p-4 bg-emerald-500/5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-3 text-center">Projected</p>
+              <div className="flex justify-center mb-3">
+                <div className="w-20 h-20 rounded-full border-2 border-emerald-500/50 flex items-center justify-center">
+                  <span className="text-2xl font-black text-emerald-400 tabular-nums">{projectedScores.overallScore}</span>
+                </div>
+              </div>
+              <div className="space-y-2">
+                {Object.entries(projectedScores.metrics).slice(0, 4).map(([key, val]) => {
+                  const orig = skinMetrics.visiaScores?.[key];
+                  if (orig === undefined) return null;
+                  const diff = Math.round(val - orig);
+                  const label = METRIC_LABELS[key];
+                  return (
+                    <div key={key} className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500 truncate">{label?.nameThai || key}</span>
+                      <span className="font-bold text-emerald-400 tabular-nums">
+                        {Math.round(val)}
+                        {diff > 0 && <span className="text-emerald-400/60 ml-1">+{diff}</span>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+            {/* Treatment List */}
       <div className="space-y-3">
         {recommendedTreatments.map((treatment, index) => {
           const isSelected = selectedTreatments.has(treatment.id);

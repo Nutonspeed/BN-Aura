@@ -1,3 +1,5 @@
+import { renderTemplate, TemplateData } from './templates';
+
 /**
  * Unified Notification Sender
  * Single entry point for sending notifications across all channels
@@ -20,6 +22,9 @@ export interface SendNotificationOptions {
   lineUserId?: string;
   link?: string;
   metadata?: Record<string, any>;
+  templateId?: string;
+  templateData?: TemplateData;
+  notificationPreference?: 'sms' | 'line' | 'email' | 'all' | 'none';
 }
 
 export interface DeliveryResult {
@@ -39,6 +44,13 @@ export interface SendResult {
  * Send notification across multiple channels
  */
 export async function sendNotification(opts: SendNotificationOptions): Promise<SendResult> {
+  // Render template if provided
+  if (opts.templateId) {
+    const rendered = renderTemplate(opts.templateId, opts.templateData || {});
+    if (!opts.title) opts.title = rendered.title;
+    if (!opts.message) opts.message = rendered.message;
+  }
+
   const baseUrl = getBaseUrl();
   const deliveries: DeliveryResult[] = [];
   let notificationId: string | undefined;
@@ -143,6 +155,11 @@ export async function sendNotification(opts: SendNotificationOptions): Promise<S
   // Log delivery results
   const anySuccess = deliveries.some(d => d.success);
 
+  // Track all delivery attempts
+  for (const d of deliveries) {
+    logDelivery(notificationId, d, opts);
+  }
+
   return {
     success: anySuccess,
     deliveries,
@@ -155,6 +172,12 @@ export async function sendNotification(opts: SendNotificationOptions): Promise<S
  */
 function determineChannels(opts: SendNotificationOptions): NotificationChannel[] {
   const channels: NotificationChannel[] = ['in_app'];
+
+  // Respect customer notification preference
+  if (opts.notificationPreference === 'none') return channels;
+  if (opts.notificationPreference === 'sms' && opts.phone) return [...channels, 'sms'];
+  if (opts.notificationPreference === 'line' && opts.lineUserId) return [...channels, 'line'];
+  if (opts.notificationPreference === 'email' && opts.email) return [...channels, 'email'];
 
   if (opts.priority === 'critical' || opts.priority === 'high') {
     if (opts.phone) channels.push('sms');
@@ -189,6 +212,40 @@ export async function sendWithRetry(
   }
 
   return lastResult;
+}
+
+
+/**
+ * Log delivery result to Supabase for tracking
+ */
+async function logDelivery(
+  notificationId: string | undefined,
+  delivery: DeliveryResult,
+  opts: SendNotificationOptions
+): Promise<void> {
+  try {
+    const baseUrl = getBaseUrl();
+    await fetch(`${baseUrl}/api/notifications`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'logDelivery',
+        data: {
+          notificationId,
+          channel: delivery.channel,
+          status: delivery.success ? 'delivered' : 'failed',
+          error: delivery.error || null,
+          recipientPhone: opts.phone,
+          recipientEmail: opts.email,
+          templateId: opts.templateId,
+          clinicId: opts.clinicId,
+          timestamp: new Date().toISOString(),
+        },
+      }),
+    });
+  } catch {
+    // Silent fail - don't break notification flow for tracking
+  }
 }
 
 /**

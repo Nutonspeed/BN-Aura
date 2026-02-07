@@ -21,7 +21,8 @@ import {
   SpinnerGap,
   Kanban,
   CurrencyDollar,
-  Sparkle
+  Sparkle,
+  Trophy
 } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
@@ -33,6 +34,7 @@ import UnifiedCommissionTracker from '@/components/sales/UnifiedCommissionTracke
 import SalesPresenceIndicator from '@/components/sales/SalesPresenceIndicator';
 import MobileQuotaWidget from '@/components/mobile/MobileQuotaWidget';
 import AICoachInsights from '@/components/sales/AICoachInsights';
+import AICoachLeaderboard from '@/components/sales/AICoachLeaderboard';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar } from 'recharts';
 
 export default function SalesDashboard() {
@@ -696,6 +698,19 @@ export default function SalesDashboard() {
         </CardHeader>
         <CardContent>
           <AICoachInsights />
+        </CardContent>
+      </Card>
+
+      {/* AI Coach Leaderboard */}
+      <Card className="rounded-2xl border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3">
+            <Trophy weight="duotone" className="w-6 h-6 text-amber-400" />
+            AI Coach Leaderboard
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AICoachLeaderboard />
         </CardContent>
       </Card>
 

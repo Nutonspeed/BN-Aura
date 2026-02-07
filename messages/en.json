@@ -418,7 +418,21 @@
       "customers": "Customers",
       "created": "Created",
       "actions": "Actions",
-      "status": "Status"
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "view_details": "View Details",
+      "edit_clinic": "Edit Clinic",
+      "deactivate_clinic": "Deactivate",
+      "activate_clinic": "Activate",
+      "status_updated": "Status updated",
+      "title": "Clinic Management",
+      "list": "Clinic List",
+      "add": "Add Clinic",
+      "edit": "Edit Clinic",
+      "delete": "Delete Clinic",
+      "name": "Clinic Name",
+      "loading": "Loading..."
     }
   },
   "clinic": {

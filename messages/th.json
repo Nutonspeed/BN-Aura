@@ -461,7 +461,21 @@
       "customers": "ลูกค้า",
       "created": "วันที่สร้าง",
       "actions": "การดำเนินการ",
-      "status": "สถานะ"
+      "status": "สถานะ",
+      "active": "ใชงาน",
+      "inactive": "ไมใชงาน",
+      "view_details": "ดรายละเอยด",
+      "edit_clinic": "แกไขคลนก",
+      "deactivate_clinic": "ปดใชงาน",
+      "activate_clinic": "เปดใชงาน",
+      "status_updated": "อพเดทสถานะแลว",
+      "title": "จดการคลนก",
+      "list": "รายการคลนก",
+      "add": "เพมคลนก",
+      "edit": "แกไขคลนก",
+      "delete": "ลบคลนก",
+      "name": "ชอคลนก",
+      "loading": "กำลงโหลด..."
     }
   },
   "ai_analysis": {

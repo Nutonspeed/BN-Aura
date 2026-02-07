@@ -3,15 +3,14 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  TrendUp, 
-  Package, 
+  TrendUp,
+  Package,
   CaretRight,
   Sparkle,
   ArrowUpRight,
   Pulse,
   ChartBar
 } from '@phosphor-icons/react';
-
 interface PredictiveData {
   revenueForecast: {
     nextMonth: number;

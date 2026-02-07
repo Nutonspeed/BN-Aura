@@ -2,7 +2,11 @@
 
 import { useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { SpinnerGap, TrendUp, WarningCircle } from '@phosphor-icons/react';
+import { 
+  SpinnerGap,
+  TrendUp,
+  WarningCircle
+} from '@phosphor-icons/react';
 import { useSalesLeadsInfinite, SalesLead } from '@/hooks/useSalesLeads';
 import { cn } from '@/lib/utils';
 

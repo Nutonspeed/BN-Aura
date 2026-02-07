@@ -12,16 +12,15 @@ import { useAuth } from '@/hooks/useAuth';
 import { useWorkflowEvents } from '@/hooks/useWorkflowEvents';
 import { workflowBridge } from '@/lib/workflow/workflowBridge';
 import { 
-  CurrencyDollar, 
-  TrendUp, 
-  CalendarDots, 
-  Clock, 
+  CurrencyDollar,
+  TrendUp,
+  CalendarDots,
+  Clock,
   CheckCircle,
   WarningCircle,
   Download,
   Funnel
 } from '@phosphor-icons/react';
-
 interface CommissionRecord {
   id: string;
   sales_staff_id: string;

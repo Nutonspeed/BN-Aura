@@ -2,8 +2,13 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, WarningCircle, Eye, EyeSlash } from '@phosphor-icons/react';
-
+import { 
+  X,
+  Check,
+  WarningCircle,
+  Eye,
+  EyeSlash
+} from '@phosphor-icons/react';
 interface FormFieldProps {
   label: string;
   name: string;

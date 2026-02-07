@@ -3,7 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
-import { Lightning, Warning, Brain } from '@phosphor-icons/react';
+import { 
+  Lightning,
+  Warning,
+  Brain
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 

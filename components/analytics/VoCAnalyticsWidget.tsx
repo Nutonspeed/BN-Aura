@@ -2,9 +2,9 @@
 
 import { motion } from 'framer-motion';
 import { 
-  ChatCircle, 
-  ThumbsUp, 
-  ThumbsDown, 
+  ChatCircle,
+  ThumbsUp,
+  ThumbsDown,
   Warning,
   Lightbulb,
   Smiley,

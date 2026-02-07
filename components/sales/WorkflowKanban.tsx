@@ -6,10 +6,10 @@
 'use client';
 
 import { 
-  User, 
-  CalendarDots, 
-  CurrencyDollar, 
-  ChatCircle, 
+  User,
+  CalendarDots,
+  CurrencyDollar,
+  ChatCircle,
   Clock,
   CheckCircle,
   WarningCircle,

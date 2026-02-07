@@ -12,13 +12,12 @@ import {
   Line
 } from 'recharts';
 import { 
-  Lightning, 
-  ThumbsUp, 
-  TrendUp, 
+  Lightning,
+  ThumbsUp,
+  TrendUp,
   ChatCircle,
   Sparkle
 } from '@phosphor-icons/react';
-
 interface AIPerformanceData {
   suggestionsMade: number;
   suggestionsAccepted: number;

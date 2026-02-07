@@ -2,7 +2,20 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, EnvelopeSimple, UserPlus, Shield, SpinnerGap, User, CaretDown, CheckCircle, IdentificationBadge, IdentificationCard, Pulse, Briefcase } from '@phosphor-icons/react';
+import { 
+  X,
+  EnvelopeSimple,
+  UserPlus,
+  Shield,
+  SpinnerGap,
+  User,
+  CaretDown,
+  CheckCircle,
+  IdentificationBadge,
+  IdentificationCard,
+  Pulse,
+  Briefcase
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

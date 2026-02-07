@@ -3,17 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  TrendUp, 
-  TrendDown, 
-  Users, 
-  CurrencyDollar, 
+  TrendUp,
+  TrendDown,
+  Users,
+  CurrencyDollar,
   Target,
   WarningCircle,
   CheckCircle,
   Clock,
   Sparkle
 } from '@phosphor-icons/react';
-
 interface BusinessMetric {
   label: string;
   current: number;

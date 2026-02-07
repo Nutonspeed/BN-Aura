@@ -2,7 +2,19 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, FileText, Truck, CurrencyDollar, SpinnerGap, FloppyDisk, Plus, Trash, CaretDown, CheckCircle, Package } from '@phosphor-icons/react';
+import { 
+  X,
+  FileText,
+  Truck,
+  CurrencyDollar,
+  SpinnerGap,
+  FloppyDisk,
+  Plus,
+  Trash,
+  CaretDown,
+  CheckCircle,
+  Package
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

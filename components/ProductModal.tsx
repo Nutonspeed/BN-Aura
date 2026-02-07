@@ -2,8 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Package, Tag, CurrencyDollar, SpinnerGap, FloppyDisk, Barcode, Stack } from '@phosphor-icons/react';
-
+import { 
+  X,
+  Package,
+  Tag,
+  CurrencyDollar,
+  SpinnerGap,
+  FloppyDisk,
+  Barcode,
+  Stack
+} from '@phosphor-icons/react';
 interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;

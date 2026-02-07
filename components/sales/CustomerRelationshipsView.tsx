@@ -1,8 +1,12 @@
 'use client';
 
 import { CustomerRelationships } from '@/lib/customer/customerIntelligence';
-import { Users, UserCheck, ShareNetwork, ArrowRight } from '@phosphor-icons/react';
-
+import { 
+  Users,
+  UserCheck,
+  ShareNetwork,
+  ArrowRight
+} from '@phosphor-icons/react';
 interface CustomerRelationshipsViewProps {
   data: CustomerRelationships;
 }

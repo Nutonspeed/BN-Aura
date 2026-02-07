@@ -2,7 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { TrendUp, TrendDown, Pulse, HardDrive, Clock } from '@phosphor-icons/react';
+import { 
+  TrendUp,
+  TrendDown,
+  Pulse,
+  HardDrive,
+  Clock
+} from '@phosphor-icons/react';
 import { NetworkNode } from '@/app/[locale]/(dashboard)/admin/network-map/page';
 
 interface NetworkPerformanceChartsProps {

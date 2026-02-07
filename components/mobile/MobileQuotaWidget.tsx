@@ -2,7 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { Pulse, TrendUp, Users, ChartBar } from '@phosphor-icons/react';
+import { 
+  Pulse,
+  TrendUp,
+  Users,
+  ChartBar
+} from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 

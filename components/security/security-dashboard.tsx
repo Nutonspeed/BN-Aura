@@ -4,7 +4,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import {
+import { 
   Shield,
   Warning,
   Pulse,
@@ -214,7 +214,7 @@ const SecurityDashboard: React.FC = () => {
     setTimeout(() => {
       const data = generateMockData();
       setThreatData(data.threatData);
-      setUserActivity(data.userActivity);
+      setUserActivity(data.userPulse);
       setMetrics(data.metrics);
       setEvents(data.events);
       setIsLoading(false);

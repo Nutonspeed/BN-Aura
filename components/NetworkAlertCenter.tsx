@@ -1,8 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Bell, Warning, CheckCircle, Info, XCircle } from '@phosphor-icons/react';
-
+import { 
+  Bell,
+  Warning,
+  CheckCircle,
+  Info,
+  XCircle
+} from '@phosphor-icons/react';
 interface Alert {
   id: string;
   type: 'error' | 'warning' | 'info' | 'success';

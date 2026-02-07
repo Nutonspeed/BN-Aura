@@ -3,10 +3,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, 
-  Plus, 
-  Trash, 
-  EnvelopeSimple, 
+  User,
+  Plus,
+  Trash,
+  EnvelopeSimple,
   MagnifyingGlass,
   Users,
   Shield,
@@ -184,28 +184,28 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
           title="Active Personnel"
           value={stats.active}
           suffix={` / ${stats.total}`}
-          icon={UserCheck as Icon}
+          icon={UserCheck}
           iconColor="text-emerald-500"
           className="p-4"
         />
         <StatCard
           title="Authority Nodes"
           value={stats.admins}
-          icon={Shield as Icon}
+          icon={Shield}
           iconColor="text-blue-500"
           className="p-4"
         />
         <StatCard
           title="Operational Staff"
           value={profiles.filter(p => p.role === 'clinic_staff').length}
-          icon={Users as Icon}
+          icon={Users}
           iconColor="text-primary"
           className="p-4"
         />
         <StatCard
           title="Practitioners"
           value={stats.practitioners}
-          icon={IdentificationBadge as Icon}
+          icon={IdentificationBadge}
           iconColor="text-purple-500"
           className="p-4"
         />

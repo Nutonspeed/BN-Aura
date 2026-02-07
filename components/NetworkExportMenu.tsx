@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Download, FileText, FileJs, FileXls, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  Download,
+  FileText,
+  FileJs,
+  FileXls,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { NetworkNode } from '@/app/[locale]/(dashboard)/admin/network-map/page';
 
 interface NetworkExportMenuProps {

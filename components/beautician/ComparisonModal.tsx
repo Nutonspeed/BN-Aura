@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  X, 
-  Camera, 
-  ArrowRight, 
-  SpinnerGap, 
-  FloppyDisk, 
-  Sparkle, 
-  Image, 
-  ArrowLeft, 
+  X,
+  Camera,
+  ArrowRight,
+  SpinnerGap,
+  FloppyDisk,
+  Sparkle,
+  Image,
+  ArrowLeft,
   CheckCircle,
   CaretRight,
   ArrowsClockwise,
@@ -176,7 +176,7 @@ export default function ComparisonModal({ isOpen, onClose, onSuccess, customerId
             ) : analyses.length < 2 ? (
               <div className="py-32 text-center space-y-8 relative z-10">
                 <div className="w-24 h-24 rounded-[40px] bg-secondary border border-border/50 flex items-center justify-center mx-auto text-muted-foreground opacity-20">
-                  <ImageIcon weight="duotone" className="w-12 h-12" />
+                  <Image weight="duotone" className="w-12 h-12" />
                 </div>
                 <div className="space-y-3">
                   <p className="text-xl font-black text-foreground/40 uppercase tracking-widest">Insufficient Data Nodes</p>

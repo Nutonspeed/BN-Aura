@@ -3,15 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ChatCircle, 
-  PaperPlaneTilt, 
-  X, 
-  User, 
+  ChatCircle,
+  PaperPlaneTilt,
+  X,
+  User,
   Sparkle,
   Circle,
   SpinnerGap
 } from '@phosphor-icons/react';
-
 interface Message {
   id: string;
   senderType: 'customer' | 'sales';

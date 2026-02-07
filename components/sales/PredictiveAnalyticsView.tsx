@@ -2,14 +2,13 @@
 
 import { PredictiveAnalytics } from '@/lib/customer/customerIntelligence';
 import { 
-  TrendUp, 
-  Warning, 
-  Lightbulb, 
+  TrendUp,
+  Warning,
+  Lightbulb,
   ArrowRight,
   TrendDown,
   Pulse
 } from '@phosphor-icons/react';
-
 interface PredictiveAnalyticsViewProps {
   data: PredictiveAnalytics;
 }

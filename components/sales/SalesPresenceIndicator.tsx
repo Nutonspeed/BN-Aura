@@ -2,8 +2,10 @@
 
 import { useSalesPresence } from '@/lib/realtime/salesPresence';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Users } from '@phosphor-icons/react';
-
+import { 
+  User,
+  Users
+} from '@phosphor-icons/react';
 interface SalesPresenceIndicatorProps {
   clinicId: string;
   userId: string;

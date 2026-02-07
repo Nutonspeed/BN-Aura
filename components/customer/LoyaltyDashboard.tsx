@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
-import {
+import { 
   Crown,
   Star,
   Gift,
@@ -25,7 +25,8 @@ import {
   TrendDown,
   Icon,
   CheckCircle,
-  X
+  X,
+  SpinnerGap
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
@@ -105,7 +106,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">{profile?.tier || 'Aura Basic'} Protocol</h2>
+                  <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">{profile?.currentTier || 'Aura Basic'} Protocol</h2>
                   <Badge variant="success" className="font-black text-[10px] tracking-widest px-4 py-1.5 shadow-sm">ACTIVE_NODE</Badge>
                 </div>
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Identity Tier Status & Evolution Progress</p>
@@ -117,7 +118,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Accumulated Flux</p>
                 <div className="flex items-center justify-end gap-2">
                   <Coins weight="fill" className="w-5 h-5 text-amber-500" />
-                  <span className="text-4xl font-black text-foreground tabular-nums tracking-tighter">{profile?.points || 0}</span>
+                  <span className="text-4xl font-black text-foreground tabular-nums tracking-tighter">{profile?.totalPoints || 0}</span>
                 </div>
               </div>
               <div className="h-12 w-px bg-border/50" />
@@ -173,7 +174,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               >
                 <Card className={cn(
                   "p-6 rounded-[32px] border transition-all duration-500 relative overflow-hidden group/achieve",
-                  achievement.unlocked ? "border-primary/30 bg-primary/5 shadow-card" : "border-border/50 bg-secondary/20 opacity-60 grayscale"
+                  achievement.isActive ? "border-primary/30 bg-primary/5 shadow-card" : "border-border/50 bg-secondary/20 opacity-60 grayscale"
                 )}>
                   <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-hover/achieve:scale-110 transition-transform">
                     <Trophy weight="fill" className="w-20 h-20 text-primary" />
@@ -182,9 +183,9 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                   <div className="flex items-center gap-5 relative z-10">
                     <div className={cn(
                       "w-14 h-14 rounded-2xl border flex items-center justify-center shadow-inner transition-all duration-500",
-                      achievement.unlocked ? "bg-primary/10 border-primary/20 text-primary" : "bg-secondary border-border text-muted-foreground"
+                      achievement.isActive ? "bg-primary/10 border-primary/20 text-primary" : "bg-secondary border-border text-muted-foreground"
                     )}>
-                      {achievement.unlocked ? <Medal weight="duotone" className="w-7 h-7" /> : <ShieldCheck weight="duotone" className="w-7 h-7" />}
+                      {achievement.isActive ? <Medal weight="duotone" className="w-7 h-7" /> : <ShieldCheck weight="duotone" className="w-7 h-7" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-base font-black text-foreground uppercase tracking-tight truncate leading-tight">{achievement.name}</h4>
@@ -204,7 +205,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               <div className="flex items-center justify-between relative z-10">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-sm">
-                    <History weight="duotone" className="w-5 h-5" />
+                    <ClockCounterClockwise weight="duotone" className="w-5 h-5" />
                   </div>
                   <CardTitle className="text-sm font-black uppercase tracking-widest">Protocol Ledger</CardTitle>
                 </div>
@@ -216,7 +217,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               {transactions.length === 0 ? (
                 <div className="py-20 text-center opacity-40">
                   <div className="w-16 h-16 rounded-[32px] bg-secondary flex items-center justify-center mx-auto mb-4 shadow-inner">
-                    <History weight="duotone" className="w-8 h-8" />
+                    <ClockCounterClockwise weight="duotone" className="w-8 h-8" />
                   </div>
                   <p className="text-[10px] font-black uppercase tracking-widest">No Protocol Logs</p>
                 </div>
@@ -233,7 +234,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                       <div className="flex flex-col items-center gap-2 pt-1">
                         <div className={cn(
                           "w-2.5 h-2.5 rounded-full shadow-sm",
-                          txn.type === 'earn' ? "bg-emerald-500 shadow-glow-sm" : "bg-rose-500 shadow-glow-sm"
+                          txn.type === 'earned' ? "bg-emerald-500 shadow-glow-sm" : "bg-rose-500 shadow-glow-sm"
                         )} />
                         {i !== (Math.min(transactions.length, 8) - 1) && <div className="w-px h-full bg-border/50 group-hover/log:bg-primary/20 transition-colors" />}
                       </div>
@@ -242,9 +243,9 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                           <p className="text-xs font-bold text-foreground group-hover/log:text-primary transition-colors tracking-tight uppercase">{txn.description}</p>
                           <span className={cn(
                             "text-[10px] font-black tabular-nums",
-                            txn.type === 'earn' ? "text-emerald-500" : "text-rose-500"
+                            txn.type === 'earned' ? "text-emerald-500" : "text-rose-500"
                           )}>
-                            {txn.type === 'earn' ? '+' : '-'}{txn.amount}
+                            {txn.type === 'earned' ? '+' : '-'}{txn.amount}
                           </span>
                         </div>
                         <p className="text-[9px] text-muted-foreground font-medium uppercase tracking-tighter opacity-60">NODE_TS: {txn.createdAt.toLocaleDateString()}</p>

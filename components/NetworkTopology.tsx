@@ -24,11 +24,11 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { 
-  HardDrives, 
-  Database, 
-  Cloud, 
-  Shield, 
-  HardDrive, 
+  HardDrives,
+  Database,
+  Cloud,
+  Shield,
+  HardDrive,
   Buildings,
   WifiSlash,
   Warning,
@@ -36,7 +36,6 @@ import {
   Pulse,
   Globe
 } from '@phosphor-icons/react';
-
 interface NetworkNodeData extends Record<string, unknown> {
   label: string;
   type: 'clinic' | 'server' | 'database' | 'api' | 'auth' | 'storage';

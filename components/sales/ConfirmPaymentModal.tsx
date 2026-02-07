@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, CalendarDots, User, CurrencyDollar, SpinnerGap, CaretDown, CheckCircle, Wallet } from '@phosphor-icons/react';
+import { 
+  X,
+  CreditCard,
+  CalendarDots,
+  User,
+  CurrencyDollar,
+  SpinnerGap,
+  CaretDown,
+  CheckCircle,
+  Wallet
+} from '@phosphor-icons/react';
 import { useConfirmPayment } from '@/hooks/useWorkflowStatus';
 import { createClient } from '@/lib/supabase/client';
 import { toast } from 'sonner';

@@ -3,12 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  PaperPlaneTilt, 
-  Sparkle, 
-  TrendUp, 
-  Users, 
-  CurrencyDollar, 
-  Star, 
+  PaperPlaneTilt,
+  Sparkle,
+  TrendUp,
+  Users,
+  CurrencyDollar,
+  Star,
   Target,
   ChartBar,
   SpinnerGap

@@ -3,17 +3,16 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Warning, 
-  TrendDown, 
-  Users, 
-  Package, 
+  Warning,
+  TrendDown,
+  Users,
+  Package,
   X,
   ArrowSquareOut,
   CheckCircle,
   Clock,
   WarningCircle
 } from '@phosphor-icons/react';
-
 interface Alert {
   type: 'revenue_drop' | 'customer_churn' | 'staff_performance' | 'inventory_low';
   severity: 'low' | 'medium' | 'high' | 'critical';

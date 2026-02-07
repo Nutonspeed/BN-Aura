@@ -15,8 +15,12 @@ import {
   Line
 } from 'recharts';
 import { motion } from 'framer-motion';
-import { Target, TrendUp, Users, WarningCircle } from '@phosphor-icons/react';
-
+import { 
+  Target,
+  TrendUp,
+  Users,
+  WarningCircle
+} from '@phosphor-icons/react';
 export default function PredictiveDashboardClient() {
   // Mock Data for Win Probability Heat Map (Leads)
   const leadsData = Array.from({ length: 20 }).map((_, i) => ({

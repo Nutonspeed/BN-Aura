@@ -9,8 +9,10 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import { Users, CalendarDots } from '@phosphor-icons/react';
-
+import { 
+  Users,
+  CalendarDots
+} from '@phosphor-icons/react';
 interface CohortData {
   cohort: string; // "Jan 2025"
   size: number;

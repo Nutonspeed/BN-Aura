@@ -1,9 +1,9 @@
 'use client';
 
 import { 
-  ClipboardText, 
-  Clock, 
-  User, 
+  ClipboardText,
+  Clock,
+  User,
   PlayCircle,
   SpinnerGap,
   Lightning,

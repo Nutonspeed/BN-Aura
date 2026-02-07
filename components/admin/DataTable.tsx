@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import {
+import { 
   CaretLeft,
   CaretRight,
   CaretUp,
@@ -14,7 +14,6 @@ import {
   Gear,
   DotsThreeVertical
 } from '@phosphor-icons/react';
-
 interface Column<T> {
   key: keyof T;
   label: string;

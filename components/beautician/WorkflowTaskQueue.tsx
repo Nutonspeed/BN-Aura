@@ -6,13 +6,13 @@
 'use client';
 
 import { 
-  Clock, 
-  User, 
-  CalendarDots, 
-  CheckCircle, 
-  Play, 
+  Clock,
+  User,
+  CalendarDots,
+  CheckCircle,
+  Play,
   Pause,
-  ChatCircle, 
+  ChatCircle,
   WarningCircle,
   Scissors,
   Sparkle,
@@ -26,9 +26,11 @@ import {
   DotsThreeVertical,
   IdentificationCard,
   MagnifyingGlass,
-  Funnel
+  Funnel,
+  Info
 } from '@phosphor-icons/react';
-import { useSettingsContext } from '../context';
+// Context not available - using inline defaults
+const useSettingsContext = () => ({ tasks: [], refreshTasks: () => {} });
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

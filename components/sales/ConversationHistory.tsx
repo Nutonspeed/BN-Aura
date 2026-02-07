@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChatCircle, Clock, TrendUp, X, CaretRight } from '@phosphor-icons/react';
+import { 
+  ChatCircle,
+  Clock,
+  TrendUp,
+  X,
+  CaretRight
+} from '@phosphor-icons/react';
 import { conversationManager, Conversation } from '@/lib/conversations/conversationManager';
 import { cn } from '@/lib/utils';
 

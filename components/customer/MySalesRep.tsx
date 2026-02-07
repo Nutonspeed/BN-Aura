@@ -2,8 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Phone, EnvelopeSimple, ChatCircle, SealCheck, ShieldCheck } from '@phosphor-icons/react';
-
+import { 
+  User,
+  Phone,
+  EnvelopeSimple,
+  ChatCircle,
+  SealCheck,
+  ShieldCheck
+} from '@phosphor-icons/react';
 interface SalesRep {
   id: string;
   name: string;

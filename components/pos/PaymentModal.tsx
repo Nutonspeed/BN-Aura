@@ -2,7 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CreditCard, Money, QrCode, SpinnerGap, CheckCircle, Download, Printer, Star } from '@phosphor-icons/react';
+import { 
+  X,
+  CreditCard,
+  Money,
+  QrCode,
+  SpinnerGap,
+  CheckCircle,
+  Download,
+  Printer,
+  Star
+} from '@phosphor-icons/react';
 import { QRCodeSVG } from 'qrcode.react';
 import { generatePromptPayQR } from '@/lib/utils/promptpay';
 import { cn } from '@/lib/utils';

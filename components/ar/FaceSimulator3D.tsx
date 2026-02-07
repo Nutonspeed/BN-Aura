@@ -2,9 +2,11 @@
 
 import { useState, useRef } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
-import { Button } from '@/components/ui/Button';
-import { Camera, Sparkles } from '@phosphor-icons/react';
-
+import { Button } from '@/components/ui/button';
+import { 
+  Camera,
+  Sparkle
+} from '@phosphor-icons/react';
 export default function FaceSimulator3D({ customerId }: { customerId: string }) {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -85,7 +87,7 @@ export default function FaceSimulator3D({ customerId }: { customerId: string }) 
     <Card className="w-full max-w-md mx-auto">
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="w-5 h-5 text-purple-500" />
+          <Sparkle className="w-5 h-5 text-purple-500" />
           <h3 className="font-bold">3D Face Simulator</h3>
         </div>
 

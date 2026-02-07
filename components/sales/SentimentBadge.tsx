@@ -1,7 +1,12 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { SmileyWink, SmileyMeh, SmileyXEyes, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  SmileyWink,
+  SmileyMeh,
+  SmileyXEyes,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { SentimentAnalysis, getSentimentColor, getSatisfactionLevel } from '@/lib/ai/sentimentAnalyzer';
 import { cn } from '@/lib/utils';
 

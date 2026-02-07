@@ -2,8 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChatCircle, PaperPlaneTilt, User, MagnifyingGlass, Circle, Sparkle } from '@phosphor-icons/react';
-
+import { 
+  ChatCircle,
+  PaperPlaneTilt,
+  User,
+  MagnifyingGlass,
+  Circle,
+  Sparkle
+} from '@phosphor-icons/react';
 interface Message {
   id: string;
   senderType: 'customer' | 'sales';

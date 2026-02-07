@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkle, TrendUp, ChatCircle, Lightbulb, Target, WarningCircle } from '@phosphor-icons/react';
+import { 
+  Sparkle,
+  TrendUp,
+  ChatCircle,
+  Lightbulb,
+  Target,
+  WarningCircle
+} from '@phosphor-icons/react';
 import { CustomerContext, SalesCoachResponse } from '@/lib/ai/salesCoach';
 import { conversationManager } from '@/lib/conversations/conversationManager';
 import { createClient } from '@/lib/supabase/client';

@@ -1,8 +1,9 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Sparkle } from '@phosphor-icons/react';
-
+import { 
+  Sparkle
+} from '@phosphor-icons/react';
 export default function AnimatedMascot() {
   return (
     <div className="relative w-64 h-64">

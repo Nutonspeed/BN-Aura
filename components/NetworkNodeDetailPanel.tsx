@@ -3,12 +3,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  X, 
-  Globe, 
-  HardDrives, 
-  Database, 
-  Cloud, 
-  Shield, 
+  X,
+  Globe,
+  HardDrives,
+  Database,
+  Cloud,
+  Shield,
   Buildings,
   Pulse,
   Clock,

@@ -4,7 +4,14 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Lightning, Warning, TrendUp, Brain, ArrowsClockwise, ShoppingCart } from '@phosphor-icons/react';
+import { 
+  Lightning,
+  Warning,
+  TrendUp,
+  Brain,
+  ArrowsClockwise,
+  ShoppingCart
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 
 interface ClinicQuotaWidgetProps {

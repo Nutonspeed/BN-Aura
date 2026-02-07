@@ -3,14 +3,13 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Pulse, 
-  CheckCircle, 
-  Circle, 
-  CalendarDots, 
+  Pulse,
+  CheckCircle,
+  Circle,
+  CalendarDots,
   Sparkle,
   ArrowRight
 } from '@phosphor-icons/react';
-
 import { createClient } from '@/lib/supabase/client';
 
 interface JourneyStep {

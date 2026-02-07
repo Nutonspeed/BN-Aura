@@ -1,6 +1,18 @@
 'use client';
 
-import { MagnifyingGlass, Package, FirstAidKit, Tag, Plus, Funnel, Archive, Sparkle, Coin, Monitor, IdentificationBadge } from '@phosphor-icons/react';
+import { 
+  MagnifyingGlass,
+  Package,
+  FirstAidKit,
+  Tag,
+  Plus,
+  Funnel,
+  Archive,
+  Sparkle,
+  Coin,
+  Monitor,
+  IdentificationBadge
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

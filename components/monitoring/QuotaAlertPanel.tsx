@@ -4,7 +4,13 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Warning, CheckCircle, Bell, ArrowsClockwise, X } from '@phosphor-icons/react';
+import { 
+  Warning,
+  CheckCircle,
+  Bell,
+  ArrowsClockwise,
+  X
+} from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Alert {
@@ -45,7 +51,7 @@ export default function QuotaAlertPanel({ clinicId, compact = false }: QuotaAler
         setAlerts(result.data.alerts);
         setStats(result.data.stats);
       }
-    } catch (e) { console.error(e); }
+    } catch { /* API may not be available */ }
     setLoading(false);
   };
 

@@ -1,7 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Check, Circle } from '@phosphor-icons/react';
+import { 
+  Check,
+  Circle
+} from '@phosphor-icons/react';
 import { getWorkflowStages, getWorkflowStageInfo } from '@/hooks/useWorkflowStatus';
 import { cn } from '@/lib/utils';
 

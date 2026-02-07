@@ -1,6 +1,20 @@
 'use client';
 
-import { X, Buildings, User, EnvelopeSimple, Phone, MapPin, SpinnerGap, FloppyDisk, Globe, CaretDown, CheckCircle, IdentificationBadge, Briefcase } from '@phosphor-icons/react';
+import { 
+  X,
+  Buildings,
+  User,
+  EnvelopeSimple,
+  Phone,
+  MapPin,
+  SpinnerGap,
+  FloppyDisk,
+  Globe,
+  CaretDown,
+  CheckCircle,
+  IdentificationBadge,
+  Briefcase
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

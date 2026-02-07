@@ -2,8 +2,20 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowCircleUp, ArrowCircleDown, GearSix, SpinnerGap, FloppyDisk, Package, CaretDown, CheckCircle, Archive, WarningCircle, ArrowsLeftRight } from '@phosphor-icons/react';
-
+import { 
+  X,
+  ArrowCircleUp,
+  ArrowCircleDown,
+  GearSix,
+  SpinnerGap,
+  FloppyDisk,
+  Package,
+  CaretDown,
+  CheckCircle,
+  Archive,
+  WarningCircle,
+  ArrowsLeftRight
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

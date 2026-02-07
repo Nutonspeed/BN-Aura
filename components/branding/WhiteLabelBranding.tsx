@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { 
   Palette, Upload, Save, RefreshCw, Eye,
   Facebook, Instagram, Globe, Phone, Mail
@@ -84,7 +83,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
           <CardContent className="space-y-4">
             <div>
               <label className="text-sm font-medium mb-2 block">ชื่อแอป</label>
-              <Input
+              <input
                 value={branding.appName || ''}
                 onChange={(e) => handleBrandingChange('appName', e.target.value)}
                 placeholder="ชื่อคลินิกของคุณ"
@@ -92,7 +91,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Tagline</label>
-              <Input
+              <input
                 value={branding.tagline || ''}
                 onChange={(e) => handleBrandingChange('tagline', e.target.value)}
                 placeholder="สโลแกน"
@@ -103,7 +102,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
                 <label className="text-sm font-medium mb-2 block flex items-center gap-1">
                   <Mail size={14} /> อีเมล
                 </label>
-                <Input
+                <input
                   value={branding.contactEmail || ''}
                   onChange={(e) => handleBrandingChange('contactEmail', e.target.value)}
                   placeholder="contact@clinic.com"
@@ -113,7 +112,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
                 <label className="text-sm font-medium mb-2 block flex items-center gap-1">
                   <Phone size={14} /> โทรศัพท์
                 </label>
-                <Input
+                <input
                   value={branding.contactPhone || ''}
                   onChange={(e) => handleBrandingChange('contactPhone', e.target.value)}
                   placeholder="02-xxx-xxxx"
@@ -122,7 +121,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
             </div>
             <div>
               <label className="text-sm font-medium mb-2 block">Logo URL</label>
-              <Input
+              <input
                 value={branding.logo || ''}
                 onChange={(e) => handleBrandingChange('logo', e.target.value)}
                 placeholder="https://..."
@@ -166,7 +165,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
                     onChange={(e) => handleColorChange('light', 'primary', e.target.value)}
                     className="w-10 h-10 rounded cursor-pointer"
                   />
-                  <Input
+                  <input
                     value={theme.colors.light.primary}
                     onChange={(e) => handleColorChange('light', 'primary', e.target.value)}
                     className="flex-1"
@@ -182,7 +181,7 @@ export function WhiteLabelBranding({ clinicId, currentTheme, onSave }: Props) {
                     onChange={(e) => handleColorChange('light', 'accent', e.target.value)}
                     className="w-10 h-10 rounded cursor-pointer"
                   />
-                  <Input
+                  <input
                     value={theme.colors.light.accent}
                     onChange={(e) => handleColorChange('light', 'accent', e.target.value)}
                     className="flex-1"

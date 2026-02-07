@@ -1,10 +1,10 @@
 'use client';
 
 import { 
-  Sparkle, 
-  Dna, 
-  Info, 
-  CheckSquare, 
+  Sparkle,
+  Dna,
+  Info,
+  CheckSquare,
   ShieldWarning,
   CaretDown,
   CaretUp,

@@ -5,7 +5,14 @@ import { type FaceMeasurement } from '@/hooks/useFaceMeasurement';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { StatCard } from '@/components/ui/StatCard';
-import { ChartLineUp, Pulse, Sparkle, Target, Clock, ShieldCheck } from '@phosphor-icons/react';
+import { 
+  ChartLineUp,
+  Pulse,
+  Sparkle,
+  Target,
+  Clock,
+  ShieldCheck
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface BeforeAfterReportProps {
@@ -67,8 +74,7 @@ export default function BeforeAfterReport({ before, after, treatmentType }: Befo
           suffix="%"
           decimals={1}
           icon={Target}
-          trend="up"
-          trendColor="text-emerald-500"
+          trend="up"
           iconColor="text-primary"
         />
         <StatCard
@@ -77,8 +83,7 @@ export default function BeforeAfterReport({ before, after, treatmentType }: Befo
           suffix="%"
           decimals={1}
           icon={Sparkle}
-          trend="up"
-          trendColor="text-emerald-500"
+          trend="up"
           iconColor="text-blue-500"
         />
         <StatCard
@@ -87,8 +92,7 @@ export default function BeforeAfterReport({ before, after, treatmentType }: Befo
           suffix="%"
           decimals={1}
           icon={ChartLineUp}
-          trend="up"
-          trendColor="text-emerald-500"
+          trend="up"
           iconColor="text-purple-500"
         />
       </div>
@@ -97,12 +101,12 @@ export default function BeforeAfterReport({ before, after, treatmentType }: Befo
         {/* Radar Chart */}
         <Card className="relative overflow-hidden group border-border/50">
           <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
-            <Activity className="w-48 h-48 text-primary" />
+            <Pulse className="w-48 h-48 text-primary" />
           </div>
           
           <CardHeader className="border-b border-border/50 pb-6 px-8">
             <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
-              <Activity weight="duotone" className="w-5 h-5 text-primary" />
+              <Pulse weight="duotone" className="w-5 h-5 text-primary" />
               Consolidated Improvement Matrix
             </CardTitle>
           </CardHeader>

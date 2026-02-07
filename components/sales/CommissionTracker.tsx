@@ -2,8 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Wallet, Clock, ArrowUpRight, ChartBar } from '@phosphor-icons/react';
-
+import { 
+  Wallet,
+  Clock,
+  ArrowUpRight,
+  ChartBar
+} from '@phosphor-icons/react';
 interface CommissionSummary {
   totalCommission: number;
   pendingCommission: number;

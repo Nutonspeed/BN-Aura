@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { Camera, SpinnerGap } from '@phosphor-icons/react';
+import { validateFaceInImage } from '@/lib/ai/faceValidator';
 
 type Step = 'intro' | 'camera' | 'analyzing' | 'results' | 'details';
 
@@ -20,6 +21,7 @@ export default function MobileSkinAnalysisPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [inputMode, setInputMode] = useState<'camera' | 'upload'>('camera');
+  const [validatingFace, setValidatingFace] = useState(false);
   const { getClinicId, getUserId } = useAuth();
   const clinicId = getClinicId();
   const userId = getUserId();
@@ -37,22 +39,37 @@ export default function MobileSkinAnalysisPage() {
     return canvas.toDataURL('image/jpeg', 0.8);
   };
 
-  // Handle file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file upload with face validation
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) { alert('กรุณาเลือกไฟล์รูปภาพ'); return; }
     if (file.size > 10 * 1024 * 1024) { alert('ไฟล์ใหญ่เกินไป (สูงสุด 10MB)'); return; }
     const reader = new FileReader();
-    reader.onload = (ev) => {
+    reader.onload = async (ev) => {
       const dataUrl = ev.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        if (img.width < 200 || img.height < 200) { alert('ความละเอียดต่ำเกินไป (ต้อง 200x200px ขึ้นไป)'); return; }
-        setUploadedImage(dataUrl);
-        setStep('camera');
-      };
-      img.src = dataUrl;
+      const img = await new Promise<HTMLImageElement>((resolve) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.src = dataUrl;
+      });
+      if (img.width < 200 || img.height < 200) {
+        alert('ความละเอียดต่ำเกินไป (ต้อง 200x200px ขึ้นไป)');
+        return;
+      }
+      // Face detection validation
+      setValidatingFace(true);
+      try {
+        const faceResult = await validateFaceInImage(dataUrl);
+        if (!faceResult.hasFace || faceResult.confidence < 0.3) {
+          alert(faceResult.message);
+          setValidatingFace(false);
+          return;
+        }
+      } catch (err) { console.warn('Face validation skipped:', err); }
+      setValidatingFace(false);
+      setUploadedImage(dataUrl);
+      setStep('camera');
     };
     reader.readAsDataURL(file);
   };
@@ -179,6 +196,7 @@ export default function MobileSkinAnalysisPage() {
     setActiveDetail(null);
     setUploadedImage(null);
     setInputMode('camera');
+    setValidatingFace(false);
   };
 
   // Cleanup on unmount
@@ -263,7 +281,12 @@ export default function MobileSkinAnalysisPage() {
       {step === 'camera' && (
         <div className="min-h-screen flex flex-col">
           <div className="flex-1 relative">
-            {inputMode === 'upload' && uploadedImage ? (
+            {validatingFace ? (
+              <div className="flex-1 flex flex-col items-center justify-center">
+                <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-white text-sm">กำลังตรวจสอบใบหน้า...</p>
+              </div>
+            ) : inputMode === 'upload' && uploadedImage ? (
               <>
                 <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-cover" />
                 <button onClick={() => { setUploadedImage(null); setStep('intro'); }} className="absolute top-4 right-4 bg-red-500/80 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg">✕</button>

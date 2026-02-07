@@ -10,6 +10,7 @@ import BeforeAfterComparison from '@/components/analysis/BeforeAfterComparison';
 import { PDFExporter } from '@/lib/analysis/pdfExporter';
 import { ReportGenerator } from '@/lib/analysis/reportGenerator';
 import { runClientInference, preloadModels, isClientInferenceSupported } from '@/lib/ai/transformersClient';
+import { validateFaceInImage } from '@/lib/ai/faceValidator';
 
 type AnalysisStep = 'capture' | 'analyzing' | 'results';
 
@@ -44,6 +45,7 @@ export default function SalesAISkinAnalysisPage() {
   const clinicId = getClinicId();
   const userId = getUserId();
   const [clientPreAnalysis, setClientPreAnalysis] = useState<any>(null);
+  const [validatingFace, setValidatingFace] = useState(false);
 
   // Preload Transformers.js models in background
   useEffect(() => {
@@ -76,35 +78,48 @@ export default function SalesAISkinAnalysisPage() {
   };
 
 
-  // Handle file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file upload with face validation
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file
-    if (!file.type.startsWith('image/')) {
-      alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
-      return;
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      alert('ไฟล์ใหญ่เกินไป (สูงสุด 10MB)');
-      return;
-    }
+    if (!file.type.startsWith('image/')) { alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('ไฟล์ใหญ่เกินไป (สูงสุด 10MB)'); return; }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const dataUrl = event.target?.result as string;
 
       // Validate minimum resolution
-      const img = new Image();
-      img.onload = () => {
-        if (img.width < 200 || img.height < 200) {
-          alert('รูปภาพความละเอียดต่ำเกินไป (ต้องอย่างน้อย 200x200px)');
+      const img = await new Promise<HTMLImageElement>((resolve) => {
+        const el = new Image();
+        el.onload = () => resolve(el);
+        el.src = dataUrl;
+      });
+      if (img.width < 200 || img.height < 200) {
+        alert('รูปภาพความละเอียดต่ำเกินไป (ต้องอย่างน้อย 200x200px)');
+        return;
+      }
+
+      // Face detection validation
+      setValidatingFace(true);
+      try {
+        const faceResult = await validateFaceInImage(dataUrl);
+        if (!faceResult.hasFace) {
+          alert(faceResult.message);
+          setValidatingFace(false);
           return;
         }
-        setUploadedImage(dataUrl);
-      };
-      img.src = dataUrl;
+        if (faceResult.confidence < 0.3) {
+          alert(faceResult.message);
+          setValidatingFace(false);
+          return;
+        }
+      } catch (err) {
+        console.warn('Face validation skipped:', err);
+      }
+      setValidatingFace(false);
+      setUploadedImage(dataUrl);
     };
     reader.readAsDataURL(file);
   };
@@ -465,7 +480,7 @@ export default function SalesAISkinAnalysisPage() {
                   ) : (
                     <div
                       className="text-center cursor-pointer p-8 border-2 border-dashed border-purple-400/30 rounded-lg hover:border-purple-400/60 transition-all m-4"
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={() => !validatingFace && fileInputRef.current?.click()}
                     >
                       <div className="text-5xl mb-4">📸</div>
                       <p className="text-purple-300 font-medium">คลิกเพื่ออัพโหลดรูปภาพ</p>

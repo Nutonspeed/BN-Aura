@@ -534,10 +534,10 @@ export default function SettingsPage() {
                     ].map((item, idx) => (
                       <div key={idx} className="flex items-center justify-between p-5 bg-secondary/20 rounded-2xl border border-border/50">
                         <div className="flex items-center gap-3">
-                          <div className={`w-2.5 h-2.5 rounded-full bg-${item.color}-500`} />
+                          <div className={`w-2.5 h-2.5 rounded-full ${item.color === "emerald" ? "bg-emerald-500" : item.color === "amber" ? "bg-amber-500" : item.color === "blue" ? "bg-blue-500" : item.color === "red" ? "bg-red-500" : "bg-gray-500"}`} />
                           <p className="text-sm font-bold text-foreground">{item.label}</p>
                         </div>
-                        <Badge variant="ghost" className={`text-${item.color}-500 bg-${item.color}-500/10 text-[9px] font-black uppercase tracking-widest`}>
+                        <Badge variant="ghost" className="text-muted-foreground bg-muted/30 text-[9px] font-black uppercase tracking-widest">
                           {item.status}
                         </Badge>
                       </div>

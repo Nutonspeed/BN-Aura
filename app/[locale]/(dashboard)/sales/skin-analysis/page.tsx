@@ -6,6 +6,9 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth';
 import { SpinnerGap, CheckCircle, Warning } from '@phosphor-icons/react';
+import BeforeAfterComparison from '@/components/analysis/BeforeAfterComparison';
+import { PDFExporter } from '@/lib/analysis/pdfExporter';
+import { ReportGenerator } from '@/lib/analysis/reportGenerator';
 
 type AnalysisStep = 'capture' | 'analyzing' | 'results';
 
@@ -530,6 +533,7 @@ export default function SalesAISkinAnalysisPage() {
                 { id: 'wrinkles', label: '〰️ Wrinkles', icon: '〰️' },
                 { id: 'timetravel', label: '🔮 Time Travel', icon: '🔮' },
                 { id: 'twins', label: '👥 Skin Twins', icon: '👥' },
+                { id: 'history', label: '📈 Before/After', icon: '📈' },
               ].map((tab) => (
                 <Button
                   key={tab.id}
@@ -670,6 +674,29 @@ export default function SalesAISkinAnalysisPage() {
                   </div>
                 )}
 
+                {/* Before/After History Tab */}
+                {activeTab === 'history' && selectedCustomer && (
+                  <BeforeAfterComparison
+                    customerId={selectedCustomer.id}
+                    clinicId={clinicId || ''}
+                    currentAnalysisId={savedId || undefined}
+                    onDownloadPDF={async (beforeId, afterId) => {
+                      try {
+                        const [r1, r2] = await Promise.all([
+                          fetch(`/api/analysis/save?id=${beforeId}`).then(r => r.json()),
+                          fetch(`/api/analysis/save?id=${afterId}`).then(r => r.json()),
+                        ]);
+                        if (r1.success && r2.success) {
+                          const before = ReportGenerator.prepareReportData(r1.data, selectedCustomer.full_name);
+                          const after = ReportGenerator.prepareReportData(r2.data, selectedCustomer.full_name);
+                          const days = Math.floor((new Date(r2.data.analyzed_at).getTime() - new Date(r1.data.analyzed_at).getTime()) / 86400000);
+                          await PDFExporter.downloadComparisonReport(before, after, days);
+                        }
+                      } catch (e) { console.error('PDF download error:', e); alert('PDF export failed'); }
+                    }}
+                  />
+                )}
+
                 {/* Skin Twins Tab */}
                 {activeTab === 'twins' && analysisData.skinTwins && (
                   <div className="space-y-4">
@@ -740,8 +767,43 @@ export default function SalesAISkinAnalysisPage() {
               <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
                 💬 ปรึกษา AI
               </Button>
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600">
-                📄 ส่งรายงาน
+              <Button 
+                className="bg-gradient-to-r from-purple-600 to-pink-600"
+                onClick={async () => {
+                  try {
+                    const reportData = {
+                      analysisId: savedId || `RPT-${Date.now()}`,
+                      analyzedAt: new Date().toISOString(),
+                      customerName: selectedCustomer?.full_name || 'Customer',
+                      customerAge: customerAge,
+                      clinicName: 'BN-Aura Clinic',
+                      overallScore: analysisData.overallScore || 72,
+                      skinAge: analysisData.skinAge || customerAge + 3,
+                      skinAgeDifference: (analysisData.skinAge || customerAge + 3) - customerAge,
+                      skinHealthGrade: (analysisData.overallScore || 72) >= 80 ? 'A' : (analysisData.overallScore || 72) >= 60 ? 'B' : 'C',
+                      symmetryScore: analysisData.symmetry?.overallSymmetry || 87,
+                      goldenRatio: analysisData.symmetry?.goldenRatio || 1.58,
+                      metrics: analysisData.visiaScores ? [
+                        { id: 'spots', name: 'Spots', nameThai: 'จุดด่างดำ', score: analysisData.visiaScores.spots || 65 },
+                        { id: 'wrinkles', name: 'Wrinkles', nameThai: 'ริ้วรอย', score: analysisData.visiaScores.wrinkles || 58 },
+                        { id: 'texture', name: 'Texture', nameThai: 'เนื้อผิว', score: analysisData.visiaScores.texture || 75 },
+                        { id: 'pores', name: 'Pores', nameThai: 'รูขุมขน', score: analysisData.visiaScores.pores || 52 },
+                        { id: 'uvSpots', name: 'UV Spots', nameThai: 'จุด UV', score: analysisData.visiaScores.uvSpots || 70 },
+                        { id: 'brownSpots', name: 'Brown Spots', nameThai: 'ฝ้า/กระ', score: analysisData.visiaScores.brownSpots || 55 },
+                        { id: 'redAreas', name: 'Red Areas', nameThai: 'จุดแดง', score: analysisData.visiaScores.redAreas || 80 },
+                        { id: 'porphyrins', name: 'Porphyrins', nameThai: 'แบคทีเรีย', score: analysisData.visiaScores.porphyrins || 85 },
+                      ] : analysisData.skinMetrics?.metrics || [],
+                      wrinkleLevel: analysisData.wrinkleAnalysis?.overallAgingLevel || 6,
+                      wrinkleZones: analysisData.wrinkleAnalysis?.zones?.map((z) => ({ name: z.name, nameThai: z.nameThai, level: z.agingLevel })) || [],
+                      recommendations: analysisData.recommendations?.immediate || [],
+                      strengths: analysisData.summary?.strengths || [],
+                      concerns: analysisData.summary?.concerns || [],
+                    };
+                    await PDFExporter.downloadReport(reportData);
+                  } catch (e) { console.error('PDF error:', e); alert('PDF export failed'); }
+                }}
+              >
+                📄 Download PDF
               </Button>
               <Button variant="outline" onClick={() => window.print()}>
                 🖨️ พิมพ์ผลวิเคราะห์

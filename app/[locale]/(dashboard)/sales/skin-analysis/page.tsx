@@ -34,6 +34,9 @@ export default function SalesAISkinAnalysisPage() {
   const [savedId, setSavedId] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [inputMode, setInputMode] = useState<'camera' | 'upload'>('camera');
   const [customers, setCustomers] = useState<CustomerOption[]>([]);
   const [selectedCustomer, setSelectedCustomer] = useState<CustomerOption | null>(null);
   const [loadingCustomers, setLoadingCustomers] = useState(true);
@@ -72,6 +75,146 @@ export default function SalesAISkinAnalysisPage() {
     return cv.toDataURL('image/jpeg', 0.85);
   };
 
+
+  // Handle file upload
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    if (!file.type.startsWith('image/')) {
+      alert('กรุณาเลือกไฟล์รูปภาพเท่านั้น');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      alert('ไฟล์ใหญ่เกินไป (สูงสุด 10MB)');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result as string;
+
+      // Validate minimum resolution
+      const img = new Image();
+      img.onload = () => {
+        if (img.width < 200 || img.height < 200) {
+          alert('รูปภาพความละเอียดต่ำเกินไป (ต้องอย่างน้อย 200x200px)');
+          return;
+        }
+        setUploadedImage(dataUrl);
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Analyze from uploaded image
+  const analyzeUploadedImage = async () => {
+    if (!selectedCustomer) { alert('กรุณาเลือกลูกค้าก่อนวิเคราะห์'); return; }
+    if (!uploadedImage) { alert('กรุณาอัพโหลดรูปภาพก่อน'); return; }
+    setIsCapturing(true); setStep('analyzing'); setSavedId(null);
+    try {
+      // Use uploaded image as imageData
+      const imageData = uploadedImage;
+
+      // Client-side pre-analysis
+      let clientResults = null;
+      if (isClientInferenceSupported() && imageData) {
+        try {
+          clientResults = await runClientInference(imageData);
+          setClientPreAnalysis(clientResults);
+        } catch (e) { console.warn('Client inference skipped:', e); }
+      }
+
+      // POST to AI analysis
+      const skinRes = await fetch('/api/analysis/skin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageData,
+          customerInfo: {
+            customerId: selectedCustomer.id,
+            name: selectedCustomer.full_name,
+            email: selectedCustomer.email,
+            age: customerAge,
+          },
+          useAI: true,
+          clinicId,
+          userId,
+          clientPreAnalysis: clientResults,
+          source: 'upload',
+        }),
+      });
+      const skinData = await skinRes.json();
+
+      if (!skinData.success) {
+        if (skinData.error === 'QUOTA_EXCEEDED') {
+          alert('โควต้าหมด: ' + (skinData.message || 'กรุณาอัพเกรดแพ็คเกจ'));
+          setStep('capture'); setIsCapturing(false); return;
+        }
+        throw new Error(skinData.error || 'Analysis failed');
+      }
+
+      if (skinData.data?.quotaInfo) setQuotaRemaining(skinData.data.quotaInfo.remaining);
+
+      const score = skinData.data?.overallScore || 72;
+
+      // Time Travel + Skin Twin (same as camera flow)
+      const [timeRes, twinRes] = await Promise.all([
+        fetch('/api/analysis/time-travel', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ age: customerAge, skinScore: score, skinType: skinData.data?.skinType || 'combination' }),
+        }),
+        fetch('/api/analysis/skin-twin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            age: customerAge,
+            gender: selectedCustomer.metadata?.gender || 'female',
+            skinType: skinData.data?.skinType || 'combination',
+            concerns: skinData.data?.summary?.concerns || [],
+            metrics: skinData.data?.visiaScores || {},
+            skinScore: score,
+          }),
+        }),
+      ]);
+      const [timeData, twinData] = await Promise.all([timeRes.json(), twinRes.json()]);
+
+      // Save
+      await fetch('/api/analysis/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerId: selectedCustomer.id, clinicId, actualAge: customerAge,
+          analysisData: {
+            symmetry: skinData.data?.symmetry, skinMetrics: skinData.data?.skinMetrics,
+            wrinkleAnalysis: skinData.data?.wrinkleAnalysis, timeTravelData: timeData.data, skinTwins: twinData.data,
+          },
+        }),
+      }).then(r => r.json()).then(d => { if (d.success) setSavedId(d.data?.analysisId); });
+
+      setAnalysisData({
+        overallScore: skinData.data?.overallScore, skinAge: skinData.data?.skinAge,
+        skinAgeDifference: skinData.data?.skinAgeDifference, symmetry: skinData.data?.symmetry,
+        skinMetrics: skinData.data?.skinMetrics, wrinkleAnalysis: skinData.data?.wrinkleAnalysis,
+        timeTravelData: timeData.data, skinTwins: twinData.data,
+        summary: skinData.data?.summary, recommendations: skinData.data?.recommendations,
+        aiPowered: skinData.data?.aiPowered, quotaInfo: skinData.data?.quotaInfo,
+        confidence: skinData.data?.confidence, visiaScores: skinData.data?.visiaScores,
+        hfAnalysis: skinData.data?.hfAnalysis, skinType: skinData.data?.skinType,
+        modelsUsed: skinData.data?.modelsUsed, processingTime: skinData.data?.processingTime,
+      });
+      setStep('results');
+    } catch (error) {
+      console.error('Upload analysis error:', error);
+      alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+      setStep('capture');
+    } finally {
+      setIsCapturing(false);
+    }
+  };
 
   // Start camera
   const startCamera = async () => {
@@ -221,6 +364,9 @@ export default function SalesAISkinAnalysisPage() {
     setStep('capture');
     setAnalysisData({});
     setActiveTab('overview');
+    setUploadedImage(null);
+    setInputMode('camera');
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   useEffect(() => {
@@ -264,9 +410,30 @@ export default function SalesAISkinAnalysisPage() {
         {/* Step 1: Capture */}
         {step === 'capture' && (
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Camera View */}
+            {/* Input Mode Toggle */}
+            <div className="flex gap-2 mb-4">
+              <Button
+                variant={inputMode === 'camera' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setInputMode('camera'); setUploadedImage(null); startCamera(); }}
+                className={inputMode === 'camera' ? 'bg-purple-600' : ''}
+              >
+                📷 ถ่ายภาพ
+              </Button>
+              <Button
+                variant={inputMode === 'upload' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => { setInputMode('upload'); }}
+                className={inputMode === 'upload' ? 'bg-purple-600' : ''}
+              >
+                📤 อัพโหลดรูป
+              </Button>
+            </div>
+
+            {/* Camera / Upload View */}
             <Card className="bg-black/50 border-purple-500/30">
               <CardContent className="p-4">
+                {inputMode === 'camera' ? (
                 <div className="relative aspect-[4/3] bg-black rounded-lg overflow-hidden">
                   <video 
                     ref={videoRef} 
@@ -283,6 +450,38 @@ export default function SalesAISkinAnalysisPage() {
                     <p className="text-sm text-purple-300">จัดใบหน้าให้อยู่ในกรอบ</p>
                   </div>
                 </div>
+                ) : (
+                <div className="relative aspect-[4/3] bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center">
+                  {uploadedImage ? (
+                    <>
+                      <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => { setUploadedImage(null); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                        className="absolute top-2 right-2 bg-red-500/80 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm hover:bg-red-600"
+                      >
+                        ✕
+                      </button>
+                    </>
+                  ) : (
+                    <div
+                      className="text-center cursor-pointer p-8 border-2 border-dashed border-purple-400/30 rounded-lg hover:border-purple-400/60 transition-all m-4"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <div className="text-5xl mb-4">📸</div>
+                      <p className="text-purple-300 font-medium">คลิกเพื่ออัพโหลดรูปภาพ</p>
+                      <p className="text-gray-500 text-xs mt-2">JPG, PNG • ขั้นต่ำ 200x200px • สูงสุด 10MB</p>
+                      <p className="text-gray-500 text-xs mt-1">แนะนำ: ใช้รูปจากกล้องมือถือเพื่อความละเอียดสูงขึ้น</p>
+                    </div>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </div>
+                )}
 
                 {/* Age Input */}
                 <div className="mt-4 flex items-center gap-4">
@@ -336,14 +535,18 @@ export default function SalesAISkinAnalysisPage() {
                   </div>
                 )}
 
-                {/* Capture Button */}
+                {/* Analyze Button */}
                 <Button 
                   className="w-full mt-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
                   size="lg"
-                  onClick={captureAndAnalyze}
-                  disabled={!selectedCustomer || isCapturing}
+                  onClick={inputMode === 'camera' ? captureAndAnalyze : analyzeUploadedImage}
+                  disabled={!selectedCustomer || isCapturing || (inputMode === 'upload' && !uploadedImage)}
                 >
-                  {isCapturing ? '⏳ กำลังวิเคราะห์...' : '📸 วิเคราะห์ผิวหน้า'}
+                  {isCapturing 
+                    ? '⏳ กำลังวิเคราะห์...' 
+                    : inputMode === 'camera' 
+                      ? '📸 ถ่ายและวิเคราะห์' 
+                      : '🧠 วิเคราะห์รูปที่อัพโหลด'}
                 </Button>
               </CardContent>
             </Card>

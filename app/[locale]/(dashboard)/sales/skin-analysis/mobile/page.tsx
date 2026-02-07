@@ -17,6 +17,9 @@ export default function MobileSkinAnalysisPage() {
   const [customerAge, setCustomerAge] = useState(35);
   const [activeDetail, setActiveDetail] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [inputMode, setInputMode] = useState<'camera' | 'upload'>('camera');
   const { getClinicId, getUserId } = useAuth();
   const clinicId = getClinicId();
   const userId = getUserId();
@@ -32,6 +35,63 @@ export default function MobileSkinAnalysisPage() {
     if (!ctx) return null;
     ctx.drawImage(videoRef.current, 0, 0);
     return canvas.toDataURL('image/jpeg', 0.8);
+  };
+
+  // Handle file upload
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('กรุณาเลือกไฟล์รูปภาพ'); return; }
+    if (file.size > 10 * 1024 * 1024) { alert('ไฟล์ใหญ่เกินไป (สูงสุด 10MB)'); return; }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string;
+      const img = new Image();
+      img.onload = () => {
+        if (img.width < 200 || img.height < 200) { alert('ความละเอียดต่ำเกินไป (ต้อง 200x200px ขึ้นไป)'); return; }
+        setUploadedImage(dataUrl);
+        setStep('camera');
+      };
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Analyze uploaded image
+  const analyzeUploadedImage = async () => {
+    if (!selectedCustomer) { alert('กรุณาเลือกลูกค้าก่อน'); return; }
+    if (!uploadedImage) { alert('กรุณาอัพโหลดรูปภาพก่อน'); return; }
+    setStep('analyzing');
+    try {
+      const skinRes = await fetch('/api/analysis/skin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageData: uploadedImage,
+          customerInfo: { customerId: selectedCustomer.id, name: selectedCustomer.full_name, email: selectedCustomer.email, age: customerAge },
+          useAI: true, clinicId, userId, source: 'upload',
+        }),
+      });
+      const skinData = await skinRes.json();
+      if (!skinData.success) {
+        if (skinData.error === 'QUOTA_EXCEEDED') { alert('โควต้าหมด'); setStep('camera'); return; }
+        throw new Error(skinData.error || 'Analysis failed');
+      }
+      if (skinData.data?.quotaInfo) setQuotaRemaining(skinData.data.quotaInfo.remaining);
+      const score = skinData.data?.overallScore || 72;
+      const timeRes = await fetch('/api/analysis/time-travel', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ age: customerAge, skinScore: score, skinType: skinData.data?.skinType || 'combination' }),
+      });
+      const timeData = await timeRes.json();
+      setAnalysisData({ ...skinData.data, timeTravel: timeData.data });
+      if (videoRef.current?.srcObject) { (videoRef.current.srcObject as MediaStream).getTracks().forEach(t => t.stop()); }
+      setStep('results');
+    } catch (error) {
+      console.error('Upload analysis error:', error);
+      alert('เกิดข้อผิดพลาด กรุณาลองใหม่');
+      setStep('camera');
+    }
   };
 
   // Start camera
@@ -117,6 +177,8 @@ export default function MobileSkinAnalysisPage() {
     setStep('intro');
     setAnalysisData(null);
     setActiveDetail(null);
+    setUploadedImage(null);
+    setInputMode('camera');
   };
 
   // Cleanup on unmount
@@ -183,47 +245,45 @@ export default function MobileSkinAnalysisPage() {
             </div>
           </div>
 
-          {/* Start Button */}
-          <button
-            onClick={startCamera}
-            className="w-full max-w-xs py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white font-bold text-lg shadow-lg shadow-purple-500/30"
-          >
-            📸 เริ่มวิเคราะห์
-          </button>
+          {/* Start Buttons */}
+          <div className="w-full max-w-xs space-y-3">
+            <button onClick={() => { setInputMode('camera'); startCamera(); }} className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white font-bold text-lg shadow-lg shadow-purple-500/30">
+              📷 ถ่ายภาพวิเคราะห์
+            </button>
+            <button onClick={() => { setInputMode('upload'); fileInputRef.current?.click(); }} className="w-full py-4 bg-white/10 border border-purple-500/30 rounded-2xl text-white font-bold text-lg">
+              📤 อัพโหลดรูปภาพ
+            </button>
+            <p className="text-xs text-gray-500 text-center">แนะนำ: ใช้รูปจากกล้องมือถือเพื่อความละเอียดสูงขึ้น</p>
+          </div>
+          <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileUpload} className="hidden" />
         </div>
       )}
 
-      {/* Camera Step */}
+      {/* Camera / Upload Step */}
       {step === 'camera' && (
         <div className="min-h-screen flex flex-col">
-          {/* Camera View */}
           <div className="flex-1 relative">
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              autoPlay
-              playsInline
-              muted
-            />
-            {/* Face Guide */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-56 h-72 border-2 border-dashed border-white/50 rounded-full" />
-            </div>
-            {/* Instructions */}
-            <div className="absolute top-4 left-0 right-0 text-center">
-              <p className="text-white text-sm bg-black/50 inline-block px-4 py-2 rounded-full">
-                จัดใบหน้าให้อยู่ในกรอบ
-              </p>
-            </div>
+            {inputMode === 'upload' && uploadedImage ? (
+              <>
+                <img src={uploadedImage} alt="Uploaded" className="w-full h-full object-cover" />
+                <button onClick={() => { setUploadedImage(null); setStep('intro'); }} className="absolute top-4 right-4 bg-red-500/80 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg">✕</button>
+                <div className="absolute top-4 left-4 bg-green-500/80 text-white text-xs px-3 py-1 rounded-full">📤 รูปที่อัพโหลด</div>
+              </>
+            ) : (
+              <>
+                <video ref={videoRef} className="w-full h-full object-cover" autoPlay playsInline muted />
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <div className="w-56 h-72 border-2 border-dashed border-white/50 rounded-full" />
+                </div>
+                <div className="absolute top-4 left-0 right-0 text-center">
+                  <p className="text-white text-sm bg-black/50 inline-block px-4 py-2 rounded-full">จัดใบหน้าให้อยู่ในกรอบ</p>
+                </div>
+              </>
+            )}
           </div>
-
-          {/* Capture Button */}
           <div className="p-6 bg-black/80">
-            <button
-              onClick={captureAndAnalyze}
-              className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white font-bold text-lg"
-            >
-              📸 ถ่ายภาพ & วิเคราะห์
+            <button onClick={inputMode === 'upload' ? analyzeUploadedImage : captureAndAnalyze} className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white font-bold text-lg">
+              {inputMode === 'upload' ? '🧠 วิเคราะห์รูปที่อัพโหลด' : '📸 ถ่ายภาพ & วิเคราะห์'}
             </button>
           </div>
         </div>

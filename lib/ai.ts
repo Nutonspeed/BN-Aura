@@ -12,7 +12,7 @@ export function getAIProvider(options: {
   useCache?: boolean;
 } = {}) {
   const gatewayUrl = process.env.VERCEL_AI_GATEWAY_URL;
-  const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+  const apiKey = process.env.GOOGLE_AI_API_KEY;
 
   if (!gatewayUrl || !apiKey) {
     throw new Error('AI Gateway configuration missing in environment variables');

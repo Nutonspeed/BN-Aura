@@ -89,7 +89,7 @@ export default function MobileSkinAnalysisPage() {
       const timeRes = await fetch('/api/analysis/time-travel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ age: customerAge, skinScore: score, skinType: 'combination' }),
+        body: JSON.stringify({ age: customerAge, skinScore: score, skinType: skinData.data?.skinType || 'combination' }),
       });
       const timeData = await timeRes.json();
 

@@ -12,6 +12,7 @@ import { ReportGenerator } from '@/lib/analysis/reportGenerator';
 import { runClientInference, preloadModels, isClientInferenceSupported } from '@/lib/ai/transformersClient';
 import { validateFaceInImage } from '@/lib/ai/faceValidator';
 import AICoachPanel from '@/components/sales/AICoachPanel';
+import TreatmentPreviewPanel from '@/components/analysis/TreatmentPreviewPanel';
 
 type AnalysisStep = 'capture' | 'analyzing' | 'results';
 
@@ -774,6 +775,7 @@ export default function SalesAISkinAnalysisPage() {
                 { id: 'timetravel', label: '🔮 Time Travel', icon: '🔮' },
                 { id: 'twins', label: '👥 Skin Twins', icon: '👥' },
                 { id: 'history', label: '📈 Before/After', icon: '📈' },
+                { id: 'treatments', label: '💉 Treatments', icon: '💉' },
               ].map((tab) => (
                 <Button
                   key={tab.id}
@@ -978,6 +980,23 @@ export default function SalesAISkinAnalysisPage() {
                       💡 {analysisData.skinTwins.insights?.messageThai}
                     </div>
                   </div>
+                )}
+
+                {/* Treatment Preview Tab */}
+                {activeTab === 'treatments' && (
+                  <TreatmentPreviewPanel
+                    skinMetrics={{
+                      overallScore: analysisData.overallScore,
+                      skinAge: analysisData.skinAge,
+                      visiaScores: analysisData.visiaScores,
+                      skinType: analysisData.skinType,
+                      concerns: analysisData.summary?.concerns,
+                    }}
+                    customerName={selectedCustomer?.full_name}
+                    onBookTreatment={(treatmentId) => {
+                      console.log('Book treatment:', treatmentId, 'for', selectedCustomer?.full_name);
+                    }}
+                  />
                 )}
               </CardContent>
             </Card>

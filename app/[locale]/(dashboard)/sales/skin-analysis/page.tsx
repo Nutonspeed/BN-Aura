@@ -9,6 +9,7 @@ import { SpinnerGap, CheckCircle, Warning } from '@phosphor-icons/react';
 import BeforeAfterComparison from '@/components/analysis/BeforeAfterComparison';
 import { PDFExporter } from '@/lib/analysis/pdfExporter';
 import { ReportGenerator } from '@/lib/analysis/reportGenerator';
+import { runClientInference, preloadModels, isClientInferenceSupported } from '@/lib/ai/transformersClient';
 
 type AnalysisStep = 'capture' | 'analyzing' | 'results';
 
@@ -39,6 +40,14 @@ export default function SalesAISkinAnalysisPage() {
   const [quotaRemaining, setQuotaRemaining] = useState<number | null>(null);
   const clinicId = getClinicId();
   const userId = getUserId();
+  const [clientPreAnalysis, setClientPreAnalysis] = useState<any>(null);
+
+  // Preload Transformers.js models in background
+  useEffect(() => {
+    if (isClientInferenceSupported()) {
+      preloadModels().catch(() => {});
+    }
+  }, []);
 
   // Fetch customers assigned to this sales staff
   const fetchCustomers = useCallback(async () => {
@@ -88,6 +97,16 @@ export default function SalesAISkinAnalysisPage() {
       const imageData = captureImage();
       if (!imageData) throw new Error('ไม่สามารถถ่ายภาพได้');
 
+      // Step 1.5: Client-side pre-analysis (Transformers.js in browser)
+      let clientResults = null;
+      if (isClientInferenceSupported() && imageData) {
+        try {
+          clientResults = await runClientInference(imageData);
+          setClientPreAnalysis(clientResults);
+          console.log('[Client AI]', clientResults.skinType?.label, clientResults.age?.estimatedAge, clientResults.processingTime + 'ms');
+        } catch (e) { console.warn('Client inference skipped:', e); }
+      }
+
       // Step 2: POST to AI Skin Analysis (real Gemini AI + quota)
       const skinRes = await fetch('/api/analysis/skin', {
         method: 'POST',
@@ -103,6 +122,7 @@ export default function SalesAISkinAnalysisPage() {
           useAI: true,
           clinicId,
           userId,
+          clientPreAnalysis: clientResults,
         }),
       });
       const skinData = await skinRes.json();
@@ -126,7 +146,7 @@ export default function SalesAISkinAnalysisPage() {
       const timeRes = await fetch('/api/analysis/time-travel', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ age: customerAge, skinScore: score, skinType: 'combination' }),
+        body: JSON.stringify({ age: customerAge, skinScore: score, skinType: skinData.data?.skinType || clientResults?.skinType?.label || 'combination' }),
       });
       const timeData = await timeRes.json();
 

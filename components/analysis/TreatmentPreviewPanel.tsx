@@ -11,7 +11,9 @@ import {
   CheckCircle,
   Star,
   CaretDown,
-  CaretUp
+  CaretUp,
+  FloppyDisk,
+  ShareNetwork
 } from '@phosphor-icons/react';
 
 interface Treatment {
@@ -38,7 +40,11 @@ interface SkinMetrics {
 interface TreatmentPreviewPanelProps {
   skinMetrics: SkinMetrics;
   customerName?: string;
+  analysisId?: string;
+  customerId?: string;
+  clinicId?: string;
   onBookTreatment?: (treatmentId: string) => void;
+  onSaveSession?: (sessionData: any) => void;
 }
 
 // Treatment database with expected improvements
@@ -141,7 +147,11 @@ const TreatmentIcon = ({ type, className }: { type: string; className?: string }
 export default function TreatmentPreviewPanel({
   skinMetrics,
   customerName,
+  analysisId,
+  customerId,
+  clinicId,
   onBookTreatment,
+  onSaveSession,
 }: TreatmentPreviewPanelProps) {
   const [selectedTreatments, setSelectedTreatments] = useState<Set<string>>(new Set());
   const [intensity, setIntensity] = useState(0.7);
@@ -199,6 +209,42 @@ export default function TreatmentPreviewPanel({
     });
   };
 
+  const [saving, setSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
+  const handleSaveSession = async () => {
+    if (selectedTreatments.size === 0) return;
+    setSaving(true);
+    setSaveSuccess(false);
+    try {
+      const sessionData = {
+        analysisId,
+        customerId,
+        clinicId,
+        selectedTreatments: Array.from(selectedTreatments),
+        currentScores: skinMetrics.visiaScores || {},
+        projectedScores: projectedScores.metrics,
+        intensity,
+      };
+
+      const res = await fetch('/api/analysis/ar-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sessionData),
+      });
+      const result = await res.json();
+      if (result.success) {
+        setSaveSuccess(true);
+        onSaveSession?.(result.data);
+        setTimeout(() => setSaveSuccess(false), 3000);
+      }
+    } catch (e) {
+      console.error('Failed to save AR session:', e);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -213,14 +259,37 @@ export default function TreatmentPreviewPanel({
           </p>
         </div>
         {selectedTreatments.size > 0 && (
-          <div className="text-right">
-            <p className="text-xs text-gray-400">Projected Score</p>
-            <p className="text-3xl font-black text-emerald-400 tabular-nums">
-              {projectedScores.overallScore}
-              <span className="text-sm text-emerald-400/60 ml-1">
-                +{projectedScores.overallImprovement}
-              </span>
-            </p>
+          <div className="flex items-center gap-3">
+            <div className="text-right">
+              <p className="text-xs text-gray-400">Projected Score</p>
+              <p className="text-3xl font-black text-emerald-400 tabular-nums">
+                {projectedScores.overallScore}
+                <span className="text-sm text-emerald-400/60 ml-1">
+                  +{projectedScores.overallImprovement}
+                </span>
+              </p>
+            </div>
+            <div className="flex flex-col gap-1">
+              <button
+                onClick={handleSaveSession}
+                disabled={saving}
+                className={`p-2 rounded-lg transition ${saveSuccess ? 'bg-emerald-500/20 text-emerald-400' : 'bg-purple-500/10 text-purple-400 hover:bg-purple-500/20'}`}
+                title="Save session"
+              >
+                <FloppyDisk className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  const text = `Treatment Preview for ${customerName || 'Customer'}\nProjected Score: ${projectedScores.overallScore} (+${projectedScores.overallImprovement})\nTreatments: ${Array.from(selectedTreatments).join(', ')}`;
+                  if (navigator.share) navigator.share({ title: 'Treatment Preview', text });
+                  else navigator.clipboard.writeText(text);
+                }}
+                className="p-2 bg-purple-500/10 text-purple-400 rounded-lg hover:bg-purple-500/20 transition"
+                title="Share"
+              >
+                <ShareNetwork className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         )}
       </div>

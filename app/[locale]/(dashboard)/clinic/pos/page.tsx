@@ -214,16 +214,51 @@ export default function POSPage() {
     }
   };
 
-  const handlePaymentSuccess = (paymentData: any) => {
+  const handlePaymentSuccess = async (paymentData: any) => {
+    const total = cartItems.reduce((acc, i) => acc + i.total, 0);
+    const transactionId = pendingTransactionId;
+
     setTransactionSuccessData({
-      id: pendingTransactionId,
+      id: transactionId,
       number: paymentData.metadata?.transaction_number || 'TXN-GENERATING',
       date: new Date().toISOString(),
       customerName: selectedCustomer.full_name,
       items: cartItems,
-      subtotal: cartItems.reduce((acc, i) => acc + i.total, 0),
-      total: cartItems.reduce((acc, i) => acc + i.total, 0)
+      subtotal: total,
+      total: total,
+      pointsEarned: 0
     });
+
+    // Auto-award loyalty points: 1 point per 100 THB spent
+    if (selectedCustomer?.id && clinicId && total > 0) {
+      try {
+        const pointsToAward = Math.floor(total / 100);
+        if (pointsToAward > 0) {
+          const loyaltyRes = await fetch('/api/loyalty/points', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              customerId: selectedCustomer.id,
+              clinicId,
+              points: pointsToAward,
+              transactionId: transactionId || 'pos-' + Date.now(),
+              description: 'POS Purchase - ' + pointsToAward + ' points'
+            })
+          });
+          const loyaltyData = await loyaltyRes.json();
+          if (loyaltyData.success) {
+            setTransactionSuccessData((prev: any) => prev ? ({
+              ...prev,
+              pointsEarned: pointsToAward,
+              totalPoints: loyaltyData.data?.points || pointsToAward
+            }) : prev);
+          }
+        }
+      } catch (e) {
+        console.warn('Loyalty points award failed:', e);
+      }
+    }
+
     setCartItems([]);
     setSelectedCustomer(null);
     setIsPaymentModalOpen(false);
@@ -467,6 +502,17 @@ export default function POSPage() {
                 total={transactionSuccessData.total}
                 clinicInfo={clinicInfo || { name: 'BN-Aura Clinical Node', address: 'Operational Data Loading...', phone: '...' }}
               />
+
+              {/* Loyalty Points Earned */}
+              {transactionSuccessData.pointsEarned > 0 && (
+                <div className="mt-6 mx-auto max-w-sm bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/30 rounded-2xl p-4 text-center">
+                  <p className="text-xs text-amber-400 font-bold uppercase tracking-widest mb-1">Loyalty Points Earned</p>
+                  <p className="text-3xl font-black text-amber-400 tabular-nums">+{transactionSuccessData.pointsEarned}</p>
+                  <p className="text-[10px] text-amber-400/60 mt-1">
+                    Total Balance: {transactionSuccessData.totalPoints || transactionSuccessData.pointsEarned} pts
+                  </p>
+                </div>
+              )}
 
               <div className="mt-12 flex flex-col items-center gap-6 print:hidden">
                 <Button

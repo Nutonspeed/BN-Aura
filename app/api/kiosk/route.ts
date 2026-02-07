@@ -27,6 +27,47 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ queue: queue || [] });
     }
 
+    if (action === 'lookup') {
+      // Lookup customer by phone and find today's appointments
+      const phone = searchParams.get('phone');
+      if (!phone) return NextResponse.json({ error: 'phone required for lookup' }, { status: 400 });
+
+      const { data: customer } = await adminClient
+        .from('customers')
+        .select('id, full_name, phone')
+        .eq('clinic_id', clinicId)
+        .eq('phone', phone)
+        .maybeSingle();
+
+      if (!customer) {
+        return NextResponse.json({ customer: null });
+      }
+
+      // Find today's appointments for this customer
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+
+      const { data: appointments } = await adminClient
+        .from('appointments')
+        .select('id, time, service_name')
+        .eq('customer_id', customer.id)
+        .gte('date', today.toISOString().split('T')[0])
+        .lt('date', tomorrow.toISOString().split('T')[0])
+        .in('status', ['confirmed', 'pending'])
+        .order('time');
+
+      return NextResponse.json({
+        customer: {
+          id: customer.id,
+          full_name: customer.full_name,
+          phone: customer.phone,
+          appointments: appointments || []
+        }
+      });
+    }
+
     // Get kiosk settings
     let query = adminClient.from('kiosk_settings').select('*').eq('clinic_id', clinicId);
     if (branchId) query = query.eq('branch_id', branchId);

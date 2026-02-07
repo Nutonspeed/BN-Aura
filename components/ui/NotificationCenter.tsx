@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 
 interface Notification {
   id: string;
-  type: 'new_lead' | 'treatment_update' | 'message' | 'system' | 'quota_alert' | 'security_alert';
+  type: 'new_lead' | 'treatment_update' | 'message' | 'system' | 'quota_alert' | 'security_alert' | 'queue_called' | 'analysis_complete' | 'appointment_reminder';
   title: string;
   message: string;
   link?: string;
@@ -182,6 +182,44 @@ export default function NotificationCenter() {
     }
   };
 
+
+  const markAllRead = async () => {
+    try {
+      let token = null;
+      try {
+        const sessionStr = localStorage.getItem('sb-sb-royeyoxaaieipdajijni-auth-token');
+        if (sessionStr) {
+          const base64Data = sessionStr.replace('base64-', '');
+          const decodedSession = JSON.parse(atob(base64Data));
+          token = decodedSession.access_token;
+        }
+      } catch (e) { /* skip */ }
+      
+      if (!token) {
+        try {
+          const { createClient } = await import('@/lib/supabase/client');
+          const supabase = createClient();
+          const { data: { session } } = await supabase.auth.getSession();
+          token = session?.access_token;
+        } catch (e) { /* skip */ }
+      }
+
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      
+      const res = await fetch('/api/notifications', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ action: 'markAllRead' })
+      });
+      if (res.ok) {
+        setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      }
+    } catch (error) {
+      console.error('Error marking all as read:', error);
+    }
+  };
+
   const unreadCount = (notifications || []).filter(n => n && !n.is_read).length;
 
   const getIcon = (type: string) => {
@@ -191,6 +229,9 @@ export default function NotificationCenter() {
       case 'message': return <ChatCircle className="w-4 h-4 text-amber-400" />;
       case 'quota_alert': return <Lightning className="w-4 h-4 text-rose-400" />;
       case 'security_alert': return <ShieldCheck className="w-4 h-4 text-red-400" />;
+      case 'queue_called': return <Bell className="w-4 h-4 text-indigo-400" />;
+      case 'analysis_complete': return <Lightning className="w-4 h-4 text-purple-400" />;
+      case 'appointment_reminder': return <Clock className="w-4 h-4 text-cyan-400" />;
       default: return <ShieldCheck className="w-4 h-4 text-blue-400" />;
     }
   };

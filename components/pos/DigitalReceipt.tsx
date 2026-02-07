@@ -41,6 +41,10 @@ interface DigitalReceiptProps {
     phone: string;
     logo?: string;
   };
+  pointsEarned?: number;
+  totalPoints?: number;
+  customerPortalUrl?: string;
+  bookingUrl?: string;
 }
 
 export default function DigitalReceipt({
@@ -52,7 +56,11 @@ export default function DigitalReceipt({
   discount,
   tax,
   total,
-  clinicInfo
+  clinicInfo,
+  pointsEarned,
+  totalPoints,
+  customerPortalUrl,
+  bookingUrl
 }: DigitalReceiptProps) {
   const receiptRef = useRef<HTMLDivElement>(null);
 

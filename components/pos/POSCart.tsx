@@ -36,6 +36,9 @@ interface POSCartProps {
   loading?: boolean;
   currency?: string;
   formatPrice?: (amount: number) => string;
+  customerPoints?: number;
+  redeemPoints?: number;
+  onRedeemPointsChange?: (points: number) => void;
 }
 
 export default function POSCart({ 
@@ -47,10 +50,14 @@ export default function POSCart({
   onCheckout,
   loading,
   currency = 'THB',
-  formatPrice
+  formatPrice,
+  customerPoints = 0,
+  redeemPoints = 0,
+  onRedeemPointsChange
 }: POSCartProps) {
   const subtotal = items.reduce((acc, item) => acc + item.total, 0);
-  const total = subtotal; // For now, simple total
+  const pointsDiscount = redeemPoints;
+  const total = Math.max(0, subtotal - pointsDiscount);
 
   const defaultFormatPrice = (amount: number) => `฿${amount.toLocaleString()}`;
   const displayPrice = formatPrice || defaultFormatPrice;

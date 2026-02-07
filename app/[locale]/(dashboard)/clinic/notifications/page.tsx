@@ -186,7 +186,7 @@ export default function NotificationsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button onClick={goBack} className="p-2 hover:bg-white/5 rounded-xl transition">
+          <button onClick={() => goBack('/th/clinic')} className="p-2 hover:bg-white/5 rounded-xl transition">
             <CaretLeft className="w-5 h-5" />
           </button>
           <div>

@@ -19,27 +19,25 @@ export async function POST(request: NextRequest) {
     const results: string[] = [];
 
     // Log the notification attempt
-    await adminClient
-      .from('notifications')
-      .insert({
-        clinic_id: clinicId,
-        type: 'queue_called',
-        title: `คิว ${queueNumber} ถูกเรียก`,
-        message: message || `คิวหมายเลข ${queueNumber} กรุณาเตรียมตัวเข้ารับบริการ`,
-        priority: 'high',
-        channels: phone ? ['sms'] : ['in_app'],
-        is_read: false,
-        metadata: { checkinId, queueNumber, phone }
-      })
-      .select('id')
-      .single()
-      .then(({ data }) => {
-        if (data) results.push(`notification:${data.id}`);
-      })
-      .catch(() => {
-        // Notification table might not have metadata column, skip gracefully
-        results.push('notification:skipped');
-      });
+    try {
+      const { data: notiData } = await adminClient
+        .from('notifications')
+        .insert({
+          clinic_id: clinicId,
+          type: 'queue_called',
+          title: `คิว ${queueNumber} ถูกเรียก`,
+          message: message || `คิวหมายเลข ${queueNumber} กรุณาเตรียมตัวเข้ารับบริการ`,
+          priority: 'high',
+          channels: phone ? ['sms'] : ['in_app'],
+          is_read: false,
+          metadata: { checkinId, queueNumber, phone }
+        })
+        .select('id')
+        .single();
+      if (notiData) results.push(`notification:${notiData.id}`);
+    } catch {
+      results.push('notification:skipped');
+    }
 
     // Send SMS if phone is available
     if (phone && message) {

@@ -12,14 +12,14 @@ import { AICostTracker } from './aiCostTracker';
 const MODEL_CONFIG = {
   // Tier 1: Fast & Cheap (for simple queries)
   fast: {
-    modelId: 'google/gemini-2.0-flash-exp',
+    modelId: 'google/gemini-2.5-flash',
     maxTokens: 1024,
     costPer1kTokens: 0.0001,
     supportsVision: true,
   },
   // Tier 2: Balanced (for standard analysis)
   balanced: {
-    modelId: 'google/gemini-1.5-pro',
+    modelId: 'google/gemini-2.5-pro',
     maxTokens: 2048,
     costPer1kTokens: 0.001,
     supportsVision: true,

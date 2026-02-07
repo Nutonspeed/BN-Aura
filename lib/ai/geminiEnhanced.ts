@@ -3,8 +3,8 @@
  * Advanced AI features for skin analysis
  */
 
-const GEMINI_API_KEY = process.env.GOOGLE_AI_API_KEY || '';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const GEMINI_API_KEY = process.env.AI_GATEWAY_API_KEY || process.env.GOOGLE_AI_API_KEY || '';
+const GEMINI_API_URL = 'https://ai-gateway.vercel.sh/v1/chat/completions';
 
 export interface SkinAnalysisPrompt {
   imageBase64?: string;

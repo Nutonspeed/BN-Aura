@@ -125,7 +125,7 @@ export async function verifyDatabaseSchema(): Promise<{
         query: rlsQuery,
       }).single();
 
-      const hasRLS = rlsData?.rowsecurity || false;
+      const hasRLS = (rlsData as any)?.rowsecurity || false;
 
       results.push({
         table: tableName,

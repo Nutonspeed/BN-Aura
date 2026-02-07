@@ -210,7 +210,7 @@ export default function POSCart({
         </div>
       )}
 
-            {/* Footer - Checkout */}
+      {/* Footer - Checkout */}
       <div className="p-8 bg-white/[0.02] border-t border-white/10 space-y-6">
         <div className="space-y-3">
           <div className="flex justify-between items-center text-xs font-bold text-muted-foreground uppercase tracking-widest">

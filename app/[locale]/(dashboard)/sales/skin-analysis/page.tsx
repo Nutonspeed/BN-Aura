@@ -159,6 +159,23 @@ export default function SalesAISkinAnalysisPage() {
       const saveResult = await saveRes.json();
       if (saveResult.success) setSavedId(saveResult.data?.analysisId);
 
+      // Store all analysis results into state for rendering
+      setAnalysisData({
+        overallScore: skinData.data?.overallScore,
+        skinAge: skinData.data?.skinAge,
+        skinAgeDifference: skinData.data?.skinAgeDifference,
+        symmetry: skinData.data?.symmetry,
+        skinMetrics: skinData.data?.skinMetrics,
+        wrinkleAnalysis: skinData.data?.wrinkleAnalysis,
+        timeTravelData: timeData.data,
+        skinTwins: twinData.data,
+        summary: skinData.data?.summary,
+        recommendations: skinData.data?.recommendations,
+        aiPowered: skinData.data?.aiPowered,
+        quotaInfo: skinData.data?.quotaInfo,
+        confidence: skinData.data?.confidence,
+      });
+
       setStep('results');
     } catch (error) {
       console.error('Analysis error:', error);

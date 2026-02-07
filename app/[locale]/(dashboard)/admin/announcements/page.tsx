@@ -2,7 +2,23 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Megaphone, Bell, Info, ArrowRight, CaretRight, Trash, PencilSimple, Globe, Lock, ShieldCheck, SpinnerGap, Pulse, X, Clock } from '@phosphor-icons/react';
+import { 
+  Plus,
+  Megaphone,
+  Bell,
+  Info,
+  ArrowRight,
+  CaretRight,
+  Trash,
+  PencilSimple,
+  Globe,
+  Lock,
+  ShieldCheck,
+  SpinnerGap,
+  Pulse,
+  X,
+  Clock
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

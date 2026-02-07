@@ -2,9 +2,24 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Pulse, HardDrives, CheckCircle, Cpu, HardDrive, Users, ArrowsClockwise, SpinnerGap,
-  Warning, Database, WifiHigh, WifiSlash, Clock, ArrowLeft, ChartLineUp, ChartLine, ShieldCheck
+import { 
+  Pulse,
+  HardDrives,
+  CheckCircle,
+  Cpu,
+  HardDrive,
+  Users,
+  ArrowsClockwise,
+  SpinnerGap,
+  Warning,
+  Database,
+  WifiHigh,
+  WifiSlash,
+  Clock,
+  ArrowLeft,
+  ChartLineUp,
+  ChartLine,
+  ShieldCheck
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import { StatCard } from '@/components/ui/StatCard';

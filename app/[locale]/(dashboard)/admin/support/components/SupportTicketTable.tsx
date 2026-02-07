@@ -7,15 +7,15 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import ResponsiveTable from '@/components/ui/ResponsiveTable';
 import { 
-  MagnifyingGlass, 
-  Funnel, 
-  Plus, 
-  Eye, 
-  PencilSimple, 
-  Trash, 
-  Clock, 
-  WarningCircle, 
-  CheckCircle, 
+  MagnifyingGlass,
+  Funnel,
+  Plus,
+  Eye,
+  PencilSimple,
+  Trash,
+  Clock,
+  WarningCircle,
+  CheckCircle,
   XCircle,
   Buildings,
   User,
@@ -49,7 +49,7 @@ export default function SupportTicketTable({
   const [filterPriority, setFilterPriority] = useState('all');
 
   // Filter tickets
-  const filteredTickets = tickets.filter(ticket => {
+  const filteredTickets = (tickets || []).filter(ticket => {
     const matchesSearch = ticket.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          ticket.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          ticket.user?.full_name.toLowerCase().includes(searchTerm.toLowerCase());

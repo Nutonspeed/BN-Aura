@@ -1,10 +1,10 @@
 'use client';
 
 import { 
-  ArrowLeft, 
-  Globe, 
-  HardDrives, 
-  WifiSlash, 
+  ArrowLeft,
+  Globe,
+  HardDrives,
+  WifiSlash,
   Warning,
   CheckCircle,
   Clock,

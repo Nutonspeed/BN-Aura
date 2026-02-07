@@ -1,7 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Ticket, Clock, CheckCircle, Warning, Pulse, ChartBar, Icon } from '@phosphor-icons/react';
+import { 
+  Ticket,
+  Clock,
+  CheckCircle,
+  Warning,
+  Pulse,
+  ChartBar,
+  Icon
+} from '@phosphor-icons/react';
 import { useSupportContext } from '../context';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

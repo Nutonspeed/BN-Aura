@@ -1,7 +1,15 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ShieldCheck, Info, CheckCircle, WarningCircle, Pulse, LockKey, Sparkle } from '@phosphor-icons/react';
+import { 
+  ShieldCheck,
+  Info,
+  CheckCircle,
+  WarningCircle,
+  Pulse,
+  LockKey,
+  Sparkle
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { cn } from '@/lib/utils';
 

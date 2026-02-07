@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
       triggerEvent
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Journey automation error:', error);
     return NextResponse.json({ 
       error: 'Internal server error' 
@@ -142,7 +142,7 @@ async function handleCustomerCreated(supabase: any, customer: any) {
       message: 'Welcome workflow initiated'
     };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Customer creation automation error:', error);
     return {
       action: 'customer_created',
@@ -202,7 +202,7 @@ async function handleScanCompleted(supabase: any, customer: any, workflow: any) 
       message: 'Post-scan automation triggered'
     };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Scan completion automation error:', error);
     return {
       action: 'scan_completed', 
@@ -265,7 +265,7 @@ async function handleConsultationScheduled(supabase: any, customer: any, workflo
       message: 'Consultation reminders scheduled'
     };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Consultation scheduling automation error:', error);
     return {
       action: 'consultation_scheduled',
@@ -345,7 +345,7 @@ async function handleTreatmentCompleted(supabase: any, customer: any, workflow: 
       message: 'Post-treatment automation initiated'
     };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Treatment completion automation error:', error);
     return {
       action: 'treatment_completed',
@@ -388,7 +388,7 @@ async function handleFollowUpReminder(supabase: any, customer: any, workflow: an
       message: 'Follow-up reminder sent'
     };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Follow-up automation error:', error);
     return {
       action: 'follow_up_reminder',

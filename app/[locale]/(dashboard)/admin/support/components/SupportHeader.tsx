@@ -1,6 +1,10 @@
 'use client';
 
-import { Headphones, Plus, ArrowsClockwise } from '@phosphor-icons/react';
+import { 
+  Headphones,
+  Plus,
+  ArrowsClockwise
+} from '@phosphor-icons/react';
 import { useSupportContext } from '../context';
 import { useTranslations } from 'next-intl';
 

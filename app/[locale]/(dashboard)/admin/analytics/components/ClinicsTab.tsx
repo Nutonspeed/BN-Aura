@@ -4,7 +4,14 @@ import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Buildings, TrendUp, Users, Lightning, ArrowsClockwise, MapPin } from '@phosphor-icons/react';
+import { 
+  Buildings,
+  TrendUp,
+  Users,
+  Lightning,
+  ArrowsClockwise,
+  MapPin
+} from '@phosphor-icons/react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const COLORS = ['#8b5cf6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444'];
@@ -44,32 +51,6 @@ export default function ClinicsTab() {
     } catch (e) { console.error(e); }
     setLoading(false);
   };
-
-  const getMockData = () => ({
-    totalClinics: 24,
-    activeClinic: 22,
-    totalStaff: 156,
-    totalScans: 4520,
-    byRegion: [
-      { name: 'กรุงเทพฯ', value: 12 },
-      { name: 'ภาคกลาง', value: 5 },
-      { name: 'ภาคเหนือ', value: 4 },
-      { name: 'ภาคใต้', value: 3 }
-    ],
-    byPlan: [
-      { plan: 'Enterprise', count: 5, revenue: 199950 },
-      { plan: 'Professional', count: 12, revenue: 143880 },
-      { plan: 'Starter', count: 7, revenue: 20930 }
-    ],
-    topClinics: [
-      { name: 'Bangkok Beauty Clinic', scans: 450, revenue: 89500 },
-      { name: 'Chiang Mai Aesthetic', scans: 380, revenue: 76000 },
-      { name: 'Phuket Skin Center', scans: 320, revenue: 64000 },
-      { name: 'Pattaya Wellness', scans: 290, revenue: 58000 },
-      { name: 'Khon Kaen Beauty', scans: 250, revenue: 50000 }
-    ]
-  });
-
   if (loading) return <div className="flex items-center justify-center min-h-[300px]"><Buildings className="w-10 h-10 animate-pulse text-primary" /></div>;
 
   return (

@@ -1,5 +1,17 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, DownloadSimple, X, Receipt, Clock, CheckCircle, Buildings, MapPin, User, IdentificationBadge, Briefcase } from '@phosphor-icons/react';
+import { 
+  FileText,
+  DownloadSimple,
+  X,
+  Receipt,
+  Clock,
+  CheckCircle,
+  Buildings,
+  MapPin,
+  User,
+  IdentificationBadge,
+  Briefcase
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

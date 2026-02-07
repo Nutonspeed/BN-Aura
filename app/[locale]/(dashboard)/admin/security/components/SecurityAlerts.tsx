@@ -1,7 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Warning, XCircle, Info, Pulse, ShieldCheck, Clock, CaretRight, ShieldWarning } from '@phosphor-icons/react';
+import { 
+  Warning,
+  XCircle,
+  Info,
+  Pulse,
+  ShieldCheck,
+  Clock,
+  CaretRight,
+  ShieldWarning
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

@@ -85,7 +85,7 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    io.on('connection', (socket: AuthenticatedSocket) => {
+    io.on('connection', (socket: any) => {
       console.log(`🔗 User connected: ${socket.userId} (${socket.role})`);
 
       // Join appropriate rooms
@@ -247,7 +247,7 @@ export async function GET(req: NextRequest) {
       });
 
       // Handle disconnection
-      socket.on('disconnect', (reason) => {
+      socket.on('disconnect', (reason: any) => {
         console.log(`🔌 User disconnected: ${socket.userId} (${reason})`);
         
         // Broadcast offline status

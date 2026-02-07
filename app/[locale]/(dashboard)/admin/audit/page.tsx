@@ -1,8 +1,28 @@
 'use client';
 
-import {
-  Shield, User, WarningCircle, CheckCircle, XCircle, MagnifyingGlass, ArrowsClockwise, DownloadSimple, SpinnerGap, ArrowLeft,
-  CalendarDots, FileText, Fingerprint, Pulse, Clock, CaretRight, ClockCounterClockwise, Funnel, Monitor, ChartLineUp, IdentificationBadge, ShieldCheck
+import { 
+  Shield,
+  User,
+  WarningCircle,
+  CheckCircle,
+  XCircle,
+  MagnifyingGlass,
+  ArrowsClockwise,
+  DownloadSimple,
+  SpinnerGap,
+  ArrowLeft,
+  CalendarDots,
+  FileText,
+  Fingerprint,
+  Pulse,
+  Clock,
+  CaretRight,
+  ClockCounterClockwise,
+  Funnel,
+  Monitor,
+  ChartLineUp,
+  IdentificationBadge,
+  ShieldCheck
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

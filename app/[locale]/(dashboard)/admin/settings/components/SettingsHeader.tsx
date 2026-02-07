@@ -1,6 +1,12 @@
 'use client';
 
-import { Gear, FloppyDisk, ArrowsClockwise, ShieldCheck, Pulse } from '@phosphor-icons/react';
+import { 
+  Gear,
+  FloppyDisk,
+  ArrowsClockwise,
+  ShieldCheck,
+  Pulse
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
 import { motion, AnimatePresence } from 'framer-motion';

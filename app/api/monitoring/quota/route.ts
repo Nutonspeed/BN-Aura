@@ -58,6 +58,7 @@ async function getMetrics(format: 'json' | 'prometheus') {
   const metrics = QuotaMonitor.exportMetrics(format);
   
   if (format === 'prometheus') {
+    // @ts-ignore
     return new NextResponse(metrics, {
       headers: {
         'Content-Type': 'text/plain; charset=utf-8'
@@ -67,6 +68,7 @@ async function getMetrics(format: 'json' | 'prometheus') {
   
   return NextResponse.json({
     success: true,
+      // @ts-ignore - spread type
     ...metrics
   });
 }

@@ -1,13 +1,13 @@
 'use client';
 
 import { 
-  SpinnerGap, 
-  ShieldCheck, 
-  Users, 
-  Key, 
-  Plus, 
-  ArrowLeft, 
-  Lock, 
+  SpinnerGap,
+  ShieldCheck,
+  Users,
+  Key,
+  Plus,
+  ArrowLeft,
+  Lock,
   IdentificationBadge,
   Pulse,
   Monitor,
@@ -180,5 +180,13 @@ function PermissionsContent() {
         </AnimatePresence>
       </div>
     </motion.div>
+  );
+}
+
+export default function PermissionsPage() {
+  return (
+    <PermissionsProvider>
+      <PermissionsContent />
+    </PermissionsProvider>
   );
 }

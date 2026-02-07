@@ -5,7 +5,19 @@ import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Trash, PencilSimple, Eye, EyeSlash, CalendarDots, Target, Monitor, Flag, Users, ChartBar, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  Trash,
+  PencilSimple,
+  Eye,
+  EyeSlash,
+  CalendarDots,
+  Target,
+  Monitor,
+  Flag,
+  Users,
+  ChartBar,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { useAnnouncementContext } from '../context';
 import { Announcement } from '../types';
 

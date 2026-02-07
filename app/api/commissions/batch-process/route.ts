@@ -169,5 +169,5 @@ function getTransactionTypeName(transactionType: string): string {
     'package': 'แพ็กเกจ'
   };
   
-  return typeNames[transactionType] || transactionType;
+  return (typeNames as Record<string, string>)[transactionType] || transactionType;
 }

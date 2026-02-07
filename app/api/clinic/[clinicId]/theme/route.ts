@@ -9,10 +9,10 @@ const supabase = createClient(
 // GET clinic theme
 export async function GET(
   request: NextRequest,
-  { params }: { params: { clinicId: string } }
+  { params }: { params: Promise<{ clinicId: string }> }
 ) {
   try {
-    const { clinicId } = params;
+    const { clinicId } = await params;
 
     const { data, error } = await supabase
       .from('clinic_settings')
@@ -59,10 +59,10 @@ export async function GET(
 // POST/PUT clinic theme
 export async function POST(
   request: NextRequest,
-  { params }: { params: { clinicId: string } }
+  { params }: { params: Promise<{ clinicId: string }> }
 ) {
   try {
-    const { clinicId } = params;
+    const { clinicId } = await params;
     const themeConfig = await request.json();
 
     // Upsert clinic settings with theme

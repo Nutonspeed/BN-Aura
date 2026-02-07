@@ -1,6 +1,13 @@
 'use client';
 
-import { ChartBar, ArrowsClockwise, DownloadSimple, CaretDown, Pulse, Graph } from '@phosphor-icons/react';
+import { 
+  ChartBar,
+  ArrowsClockwise,
+  DownloadSimple,
+  CaretDown,
+  Pulse,
+  Graph
+} from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

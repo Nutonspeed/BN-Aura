@@ -1,6 +1,18 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MagnifyingGlass, Eye, PencilSimple, Clock, Buildings, Funnel, IdentificationBadge, Sparkle, ArrowRight, IdentificationCard, ShieldCheck } from '@phosphor-icons/react';
+import { 
+  MagnifyingGlass,
+  Eye,
+  PencilSimple,
+  Clock,
+  Buildings,
+  Funnel,
+  IdentificationBadge,
+  Sparkle,
+  ArrowRight,
+  IdentificationCard,
+  ShieldCheck
+} from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import { Subscription } from '../hooks/useBillingData';
 import ResponsiveTable from '@/components/ui/ResponsiveTable';

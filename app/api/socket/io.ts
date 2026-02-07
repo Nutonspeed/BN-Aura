@@ -91,7 +91,7 @@ const SocketHandler = (req: NextApiRequest, res: NextApiResponse & { socket: any
       }
     });
 
-    io.on('connection', (socket: AuthenticatedSocket) => {
+    io.on('connection', (socket: any) => {
       console.log(`User connected: ${socket.userId} (${socket.role})`);
 
       // Join appropriate rooms

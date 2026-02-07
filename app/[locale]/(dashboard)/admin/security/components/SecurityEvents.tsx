@@ -1,7 +1,19 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pulse, CheckCircle, XCircle, Warning, User, Globe, Clock, MapPin, Monitor, ShieldCheck, Icon } from '@phosphor-icons/react';
+import { 
+  Pulse,
+  CheckCircle,
+  XCircle,
+  Warning,
+  User,
+  Globe,
+  Clock,
+  MapPin,
+  Monitor,
+  ShieldCheck,
+  Icon
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';

@@ -1,53 +1,64 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
-import { StatCard, GoalProgress } from '@/components/widgets';
-import { SkinMetricsRadar, ComparisonBar, Sparkline } from '@/components/charts';
-import { CountUp } from '@/components/ui/Animations';
 import {
   Building2, Users, Camera, DollarSign, TrendingUp, Activity,
-  Calendar, BarChart3, PieChart, Download, RefreshCw,
+  BarChart3, PieChart, Download, RefreshCw,
 } from 'lucide-react';
+import { 
+  SpinnerGap
+} from '@phosphor-icons/react';
 
 export default function AdminAdvancedAnalyticsPage() {
   const [period, setPeriod] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any>(null);
 
-  // Mock data
-  const stats = {
-    totalClinics: 24,
-    activeClinics: 22,
-    totalUsers: 1847,
-    monthlyScans: 15420,
-    totalRevenue: 2845000,
-    growthRate: 23.5,
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/analytics');
+      const result = await res.json();
+      if (result.success) setData(result.data);
+    } catch (e) { console.error(e); }
+    setLoading(false);
   };
 
-  const clinicPerformance = [
-    { label: 'Bangkok Premium', value: 4520 },
-    { label: 'Chiang Mai Beauty', value: 3280 },
-    { label: 'Phuket Aesthetics', value: 2890 },
-    { label: 'Pattaya Clinic', value: 2150 },
-    { label: 'Hua Hin Skin', value: 1890 },
-  ];
+  useEffect(() => { fetchData(); }, [period]);
 
-  const revenueByPlan = [
-    { label: 'Enterprise', value: 45, color: '#8B5CF6' },
-    { label: 'Premium', value: 30, color: '#3B82F6' },
-    { label: 'Professional', value: 18, color: '#10B981' },
-    { label: 'Starter', value: 7, color: '#F59E0B' },
-  ];
+  const stats = data ? {
+    totalClinics: data.clinics?.total || 0,
+    activeClinics: data.clinics?.active || 0,
+    totalUsers: data.users?.total || 0,
+    monthlyScans: data.aiUsage?.totalScans || 0,
+    totalRevenue: data.revenue?.total || 0,
+    growthRate: data.revenue?.growth || 0,
+  } : { totalClinics: 0, activeClinics: 0, totalUsers: 0, monthlyScans: 0, totalRevenue: 0, growthRate: 0 };
 
-  const monthlyTrend = [45, 52, 48, 61, 55, 67, 72, 68, 85, 79, 92, 98];
+  const clinicPerformance = data?.aiUsage?.topClinics?.map((c: any) => ({
+    label: c.clinic, value: c.scans
+  })) || [];
+
+  const revenueByPlan = data?.revenue?.byPlan?.map((p: any, i: number) => ({
+    label: p.plan, value: p.count, color: ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B'][i % 4]
+  })) || [];
 
   const goals = [
-    { name: 'New Clinics', current: 22, target: 30, color: '#8B5CF6' },
-    { name: 'Monthly Revenue', current: 2845000, target: 3500000, color: '#10B981' },
-    { name: 'Active Users', current: 1847, target: 2500, color: '#3B82F6' },
-    { name: 'AI Scans', current: 15420, target: 20000, color: '#F59E0B' },
+    { name: 'Clinics', current: stats.totalClinics, target: Math.max(stats.totalClinics, 30), color: '#8B5CF6' },
+    { name: 'Revenue', current: stats.totalRevenue, target: Math.max(stats.totalRevenue, 3500000), color: '#10B981' },
+    { name: 'Users', current: stats.totalUsers, target: Math.max(stats.totalUsers, 2500), color: '#3B82F6' },
+    { name: 'AI Scans', current: stats.monthlyScans, target: Math.max(stats.monthlyScans, 20000), color: '#F59E0B' },
   ];
+
+  if (loading) {
+    return (
+      <div className="min-h-[400px] flex items-center justify-center">
+        <SpinnerGap weight="bold" className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -70,7 +81,7 @@ export default function AdminAdvancedAnalyticsPage() {
               </Button>
             ))}
           </div>
-          <Button variant="outline" size="icon">
+          <Button variant="outline" size="icon" onClick={fetchData}>
             <RefreshCw size={16} />
           </Button>
           <Button variant="outline">
@@ -82,54 +93,28 @@ export default function AdminAdvancedAnalyticsPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        <StatCard
-          title="Total Clinics"
-          value={stats.totalClinics}
-          change={8.2}
-          icon={<Building2 size={18} className="text-purple-500" />}
-          color="#8B5CF6"
-        />
-        <StatCard
-          title="Active Clinics"
-          value={stats.activeClinics}
-          change={4.5}
-          icon={<Activity size={18} className="text-green-500" />}
-          color="#10B981"
-        />
-        <StatCard
-          title="Total Users"
-          value={stats.totalUsers}
-          change={12.3}
-          icon={<Users size={18} className="text-blue-500" />}
-          color="#3B82F6"
-        />
-        <StatCard
-          title="Monthly Scans"
-          value={stats.monthlyScans}
-          change={18.7}
-          icon={<Camera size={18} className="text-amber-500" />}
-          color="#F59E0B"
-        />
-        <StatCard
-          title="Revenue (THB)"
-          value={stats.totalRevenue}
-          prefix="฿"
-          change={23.5}
-          icon={<DollarSign size={18} className="text-emerald-500" />}
-          color="#059669"
-        />
-        <StatCard
-          title="Growth Rate"
-          value={stats.growthRate}
-          suffix="%"
-          change={5.2}
-          icon={<TrendingUp size={18} className="text-pink-500" />}
-          color="#EC4899"
-        />
+        {[
+          { title: 'Total Clinics', value: stats.totalClinics, icon: Building2, color: 'text-purple-500' },
+          { title: 'Active Clinics', value: stats.activeClinics, icon: Activity, color: 'text-green-500' },
+          { title: 'Total Users', value: stats.totalUsers, icon: Users, color: 'text-blue-500' },
+          { title: 'Monthly Scans', value: stats.monthlyScans, icon: Camera, color: 'text-amber-500' },
+          { title: 'Revenue (THB)', value: stats.totalRevenue, icon: DollarSign, color: 'text-emerald-500', prefix: '฿' },
+          { title: 'Growth Rate', value: stats.growthRate, icon: TrendingUp, color: 'text-pink-500', suffix: '%' },
+        ].map((s, i) => (
+          <Card key={i}>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <s.icon size={18} className={s.color} />
+                <span className="text-xs text-muted-foreground">{s.title}</span>
+              </div>
+              <p className="text-xl font-bold">{s.prefix || ''}{typeof s.value === 'number' ? s.value.toLocaleString() : s.value}{s.suffix || ''}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Charts Row */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-2 gap-6">
         {/* Top Clinics */}
         <Card>
           <CardHeader>
@@ -139,7 +124,15 @@ export default function AdminAdvancedAnalyticsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ComparisonBar data={clinicPerformance} horizontal showValues />
+            <div className="space-y-3">
+              {clinicPerformance.length > 0 ? clinicPerformance.map((item: any, i: number) => (
+                <div key={i} className="flex items-center gap-3">
+                  <span className="w-5 text-xs text-muted-foreground">{i + 1}</span>
+                  <span className="flex-1 text-sm">{item.label}</span>
+                  <span className="font-medium text-sm">{item.value?.toLocaleString()} scans</span>
+                </div>
+              )) : <p className="text-sm text-muted-foreground">No data available</p>}
+            </div>
           </CardContent>
         </Card>
 
@@ -148,33 +141,18 @@ export default function AdminAdvancedAnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <PieChart size={18} />
-              Revenue by Plan
+              Subscriptions by Plan
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {revenueByPlan.map((item, i) => (
+              {revenueByPlan.length > 0 ? revenueByPlan.map((item: any, i: number) => (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                   <span className="flex-1">{item.label}</span>
-                  <span className="font-medium">{item.value}%</span>
+                  <span className="font-medium">{item.value} clinics</span>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Monthly Trend */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <TrendingUp size={18} />
-              Monthly Trend
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-32 flex items-end">
-              <Sparkline data={monthlyTrend} width={280} height={120} showArea />
+              )) : <p className="text-sm text-muted-foreground">No data available</p>}
             </div>
           </CardContent>
         </Card>
@@ -192,14 +170,14 @@ export default function AdminAdvancedAnalyticsPage() {
                 <div className="flex justify-between mb-2">
                   <span className="font-medium">{goal.name}</span>
                   <span className="text-sm text-muted-foreground">
-                    {Math.round((goal.current / goal.target) * 100)}%
+                    {goal.target > 0 ? Math.round((goal.current / goal.target) * 100) : 0}%
                   </span>
                 </div>
                 <div className="h-2 bg-muted rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-1000"
                     style={{
-                      width: `${(goal.current / goal.target) * 100}%`,
+                      width: `${goal.target > 0 ? (goal.current / goal.target) * 100 : 0}%`,
                       backgroundColor: goal.color,
                     }}
                   />

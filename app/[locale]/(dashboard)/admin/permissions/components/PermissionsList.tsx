@@ -3,7 +3,18 @@
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
-import { CaretRight, ShieldCheck, Pulse, Buildings, Users, CalendarDots, ChartBar, TrendUp, Shield, Lock } from '@phosphor-icons/react';
+import { 
+  CaretRight,
+  ShieldCheck,
+  Pulse,
+  Buildings,
+  Users,
+  CalendarDots,
+  ChartBar,
+  TrendUp,
+  Shield,
+  Lock
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { usePermissionsContext } from '../context';
 

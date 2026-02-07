@@ -1,7 +1,11 @@
 'use client';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { EnvelopeSimple, PencilSimple, Eye } from '@phosphor-icons/react';
+import { 
+  EnvelopeSimple,
+  PencilSimple,
+  Eye
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 

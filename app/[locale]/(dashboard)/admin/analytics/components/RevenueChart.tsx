@@ -1,7 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CurrencyDollar, ChartBar, Graph, Info, Sparkle, Pulse } from '@phosphor-icons/react';
+import { 
+  CurrencyDollar,
+  ChartBar,
+  Graph,
+  Info,
+  Sparkle,
+  Pulse
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';

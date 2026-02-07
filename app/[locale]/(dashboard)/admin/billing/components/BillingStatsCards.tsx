@@ -1,5 +1,15 @@
 import { motion } from 'framer-motion';
-import { CurrencyDollar, Package, Warning, TrendUp, Coin, Receipt, Clock, Graph, Icon } from '@phosphor-icons/react';
+import { 
+  CurrencyDollar,
+  Package,
+  Warning,
+  TrendUp,
+  Coin,
+  Receipt,
+  Clock,
+  Graph,
+  Icon
+} from '@phosphor-icons/react';
 import { BillingStats } from '../hooks/useBillingData';
 import { StatCard } from '@/components/ui/StatCard';
 import { cn } from '@/lib/utils';

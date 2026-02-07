@@ -1,7 +1,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FloppyDisk, Plus, Trash, PencilSimple, CurrencyDollar, Users, TrendUp, Package, Percent, Clock, WarningCircle, Sparkle, Info, CaretDown, Check, Buildings, X, CaretRight } from '@phosphor-icons/react';
+import { 
+  FloppyDisk,
+  Plus,
+  Trash,
+  PencilSimple,
+  CurrencyDollar,
+  Users,
+  TrendUp,
+  Package,
+  Percent,
+  Clock,
+  WarningCircle,
+  Sparkle,
+  Info,
+  CaretDown,
+  Check,
+  Buildings,
+  X,
+  CaretRight
+} from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSettingsContext } from '../context';
 import { SystemSettings } from '../types';

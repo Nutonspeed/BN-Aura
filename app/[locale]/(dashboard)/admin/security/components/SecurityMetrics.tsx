@@ -1,7 +1,18 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Users, XCircle, Shield, DeviceMobile, TrendUp, CheckCircle, Warning, Icon, Pulse, ShieldCheck } from '@phosphor-icons/react';
+import { 
+  Users,
+  XCircle,
+  Shield,
+  DeviceMobile,
+  TrendUp,
+  CheckCircle,
+  Warning,
+  Icon,
+  Pulse,
+  ShieldCheck
+} from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import { StatCard } from '@/components/ui/StatCard';
 

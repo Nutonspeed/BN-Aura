@@ -1,4 +1,13 @@
-import { FileText, DownloadSimple, ArrowSquareOut, Receipt, Clock, CheckCircle, WarningCircle, Monitor } from '@phosphor-icons/react';
+import { 
+  FileText,
+  DownloadSimple,
+  ArrowSquareOut,
+  Receipt,
+  Clock,
+  CheckCircle,
+  WarningCircle,
+  Monitor
+} from '@phosphor-icons/react';
 import { useTranslations } from 'next-intl';
 import ResponsiveTable from '@/components/ui/ResponsiveTable';
 import { cn } from '@/lib/utils';

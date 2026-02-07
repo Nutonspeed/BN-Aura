@@ -1,7 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CurrencyDollar, Buildings, Users, Pulse, TrendUp, ArrowUpRight, ArrowDownRight, Icon } from '@phosphor-icons/react';
+import { 
+  CurrencyDollar,
+  Buildings,
+  Users,
+  Pulse,
+  TrendUp,
+  ArrowUpRight,
+  ArrowDownRight,
+  Icon
+} from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 
 interface MetricsData {

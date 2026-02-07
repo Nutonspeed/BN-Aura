@@ -1,7 +1,22 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Users, Buildings, Gear, ChartBar, Lock, PencilSimple, Trash, MagnifyingGlass, Funnel, Pulse, IdentificationBadge, Sparkle, Icon } from '@phosphor-icons/react';
+import { 
+  Shield,
+  Users,
+  Buildings,
+  Gear,
+  ChartBar,
+  Lock,
+  PencilSimple,
+  Trash,
+  MagnifyingGlass,
+  Funnel,
+  Pulse,
+  IdentificationBadge,
+  Sparkle,
+  Icon
+} from '@phosphor-icons/react';
 import { usePermissionsContext } from '../context';
 import { Role } from '../types';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

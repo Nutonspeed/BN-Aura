@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     const compact = searchParams.get('compact') === 'true';
 
     // Get user from request headers
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();
 
     if (authError || !user) {
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 
 async function getMobileDashboard(clinicId: string, clinicName: string, compact: boolean) {
   const quotaConfig = await QuotaManager.getQuotaConfig(clinicId);
-  const burnRate = await BurnRateAnalytics.getClinicForecast(clinicId);
+  const burnRate = await (BurnRateAnalytics as any).getClinicForecast(clinicId);
   const activeAlerts = CriticalAlerts.getActiveAlerts().filter(alert => alert.clinicId === clinicId);
 
   const utilizationRate = quotaConfig ? (quotaConfig.currentUsage / quotaConfig.monthlyQuota) * 100 : 0;
@@ -175,7 +175,7 @@ async function getMobileAlerts(clinicId: string) {
 }
 
 async function getMobileInsights(clinicId: string) {
-  const forecast = await BurnRateAnalytics.getClinicForecast(clinicId);
+  const forecast = await (BurnRateAnalytics as any).getClinicForecast(clinicId);
   
   const insights = {
     usage: {

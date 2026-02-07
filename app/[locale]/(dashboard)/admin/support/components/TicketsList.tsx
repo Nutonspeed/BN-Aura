@@ -5,12 +5,12 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
-  SpinnerGap, 
-  Clock, 
-  User, 
-  Buildings, 
-  ChatCircle, 
-  Eye, 
+  SpinnerGap,
+  Clock,
+  User,
+  Buildings,
+  ChatCircle,
+  Eye,
   PencilSimple,
   Warning,
   CheckCircle,

@@ -4,7 +4,11 @@ import React from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { MagnifyingGlass, Funnel, CaretDown } from '@phosphor-icons/react';
+import { 
+  MagnifyingGlass,
+  Funnel,
+  CaretDown
+} from '@phosphor-icons/react';
 import { useSupportContext } from '../context';
 
 export default function TicketFilters() {

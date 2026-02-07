@@ -239,9 +239,9 @@ async function generateTimeLapse(body: any) {
       },
       insights: {
         progressRate: timelapse.improvement / timelapse.totalDays,
-        bestDay: timelapse.frames.reduce((best, frame) => 
+        bestDay: timelapse.frames.reduce((best: any, frame: any) => 
           frame.score > best.score ? frame : best, timelapse.frames[0]).day,
-        averageScore: timelapse.frames.reduce((sum, frame) => sum + frame.score, 0) / timelapse.frames.length
+        averageScore: timelapse.frames.reduce((sum: any, frame: any) => sum + frame.score, 0) / timelapse.frames.length
       }
     });
     

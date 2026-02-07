@@ -2,16 +2,16 @@
 
 import { motion } from 'framer-motion';
 import { 
-  Buildings, 
-  Globe, 
-  Lightning, 
-  Palette, 
-  Bell, 
-  Shield, 
-  CreditCard, 
-  Sparkle, 
-  HardDrive, 
-  PuzzlePiece, 
+  Buildings,
+  Globe,
+  Lightning,
+  Palette,
+  Bell,
+  Shield,
+  CreditCard,
+  Sparkle,
+  HardDrive,
+  PuzzlePiece,
   CaretRight,
   Monitor
 } from '@phosphor-icons/react';

@@ -3,7 +3,14 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
-import { Lightning, Brain, CurrencyDollar, ChartLine, ArrowsClockwise, Warning } from '@phosphor-icons/react';
+import { 
+  Lightning,
+  Brain,
+  CurrencyDollar,
+  ChartLine,
+  ArrowsClockwise,
+  Warning
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 

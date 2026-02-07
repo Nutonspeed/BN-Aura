@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     // Use real Stripe if key is configured
     if (STRIPE_SECRET_KEY && STRIPE_SECRET_KEY.startsWith('sk_')) {
-      const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' });
+      const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2024-12-18.acacia' as any });
       
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Convert to satang

@@ -157,7 +157,7 @@ export async function GET(request: NextRequest) {
 
 // Helper functions
 function getNotificationTitle(type: string): string {
-  const titles = {
+  const titles: Record<string, string> = {
     'welcome': 'ยินดีต้อนรับสู่ BN-Aura',
     'appointment_reminder': 'แจ้งเตือนนัดหมาย',
     'treatment_completed': 'การรักษาเสร็จสิ้น',
@@ -185,6 +185,7 @@ function getDefaultLink(type: string): string {
     'birthday': '/th/customer/rewards'
   };
   
+  // @ts-ignore
   return links[type] || '/th/dashboard';
 }
 
@@ -201,5 +202,6 @@ function getDefaultActionUrl(type: string): string {
     'birthday': '/th/customer/birthday-offer'
   };
   
+  // @ts-ignore
   return actionUrls[type] || '/th/dashboard';
 }

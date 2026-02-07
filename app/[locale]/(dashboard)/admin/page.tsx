@@ -4,13 +4,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Buildings, 
-  Users, 
-  Pulse, 
-  ShieldCheck, 
-  Gear, 
-  Lightning, 
-  Globe, 
+  Buildings,
+  Users,
+  Pulse,
+  ShieldCheck,
+  Gear,
+  Lightning,
+  Globe,
   MagnifyingGlass,
   Plus,
   SpinnerGap,
@@ -40,6 +40,8 @@ import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import Breadcrumb from '@/components/ui/Breadcrumb';
+import QuotaAlertPanel from '@/components/monitoring/QuotaAlertPanel';
+import AIUsageDashboard from '@/components/monitoring/AIUsageDashboard';
 
 interface Clinic {
   id: string;
@@ -328,9 +330,9 @@ export default function SuperAdminDashboard() {
   }
 
   const stats = [
-    { label: 'Total Clinics', value: globalStats.totalClinics, icon: Buildings, trend: 'up' as const, change: 12 },
-    { label: 'Global Customers', value: globalStats.globalCustomers, icon: Users, trend: 'up' as const, change: 8 },
-    { label: 'Monthly AI Load', value: globalStats.monthlyAILoad, icon: Lightning, suffix: ' reqs', trend: 'up' as const, change: 24 },
+    { label: 'Total Clinics', value: globalStats.totalClinics, icon: Buildings, trend: 'up' as const, change: 0 },
+    { label: 'Global Customers', value: globalStats.globalCustomers, icon: Users, trend: 'up' as const, change: 0 },
+    { label: 'Monthly AI Load', value: globalStats.monthlyAILoad, icon: Lightning, suffix: ' reqs', trend: 'up' as const, change: 0 },
     { label: 'Active Personnel', value: globalStats.activeSessions, icon: Pulse, trend: 'neutral' as const, change: 0 },
   ];
 
@@ -563,6 +565,12 @@ export default function SuperAdminDashboard() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Quota Alerts */}
+          <QuotaAlertPanel compact />
+
+          {/* AI Usage Monitoring */}
+          <AIUsageDashboard />
 
           {/* Global Control Tools */}
           <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">

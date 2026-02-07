@@ -1,11 +1,11 @@
 'use client';
 
 import { 
-  SpinnerGap, 
-  Plus, 
-  X, 
-  CaretRight, 
-  DownloadSimple, 
+  SpinnerGap,
+  Plus,
+  X,
+  CaretRight,
+  DownloadSimple,
   ArrowLeft,
   Lifebuoy,
   WarningCircle,
@@ -154,7 +154,7 @@ function SupportContent() {
             <TicketFilters />
           </CardHeader>
           <CardContent className="p-0">
-            <SupportTicketTable onViewTicket={handleViewTicket} onEditTicket={handleEditTicket} />
+            <SupportTicketTable tickets={[]} onTicketSelect={() => {}} onTicketEdit={() => {}} onTicketDelete={() => {}} />
           </CardContent>
         </Card>
       </div>
@@ -416,5 +416,13 @@ function SupportContent() {
         )}
       </AnimatePresence>
     </motion.div>
+  );
+}
+
+export default function SupportPage() {
+  return (
+    <SupportProvider>
+      <SupportContent />
+    </SupportProvider>
   );
 }

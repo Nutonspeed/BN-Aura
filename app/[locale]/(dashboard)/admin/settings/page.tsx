@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  SpinnerGap, 
-  ArrowLeft, 
-  Gear, 
-  ShieldCheck, 
-  Bell, 
-  Globe, 
-  Sparkle, 
-  HardDrive, 
-  CreditCard, 
+  SpinnerGap,
+  ArrowLeft,
+  Gear,
+  ShieldCheck,
+  Bell,
+  Globe,
+  Sparkle,
+  HardDrive,
+  CreditCard,
   PuzzlePiece,
   Pulse,
   CheckCircle,
@@ -95,7 +95,7 @@ function SettingsContent() {
           </Card>
         );
       case 'email':
-        return <EmailTemplates onSettingsChange={handleSettingsChange} />;
+        return <EmailTemplates />;
       case 'security':
         return (
           <Card className="p-8 rounded-[40px] border-border/50 shadow-premium group overflow-hidden relative">

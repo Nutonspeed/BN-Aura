@@ -1,6 +1,21 @@
 'use client';
 
-import { TrendUp, Check, X, Sparkle, Gear, ShieldCheck, Info, CaretDown, Pulse, ToggleLeft, ToggleRight, WarningCircle, CheckCircle, XCircle } from '@phosphor-icons/react';
+import { 
+  TrendUp,
+  Check,
+  X,
+  Sparkle,
+  Gear,
+  ShieldCheck,
+  Info,
+  CaretDown,
+  Pulse,
+  ToggleLeft,
+  ToggleRight,
+  WarningCircle,
+  CheckCircle,
+  XCircle
+} from '@phosphor-icons/react';
 import { useSettingsContext } from '../context';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

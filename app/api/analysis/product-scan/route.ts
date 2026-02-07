@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ProductCompatibilityScanner } from '@/lib/analysis/productCompatibilityScanner';
 
+// DEPRECATED: Returns algorithmic/sample results. Future: accept POST with real analysis data.
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

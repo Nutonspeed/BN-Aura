@@ -1,6 +1,11 @@
 'use client';
 
-import { Shield, Users, Lock, Icon } from '@phosphor-icons/react';
+import { 
+  Shield,
+  Users,
+  Lock,
+  Icon
+} from '@phosphor-icons/react';
 import { usePermissionsContext } from '../context';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';

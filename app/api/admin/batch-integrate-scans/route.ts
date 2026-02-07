@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 export async function POST(request: NextRequest) {
   try {
     // Use service role for admin operations
-    const supabase = createClient();
+    const supabase = await createClient();
 
     const { clinicId } = await request.json();
 

@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { 
   createSuccessResponse, 
   createErrorResponse, 
@@ -11,13 +12,14 @@ import { APIErrorCode } from '@/lib/api/contracts';
 const userClinicCache = new Map<string, { clinic_id: string, role: string, expires: number }>();
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-async function getUserClinicData(supabase: any, userId: string) {
+async function getUserClinicData(userId: string) {
   const cached = userClinicCache.get(userId);
   if (cached && cached.expires > Date.now()) {
     return cached;
   }
 
-  const { data: staffData, error: staffError } = await supabase
+  const adminClient = createAdminClient();
+  const { data: staffData, error: staffError } = await adminClient
     .from('clinic_staff')
     .select('clinic_id, role')
     .eq('user_id', userId)
@@ -55,12 +57,13 @@ export const GET = withErrorHandling(async (request: Request) => {
   // Get clinic_id for the current user (with caching)
   let clinicData;
   try {
-    clinicData = await getUserClinicData(supabase, user.id);
+    clinicData = await getUserClinicData(user.id);
   } catch (error) {
     return createErrorResponse(APIErrorCode.FORBIDDEN, 'User is not associated with a clinic');
   }
 
-  const { data: clinic, error: clinicError } = await supabase
+  const adminClient = createAdminClient();
+  const { data: clinic, error: clinicError } = await adminClient
     .from('clinics')
     .select('*')
     .eq('id', clinicData.clinic_id)
@@ -93,7 +96,7 @@ export const PATCH = withErrorHandling(async (request: Request) => {
   // Get clinic_id and check permissions (with caching)
   let clinicData;
   try {
-    clinicData = await getUserClinicData(supabase, user.id);
+    clinicData = await getUserClinicData(user.id);
   } catch (error) {
     return createErrorResponse(APIErrorCode.FORBIDDEN, 'User is not associated with a clinic');
   }
@@ -113,7 +116,8 @@ export const PATCH = withErrorHandling(async (request: Request) => {
   if (body.display_name) updateData.display_name = body.display_name;
   if (body.metadata) updateData.metadata = body.metadata;
 
-  const { data: updatedClinic, error: updateError } = await supabase
+  const adminClient = createAdminClient();
+  const { data: updatedClinic, error: updateError } = await adminClient
     .from('clinics')
     .update(updateData)
     .eq('id', clinicData.clinic_id)

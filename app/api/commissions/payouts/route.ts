@@ -214,7 +214,7 @@ export async function PATCH(request: NextRequest) {
         await adminClient
           .from('commission_records')
           .update({ status: 'paid', paid_at: new Date().toISOString() })
-          .in('id', payout.commission_record_ids);
+          .in('id', payout!.commission_record_ids);
       }
     }
 

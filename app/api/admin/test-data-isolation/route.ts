@@ -54,8 +54,8 @@ async function createTestCustomers() {
     success: true,
     message: 'Test customers created for data isolation testing',
     customers: {
-      staff1: [],
-      staff2: []
+      staff1: [] as any[],
+      staff2: [] as any[]
     },
     summary: {
       total_customers: 0,

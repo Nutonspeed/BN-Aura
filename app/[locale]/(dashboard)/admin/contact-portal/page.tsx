@@ -1,6 +1,24 @@
 'use client';
 
-import { ChatCircle, Users, EnvelopeSimple, Phone, Clock, Funnel, MagnifyingGlass, ArrowUpRight, CaretRight, Info, ShieldCheck, Pulse, CheckCircle, WarningCircle, UserList, Headset, Broadcast } from '@phosphor-icons/react';
+import { 
+  ChatCircle,
+  Users,
+  EnvelopeSimple,
+  Phone,
+  Clock,
+  Funnel,
+  MagnifyingGlass,
+  ArrowUpRight,
+  CaretRight,
+  Info,
+  ShieldCheck,
+  Pulse,
+  CheckCircle,
+  WarningCircle,
+  UserList,
+  Headset,
+  Broadcast
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

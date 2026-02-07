@@ -2,7 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Buildings, Upload, X, EnvelopeSimple, Phone, Headset, IdentificationBadge, Sparkle, Globe, MapPin, Camera, CloudArrowUp, CheckCircle, Info, Briefcase } from '@phosphor-icons/react';
+import { 
+  Buildings,
+  Upload,
+  X,
+  EnvelopeSimple,
+  Phone,
+  Headset,
+  IdentificationBadge,
+  Sparkle,
+  Globe,
+  MapPin,
+  Camera,
+  CloudArrowUp,
+  CheckCircle,
+  Info,
+  Briefcase
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

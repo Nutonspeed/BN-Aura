@@ -2,7 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Globe, Clock, CurrencyDollar, CalendarDots, Translate } from '@phosphor-icons/react';
+import { 
+  Globe,
+  Clock,
+  CurrencyDollar,
+  CalendarDots,
+  Translate
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { useSettingsContext } from '../context';
 

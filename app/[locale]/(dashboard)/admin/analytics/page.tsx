@@ -1,15 +1,15 @@
 'use client';
 
 import { 
-  SpinnerGap, 
-  WarningCircle, 
-  ChartBar, 
-  CurrencyDollar, 
-  Lightning, 
+  SpinnerGap,
+  WarningCircle,
+  ChartBar,
+  CurrencyDollar,
+  Lightning,
   Buildings,
-  TrendUp, 
-  ArrowRight, 
-  DownloadSimple, 
+  TrendUp,
+  ArrowRight,
+  DownloadSimple,
   ArrowLeft,
   Graph,
   Pulse,

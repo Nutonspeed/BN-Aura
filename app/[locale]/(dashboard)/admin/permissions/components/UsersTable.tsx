@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Shield, 
-  Users, 
-  Buildings, 
-  Gear, 
-  ChartBar, 
-  Lock, 
-  PencilSimple, 
-  Eye, 
+  Shield,
+  Users,
+  Buildings,
+  Gear,
+  ChartBar,
+  Lock,
+  PencilSimple,
+  Eye,
   X,
   IdentificationCard,
   CheckCircle,

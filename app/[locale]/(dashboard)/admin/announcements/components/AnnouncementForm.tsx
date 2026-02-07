@@ -1,7 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Bell, FloppyDisk, CalendarDots, CheckCircle, SpinnerGap, X, Monitor, Eye, Flag } from '@phosphor-icons/react';
+import { 
+  Bell,
+  FloppyDisk,
+  CalendarDots,
+  CheckCircle,
+  SpinnerGap,
+  X,
+  Monitor,
+  Eye,
+  Flag
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';

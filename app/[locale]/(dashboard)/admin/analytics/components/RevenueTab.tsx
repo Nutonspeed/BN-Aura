@@ -3,7 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
-import { CurrencyDollar, TrendUp, ArrowsClockwise } from '@phosphor-icons/react';
+import { 
+  CurrencyDollar,
+  TrendUp,
+  ArrowsClockwise
+} from '@phosphor-icons/react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function RevenueTab() {

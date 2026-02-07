@@ -1,7 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ShieldCheck, ShieldWarning, CheckCircle, Warning, Pulse } from '@phosphor-icons/react';
+import { 
+  ShieldCheck,
+  ShieldWarning,
+  CheckCircle,
+  Warning,
+  Pulse
+} from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';

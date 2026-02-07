@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Shield, 
-  XCircle, 
-  SpinnerGap, 
-  Lock, 
-  IdentificationBadge, 
-  Key, 
+  Shield,
+  XCircle,
+  SpinnerGap,
+  Lock,
+  IdentificationBadge,
+  Key,
   WarningCircle,
   Clock,
   ArrowLeft,

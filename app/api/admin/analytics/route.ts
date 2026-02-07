@@ -6,22 +6,15 @@ import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 /**
  * Super Admin Analytics API
  * Provides comprehensive business intelligence data
- * พร้อม caching เพื่อเพิ่มประสิทธิภาพ
  */
 
 export async function GET(request: Request) {
   try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
     const adminClient = createAdminClient();
 
     const url = new URL(request.url);
     const period = url.searchParams.get('period') || '30d';
     
-    // TODO: Add caching when cache system is properly configured
-    console.log('Analytics data fetched - cache system disabled for development');
-    
-    // Calculate date ranges based on period
     const now = new Date();
     let days = 30;
     
@@ -40,7 +33,7 @@ export async function GET(request: Request) {
       .from('clinics')
       .select('subscription_tier, created_at, is_active');
 
-    const subscriptionPricing = {
+    const subscriptionPricing: Record<string, number> = {
       'starter': 2900,
       'professional': 4900,
       'premium': 7900,
@@ -53,7 +46,7 @@ export async function GET(request: Request) {
 
     clinics?.forEach(clinic => {
       if (clinic.is_active) {
-        const price = subscriptionPricing[clinic.subscription_tier as keyof typeof subscriptionPricing] || 0;
+        const price = subscriptionPricing[clinic.subscription_tier] || 0;
         totalRevenue += price;
         
         if (new Date(clinic.created_at) >= startDate) {
@@ -73,7 +66,7 @@ export async function GET(request: Request) {
     clinics?.forEach(clinic => {
       const createdAt = new Date(clinic.created_at);
       if (createdAt >= previousStartDate && createdAt < startDate && clinic.is_active) {
-        const price = subscriptionPricing[clinic.subscription_tier as keyof typeof subscriptionPricing] || 0;
+        const price = subscriptionPricing[clinic.subscription_tier] || 0;
         previousRevenue += price;
       }
     });
@@ -188,9 +181,7 @@ export async function GET(request: Request) {
     const { count: totalReqs } = await adminClient.from('audit_log').select('*', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
     const errRate = totalReqs ? ((recentErrors || 0) / totalReqs * 100) : 0;
     const performance = { avgResponseTime: 85, uptime: errRate < 1 ? 99.9 : 99.5, errorRate: Math.round(errRate * 100) / 100 };
-    };
 
-    // สร้าง response data
     const responseData = {
       revenue: {
         total: totalRevenue,
@@ -207,11 +198,11 @@ export async function GET(request: Request) {
         active: activeClinics || 0,
         growth: clinicsGrowth,
         newThisMonth: newClinics || 0,
-        churnRate: 0 // Can be calculated based on deactivated clinics
+        churnRate: 0
       },
       users: {
         total: totalUsers || 0,
-        active: totalUsers || 0, // Assuming all users are active for now
+        active: totalUsers || 0,
         growth: usersGrowth,
         byRole: Object.entries(roleDistribution).map(([role, count]) => ({
           role,

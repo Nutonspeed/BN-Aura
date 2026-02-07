@@ -3,10 +3,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ShoppingCart, 
-  MagnifyingGlass, 
-  User, 
-  SpinnerGap, 
+  ShoppingCart,
+  MagnifyingGlass,
+  User,
+  SpinnerGap,
   SquaresFour,
   ClockCounterClockwise,
   CheckCircle,
@@ -52,31 +52,57 @@ export default function POSPage() {
   const [clinicId, setClinicId] = useState<string>('');
   const [clinicInfo, setClinicInfo] = useState<any>(null);
   const [currency, setCurrency] = useState<'THB' | 'USD'>('THB');
-  const exchangeRate = 35.5; // Mock rate: 1 USD = 35.5 THB
+  const [exchangeRate, setExchangeRate] = useState(35.5);
+
+  // Fetch live exchange rate
+  useEffect(() => {
+    const fetchRate = async () => {
+      try {
+        const res = await fetch('/api/pricing?action=exchange-rate&from=USD&to=THB');
+        const data = await res.json();
+        if (data.success && data.rate) setExchangeRate(data.rate);
+      } catch (e) {
+        console.warn('Using default exchange rate');
+      }
+    };
+    fetchRate();
+  }, []);
+
+  const safeFetch = async (url: string) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) return { success: false };
+      return await res.json();
+    } catch { return { success: false }; }
+  };
 
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [productsRes, treatmentsRes, customersRes, userRes, clinicRes] = await Promise.all([
-        fetch('/api/products'),
-        fetch('/api/treatments'),
-        fetch('/api/customers?limit=100'),
-        fetch('/api/staff/invite?type=profile'),
-        fetch('/api/clinic/settings')
-      ]);
+      // Get clinic_id directly from Supabase client
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: staffData } = await supabase
+          .from('clinic_staff')
+          .select('clinic_id')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .limit(1)
+          .maybeSingle();
+        if (staffData?.clinic_id) setClinicId(staffData.clinic_id);
+      }
 
-      const [productsData, treatmentsData, customersData, userData, clinicData] = await Promise.all([
-        productsRes.json(),
-        treatmentsRes.json(),
-        customersRes.json(),
-        userRes.json(),
-        clinicRes.json()
+      const [productsData, treatmentsData, customersData, clinicData] = await Promise.all([
+        safeFetch('/api/products'),
+        safeFetch('/api/treatments'),
+        safeFetch('/api/customers?limit=100'),
+        safeFetch('/api/clinic/settings')
       ]);
 
       if (productsData.success) setProducts(productsData.data);
       if (treatmentsData.success) setTreatments(treatmentsData.data);
       if (customersData.success) setCustomers(customersData.data);
-      if (userData.success) setClinicId(userData.data.clinic_id);
       if (clinicData.success) {
         setClinicInfo({
           name: clinicData.data.display_name?.th || clinicData.data.display_name?.en || 'Clinic Node',

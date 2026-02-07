@@ -3,19 +3,20 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Star, 
-  ChatCircle, 
-  ThumbsUp, 
-  Funnel, 
-  ArrowLeft, 
-  ArrowsClockwise, 
-  ChatCircleText, 
-  CheckCircle, 
+  Star,
+  ChatCircle,
+  ThumbsUp,
+  Funnel,
+  ArrowLeft,
+  ArrowsClockwise,
+  ChatCircleText,
+  CheckCircle,
   X,
   User,
   Smiley,
   SmileySad,
-  ChartLineUp
+  ChartLineUp,
+  SpinnerGap
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

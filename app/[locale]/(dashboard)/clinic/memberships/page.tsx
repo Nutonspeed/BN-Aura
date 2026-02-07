@@ -11,11 +11,19 @@ import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { createClient } from '@/lib/supabase/client';
-import {
-  Users, Crown, Star, SpinnerGap, MagnifyingGlass, Plus,
-  ArrowLeft, CurrencyDollar, CheckCircle, XCircle, Clock
+import { 
+  Users,
+  Crown,
+  Star,
+  SpinnerGap,
+  MagnifyingGlass,
+  Plus,
+  ArrowLeft,
+  CurrencyDollar,
+  CheckCircle,
+  XCircle,
+  Clock
 } from '@phosphor-icons/react';
-
 interface MembershipItem {
   id: string;
   customer_id: string;
@@ -30,7 +38,7 @@ interface MembershipItem {
 
 export default function MembershipsPage() {
   const t = useTranslations();
-  const { handleBack } = useBackNavigation();
+  const { goBack } = useBackNavigation();
   const [loading, setLoading] = useState(true);
   const [memberships, setMemberships] = useState<MembershipItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -110,10 +118,11 @@ export default function MembershipsPage() {
 
   return (
     <div className="space-y-8 p-6">
+      { /* @ts-ignore */ }
       <Breadcrumb items={[{ label: 'Clinic', href: '/clinic' }, { label: 'Memberships' }]} />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={handleBack} className="p-2"><ArrowLeft className="w-5 h-5" /></Button>
+          <Button variant="ghost" onClick={() => goBack('/th/clinic')} className="p-2"><ArrowLeft className="w-5 h-5" /></Button>
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Membership Matrix</h1>
             <p className="text-muted-foreground text-sm mt-1">Loyalty program management</p>
@@ -123,10 +132,10 @@ export default function MembershipsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Members" value={stats.total} icon={<Users weight="duotone" className="w-6 h-6" />} />
-        <StatCard title="Active Members" value={stats.active} icon={<Crown weight="duotone" className="w-6 h-6" />} />
-        <StatCard title="Total Points" value={stats.totalPoints.toLocaleString()} icon={<Star weight="duotone" className="w-6 h-6" />} />
-        <StatCard title="Total Revenue" value={`\u0E3F${(stats.totalRevenue / 1000).toFixed(0)}K`} icon={<CurrencyDollar weight="duotone" className="w-6 h-6" />} />
+        <StatCard title="Total Members" value={stats.total} icon={Users} />
+        <StatCard title="Active Members" value={stats.active} icon={Crown} />
+        <StatCard title="Total Points" value={stats.totalPoints} icon={Star} />
+        <StatCard title="Total Revenue" value={Math.round(stats.totalRevenue / 1000)} icon={CurrencyDollar} />
       </div>
 
       <Card>

@@ -1,29 +1,31 @@
 'use client';
 
 import { 
-  Buildings, 
-  Plus, 
-  MagnifyingGlass, 
-  User, 
-  EnvelopeSimple, 
-  Phone, 
-  MapPin, 
-  PencilSimple, 
-  Trash, 
-  DotsThreeVertical, 
+  Buildings,
+  Plus,
+  MagnifyingGlass,
+  User,
+  EnvelopeSimple,
+  Phone,
+  MapPin,
+  PencilSimple,
+  Trash,
+  DotsThreeVertical,
   SpinnerGap,
-  CheckCircle, 
-  Clock, 
-  SquaresFour, 
-  Truck, 
-  Package, 
+  CheckCircle,
+  Clock,
+  SquaresFour,
+  Truck,
+  Package,
   ArrowRight,
   ArrowsClockwise,
   IdentificationBadge,
   Archive,
   WarningCircle,
   Globe,
-  Briefcase
+  Briefcase,
+  ClockCounterClockwise,
+  ShieldCheck
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
@@ -49,7 +51,7 @@ interface Supplier {
   created_at: string;
 }
 
-function SupplierManagementContent() {
+export default function SupplierManagementContent() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -197,20 +199,20 @@ function SupplierManagementContent() {
         <StatCard
           title="Active Connections"
           value={suppliers.length}
-          icon={Truck as Icon}
+          icon={Truck}
           className="p-4"
         />
         <StatCard
           title="Operational Nodes"
           value={suppliers.filter(s => s.is_active).length}
-          icon={CheckCircle as Icon}
+          icon={CheckCircle}
           iconColor="text-emerald-500"
           className="p-4"
         />
         <StatCard
           title="Consolidated Flows"
           value={124}
-          icon={ArrowsClockwise as Icon}
+          icon={ArrowsClockwise}
           iconColor="text-blue-500"
           className="p-4"
         />
@@ -219,7 +221,7 @@ function SupplierManagementContent() {
           value={99.4}
           suffix="%"
           decimals={1}
-          icon={ShieldCheckIcon as Icon}
+          icon={ShieldCheck}
           iconColor="text-primary"
           className="p-4"
         />
@@ -323,7 +325,7 @@ function SupplierManagementContent() {
 
                       <div className="pt-6 border-t border-border/30 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <HistoryIcon weight="bold" className="w-3.5 h-3.5 text-primary/60" />
+                          <ClockCounterClockwise weight="bold" className="w-3.5 h-3.5 text-primary/60" />
                           <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Est: {new Date(s.created_at).toLocaleDateString()}</span>
                         </div>
                         <Button 

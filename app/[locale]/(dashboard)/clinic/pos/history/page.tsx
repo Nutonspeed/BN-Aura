@@ -1,12 +1,12 @@
 'use client';
 
 import { 
-  ClockCounterClockwise, 
-  MagnifyingGlass, 
-  CalendarDots, 
-  Funnel, 
-  CaretRight, 
-  SpinnerGap, 
+  ClockCounterClockwise,
+  MagnifyingGlass,
+  CalendarDots,
+  Funnel,
+  CaretRight,
+  SpinnerGap,
   ArrowLeft,
   CreditCard,
   ShoppingCart,

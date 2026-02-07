@@ -1,6 +1,24 @@
 'use client';
 
-import { Clock, User, Phone, Bell, Check, X, Plus, MagnifyingGlass, ArrowLeft, ArrowsClockwise, CheckCircle, WarningCircle, UserList, CaretRight, ClockCounterClockwise, CalendarDots } from '@phosphor-icons/react';
+import { 
+  Clock,
+  User,
+  Phone,
+  Bell,
+  Check,
+  X,
+  Plus,
+  MagnifyingGlass,
+  ArrowLeft,
+  ArrowsClockwise,
+  CheckCircle,
+  WarningCircle,
+  UserList,
+  CaretRight,
+  ClockCounterClockwise,
+  CalendarDots,
+  TrendUp
+} from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -368,7 +386,7 @@ export default function WaitlistPage() {
 
                 <div className="flex justify-between items-center pt-1">
                   <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
-                    <History weight="bold" className="w-3.5 h-3.5 opacity-60" />
+                    <ClockCounterClockwise weight="bold" className="w-3.5 h-3.5 opacity-60" />
                     Registry: {new Date(entry.created_at).toLocaleDateString()}
                   </div>
                   {entry.status === 'waiting' && (

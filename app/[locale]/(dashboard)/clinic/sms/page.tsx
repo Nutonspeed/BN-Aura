@@ -3,18 +3,19 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ChatCircle, 
-  PaperPlaneTilt, 
-  User, 
-  Clock, 
-  MagnifyingGlass, 
-  Plus, 
+  ChatCircle,
+  PaperPlaneTilt,
+  User,
+  Clock,
+  MagnifyingGlass,
+  Plus,
   ArrowLeft,
   ChatCircleText,
   Phone,
   CheckCircle,
   DotsThreeVertical,
-  Paperclip
+  Paperclip,
+  SpinnerGap
 } from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

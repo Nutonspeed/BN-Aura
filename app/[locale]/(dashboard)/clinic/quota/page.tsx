@@ -2,8 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { ChartBar, TrendUp, Package, Clock, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  ChartBar,
+  TrendUp,
+  Package,
+  Clock,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuth';
 
 interface QuotaData {
   monthlyQuota: number;
@@ -22,6 +29,7 @@ interface UsageStats {
 }
 
 export default function QuotaManagement() {
+  const { getClinicId } = useAuth();
   const [loading, setLoading] = useState(true);
   const [quotaData, setQuotaData] = useState<QuotaData | null>(null);
   const [usageStats, setUsageStats] = useState<UsageStats | null>(null);
@@ -36,8 +44,8 @@ export default function QuotaManagement() {
       setLoading(true);
       setError(null);
 
-      // Get current clinic ID (in production, this would come from auth context)
-      const clinicId = 'a1b2c3d4-e5f6-7890-abcd-1234567890ab';
+      const clinicId = getClinicId();
+      if (!clinicId) { setLoading(false); return; }
 
       const [quotaResponse, statsResponse] = await Promise.all([
         fetch(`/api/quota/billing-test?action=quota-config&clinicId=${clinicId}`),

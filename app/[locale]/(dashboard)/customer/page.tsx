@@ -2,9 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { User, Heart, Star, CalendarDots, TrendUp, Receipt } from '@phosphor-icons/react';
+import { 
+  User,
+  Heart,
+  Star,
+  CalendarDots,
+  TrendUp,
+  Receipt
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
+import MySalesRep from '@/components/customer/MySalesRep';
+import TreatmentJourney from '@/components/customer/TreatmentJourney';
+import DirectChat from '@/components/customer/DirectChat';
 
 export default function CustomerDashboard() {
   const [loading, setLoading] = useState(true);
@@ -16,6 +26,9 @@ export default function CustomerDashboard() {
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
   const [skinAnalyses, setSkinAnalyses] = useState<any[]>([]);
   const [treatmentHistory, setTreatmentHistory] = useState<any[]>([]);
+  const [customerId, setCustomerId] = useState<string>('');
+  const [chatOpen, setChatOpen] = useState(false);
+  const [salesInfo, setSalesInfo] = useState<{id: string; name: string} | null>(null);
 
   useEffect(() => {
     fetchCustomerData();
@@ -48,6 +61,7 @@ export default function CustomerDashboard() {
 
         if (customer) {
           setCustomerData(customer);
+          setCustomerId(customer.id);
           setTotalSpent(customer.metadata?.total_spent || 0);
           setTotalPurchases(customer.metadata?.total_purchases || 0);
 
@@ -231,6 +245,36 @@ export default function CustomerDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* My Sales Representative */}
+      {customerId && (
+        <Card className="p-8 rounded-2xl border-border/50">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-lg font-black uppercase flex items-center gap-3">
+              <User weight="duotone" className="w-6 h-6 text-primary" />
+              My Beauty Advisor
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-0 pb-0">
+            <MySalesRep customerId={customerId} />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Treatment Journey */}
+      {customerId && (
+        <Card className="p-8 rounded-2xl border-border/50">
+          <CardHeader className="px-0 pt-0">
+            <CardTitle className="text-lg font-black uppercase flex items-center gap-3">
+              <Heart weight="duotone" className="w-6 h-6 text-pink-500" />
+              My Treatment Journey
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-0 pb-0">
+            <TreatmentJourney customerId={customerId} />
+          </CardContent>
+        </Card>
+      )}
     </motion.div>
   );
 }

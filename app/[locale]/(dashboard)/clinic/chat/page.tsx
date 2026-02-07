@@ -1,9 +1,9 @@
 'use client';
 
 import { 
-  PaperPlaneTilt, 
-  Sparkle, 
-  User, 
+  PaperPlaneTilt,
+  Sparkle,
+  User,
   Robot,
   ClockCounterClockwise,
   Info,
@@ -41,26 +41,55 @@ export default function ChatAdvisor() {
     { id: 1, role: 'assistant', content: 'สวัสดีครับ ผม BN-Aura AI Advisor ยินดีที่ได้บริการครับ วันนี้มีเคสลูกค้าท่านไหนให้ผมช่วยวิเคราะห์ข้อมูลหรือแนะนำโปรแกรมการรักษาไหมครับ?' },
   ]);
   const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
     
-    const newMsg = { id: Date.now(), role: 'user', content: input };
+    const userMsg = input.trim();
+    const newMsg = { id: Date.now(), role: 'user', content: userMsg };
     setMessages(prev => [...prev, newMsg]);
     setInput('');
+    setIsLoading(true);
 
-    // Simulate AI thinking
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        id: Date.now() + 1, 
-        role: 'assistant', 
-        content: 'ผมได้รับข้อมูลแล้วครับ กำลังประมวลผลความสอดคล้องระหว่างผลการสแกนผิวและประวัติหัตถการเดิมของลูกค้าครู่หนึ่งครับ...' 
+    try {
+      const res = await fetch('/api/ai/business-advisor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'query', query: userMsg }),
+      });
+      const data = await res.json();
+
+      if (data.success && data.insight) {
+        const aiResponse = typeof data.insight === 'string'
+          ? data.insight
+          : data.insight.answer || data.insight.summary || JSON.stringify(data.insight);
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          role: 'assistant',
+          content: aiResponse,
+        }]);
+      } else {
+        setMessages(prev => [...prev, {
+          id: Date.now() + 1,
+          role: 'assistant',
+          content: data.error || 'ขออภัยครับ ไม่สามารถประมวลผลได้ในขณะนี้',
+        }]);
+      }
+    } catch (e) {
+      console.error('AI chat error:', e);
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่ครับ',
       }]);
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

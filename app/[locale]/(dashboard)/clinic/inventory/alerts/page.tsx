@@ -1,11 +1,11 @@
 'use client';
 
 import { 
-  Warning, 
-  Package, 
-  Calendar, 
-  ArrowLeft, 
-  MagnifyingGlass, 
+  Warning,
+  Package,
+  Calendar,
+  ArrowLeft,
+  MagnifyingGlass,
   ArrowsClockwise,
   CheckCircle,
   Clock,

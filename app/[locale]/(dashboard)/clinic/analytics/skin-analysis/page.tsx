@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useClinicContext } from '@/hooks/useAuth';
 
 interface AnalyticsData {
   totalAnalyses: number;
@@ -24,56 +25,48 @@ export default function SkinAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'7' | '30' | '90'>('30');
+  const { clinicId } = useClinicContext();
 
   useEffect(() => {
     fetchAnalytics();
   }, [period]);
 
   const fetchAnalytics = async () => {
+    if (!clinicId) return;
     setLoading(true);
     try {
-      // Simulated data - in production, fetch from API
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setData({
-        totalAnalyses: period === '7' ? 45 : period === '30' ? 187 : 542,
-        averageScore: 68.5,
-        averageSkinAge: 38.2,
-        averageAgeDifference: 2.8,
-        period: `${period} days`,
-        aiUsage: {
-          totalRequests: period === '7' ? 156 : period === '30' ? 623 : 1847,
-          totalCost: period === '7' ? 0.31 : period === '30' ? 1.25 : 3.69,
-          avgProcessingTime: 342,
-        },
-        topConcerns: [
-          { concern: 'ริ้วรอย', count: 78 },
-          { concern: 'ฝ้า/กระ', count: 65 },
-          { concern: 'รูขุมขน', count: 52 },
-          { concern: 'สิว', count: 41 },
-          { concern: 'ผิวแห้ง', count: 34 },
-        ],
-        dailyStats: generateDailyStats(parseInt(period)),
-      });
+      const res = await fetch('/api/analysis/save?type=stats&clinicId=' + clinicId + '&days=' + period);
+      const result = await res.json();
+
+      if (result.success && result.data) {
+        const d = result.data;
+        setData({
+          totalAnalyses: d.totalAnalyses || 0,
+          averageScore: d.averageScore || 0,
+          averageSkinAge: d.averageSkinAge || 0,
+          averageAgeDifference: d.averageAgeDifference || 0,
+          period: period + ' days',
+          aiUsage: {
+            totalRequests: d.aiUsage?.totalRequests || 0,
+            totalCost: d.aiUsage?.totalCost || 0,
+            avgProcessingTime: d.aiUsage?.avgProcessingTime || 0,
+          },
+          topConcerns: d.topConcerns || [],
+          dailyStats: d.dailyStats || [],
+        });
+      } else {
+        setData({
+          totalAnalyses: 0, averageScore: 0, averageSkinAge: 0,
+          averageAgeDifference: 0, period: period + ' days',
+          aiUsage: { totalRequests: 0, totalCost: 0, avgProcessingTime: 0 },
+          topConcerns: [], dailyStats: [],
+        });
+      }
     } catch (error) {
       console.error('Fetch analytics error:', error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const generateDailyStats = (days: number) => {
-    const stats = [];
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      stats.push({
-        date: date.toISOString().split('T')[0],
-        count: Math.floor(Math.random() * 10) + 3,
-        avgScore: Math.floor(Math.random() * 20) + 60,
-      });
-    }
-    return stats;
   };
 
   if (loading) {

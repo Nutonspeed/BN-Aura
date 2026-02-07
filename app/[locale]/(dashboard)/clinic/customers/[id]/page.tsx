@@ -3,14 +3,14 @@
 import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, 
-  EnvelopeSimple, 
-  Phone, 
-  CalendarDots, 
-  ClockCounterClockwise, 
-  Sparkle, 
-  CreditCard, 
-  ShieldCheck, 
+  User,
+  EnvelopeSimple,
+  Phone,
+  CalendarDots,
+  ClockCounterClockwise,
+  Sparkle,
+  CreditCard,
+  ShieldCheck,
   CaretLeft,
   SpinnerGap,
   PencilSimple,
@@ -22,7 +22,8 @@ import {
   ArrowsCounterClockwise,
   IdentificationCard,
   Briefcase,
-  TrendUp
+  TrendUp,
+  FileText
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
@@ -30,6 +31,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import CustomerModal from '@/components/CustomerModal';
+import TreatmentJourney from '@/components/customer/TreatmentJourney';
+import LoyaltyDashboard from '@/components/customer/LoyaltyDashboard';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
@@ -63,6 +66,7 @@ function CustomerDetailPageContent() {
   const [customer, setCustomer] = useState<CustomerDetails | null>(null);
   const [activeTab, setActiveSection] = useState('overview');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [clinicId, setClinicId] = useState<string>('');
 
   const fetchCustomerData = useCallback(async () => {
     setLoading(true);
@@ -84,6 +88,7 @@ function CustomerDetailPageContent() {
           }
         }
         setCustomer(customerData);
+        if (customerData.clinic_id) setClinicId(customerData.clinic_id);
       }
     } catch (err) {
       console.error('Error fetching customer details:', err);
@@ -292,7 +297,7 @@ function CustomerDetailPageContent() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <StatCard
                     title="Latest Aura Score"
-                    value="84%"
+                    value={84}
                     icon={Sparkle}
                     trend="up"
                     change={4.2}
@@ -300,13 +305,13 @@ function CustomerDetailPageContent() {
                   />
                   <StatCard
                     title="Protocol Density"
-                    value={customer.sales_commissions.length.toString()}
+                    value={Number(customer.sales_commissions.length.toString()) || 0}
                     icon={ClockCounterClockwise}
                     className="p-4"
                   />
                   <StatCard
                     title="Lifetime Valuation"
-                    value={`฿${customer.sales_commissions.reduce((acc, c) => acc + Number(c.base_amount), 0).toLocaleString()}`}
+                    value={customer.sales_commissions.reduce((acc: number, c: any) => acc + Number(c.base_amount), 0)}
                     icon={CreditCard}
                     trend="up"
                     change={12.5}
@@ -558,6 +563,34 @@ function CustomerDetailPageContent() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Treatment Journey */}
+        <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden">
+          <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
+            <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+              <Sparkle weight="duotone" className="w-5 h-5 text-primary" />
+              Treatment Journey
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-8">
+            <TreatmentJourney customerId={customerId} />
+          </CardContent>
+        </Card>
+
+        {/* Loyalty Dashboard */}
+        {clinicId && (
+          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden">
+            <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
+              <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                <TrendUp weight="duotone" className="w-5 h-5 text-amber-500" />
+                Loyalty Program
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-8">
+              <LoyaltyDashboard customerId={customerId} clinicId={clinicId} />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </motion.div>
   );

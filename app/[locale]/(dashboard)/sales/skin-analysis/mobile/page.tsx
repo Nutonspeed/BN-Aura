@@ -1,9 +1,15 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
+import { Camera, SpinnerGap } from '@phosphor-icons/react';
 
 type Step = 'intro' | 'camera' | 'analyzing' | 'results' | 'details';
+
+interface CustomerOption { id: string; user_id: string; full_name: string; email: string; phone: string | null; metadata: any; }
+
+// duplicate removed
 
 export default function MobileSkinAnalysisPage() {
   const [step, setStep] = useState<Step>('intro');
@@ -11,6 +17,22 @@ export default function MobileSkinAnalysisPage() {
   const [customerAge, setCustomerAge] = useState(35);
   const [activeDetail, setActiveDetail] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { getClinicId, getUserId } = useAuth();
+  const clinicId = getClinicId();
+  const userId = getUserId();
+  const [selectedCustomer, setSelectedCustomer] = useState<CustomerOption | null>(null);
+  const [quotaRemaining, setQuotaRemaining] = useState<number>(0);
+
+  const captureImage = (): string | null => {
+    if (!videoRef.current) return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = videoRef.current.videoWidth || 480;
+    canvas.height = videoRef.current.videoHeight || 640;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    ctx.drawImage(videoRef.current, 0, 0);
+    return canvas.toDataURL('image/jpeg', 0.8);
+  };
 
   // Start camera
   const startCamera = async () => {
@@ -28,20 +50,48 @@ export default function MobileSkinAnalysisPage() {
     }
   };
 
-  // Capture and analyze
   const captureAndAnalyze = async () => {
+    if (!selectedCustomer) { alert('กรุณาเลือกลูกค้าก่อนวิเคราะห์'); return; }
     setStep('analyzing');
-
     try {
-      const [skinRes, timeRes] = await Promise.all([
-        fetch(`/api/analysis/skin?type=comprehensive&age=${customerAge}`),
-        fetch(`/api/analysis/time-travel?age=${customerAge}&score=72`),
-      ]);
+      const imageData = captureImage();
+      if (!imageData) throw new Error('ไม่สามารถถ่ายภาพได้');
 
-      const [skinData, timeData] = await Promise.all([
-        skinRes.json(),
-        timeRes.json(),
-      ]);
+      const skinRes = await fetch('/api/analysis/skin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          imageData,
+          customerInfo: {
+            customerId: selectedCustomer.id,
+            name: selectedCustomer.full_name,
+            email: selectedCustomer.email,
+            age: customerAge,
+          },
+          useAI: true,
+          clinicId,
+          userId,
+        }),
+      });
+      const skinData = await skinRes.json();
+
+      if (!skinData.success) {
+        if (skinData.error === 'QUOTA_EXCEEDED') {
+          alert('โควต้าหมด: ' + (skinData.message || 'กรุณาอัพเกรดแพ็คเกจ'));
+          setStep('camera'); return;
+        }
+        throw new Error(skinData.error || 'Analysis failed');
+      }
+
+      if (skinData.data?.quotaInfo) setQuotaRemaining(skinData.data.quotaInfo.remaining);
+
+      const score = skinData.data?.overallScore || 72;
+      const timeRes = await fetch('/api/analysis/time-travel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ age: customerAge, skinScore: score, skinType: 'combination' }),
+      });
+      const timeData = await timeRes.json();
 
       setAnalysisData({
         ...skinData.data,

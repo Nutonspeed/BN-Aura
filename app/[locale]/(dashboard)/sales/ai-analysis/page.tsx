@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/hooks/useAuth';
 import RealTimeFaceAnalysis from '@/components/analysis/RealTimeFaceAnalysis';
 import TreatmentBookingCard from '@/components/analysis/TreatmentBookingCard';
 import {
@@ -23,20 +24,37 @@ import {
 type ViewMode = 'scan' | 'result' | 'booking' | 'report';
 
 export default function SalesAIAnalysisPage() {
+  const { getClinicId } = useAuth();
   const [viewMode, setViewMode] = useState<ViewMode>('scan');
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [customerName, setCustomerName] = useState('');
+  const [stats, setStats] = useState({ todayScans: 0, weekScans: 0, avgScore: 0, bookingRate: 0 });
+  const clinicId = getClinicId();
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      if (!clinicId) return;
+      try {
+        const todayRes = await fetch('/api/analysis/save?type=stats&clinicId=' + clinicId + '&days=1');
+        const todayData = await todayRes.json();
+        const weekRes = await fetch('/api/analysis/save?type=stats&clinicId=' + clinicId + '&days=7');
+        const weekData = await weekRes.json();
+        if (todayData.success && weekData.success) {
+          setStats({
+            todayScans: todayData.data?.totalAnalyses || 0,
+            weekScans: weekData.data?.totalAnalyses || 0,
+            avgScore: Math.round(weekData.data?.averageScore || 0),
+            bookingRate: Math.round((weekData.data?.bookingRate || 0) * 100),
+          });
+        }
+      } catch (e) { console.error('Failed to fetch stats:', e); }
+    };
+    fetchStats();
+  }, [clinicId]);
 
   const handleAnalysisComplete = (result: any) => {
     setAnalysisResult(result);
     setViewMode('result');
-  };
-
-  const stats = {
-    todayScans: 12,
-    weekScans: 58,
-    avgScore: 68,
-    bookingRate: 72,
   };
 
   return (

@@ -1,29 +1,30 @@
 'use client';
 
 import { 
-  Gear, 
-  Phone, 
-  EnvelopeSimple, 
-  ChatCircle, 
-  Check, 
-  X, 
-  Eye, 
-  EyeSlash, 
-  FloppyDisk, 
-  ArrowsClockwise, 
-  Pulse, 
-  ShieldCheck, 
-  Lightning, 
-  Plus, 
-  Info, 
-  Translate, 
-  Globe, 
+  Gear,
+  Phone,
+  EnvelopeSimple,
+  ChatCircle,
+  Check,
+  X,
+  Eye,
+  EyeSlash,
+  FloppyDisk,
+  ArrowsClockwise,
+  Pulse,
+  ShieldCheck,
+  Lightning,
+  Plus,
+  Info,
+  Translate,
+  Globe,
   CaretRight,
   Monitor,
   IdentificationBadge,
   Browser,
   WebhooksLogo,
-  Robot
+  Robot,
+  SpinnerGap
 } from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
@@ -395,7 +396,7 @@ export default function IntegrationsPage() {
               </div>
               <div className="p-5 bg-primary/5 rounded-[28px] border border-primary/10 space-y-3 shadow-inner">
                 <div className="flex items-center gap-2">
-                  <WebhookLogo weight="bold" className="w-4 h-4 text-primary" />
+                  <WebhooksLogo weight="bold" className="w-4 h-4 text-primary" />
                   <span className="text-[10px] font-black text-primary uppercase tracking-widest">Webhook Payload Gateway</span>
                 </div>
                 <div className="flex items-center justify-between gap-4">

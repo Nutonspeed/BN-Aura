@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  PaperPlaneTilt, 
-  ChatCircle, 
-  User, 
+  PaperPlaneTilt,
+  ChatCircle,
+  User,
   Users,
   MagnifyingGlass,
   DotsThreeVertical,

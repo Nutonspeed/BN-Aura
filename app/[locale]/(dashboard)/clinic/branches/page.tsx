@@ -3,14 +3,14 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Buildings, 
-  Plus, 
-  MagnifyingGlass, 
-  MapPin, 
-  Phone, 
-  PencilSimple, 
-  Trash, 
-  DotsThreeVertical, 
+  Buildings,
+  Plus,
+  MagnifyingGlass,
+  MapPin,
+  Phone,
+  PencilSimple,
+  Trash,
+  DotsThreeVertical,
   SpinnerGap,
   CheckCircle,
   Clock,

@@ -1,14 +1,15 @@
 'use client';
 
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { 
-  Image as ImageIcon, 
-  Plus, 
-  SquaresFour, 
-  List, 
-  Funnel, 
-  Eye, 
-  ShareNetwork, 
+  Image as ImageIcon,
+  Plus,
+  SquaresFour,
+  List,
+  Funnel,
+  Eye,
+  ShareNetwork,
   Trash,
   ArrowLeft,
   ArrowsClockwise,
@@ -16,7 +17,8 @@ import {
   Clock,
   User,
   CaretRight,
-  Sparkle
+  Sparkle,
+  SpinnerGap
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

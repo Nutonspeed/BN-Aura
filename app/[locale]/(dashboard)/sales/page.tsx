@@ -4,11 +4,33 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';
-import { Pulse, Users, TrendUp, ChartBar, UserPlus, Envelope, Phone, Coins, Star, ChartLine, ChartPie, Plus, X, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  Pulse,
+  Users,
+  TrendUp,
+  ChartBar,
+  UserPlus,
+  Envelope,
+  Phone,
+  Coins,
+  Star,
+  ChartLine,
+  ChartPie,
+  Plus,
+  X,
+  SpinnerGap,
+  Kanban,
+  CurrencyDollar
+} from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 import SmartSuggestions from '@/components/sales/SmartSuggestions';
 import MyCustomersSection from '@/components/sales/MyCustomersSection';
+import WorkflowKanban from '@/components/sales/WorkflowKanban';
+import HotLeadsAlert from '@/components/sales/HotLeadsAlert';
+import UnifiedCommissionTracker from '@/components/sales/UnifiedCommissionTracker';
+import SalesPresenceIndicator from '@/components/sales/SalesPresenceIndicator';
+import MobileQuotaWidget from '@/components/mobile/MobileQuotaWidget';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar } from 'recharts';
 
 export default function SalesDashboard() {
@@ -31,13 +53,17 @@ export default function SalesDashboard() {
   const [customers, setCustomers] = useState<any[]>([]);
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [dailyCommissions, setDailyCommissions] = useState<any[]>([]);
-  const [monthlyTarget, setMonthlyTarget] = useState(50000); // ฿50,000 target
+  const [monthlyTarget, setMonthlyTarget] = useState(0);
+  const [commissionRate, setCommissionRate] = useState(0.15); // Default 15%
   const [analyticsData, setAnalyticsData] = useState<any>({
     dailyRevenue: [],
     customerGrowth: [],
     conversionRates: [],
     performanceMetrics: {}
   });
+  const [activeTab, setActiveTab] = useState<'overview' | 'pipeline' | 'commissions'>('overview');
+  const [userId, setUserId] = useState<string>('');
+  const [clinicId, setClinicId] = useState<string>('');
   const [showCreateCustomerForm, setShowCreateCustomerForm] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [customerFormData, setCustomerFormData] = useState({
@@ -60,6 +86,32 @@ export default function SalesDashboard() {
     return () => clearInterval(quotaInterval);
   }, []);
 
+  const fetchCommissionRules = async () => {
+    try {
+      const res = await fetch('/api/commissions/rules');
+      const rules = await res.json();
+      if (rules && rules.length > 0) {
+        // Use the first active rule (highest priority)
+        const activeRule = rules.find((r: any) => r.is_active) || rules[0];
+        setCommissionRate(activeRule.commission_rate / 100); // Convert from percentage
+      }
+    } catch (e) {
+      console.error('Failed to fetch commission rules:', e);
+    }
+  };
+
+  const fetchSalesTargets = async () => {
+    try {
+      const res = await fetch('/api/sales/targets');
+      const data = await res.json();
+      if (data.success && data.target) {
+        setMonthlyTarget(data.target.target_amount || 0);
+      }
+    } catch (e) {
+      console.error('Failed to fetch sales targets:', e);
+    }
+  };
+
   const fetchQuotaData = async () => {
     try {
       const supabase = createClient();
@@ -74,6 +126,8 @@ export default function SalesDashboard() {
           .single();
 
         if (staffData?.clinic_id) {
+          setUserId(user.id);
+          setClinicId(staffData.clinic_id);
           // Fetch quota information from quota API
           const quotaResponse = await fetch(`/api/quota/billing-test?action=quota-config&clinicId=${staffData.clinic_id}`);
           const quotaData = await quotaResponse.json();
@@ -233,7 +287,6 @@ export default function SalesDashboard() {
           // Calculate commission data
           const todayCommissions = calculateDailyCommissions(transactionsData || []);
           const monthlyCommissions = calculateMonthlyCommissions(transactionsData || []);
-          const commissionRate = 0.15; // 15% commission rate
 
           setCommissionHistory(commissionsData || []);
           setDailyCommissions([todayCommissions]); // Wrap in array for consistency
@@ -320,6 +373,7 @@ export default function SalesDashboard() {
   };
 
   const getCommissionProgress = () => {
+    if (!monthlyTarget || monthlyTarget === 0) return 0;
     const progressPercentage = (stats.commissionEarned / monthlyTarget) * 100;
     return Math.min(progressPercentage, 100);
   };
@@ -429,6 +483,34 @@ export default function SalesDashboard() {
           </Card>
         ))}
       </div>
+
+      {/* Hot Leads Alert — fixed position notification */}
+      <HotLeadsAlert />
+
+      {/* Tab Navigation */}
+      <div className="flex gap-2 border-b border-border/50 pb-1">
+        {[
+          { id: 'overview' as const, label: 'Overview', icon: ChartBar },
+          { id: 'pipeline' as const, label: 'Workflow Pipeline', icon: Kanban },
+          { id: 'commissions' as const, label: 'Commission Tracker', icon: CurrencyDollar },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`flex items-center gap-2 px-5 py-3 text-xs font-black uppercase tracking-widest rounded-t-xl transition-all ${
+              activeTab === tab.id
+                ? 'bg-primary/10 text-primary border-b-2 border-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+            }`}
+          >
+            <tab.icon weight="duotone" className="w-4 h-4" />
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* === OVERVIEW TAB === */}
+      {activeTab === 'overview' && (<>
 
       {/* AI Quota Status Card */}
       <Card className="rounded-2xl border-border/50 bg-gradient-to-r from-purple-500/5 to-pink-500/5">
@@ -1104,6 +1186,27 @@ export default function SalesDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      </>)}
+
+      {/* === PIPELINE TAB === */}
+      {activeTab === 'pipeline' && (
+        <WorkflowKanban />
+      )}
+
+      {/* === COMMISSIONS TAB === */}
+      {activeTab === 'commissions' && (
+        <Card className="rounded-2xl border-border/50">
+          <UnifiedCommissionTracker />
+        </Card>
+      )}
+
+
+      {/* Quota Usage Widget */}
+      <MobileQuotaWidget compact showAlerts />
+
+      {/* Sales Presence Indicator */}
+      {userId && clinicId && <SalesPresenceIndicator clinicId={clinicId} userId={userId} />}
     </motion.div>
   );
 }

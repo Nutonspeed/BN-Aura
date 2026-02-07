@@ -7,28 +7,28 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
-  VideoCamera, 
-  CalendarDots, 
-  Plus, 
-  ArrowSquareOut, 
-  Clock, 
-  User, 
-  ArrowsClockwise, 
-  CheckCircle, 
-  X, 
-  Phone, 
-  EnvelopeSimple,
-  MonitorPlay,
+  ArrowSquareOut,
+  ArrowsClockwise,
+  CalendarDots,
   CaretRight,
-  IdentificationCard,
+  CheckCircle,
+  Clock,
+  ClockCounterClockwise,
+  EnvelopeSimple,
   Icon,
-  Video
+  IdentificationCard,
+  MonitorPlay,
+  Phone,
+  Plus,
+  SpinnerGap,
+  User,
+  Video,
+  VideoCamera,
+  X
 } from '@phosphor-icons/react';
 import Breadcrumb from '@/components/ui/Breadcrumb';
 import { useBackNavigation } from '@/hooks/useBackNavigation';
 import { StatCard } from '@/components/ui/StatCard';
-import { SpinnerGap } from '@phosphor-icons/react';
-
 interface Consultation {
   id: string;
   room_id: string;
@@ -317,7 +317,7 @@ export default function ConsultationsPage() {
             <div className="flex items-center justify-between relative z-10">
               <div className="flex items-center gap-5">
                 <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20 shadow-sm shadow-inner group-hover:bg-emerald-500/20 transition-all">
-                  <History weight="duotone" className="w-7 h-7" />
+                  <ClockCounterClockwise weight="duotone" className="w-7 h-7" />
                 </div>
                 <div>
                   <CardTitle className="text-xl font-black uppercase tracking-tight">Archived Nodes</CardTitle>

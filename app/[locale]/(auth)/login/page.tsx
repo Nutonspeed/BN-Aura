@@ -1,10 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { motion } from 'framer-motion';
-import { Envelope, Lock, ArrowRight, SpinnerGap, WarningCircle, Sparkle } from '@phosphor-icons/react';
+import { 
+  Envelope,
+  Lock,
+  ArrowRight,
+  SpinnerGap,
+  WarningCircle,
+  Sparkle
+} from '@phosphor-icons/react';
 import { Link } from '@/i18n/routing';
 import { createClient } from '@/lib/supabase/client';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -12,6 +20,8 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 export default function LoginPage() {
   const t = useTranslations('auth');
   const router = useRouter();
+  const params = useParams();
+  const locale = (params?.locale as string) || 'th';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -46,14 +56,16 @@ export default function LoginPage() {
           const staffData = staffResult.data;
           const userData = userResult.data;
           console.log('Login: Roles:', { staff: staffData?.role, user: userData?.role });
-          if (userData?.role === 'super_admin') { router.push('/admin'); return; }
-          if (staffData?.role === 'sales_staff') { router.push('/sales'); }
-          else if (staffData?.role === 'beautician') { router.push('/beautician'); }
-          else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { router.push('/clinic'); }
-          else { router.push('/customer'); }
+          let target = '/customer';
+          if (userData?.role === 'super_admin') { target = '/admin'; }
+          else if (staffData?.role === 'sales_staff') { target = '/sales'; }
+          else if (staffData?.role === 'beautician') { target = '/beautician'; }
+          else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { target = '/clinic'; }
+          console.log('Login: Redirecting to', '/' + locale + target);
+          window.location.href = '/' + locale + target;
         } catch (routeError) {
           console.error('Login: Route error:', routeError);
-          router.push('/customer');
+          window.location.href = '/' + locale + '/customer';
         }
       }
     } catch (err) {

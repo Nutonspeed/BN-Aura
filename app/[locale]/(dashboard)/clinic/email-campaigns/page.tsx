@@ -1,13 +1,14 @@
 'use client';
 
+import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { 
-  EnvelopeSimple, 
-  Plus, 
-  PaperPlaneTilt, 
-  Clock, 
-  Eye, 
-  Users, 
+  EnvelopeSimple,
+  Plus,
+  PaperPlaneTilt,
+  Clock,
+  Eye,
+  Users,
   TrendUp,
   ArrowLeft,
   CaretRight,
@@ -15,7 +16,9 @@ import {
   WarningCircle,
   CheckCircle,
   Megaphone,
-  ArrowsClockwise
+  ArrowsClockwise,
+  SpinnerGap,
+  X
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

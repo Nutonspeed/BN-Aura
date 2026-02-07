@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import {
+import { 
   Users,
   MagnifyingGlass,
   Funnel,

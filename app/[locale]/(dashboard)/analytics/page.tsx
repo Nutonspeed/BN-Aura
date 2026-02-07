@@ -7,9 +7,9 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
-  Brain, 
-  TrendUp, 
-  Warning, 
+  Brain,
+  TrendUp,
+  Warning,
   ChatCircle,
   ChartBar,
   Users,
@@ -25,19 +25,20 @@ import {
 import AIAdvisorChat from '@/components/analytics/AIAdvisorChat';
 import InsightCards from '@/components/analytics/InsightCards';
 import AlertCenter from '@/components/analytics/AlertCenter';
+import PredictiveDashboard from '@/components/analytics/PredictiveDashboard';
+import SalesFunnelChart from '@/components/analytics/SalesFunnelChart';
 import { useBusinessAdvisor, useBusinessMetrics, useBusinessAlerts } from '@/hooks/useBusinessAdvisor';
 
 export default function AnalyticsDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'advisor' | 'alerts'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'advisor' | 'alerts' | 'predictions'>('overview');
   const [loading, setLoading] = useState(true);
   
   const { metrics, loading: metricsLoading } = useBusinessMetrics();
   const { alerts, criticalCount, highCount } = useBusinessAlerts();
 
   useEffect(() => {
-    // Simulate initial loading
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
+    if (!metricsLoading) setLoading(false);
+  }, [metricsLoading]);
 
   const tabs = [
     {
@@ -57,6 +58,12 @@ export default function AnalyticsDashboard() {
       label: 'การแจ้งเตือน',
       icon: Warning,
       badge: criticalCount + highCount > 0 ? criticalCount + highCount : null
+    },
+    {
+      id: 'predictions' as const,
+      label: 'Predictions',
+      icon: TrendUp,
+      badge: null
     }
   ];
 
@@ -374,6 +381,22 @@ export default function AnalyticsDashboard() {
             {activeTab === 'advisor' && (
               <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="max-w-4xl mx-auto">
                 <AIAdvisorChat />
+              </motion.div>
+            )}
+
+            {activeTab === 'predictions' && (
+              <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+                <SalesFunnelChart 
+                  data={[
+                    { name: 'Leads', value: 450, percentage: 100 },
+                    { name: 'Qualified', value: 280, percentage: 62 },
+                    { name: 'Consulted', value: 195, percentage: 43 },
+                    { name: 'Quoted', value: 140, percentage: 31 },
+                    { name: 'Converted', value: 85, percentage: 19 },
+                  ]}
+                  period="This Month"
+                />
+                <PredictiveDashboard />
               </motion.div>
             )}
 

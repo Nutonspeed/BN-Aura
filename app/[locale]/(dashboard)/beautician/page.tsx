@@ -3,9 +3,9 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, 
-  ClockCounterClockwise, 
-  ChatCircle, 
+  User,
+  ClockCounterClockwise,
+  ChatCircle,
   SpinnerGap,
   Stethoscope,
   CheckCircle,

@@ -1,12 +1,12 @@
 'use client';
 
 import { 
-  Package, 
-  Plus, 
-  MagnifyingGlass, 
-  Warning, 
-  TrendUp, 
-  PencilSimple, 
+  Package,
+  Plus,
+  MagnifyingGlass,
+  Warning,
+  TrendUp,
+  PencilSimple,
   Trash,
   ChartBar,
   SpinnerGap,

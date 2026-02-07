@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { CurrencyDollar, TrendUp, ChartBar, Wallet, Receipt, ShoppingCart } from '@phosphor-icons/react';
+import { 
+  CurrencyDollar,
+  TrendUp,
+  ChartBar,
+  Wallet,
+  Receipt,
+  ShoppingCart
+} from '@phosphor-icons/react';
 import { motion } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
 import { useAuth } from '@/hooks/useAuth';

@@ -1,17 +1,21 @@
 'use client';
 
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import Breadcrumb from '@/components/ui/Breadcrumb';
+import { WhiteLabelBranding } from '@/components/branding/WhiteLabelBranding';
 import { 
-  Gear, 
-  Buildings, 
-  Bell, 
-  Shield, 
-  CreditCard, 
-  Palette, 
-  Globe, 
+  Gear,
+  Buildings,
+  Bell,
+  Shield,
+  CreditCard,
+  Palette,
+  Globe,
   CaretRight,
   UploadSimple,
   FloppyDisk,
@@ -27,8 +31,15 @@ import {
   ArrowsClockwise,
   Icon,
   Crown,
-  IdentificationCard
+  IdentificationCard,
+  EnvelopeSimple
 } from '@phosphor-icons/react';
+const QUOTA_PLANS = [
+  { id: 'starter', name: 'Starter', description: 'Essential AI skin analysis for small clinics', monthlyPrice: 2900, monthlyQuota: 100, scanPrice: 35, recommended: false },
+  { id: 'professional', name: 'Professional', description: 'Advanced analysis with priority processing', monthlyPrice: 7900, monthlyQuota: 500, scanPrice: 25, recommended: true },
+  { id: 'enterprise', name: 'Enterprise', description: 'Unlimited analysis with dedicated infrastructure', monthlyPrice: 19900, monthlyQuota: 2000, scanPrice: 15, recommended: false },
+  { id: 'unlimited', name: 'Unlimited', description: 'Full platform access with custom SLA', monthlyPrice: 49900, monthlyQuota: 10000, scanPrice: 10, recommended: false },
+];
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
@@ -442,6 +453,132 @@ export default function SettingsPage() {
                         </button>
                       </div>
                     </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {activeSection === 'appearance' && (
+                <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden">
+                  <CardHeader className="p-8 md:p-10 border-b border-border/50 bg-secondary/30">
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20">
+                        <Palette weight="duotone" className="w-7 h-7" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Brand & Appearance</CardTitle>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Visual identity configuration</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8 md:p-12">
+                    <WhiteLabelBranding clinicId={clinicData?.id || ''} currentTheme={undefined} />
+                  </CardContent>
+                </Card>
+              )}
+
+              {activeSection === 'notifications' && (
+                <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden">
+                  <CardHeader className="p-8 md:p-10 border-b border-border/50 bg-secondary/30">
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/20">
+                        <Bell weight="duotone" className="w-7 h-7" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Notification Settings</CardTitle>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Alert protocol configuration</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8 md:p-12 space-y-6">
+                    {[
+                      { label: 'Email Notifications', desc: 'Appointment confirmations, reminders & promotions', enabled: true },
+                      { label: 'SMS Alerts', desc: 'Critical alerts via SMS gateway', enabled: false },
+                      { label: 'Push Notifications', desc: 'Real-time browser push notifications', enabled: true },
+                      { label: 'Staff Activity Alerts', desc: 'Notify on staff check-in/check-out events', enabled: true },
+                      { label: 'Low Stock Warnings', desc: 'Inventory threshold breach notifications', enabled: false },
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-5 bg-secondary/20 rounded-2xl border border-border/50">
+                        <div>
+                          <p className="text-sm font-bold text-foreground">{item.label}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+                        </div>
+                        <div className={cn('w-12 h-7 rounded-full relative cursor-pointer transition-colors', item.enabled ? 'bg-primary' : 'bg-muted')}>
+                          <div className={cn('absolute top-1 w-5 h-5 rounded-full bg-white shadow transition-all', item.enabled ? 'right-1' : 'left-1')} />
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {activeSection === 'security' && (
+                <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden">
+                  <CardHeader className="p-8 md:p-10 border-b border-border/50 bg-secondary/30">
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 border border-emerald-500/20">
+                        <Shield weight="duotone" className="w-7 h-7" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Security & RLS</CardTitle>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Row-level security protocol matrix</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8 md:p-12 space-y-6">
+                    {[
+                      { label: 'Row Level Security', status: 'Active', color: 'emerald' },
+                      { label: 'Multi-tenant Isolation', status: 'Enforced', color: 'emerald' },
+                      { label: 'Data Encryption (AES-256)', status: 'Active', color: 'emerald' },
+                      { label: 'Session Timeout', status: '30 minutes', color: 'blue' },
+                      { label: 'Two-Factor Authentication', status: 'Not Configured', color: 'amber' },
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-5 bg-secondary/20 rounded-2xl border border-border/50">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-2.5 h-2.5 rounded-full bg-${item.color}-500`} />
+                          <p className="text-sm font-bold text-foreground">{item.label}</p>
+                        </div>
+                        <Badge variant="ghost" className={`text-${item.color}-500 bg-${item.color}-500/10 text-[9px] font-black uppercase tracking-widest`}>
+                          {item.status}
+                        </Badge>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              {activeSection === 'i18n' && (
+                <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden">
+                  <CardHeader className="p-8 md:p-10 border-b border-border/50 bg-secondary/30">
+                    <div className="flex items-center gap-5">
+                      <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 border border-blue-500/20">
+                        <Globe weight="duotone" className="w-7 h-7" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Internationalization</CardTitle>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Multi-language protocol matrix</p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-8 md:p-12 space-y-6">
+                    {[
+                      { lang: 'Thai (ภาษาไทย)', code: 'th', status: 'Primary', flag: '🇹🇭' },
+                      { lang: 'English', code: 'en', status: 'Active', flag: '🇺🇸' },
+                      { lang: 'Chinese (中文)', code: 'zh', status: 'Coming Soon', flag: '🇨🇳' },
+                      { lang: 'Japanese (日本語)', code: 'ja', status: 'Coming Soon', flag: '🇯🇵' },
+                    ].map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between p-5 bg-secondary/20 rounded-2xl border border-border/50">
+                        <div className="flex items-center gap-4">
+                          <span className="text-2xl">{item.flag}</span>
+                          <div>
+                            <p className="text-sm font-bold text-foreground">{item.lang}</p>
+                            <p className="text-xs text-muted-foreground">Locale: {item.code}</p>
+                          </div>
+                        </div>
+                        <Badge variant={item.status === 'Primary' ? 'default' : item.status === 'Active' ? 'success' : 'ghost'} className="text-[9px] font-black uppercase tracking-widest">
+                          {item.status}
+                        </Badge>
+                      </div>
+                    ))}
                   </CardContent>
                 </Card>
               )}

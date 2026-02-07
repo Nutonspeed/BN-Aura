@@ -3,20 +3,23 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Gift, 
-  Plus, 
-  MagnifyingGlass, 
-  Copy, 
-  EnvelopeSimple, 
-  DownloadSimple, 
-  Eye, 
+  Gift,
+  Plus,
+  MagnifyingGlass,
+  Copy,
+  EnvelopeSimple,
+  DownloadSimple,
+  Eye,
   DotsThree,
   ArrowLeft,
   ArrowsClockwise,
   CheckCircle,
   Clock,
   CurrencyCircleDollar,
-  Ticket
+  Ticket,
+  SpinnerGap,
+  X,
+  User,
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';

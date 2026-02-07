@@ -1,13 +1,21 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, SpinnerGap, Key, User, Sparkle, ArrowLeft } from '@phosphor-icons/react';
+import { 
+  CheckCircle,
+  XCircle,
+  SpinnerGap,
+  Key,
+  User,
+  Sparkle,
+  ArrowLeft
+} from '@phosphor-icons/react';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import Link from 'next/link';
 
-export default function AcceptInvitationPage() {
+function AcceptInvitationContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   
@@ -313,5 +321,13 @@ export default function AcceptInvitationPage() {
         </motion.div>
       </div>
     </main>
+  );
+}
+
+export default function AcceptInvitationPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-4 border-primary border-t-transparent rounded-full" /></div>}>
+      <AcceptInvitationContent />
+    </Suspense>
   );
 }

@@ -3,9 +3,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ChartBar, 
-  Users, 
-  FirstAidKit, 
+  ChartBar,
+  Users,
+  FirstAidKit,
   CalendarDots,
   DownloadSimple,
   Funnel,

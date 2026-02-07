@@ -52,6 +52,8 @@ export default function POSPage() {
   const [clinicId, setClinicId] = useState<string>('');
   const [clinicInfo, setClinicInfo] = useState<any>(null);
   const [currency, setCurrency] = useState<'THB' | 'USD'>('THB');
+  const [redeemPoints, setRedeemPoints] = useState(0);
+  const [customerPoints, setCustomerPoints] = useState(0);
   const [exchangeRate, setExchangeRate] = useState(35.5);
 
   // Fetch live exchange rate
@@ -264,6 +266,19 @@ export default function POSPage() {
     setIsPaymentModalOpen(false);
     setPendingTransactionId(null);
     fetchData(); // Refresh stock
+  };
+
+  
+  const fetchCustomerPoints = async (custId: string) => {
+    try {
+      const res = await fetch('/api/loyalty/points?customerId=' + custId);
+      const data = await res.json();
+      if (data.success) {
+        setCustomerPoints(data.data?.points || 0);
+      }
+    } catch (e) {
+      console.warn('Failed to fetch customer points:', e);
+    }
   };
 
   const filteredCustomers = customers.filter(c => 
@@ -501,6 +516,9 @@ export default function POSPage() {
                 tax={0}
                 total={transactionSuccessData.total}
                 clinicInfo={clinicInfo || { name: 'BN-Aura Clinical Node', address: 'Operational Data Loading...', phone: '...' }}
+                pointsEarned={transactionSuccessData.pointsEarned}
+                totalPoints={transactionSuccessData.totalPoints}
+                customerPortalUrl={typeof window !== 'undefined' ? window.location.origin + '/th/customer' : ''}
               />
 
               {/* Loyalty Points Earned */}

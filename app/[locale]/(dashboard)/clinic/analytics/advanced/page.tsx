@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import VoCAnalyticsWidget from '@/components/analytics/VoCAnalyticsWidget';
 import CohortAnalysis from '@/components/analytics/CohortAnalysis';
 import AIPerformanceMetrics from '@/components/analytics/AIPerformanceMetrics';
+import RevenueAnalytics from '@/components/analytics/RevenueAnalytics';
 import { AnalyticsIcon, AIBrainIcon, ImprovementIcon, SuccessIcon } from '@/components/ui/icons';
 
 export default function AdvancedAnalyticsPage() {
@@ -236,6 +237,13 @@ export default function AdvancedAnalyticsPage() {
           </CardContent>
         </Card>
       )}
+
+      {/* Revenue Analytics - Treatment Conversion Funnel */}
+      <Card className="rounded-2xl border-border/50">
+        <CardContent className="p-6">
+          <RevenueAnalytics />
+        </CardContent>
+      </Card>
     </div>
   );
 }

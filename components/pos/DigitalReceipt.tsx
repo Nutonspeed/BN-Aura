@@ -13,6 +13,7 @@ import {
   User
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
+import { QRCodeSVG } from 'qrcode.react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -176,6 +177,28 @@ export default function DigitalReceipt({
             </span>
           </div>
         </div>
+
+        {/* Loyalty Points Summary */}
+        {(pointsEarned !== undefined && pointsEarned > 0) && (
+          <div className="bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border border-amber-500/20 rounded-2xl p-4 text-center">
+            <p className="text-[10px] font-black text-amber-400 uppercase tracking-[0.2em] mb-1">Loyalty Points Earned</p>
+            <p className="text-2xl font-black text-amber-400 tabular-nums">+{pointsEarned}</p>
+            {totalPoints !== undefined && (
+              <p className="text-[10px] text-amber-400/60 mt-1">Balance: {totalPoints} pts</p>
+            )}
+          </div>
+        )}
+
+        {/* QR Code - Link to Skin Analysis Portal */}
+        {customerPortalUrl && (
+          <div className="flex flex-col items-center gap-3 pt-2">
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Scan for Your Skin Portal</p>
+            <div className="bg-white p-3 rounded-xl">
+              <QRCodeSVG value={customerPortalUrl} size={96} level="M" />
+            </div>
+            <p className="text-[9px] text-muted-foreground">View analysis results & book treatments</p>
+          </div>
+        )}
 
         {/* Footer / QR (Placeholder for digital validation) */}
         <div className="text-center space-y-4 pt-4">

@@ -184,6 +184,41 @@ export async function PATCH(request: NextRequest) {
 
     if (error) return NextResponse.json({ error: 'Failed to update status' }, { status: 500 });
 
+    // Auto-notify customer when queue is called
+    if (status === 'called' && checkin) {
+      try {
+        const phone = checkin.phone_lookup;
+        const clinicData = await adminClient
+          .from('clinics')
+          .select('display_name')
+          .eq('id', checkin.clinic_id)
+          .single();
+        
+        const clinicName = (clinicData.data?.display_name as any)?.th || 'คลินิก';
+        const message = [
+          clinicName,
+          `คิวหมายเลข ${checkin.queue_number} ถูกเรียกแล้ว`,
+          `กรุณาเตรียมตัวเข้ารับบริการ`,
+        ].join('\n');
+
+        // Fire-and-forget: send notification without blocking response
+        fetch(new URL('/api/notifications/queue', request.url).toString(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'queue_called',
+            phone,
+            message,
+            clinicId: checkin.clinic_id,
+            checkinId: checkin.id,
+            queueNumber: checkin.queue_number,
+          }),
+        }).catch(e => console.warn('Queue notification failed:', e));
+      } catch (notifyErr) {
+        console.warn('Queue notification setup failed:', notifyErr);
+      }
+    }
+
     return NextResponse.json({ success: true, checkin });
   } catch (error) {
     console.error('Kiosk update error:', error);

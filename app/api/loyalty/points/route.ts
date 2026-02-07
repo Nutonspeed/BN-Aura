@@ -11,7 +11,7 @@ import { APIErrorCode } from '@/lib/api/contracts';
  * GET /api/loyalty/points
  * Get loyalty points for a specific customer or current user
  */
-export const GET = withErrorHandling<any>(async (request: Request) => {
+export const GET = withErrorHandling(async (request: Request) => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -126,7 +126,7 @@ export const GET = withErrorHandling<any>(async (request: Request) => {
  * POST /api/loyalty/points
  * Award loyalty points automatically from POS transactions
  */
-export const POST_AWARD = withErrorHandling(async (request: Request) => {
+const POST_AWARD = withErrorHandling(async (request: Request) => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 

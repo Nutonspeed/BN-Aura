@@ -16,6 +16,8 @@ interface AnalysisData {
   symmetry?: any; skinMetrics?: any; wrinkleAnalysis?: any;
   timeTravelData?: any; skinTwins?: any; summary?: any;
   recommendations?: any; aiPowered?: boolean; quotaInfo?: any; confidence?: number;
+  visiaScores?: Record<string, number>; hfAnalysis?: any; skinType?: string;
+  modelsUsed?: string[]; processingTime?: number;
 }
 
 export default function SalesAISkinAnalysisPage() {
@@ -174,6 +176,11 @@ export default function SalesAISkinAnalysisPage() {
         aiPowered: skinData.data?.aiPowered,
         quotaInfo: skinData.data?.quotaInfo,
         confidence: skinData.data?.confidence,
+        visiaScores: skinData.data?.visiaScores,
+        hfAnalysis: skinData.data?.hfAnalysis,
+        skinType: skinData.data?.skinType,
+        modelsUsed: skinData.data?.modelsUsed,
+        processingTime: skinData.data?.processingTime,
       });
 
       setStep('results');
@@ -369,9 +376,11 @@ export default function SalesAISkinAnalysisPage() {
               <div className="max-w-md mx-auto space-y-2">
                 {[
                   { label: 'Face Detection', done: true },
-                  { label: '468 Landmarks Mapping', done: true },
-                  { label: '8 Skin Metrics Analysis', done: false },
-                  { label: 'AI Recommendations', done: false },
+                  { label: 'HuggingFace: Skin Type Detection', done: true },
+                  { label: 'HuggingFace: Age Estimation', done: true },
+                  { label: 'HuggingFace: Condition Analysis', done: false },
+                  { label: 'Gemini: VISIA 8 Metrics', done: false },
+                  { label: 'AI Treatment Recommendations', done: false },
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3 text-sm">
                     {item.done ? (
@@ -437,6 +446,81 @@ export default function SalesAISkinAnalysisPage() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* VISIA 8 Scores — from HuggingFace Multi-Model */}
+            {analysisData.visiaScores && (
+              <Card className="bg-black/30 border-purple-500/20">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-lg">📊 VISIA 8 Skin Metrics</h3>
+                    {analysisData.skinType && (
+                      <span className="px-3 py-1 bg-purple-500/20 text-purple-300 text-sm rounded-full">
+                        Skin Type: {analysisData.skinType}
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {[
+                      { key: 'spots', name: 'Spots', thai: 'จุดด่างดำ', icon: '⬤' },
+                      { key: 'wrinkles', name: 'Wrinkles', thai: 'ริ้วรอย', icon: '〜️' },
+                      { key: 'texture', name: 'Texture', thai: 'เนื้อผิว', icon: '✨' },
+                      { key: 'pores', name: 'Pores', thai: 'รูขุมขน', icon: '🔬' },
+                      { key: 'uvSpots', name: 'UV Spots', thai: 'จุด UV', icon: '☀️' },
+                      { key: 'brownSpots', name: 'Brown Spots', thai: 'ฝ้า/กระ', icon: '🟤' },
+                      { key: 'redAreas', name: 'Red Areas', thai: 'จุดแดง', icon: '🔴' },
+                      { key: 'porphyrins', name: 'Porphyrins', thai: 'แบคทีเรีย', icon: '🧫' },
+                    ].map(({ key, name, thai, icon }) => {
+                      const score = analysisData.visiaScores?.[key] ?? 0;
+                      const color = score >= 70 ? 'text-green-400' : score >= 40 ? 'text-yellow-400' : 'text-red-400';
+                      const bg = score >= 70 ? 'bg-green-500/10 border-green-500/30' : score >= 40 ? 'bg-yellow-500/10 border-yellow-500/30' : 'bg-red-500/10 border-red-500/30';
+                      return (
+                        <div key={key} className={cn('p-3 rounded-lg border', bg)}>
+                          <div className="flex items-center gap-1 mb-1">
+                            <span className="text-sm">{icon}</span>
+                            <span className="text-xs text-gray-400">{name}</span>
+                          </div>
+                          <p className="text-xs text-gray-300">{thai}</p>
+                          <p className={cn('text-2xl font-bold mt-1', color)}>{score}</p>
+                          <div className="w-full h-1.5 bg-gray-700 rounded-full mt-1">
+                            <div className={cn('h-full rounded-full', score >= 70 ? 'bg-green-500' : score >= 40 ? 'bg-yellow-500' : 'bg-red-500')} style={{ width: `${score}%` }} />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* HF Analysis Details */}
+            {analysisData.hfAnalysis && (
+              <Card className="bg-blue-500/5 border-blue-500/20">
+                <CardContent className="p-4">
+                  <div className="flex flex-wrap gap-2">
+                    {analysisData.hfAnalysis.skinType && (
+                      <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full">
+                        🧴 {analysisData.hfAnalysis.skinType.label} ({(analysisData.hfAnalysis.skinType.score * 100).toFixed(0)}%)
+                      </span>
+                    )}
+                    {analysisData.hfAnalysis.ageEstimation && (
+                      <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full">
+                        🎂 Skin Age: {analysisData.hfAnalysis.ageEstimation.estimatedAge} ({analysisData.hfAnalysis.ageEstimation.ageRange})
+                      </span>
+                    )}
+                    {analysisData.hfAnalysis.acneSeverity && (
+                      <span className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded-full">
+                        Acne: {analysisData.hfAnalysis.acneSeverity.label} (L{analysisData.hfAnalysis.acneSeverity.level}/4)
+                      </span>
+                    )}
+                    {analysisData.hfAnalysis.skinConditions?.map((c: any, i: number) => (
+                      <span key={i} className="px-2 py-1 bg-red-500/20 text-red-300 text-xs rounded-full">
+                        {c.condition} ({(c.confidence * 100).toFixed(0)}%)
+                      </span>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Tabs */}
             <div className="flex gap-2 overflow-x-auto pb-2">
@@ -636,7 +720,7 @@ export default function SalesAISkinAnalysisPage() {
               <Card className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 border-purple-500/30">
                 <CardContent className="p-4 text-center">
                   <p className="text-sm text-purple-300">
-                    ✨ Powered by Gemini AI • Confidence: {analysisData.confidence}%
+                    ✨ Powered by {analysisData.modelsUsed?.length || 0} AI Models • Confidence: {analysisData.confidence}%{analysisData.processingTime ? ` • ${(analysisData.processingTime / 1000).toFixed(1)}s` : ''}
                   </p>
                   {savedId && (
                     <p className="text-xs text-gray-400 mt-1">
@@ -672,7 +756,7 @@ export default function SalesAISkinAnalysisPage() {
 
       {/* Footer */}
       <div className="max-w-6xl mx-auto mt-8 text-center text-xs text-gray-500">
-        <p>Powered by BN-Aura AI • MediaPipe • TensorFlow • Gemini</p>
+        <p>Powered by BN-Aura AI • HuggingFace • Gemini • Vercel AI Gateway</p>
         <p>© 2026 BN-Aura - Advanced Skin Analysis Platform</p>
       </div>
     </div>

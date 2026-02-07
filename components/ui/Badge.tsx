@@ -16,6 +16,7 @@ const badgeVariants = cva(
         destructive: "bg-destructive/10 text-destructive",
         outline: "border border-border text-foreground",
         ghost: "bg-muted text-muted-foreground",
+        primary: "bg-primary/10 text-primary font-bold",
       },
       size: {
         sm: "px-2 py-0.5 text-[10px]",
@@ -57,6 +58,7 @@ const Badge = forwardRef<HTMLDivElement, BadgeProps>(
                 'destructive': "bg-destructive",
                 'outline': "bg-foreground",
                 'ghost': "bg-muted-foreground",
+                'primary': "bg-primary",
               }[variant || 'default'],
               pulse && "animate-pulse"
             )}

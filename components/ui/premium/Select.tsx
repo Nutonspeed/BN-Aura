@@ -2,8 +2,9 @@
 
 import { SelectHTMLAttributes, forwardRef, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { CaretDown } from '@phosphor-icons/react';
-
+import { 
+  CaretDown
+} from '@phosphor-icons/react';
 interface SelectOption {
   value: string;
   label: string;

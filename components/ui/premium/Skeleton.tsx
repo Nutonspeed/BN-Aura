@@ -3,6 +3,7 @@
 import { cn } from '@/lib/utils';
 
 interface SkeletonProps {
+  style?: React.CSSProperties;
   className?: string;
 }
 

@@ -3,8 +3,10 @@
 import { ReactNode } from 'react';
 import CountUp from 'react-countup';
 import { cn } from '@/lib/utils';
-import { TrendUp, TrendDown } from '@phosphor-icons/react';
-
+import { 
+  TrendUp,
+  TrendDown
+} from '@phosphor-icons/react';
 interface StatCardProps {
   title: string;
   value: number;

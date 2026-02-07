@@ -3,7 +3,10 @@
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
-import { ArrowUp, ArrowDown } from '@phosphor-icons/react';
+import { 
+  ArrowUp,
+  ArrowDown
+} from '@phosphor-icons/react';
 import { ComponentType } from 'react';
 
 interface StatCardProps {

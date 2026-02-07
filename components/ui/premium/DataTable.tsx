@@ -2,8 +2,15 @@
 
 import { ReactNode, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { CaretUp, CaretDown, CaretLeft, CaretRight, MagnifyingGlass, Funnel, SpinnerGap } from '@phosphor-icons/react';
-
+import { 
+  CaretUp,
+  CaretDown,
+  CaretLeft,
+  CaretRight,
+  MagnifyingGlass,
+  Funnel,
+  SpinnerGap
+} from '@phosphor-icons/react';
 export interface Column<T> {
   key: keyof T | string;
   header: string;

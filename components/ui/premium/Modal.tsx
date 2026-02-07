@@ -3,8 +3,9 @@
 import { ReactNode, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { X } from '@phosphor-icons/react';
-
+import { 
+  X
+} from '@phosphor-icons/react';
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;

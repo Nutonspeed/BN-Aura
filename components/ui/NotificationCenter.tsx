@@ -3,12 +3,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, 
-  X, 
-  Lightning, 
-  UserPlus, 
-  ChatCircle, 
-  Pulse, 
+  Bell,
+  X,
+  Lightning,
+  UserPlus,
+  ChatCircle,
+  Pulse,
   ShieldCheck,
   Clock
 } from '@phosphor-icons/react';

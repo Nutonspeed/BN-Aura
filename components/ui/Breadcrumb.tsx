@@ -2,7 +2,10 @@
 
 import { usePathname, Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { CaretRight, House } from '@phosphor-icons/react';
+import { 
+  CaretRight,
+  House
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface BreadcrumbProps {

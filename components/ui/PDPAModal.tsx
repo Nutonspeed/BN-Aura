@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Lock, Check, X, ArrowRight, Shield, Pulse, Fingerprint } from '@phosphor-icons/react';
+import { 
+  ShieldCheck,
+  Lock,
+  Check,
+  X,
+  ArrowRight,
+  Shield,
+  Pulse,
+  Fingerprint
+} from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';

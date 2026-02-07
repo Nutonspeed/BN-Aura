@@ -2,7 +2,12 @@
 
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { GithubLogo, Globe, ShieldCheck, Question } from '@phosphor-icons/react';
+import { 
+  GithubLogo,
+  Globe,
+  ShieldCheck,
+  Question
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 export default function DashboardFooter() {

@@ -3,8 +3,10 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SpinnerGap, WarningCircle } from '@phosphor-icons/react';
-
+import { 
+  SpinnerGap,
+  WarningCircle
+} from '@phosphor-icons/react';
 interface Column<T> {
   header: string;
   accessor: keyof T | ((item: T) => React.ReactNode);

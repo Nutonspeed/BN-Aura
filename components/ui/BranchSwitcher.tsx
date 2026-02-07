@@ -2,7 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Buildings, CaretDown, Check, SpinnerGap } from '@phosphor-icons/react';
+import { 
+  Buildings,
+  CaretDown,
+  Check,
+  SpinnerGap
+} from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
 interface Branch {

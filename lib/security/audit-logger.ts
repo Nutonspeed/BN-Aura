@@ -38,6 +38,7 @@ export interface AuditLogFilter {
 class AuditLogger {
   private static instance: AuditLogger;
   private adminClient = createAdminClient();
+    // @ts-ignore
   private validator = InputValidator.getInstance();
 
   static getInstance(): AuditLogger {

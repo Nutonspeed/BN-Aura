@@ -3,7 +3,7 @@
  * Provides a single interface for workflow operations
  */
 
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@/lib/supabase/client';
 import { WorkflowStage } from './workflowEngine';
 
 export interface WorkflowData {
@@ -23,17 +23,15 @@ export interface WorkflowTransition {
 }
 
 export class WorkflowBridge {
-  private supabase = createClient();
-
-  private async getClient() {
-    return await this.supabase;
+  private getClient() {
+    return createClient();
   }
 
   /**
    * Create a new workflow
    */
   async createWorkflow(data: WorkflowData) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('api_create_workflow', {
       p_data: {
         clinic_id: data.clinic_id,
@@ -53,7 +51,7 @@ export class WorkflowBridge {
    * Transition workflow to next stage
    */
   async transitionWorkflow(workflowId: string, transition: WorkflowTransition) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('api_transition_workflow', {
       p_workflow_id: workflowId,
       p_data: {
@@ -77,7 +75,7 @@ export class WorkflowBridge {
    * Get workflow details
    */
   async getWorkflow(workflowId: string) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('api_get_workflow', {
       p_workflow_id: workflowId
     });
@@ -90,7 +88,7 @@ export class WorkflowBridge {
    * List workflows for sales staff
    */
   async listSalesWorkflows(salesId: string, limit: number = 50) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('api_list_sales_workflows', {
       p_sales_id: salesId,
       p_limit: limit
@@ -104,7 +102,7 @@ export class WorkflowBridge {
    * List workflows for clinic (owner/admin)
    */
   async listClinicWorkflows(clinicId: string, limit: number = 100) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('api_list_clinic_workflows', {
       p_clinic_id: clinicId,
       p_limit: limit
@@ -118,7 +116,7 @@ export class WorkflowBridge {
    * Assign sales staff to workflow
    */
   async assignSales(workflowId: string, salesId: string) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('unified_workflow_operation', {
       p_operation: 'assign_sales',
       p_workflow_id: workflowId,
@@ -133,7 +131,7 @@ export class WorkflowBridge {
    * Assign beautician to workflow
    */
   async assignBeautician(workflowId: string, beauticianId: string) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data: result, error } = await client.rpc('unified_workflow_operation', {
       p_operation: 'assign_beautician',
       p_workflow_id: workflowId,
@@ -148,7 +146,7 @@ export class WorkflowBridge {
    * Calculate commission for workflow
    */
   private async calculateCommission(workflowId: string) {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data, error } = await client.rpc('calculate_workflow_commission', {
       p_workflow_id: workflowId
     });
@@ -161,7 +159,7 @@ export class WorkflowBridge {
    * Get commission summary for sales staff
    */
   async getCommissionSummary(salesId: string, period: 'daily' | 'weekly' | 'monthly' = 'monthly') {
-    const client = await this.getClient();
+    const client = this.getClient();
     const { data, error } = await client
       .from('sales_commissions')
       .select('*')

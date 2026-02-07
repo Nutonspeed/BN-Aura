@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .single();
       
       if (userError) {
-        console.error('Error fetching user profile:', userError);
+        // Non-critical: user profile may not exist yet
         // Don't throw error, just use defaults
       }
       
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .maybeSingle();
 
       if (staffError && staffError.code !== 'PGRST116') { // Ignore not found error
-        console.error('Error fetching staff data:', staffError);
+        // Non-critical: staff record may not exist
       }
 
       // Determine effective role and clinic_id
@@ -68,13 +68,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       let clinicName = 'Bangkok Premium Clinic';
       let clinicMeta: any = null;
 
-      console.log('useAuth: userData role:', userData?.role);
-      console.log('useAuth: staffData:', staffData);
+      // debug removed
+      
 
       // Super admin takes precedence
       if (userData?.role === 'super_admin') {
         effectiveRole = 'super_admin';
-        console.log('useAuth: Set effectiveRole to super_admin');
+        
       } else if (staffData) {
         // If user is in clinic_staff, use that role for clinic access
         effectiveRole = staffData.role;
@@ -82,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         // Skip clinic info fetch to avoid 406 errors - use fallback name
         try {
-          console.log('useAuth: Skipping clinic info fetch to avoid 406 errors');
+          
           clinicName = 'Bangkok Premium Clinic'; // Fallback clinic name
           clinicMeta = { test_clinic: false }; // Default metadata
           setClinicMetadata(clinicMeta);

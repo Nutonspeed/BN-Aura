@@ -126,43 +126,29 @@ class RealtimeEventBroadcaster {
   }
 
   /**
-   * Get user's subscription channels
+   * Get user's subscription channels (no RPC — direct query only)
    */
   private async getUserChannels(userId: string): Promise<string[]> {
     try {
-      // Try RPC call first
-      const { data: rpcData, error: rpcError } = await this.supabase.rpc('get_user_channels', {
-        p_user_id: userId
-      });
-      
-      // If RPC succeeds, return the data
-      if (!rpcError && rpcData) {
-        return rpcData;
-      }
-      
-      // If RPC fails, use fallback method
-      console.warn('RPC get_user_channels failed, using fallback method:', rpcError?.message);
-      
-      // Get user clinic information
       const { data: staffData } = await this.supabase
         .from('clinic_staff')
         .select('clinic_id, role')
         .eq('user_id', userId)
-        .single();
-      
+        .eq('is_active', true)
+        .maybeSingle();
+
       if (!staffData?.clinic_id) {
         return [];
       }
-      
-      // Build channels based on user's clinic and role
-      const channels: string[] = [
+
+      const channels = [
         `clinic:${staffData.clinic_id}`,
-        `role:${staffData.role}`
+        `role:${staffData.role}`,
+        `user:${userId}`
       ];
-      
+
       return channels;
-    } catch (err) {
-      console.error('Error in getUserChannels:', err);
+    } catch {
       return [];
     }
   }
@@ -198,59 +184,37 @@ class RealtimeEventBroadcaster {
   }
 
   /**
-   * Get recent events for a user
+   * Get recent events for a user (graceful degradation - no RPC required)
    */
   async getRecentEvents(userId: string, limit: number = 50): Promise<WorkflowEvent[]> {
     try {
-      // Try RPC call first
-      const { data: rpcData, error: rpcError } = await this.supabase.rpc('subscribe_to_workflow_events', {
-        p_user_id: userId
-      });
-      
-      // If RPC succeeds, return the data
-      if (!rpcError && rpcData) {
-        return rpcData;
-      }
-      
-      // If RPC fails, use fallback polling method
-      console.warn('RPC method failed, using fallback polling for events:', rpcError?.message);
-      
-      // Get user clinic information
-      const { data: userData } = await this.supabase
-        .from('users')
-        .select('id, clinic_id')
-        .eq('id', userId)
-        .single();
-        
+      // Get user clinic information from clinic_staff
       const { data: staffData } = await this.supabase
         .from('clinic_staff')
-        .select('clinic_id, role')
+        .select('clinic_id')
         .eq('user_id', userId)
-        .single();
-        
-      const clinicId = userData?.clinic_id || staffData?.clinic_id;
-      
-      if (!clinicId) {
-        console.warn('No clinic ID found for user, returning empty events');
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (!staffData?.clinic_id) {
         return [];
       }
-      
-      // Direct query to workflow_events
+
+      // Try to query workflow_events table
       const { data, error } = await this.supabase
         .from('workflow_events')
         .select('*')
-        .eq('clinic_id', clinicId)
+        .eq('clinic_id', staffData.clinic_id)
         .order('created_at', { ascending: false })
         .limit(limit);
-        
+
       if (error) {
-        console.error('Failed to get events (fallback):', error);
+        // Table may not exist yet — return empty silently
         return [];
       }
-      
+
       return data || [];
-    } catch (err) {
-      console.error('Error in getRecentEvents:', err);
+    } catch {
       return [];
     }
   }

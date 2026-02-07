@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { eventBroadcaster, WorkflowEvent } from '@/lib/realtime/eventBroadcaster';
 import { useAuth } from './useAuth';
 
@@ -22,8 +22,12 @@ export function useWorkflowEvents(options: UseWorkflowEventsOptions = {}) {
   const [events, setEvents] = useState<WorkflowEvent[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+  const subscribedRef = useRef(false);
 
   const handleEvent = useCallback((event: WorkflowEvent) => {
+    const options = optionsRef.current;
     // Add to events list
     setEvents(prev => [event, ...prev.slice(0, 99)]); // Keep last 100 events
 
@@ -66,10 +70,11 @@ export function useWorkflowEvents(options: UseWorkflowEventsOptions = {}) {
         }
         break;
     }
-  }, [options]);
+  }, []);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id || subscribedRef.current) return;
+    subscribedRef.current = true;
 
     const subscribe = async () => {
       try {
@@ -102,8 +107,9 @@ export function useWorkflowEvents(options: UseWorkflowEventsOptions = {}) {
     return () => {
       eventBroadcaster.unsubscribe(user.id);
       setIsConnected(false);
+      subscribedRef.current = false;
     };
-  }, [user?.id, handleEvent, options.onError]);
+  }, [user?.id, handleEvent]);
 
   // Manual broadcast function
   const broadcast = useCallback(async (

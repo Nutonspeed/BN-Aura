@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { BusinessInsight } from '@/lib/ai/businessAdvisor';
 
 interface UseBusinessAdvisorReturn {
@@ -209,6 +209,10 @@ export function useBusinessMetrics(refreshInterval: number = 5 * 60 * 1000) {
     }
   }, [shouldRefresh, fetchMetrics]);
 
+  useEffect(() => {
+    fetchMetrics();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return {
     metrics,
     lastUpdated,
@@ -245,11 +249,11 @@ export function useBusinessAlerts(refreshInterval: number = 3 * 60 * 1000) {
   }, [getAlerts]);
 
   // Auto-refresh alerts
-  useState(() => {
+  useEffect(() => {
     fetchAlerts();
     const interval = setInterval(fetchAlerts, refreshInterval);
     return () => clearInterval(interval);
-  });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {
     alerts,

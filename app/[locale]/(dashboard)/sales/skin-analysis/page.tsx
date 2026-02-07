@@ -11,6 +11,7 @@ import { PDFExporter } from '@/lib/analysis/pdfExporter';
 import { ReportGenerator } from '@/lib/analysis/reportGenerator';
 import { runClientInference, preloadModels, isClientInferenceSupported } from '@/lib/ai/transformersClient';
 import { validateFaceInImage } from '@/lib/ai/faceValidator';
+import AICoachPanel from '@/components/sales/AICoachPanel';
 
 type AnalysisStep = 'capture' | 'analyzing' | 'results';
 
@@ -46,6 +47,7 @@ export default function SalesAISkinAnalysisPage() {
   const userId = getUserId();
   const [clientPreAnalysis, setClientPreAnalysis] = useState<any>(null);
   const [validatingFace, setValidatingFace] = useState(false);
+  const [showCoachPanel, setShowCoachPanel] = useState(false);
 
   // Preload Transformers.js models in background
   useEffect(() => {
@@ -1002,8 +1004,11 @@ export default function SalesAISkinAnalysisPage() {
               <Button className="bg-gradient-to-r from-green-600 to-emerald-600">
                 📅 นัดหมาย Treatment
               </Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-cyan-600">
-                💬 ปรึกษา AI
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-cyan-600"
+                onClick={() => setShowCoachPanel(!showCoachPanel)}
+              >
+                {showCoachPanel ? '✕ ปิด AI Coach' : '🤖 AI Sales Coach'}
               </Button>
               <Button 
                 className="bg-gradient-to-r from-purple-600 to-pink-600"
@@ -1047,6 +1052,28 @@ export default function SalesAISkinAnalysisPage() {
                 🖨️ พิมพ์ผลวิเคราะห์
               </Button>
             </div>
+
+            {/* AI Sales Coach Panel */}
+            {showCoachPanel && (
+              <AICoachPanel
+                customerContext={{
+                  name: selectedCustomer?.full_name || 'ลูกค้า',
+                  skinAnalysis: {
+                    skinType: analysisData.skinType || 'combination',
+                    concerns: analysisData.summary?.concerns || [],
+                    ageEstimate: analysisData.skinAge || customerAge,
+                    urgencyScore: Math.max(20, 100 - (analysisData.overallScore || 72)),
+                  },
+                  previousTreatments: [],
+                  budget: undefined,
+                  objections: [],
+                }}
+                currentConversation=""
+                onSuggestionApply={(suggestion) => {
+                  console.log('Coach suggestion applied:', suggestion);
+                }}
+              />
+            )}
           </div>
         )}
       </div>

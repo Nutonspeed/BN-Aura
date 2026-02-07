@@ -11,31 +11,59 @@ import {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
-    
-    // TODO: Temporarily skip auth check for testing
-    // const { data: { user } } = await supabase.auth.getUser();
-    // 
-    // if (!user) {
-    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    // }
-    
-    // Use hardcoded user for testing (sales2.test@bntest.com)
-    const user = { id: 'f2d3667d-7ca9-454e-b483-83dffb7e5981' };
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const body = await request.json();
     const { action, context, data } = body;
 
-    // TODO: Use hardcoded clinic_id for testing
-    const userData = { 
-      clinic_id: 'd1e8ce74-3beb-4502-85c9-169fa0909647'
-    };
+    // Get clinic_id from clinic_staff table
+    const { data: staffData } = await supabase
+      .from('clinic_staff')
+      .select('clinic_id')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
 
-    const clinicId = userData.clinic_id;
+    const clinicId = staffData?.clinic_id || '';
+    if (!clinicId) {
+      return NextResponse.json({ error: 'Clinic not found for user' }, { status: 404 });
+    }
+
+    // If skinAnalysis data is provided in context, enrich the CustomerContext
+    let enrichedContext = context as CustomerContext;
+    if (data?.skinAnalysisId) {
+      try {
+        const { data: analysis } = await supabase
+          .from('skin_analyses')
+          .select('*')
+          .eq('id', data.skinAnalysisId)
+          .single();
+
+        if (analysis) {
+          enrichedContext = {
+            ...enrichedContext,
+            skinAnalysis: {
+              skinType: analysis.skin_type || enrichedContext?.skinAnalysis?.skinType || 'unknown',
+              concerns: analysis.concerns || enrichedContext?.skinAnalysis?.concerns || [],
+              ageEstimate: analysis.skin_age || enrichedContext?.skinAnalysis?.ageEstimate || 0,
+              urgencyScore: analysis.urgency_score || enrichedContext?.skinAnalysis?.urgencyScore || 50,
+            },
+          };
+        }
+      } catch (e) {
+        // Skin analysis lookup failed, use provided context as-is
+      }
+    }
 
     switch (action) {
       case 'get_advice': {
         const advice = await getSalesCoachAdvice(
-          context as CustomerContext,
+          enrichedContext,
           data.conversation || '',
           clinicId
         );
@@ -45,7 +73,7 @@ export async function POST(request: NextRequest) {
       case 'handle_objection': {
         const response = await handleObjection(
           data.objection,
-          context as CustomerContext,
+          enrichedContext,
           clinicId
         );
         return NextResponse.json({ success: true, response });
@@ -53,7 +81,7 @@ export async function POST(request: NextRequest) {
 
       case 'get_upsell': {
         const recommendations = await getUpsellRecommendations(
-          context as CustomerContext,
+          enrichedContext,
           data.currentTreatments || [],
           clinicId
         );
@@ -62,7 +90,7 @@ export async function POST(request: NextRequest) {
 
       case 'calculate_probability': {
         const probability = calculateDealProbability(
-          context as CustomerContext,
+          enrichedContext,
           data.conversationMetrics
         );
         return NextResponse.json({ success: true, probability });

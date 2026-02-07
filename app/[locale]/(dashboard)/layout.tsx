@@ -2,44 +2,51 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  House,
-  Users,
-  Gear,
-  Stethoscope,
-  Package,
-  Target,
-  Lightning,
-  FirstAidKit,
-  ChatCircle,
+  Bell,
   Buildings,
   CalendarDots,
-  Sparkle,
-  CaretLeft,
   CaretDown,
-  SignOut,
-  ShieldCheck,
-  List,
-  X,
-  ShoppingCart,
-  TrendUp,
+  CaretLeft,
   ChartBar,
-  Question,
-  CreditCard,
-  Shield,
-  Bell,
-  Star,
+  ChatCircle,
   Clock,
-  VideoCamera,
-  EnvelopeSimple,
-  Phone,
+  Cpu,
+  CreditCard,
   CurrencyDollar,
-  Warning,
-  UserCheck,
+  EnvelopeSimple,
+  Eye,
+  FirstAidKit,
+  Gear,
+  Gift,
+  Globe,
+  Headset,
+  House,
+  IdentificationCard,
+  Image,
+  Lightning,
+  List,
+  MapTrifold,
+  Megaphone,
+  Package,
+  Phone,
+  Question,
+  Shield,
+  ShieldCheck,
+  ShoppingCart,
+  SignOut,
+  Sparkle,
   Stack,
+  Star,
+  Stethoscope,
+  Target,
+  TrendUp,
+  UserCheck,
+  Users,
+  VideoCamera,
   Wallet,
-  Globe
+  Warning,
+  X
 } from '@phosphor-icons/react';
-import { Image, Gift, IdentificationCard, Megaphone, Eye, MapTrifold, Headset, Cpu } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
@@ -455,7 +462,7 @@ export default function DashboardLayout({
       </motion.aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
         <header className="h-20 flex items-center justify-between px-4 md:px-8 border-b border-border bg-background/95 backdrop-blur-sm flex-shrink-0">
           <div className="flex items-center gap-4">

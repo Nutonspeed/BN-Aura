@@ -1,11 +1,11 @@
 'use client';
 
 import { 
-  TrendUp, 
-  Users, 
-  Sparkle, 
-  CalendarDots, 
-  ArrowUpRight, 
+  TrendUp,
+  Users,
+  Sparkle,
+  CalendarDots,
+  ArrowUpRight,
   ArrowDownRight,
   Pulse,
   SpinnerGap,
@@ -43,6 +43,8 @@ import { useEffect, useState, useMemo } from 'react';
 import AnimatedNumber from '@/components/ui/premium/AnimatedNumber';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ClinicQuotaWidget } from '@/components/clinic';
+import SystemHealthCard from '@/components/monitoring/SystemHealthCard';
+import AIUsageDashboard from '@/components/monitoring/AIUsageDashboard';
 
 export default function ClinicDashboard() {
   const router = useRouter();
@@ -91,10 +93,10 @@ export default function ClinicDashboard() {
             if (result.success) {
               const d = result.data;
               setStats([
-                { label: 'Monthly Revenue', value: Number(d.monthlyRevenue), change: 12.5, trend: 'up', icon: TrendUp, prefix: '฿' },
-                { label: 'Total AI Scans', value: Number(d.totalScans), change: 18.2, trend: 'up', icon: Sparkle },
-                { label: 'Active Customers', value: Number(d.activeCustomers), change: 5.4, trend: 'up', icon: Users },
-                { label: 'Today Appointments', value: Number(d.todayAppointments), change: 2.1, trend: 'down', icon: CalendarDots },
+                { label: 'Monthly Revenue', value: Number(d.monthlyRevenue), change: 0, trend: 'up', icon: TrendUp, prefix: '฿' },
+                { label: 'Total AI Scans', value: Number(d.totalScans), change: 0, trend: 'up', icon: Sparkle },
+                { label: 'Active Customers', value: Number(d.activeCustomers), change: 0, trend: 'up', icon: Users },
+                { label: 'Today Appointments', value: Number(d.todayAppointments), change: 0, trend: 'up', icon: CalendarDots },
               ]);
             }
 
@@ -114,7 +116,7 @@ export default function ClinicDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
+      <div className="min-h-[180px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
           Synchronizing Executive Node...
@@ -127,7 +129,7 @@ export default function ClinicDashboard() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="space-y-8 pb-20 font-sans"
+      className="space-y-6 pb-12 font-sans"
     >
       <Breadcrumb />
 
@@ -185,7 +187,7 @@ export default function ClinicDashboard() {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
         {stats.map((stat, i) => (
           <StatCard
             key={stat.label}
@@ -200,9 +202,9 @@ export default function ClinicDashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-2">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 px-2">
         {/* Revenue Projection & Forecasting */}
-        <div className="lg:col-span-2 space-y-10">
+        <div className="lg:col-span-3 space-y-8">
           <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
             <CardHeader className="p-8 border-b border-border/50 bg-secondary/30 flex flex-row items-center justify-between">
               <div className="flex items-center gap-4">
@@ -242,7 +244,7 @@ export default function ClinicDashboard() {
         </div>
 
         {/* Sidebar Intelligence Nodes */}
-        <div className="space-y-10">
+        <div className="lg:col-span-2 space-y-8">
           {/* AI Quota Widget */}
           {clinicId && (
             <motion.div
@@ -357,7 +359,26 @@ export default function ClinicDashboard() {
               </Button>
             </CardContent>
           </Card>
+
         </div>
+      </div>
+
+      {/* Full-width monitoring section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 px-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+        >
+          <SystemHealthCard />
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+        >
+          <AIUsageDashboard />
+        </motion.div>
       </div>
     </motion.div>
   );

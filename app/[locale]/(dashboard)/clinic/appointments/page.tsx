@@ -1,10 +1,10 @@
 'use client';
 
 import { 
-  CaretLeft, 
-  CaretRight, 
-  Plus, 
-  Clock, 
+  CaretLeft,
+  CaretRight,
+  Plus,
+  Clock,
   User,
   DotsThree,
   CalendarDots,

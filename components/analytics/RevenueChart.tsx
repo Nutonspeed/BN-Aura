@@ -10,8 +10,11 @@ import {
   Tooltip, 
   ResponsiveContainer
 } from 'recharts';
-import { TrendUp, CalendarDots, Funnel } from '@phosphor-icons/react';
-
+import { 
+  TrendUp,
+  CalendarDots,
+  Funnel
+} from '@phosphor-icons/react';
 interface RevenueData {
   name: string;
   revenue: number;
@@ -71,11 +74,17 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
       </div>
 
       {loading ? (
-        <div className="h-[300px] flex items-center justify-center animate-pulse">
+        <div className="h-[200px] flex items-center justify-center animate-pulse">
           <div className="w-full h-full bg-white/5 rounded-3xl" />
         </div>
+      ) : data.length === 0 ? (
+        <div className="h-[120px] flex flex-col items-center justify-center text-muted-foreground/50 relative z-10">
+          <TrendUp className="w-10 h-10 mb-2 opacity-30" />
+          <p className="text-xs font-medium uppercase tracking-widest">No Revenue Data Yet</p>
+          <p className="text-[10px] mt-1">Transactions will appear here as they occur</p>
+        </div>
       ) : (
-        <div className="h-[300px] w-full relative z-10">
+        <div className="h-[250px] w-full relative z-10">
           <ResponsiveContainer width="100%" aspect={2} minHeight={300}>
             <AreaChart data={data}>
               <defs>

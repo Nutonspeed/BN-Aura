@@ -453,6 +453,15 @@
       "test_sent": "ส่งข้อความทดสอบสำเร็จ",
       "message_sent": "ส่งข้อความสำเร็จ",
       "message_scheduled": "กำหนดการส่งข้อความสำเร็จ"
+    },
+    "clinics": {
+      "clinic": "คลินิก",
+      "tier": "ระดับ",
+      "staff": "พนักงาน",
+      "customers": "ลูกค้า",
+      "created": "วันที่สร้าง",
+      "actions": "การดำเนินการ",
+      "status": "สถานะ"
     }
   },
   "ai_analysis": {
@@ -501,5 +510,22 @@
     "connected": "เชื่อมต่อแล้ว",
     "disconnected": "ไม่ได้เชื่อมต่อ",
     "reconnecting": "กำลังเชื่อมต่อใหม่..."
+  },
+  "clinic": {
+    "staff": {
+      "title": "พนักงาน",
+      "add": "เพิ่มพนักงาน",
+      "name": "ชื่อ",
+      "role": "ตำแหน่ง",
+      "status": "สถานะ",
+      "email": "อีเมล",
+      "phone": "โทรศัพท์",
+      "active": "ใช้งาน",
+      "inactive": "ไม่ใช้งาน",
+      "loading": "กำลังโหลด..."
+    }
+  },
+  "beautician": {
+    "title": "ช่างความงาม"
   }
 }

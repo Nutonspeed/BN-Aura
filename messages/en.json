@@ -410,6 +410,32 @@
       "test_sent": "Test message sent successfully",
       "message_sent": "Message sent successfully",
       "message_scheduled": "Message scheduled successfully"
+    },
+    "clinics": {
+      "clinic": "Clinic",
+      "tier": "Tier",
+      "staff": "Staff",
+      "customers": "Customers",
+      "created": "Created",
+      "actions": "Actions",
+      "status": "Status"
     }
+  },
+  "clinic": {
+    "staff": {
+      "title": "Staff",
+      "add": "Add Staff",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "email": "Email",
+      "phone": "Phone",
+      "active": "Active",
+      "inactive": "Inactive",
+      "loading": "Loading..."
+    }
+  },
+  "beautician": {
+    "title": "Beautician"
   }
 }

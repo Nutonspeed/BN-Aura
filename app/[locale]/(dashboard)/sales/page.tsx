@@ -20,7 +20,8 @@ import {
   X,
   SpinnerGap,
   Kanban,
-  CurrencyDollar
+  CurrencyDollar,
+  Sparkle
 } from '@phosphor-icons/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/lib/supabase/client';
@@ -31,6 +32,7 @@ import HotLeadsAlert from '@/components/sales/HotLeadsAlert';
 import UnifiedCommissionTracker from '@/components/sales/UnifiedCommissionTracker';
 import SalesPresenceIndicator from '@/components/sales/SalesPresenceIndicator';
 import MobileQuotaWidget from '@/components/mobile/MobileQuotaWidget';
+import AICoachInsights from '@/components/sales/AICoachInsights';
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar } from 'recharts';
 
 export default function SalesDashboard() {
@@ -681,6 +683,19 @@ export default function SalesDashboard() {
               📈 Commission Rate: <strong>15%</strong> of total sales • Next payout: End of month
             </span>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* AI Coach Performance Insights */}
+      <Card className="rounded-2xl border-border/50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-3">
+            <Sparkle weight="duotone" className="w-6 h-6 text-purple-400" />
+            AI Coach Performance
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <AICoachInsights />
         </CardContent>
       </Card>
 

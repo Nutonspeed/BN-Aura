@@ -277,7 +277,7 @@ export default function NotificationsPage() {
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${
                         !n.is_read ? 'bg-primary/10 border border-primary/20' : 'bg-muted/30'
                       }`}>
-                        <IconComponent className={`w-5 h-5 text-${config.color}-400`} />
+                        <IconComponent className="w-5 h-5 text-primary" />
                       </div>
 
                       <div className="flex-1 min-w-0">
@@ -285,7 +285,7 @@ export default function NotificationsPage() {
                           <h4 className={`text-sm font-bold ${!n.is_read ? 'text-foreground' : 'text-muted-foreground'}`}>
                             {n.title}
                           </h4>
-                          <Badge className={`text-[9px] bg-${config.color}-500/10 text-${config.color}-400`}>
+                          <Badge className="text-[9px] bg-muted/30 text-muted-foreground">
                             {config.label}
                           </Badge>
                           {!n.is_read && (

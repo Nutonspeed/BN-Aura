@@ -67,11 +67,11 @@ export default function QuotaWidget() {
       </div>
       
       <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-        <motion.div initial={{width:0}} animate={{width:`${Math.min(rate,100)}%`}} className={`h-full bg-${color}-500 rounded-full`} />
+        <motion.div initial={{width:0}} animate={{width:`${Math.min(rate,100)}%`}} className={`h-full bg-primary rounded-full`} />
       </div>
       
       {rate >= 80 && (
-        <div className={`mt-2 flex items-center gap-1 text-${color}-500 text-xs`}>
+        <div className={`mt-2 flex items-center gap-1 text-primary text-xs`}>
           <Warning className="w-3 h-3" />
           {rate >= 95 ? 'โควตาใกล้หมด!' : 'ใช้ไปมากแล้ว'}
         </div>

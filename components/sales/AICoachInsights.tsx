@@ -242,6 +242,15 @@ export default function AICoachInsights() {
   );
 }
 
+const COLOR_MAP: Record<string, string> = {
+  purple: 'bg-purple-500/5 border-purple-500/20',
+  emerald: 'bg-emerald-500/5 border-emerald-500/20',
+  blue: 'bg-blue-500/5 border-blue-500/20',
+  amber: 'bg-amber-500/5 border-amber-500/20',
+  rose: 'bg-rose-500/5 border-rose-500/20',
+  gray: 'bg-gray-500/5 border-gray-500/20',
+};
+
 function StatCard({ icon, label, value, sub, color }: {
   icon: React.ReactNode;
   label: string;
@@ -249,8 +258,9 @@ function StatCard({ icon, label, value, sub, color }: {
   sub: string;
   color: string;
 }) {
+  const colorClasses = COLOR_MAP[color] || COLOR_MAP.gray;
   return (
-    <div className={`p-3 bg-${color}-500/5 border border-${color}-500/20 rounded-xl`}>
+    <div className={`p-3 border rounded-xl ${colorClasses}`}>
       <div className="flex items-center gap-1.5 mb-1">
         {icon}
         <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{label}</span>

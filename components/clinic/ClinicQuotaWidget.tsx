@@ -92,7 +92,7 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
               initial={{ width: 0 }}
               animate={{ width: `${Math.min(rate, 100)}%` }}
               transition={{ duration: 0.5 }}
-              className={`h-full rounded-full bg-${color}-500`}
+              className={`h-full rounded-full ${rate >= 90 ? "bg-red-500" : rate >= 70 ? "bg-amber-500" : "bg-emerald-500"}`}
             />
           </div>
           <div className="flex justify-between text-[10px] text-muted-foreground">
@@ -102,9 +102,9 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
         </div>
 
         {rate >= 80 && (
-          <div className={`p-2 rounded-lg flex items-center gap-2 bg-${color}-500/10 border border-${color}-500/30`}>
-            <Warning weight="fill" className={`w-4 h-4 text-${color}-500`} />
-            <span className={`text-xs text-${color}-500`}>
+          <div className={`p-2 rounded-lg flex items-center gap-2 ${rate >= 90 ? "bg-red-500/10 border border-red-500/30" : "bg-amber-500/10 border border-amber-500/30"}`}>
+            <Warning weight="fill" className={`w-4 h-4 ${rate >= 90 ? "text-red-500" : "text-amber-500"}`} />
+            <span className={`text-xs ${rate >= 90 ? "text-red-500" : "text-amber-500"}`}>
               {rate >= 95 ? '🚨 โควตาใกล้หมด! ควรซื้อ Top-up' : '⚠️ ใช้โควตาไปมากแล้ว'}
             </span>
           </div>

@@ -1032,7 +1032,7 @@ export default function SalesAISkinAnalysisPage() {
                         { id: 'porphyrins', name: 'Porphyrins', nameThai: 'แบคทีเรีย', score: analysisData.visiaScores.porphyrins || 85 },
                       ] : analysisData.skinMetrics?.metrics || [],
                       wrinkleLevel: analysisData.wrinkleAnalysis?.overallAgingLevel || 6,
-                      wrinkleZones: analysisData.wrinkleAnalysis?.zones?.map((z) => ({ name: z.name, nameThai: z.nameThai, level: z.agingLevel })) || [],
+                      wrinkleZones: analysisData.wrinkleAnalysis?.zones?.map((z: any) => ({ name: z.name, nameThai: z.nameThai, level: z.agingLevel })) || [],
                       recommendations: analysisData.recommendations?.immediate || [],
                       strengths: analysisData.summary?.strengths || [],
                       concerns: analysisData.summary?.concerns || [],

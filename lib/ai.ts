@@ -62,3 +62,16 @@ export async function callAIChat(
     throw error;
   }
 }
+
+/**
+ * Get AI provider instance (stub for embedding service compatibility)
+ * Uses Google AI via Vercel AI Gateway
+ */
+export function getAIProvider(_options: { clinicId?: string; userId?: string } = {}) {
+  // Return a provider-like object for embedding service
+  return {
+    textEmbeddingModel(modelId: string) {
+      return modelId as any;
+    },
+  };
+}

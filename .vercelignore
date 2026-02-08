@@ -1,0 +1,24 @@
+# Test files
+tests/
+test-face.png
+*.spec.ts
+*.test.ts
+
+# Temp scripts
+scripts/*.mjs
+fix-*.mjs
+apply-*.mjs
+
+# Development files
+.windsurf/
+.env.local
+*.md
+!README.md
+
+# Heavy dev-only assets
+node_modules/@mediapipe/
+node_modules/@tensorflow/
+node_modules/puppeteer/
+node_modules/puppeteer-core/
+node_modules/playwright/
+node_modules/@playwright/

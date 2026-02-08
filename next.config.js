@@ -15,7 +15,40 @@ const nextConfig = {
     // optimizeCss requires 'critters' package which is missing
     optimizeCss: false,
   },
-  serverExternalPackages: ['@google/generative-ai', 'ioredis', 'socket.io', 'puppeteer'],
+  serverExternalPackages: [
+    '@google/generative-ai',
+    'ioredis',
+    'socket.io',
+    'puppeteer',
+    'stripe',
+    'jspdf',
+    'html2canvas',
+    '@sentry/nextjs',
+  ],
+
+  // Exclude heavy client-only packages from serverless function file tracing
+  outputFileTracingExcludes: {
+    '*': [
+      'node_modules/@huggingface/transformers/**',
+      'node_modules/three/**',
+      'node_modules/@react-three/**',
+      'node_modules/jspdf/**',
+      'node_modules/html2canvas/**',
+      'node_modules/puppeteer/**',
+      'node_modules/puppeteer-core/**',
+      'node_modules/@mediapipe/**',
+      'node_modules/@tensorflow/**',
+      'node_modules/d3/**',
+      'node_modules/recharts/**',
+      'node_modules/framer-motion/**',
+      'node_modules/@xyflow/**',
+      'node_modules/@dnd-kit/**',
+      'node_modules/lenis/**',
+      'node_modules/earcut/**',
+      'node_modules/@phosphor-icons/**',
+      'node_modules/lucide-react/**',
+    ],
+  },
 
   // Image optimization settings
   images: {

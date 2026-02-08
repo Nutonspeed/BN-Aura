@@ -219,7 +219,7 @@ export default function MobileSkinAnalysisPage() {
               <span className="text-5xl">🧠</span>
             </div>
             <h1 className="text-2xl font-bold text-white mb-2">
-              BN-Aura AI Skin Analysis
+              การวิเคราะห์ผิว AI BN-Aura
             </h1>
             <p className="text-gray-400">
               วิเคราะห์ผิวหน้าด้วย AI ใน 5 วินาที
@@ -229,10 +229,10 @@ export default function MobileSkinAnalysisPage() {
           {/* Features */}
           <div className="grid grid-cols-2 gap-3 mb-8 w-full max-w-xs">
             {[
-              { icon: '📊', label: '8 Metrics' },
-              { icon: '📐', label: 'Symmetry' },
-              { icon: '〰️', label: 'Wrinkles' },
-              { icon: '🔮', label: 'Time Travel' },
+              { icon: '📊', label: '8 คะแนน' },
+              { icon: '📐', label: 'ความสมมาตร' },
+              { icon: '〰️', label: 'ริ้วรอย' },
+              { icon: '🔮', label: 'อนาคต' },
             ].map((f, i) => (
               <div key={i} className="bg-white/5 rounded-xl p-3 text-center">
                 <span className="text-2xl">{f.icon}</span>
@@ -320,7 +320,7 @@ export default function MobileSkinAnalysisPage() {
           <p className="text-gray-400 text-sm">AI กำลังประมวลผล 468 จุดบนใบหน้า</p>
 
           <div className="mt-8 space-y-3 w-full max-w-xs">
-            {['Face Detection ✓', 'Landmarks Mapping ✓', 'Skin Analysis...', 'AI Processing...'].map((item, i) => (
+            {['ตรวจจับใบหน้า ✓', 'แมปจุดสำคัญ ✓', 'วิเคราะห์ผิว...', 'ประมวลผล AI...'].map((item, i) => (
               <div key={i} className={cn(
                 'flex items-center gap-3 text-sm',
                 i < 2 ? 'text-green-400' : 'text-gray-500'
@@ -349,14 +349,14 @@ export default function MobileSkinAnalysisPage() {
           <div className="p-4">
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className="bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-2xl p-4 text-center">
-                <p className="text-xs text-gray-400">Skin Score</p>
+                <p className="text-xs text-gray-400">คะแนนผิว</p>
                 <p className="text-4xl font-bold text-white">
                   {analysisData.skinMetrics?.overallScore || 72}
                 </p>
                 <p className="text-xs text-gray-500">/100</p>
               </div>
               <div className="bg-gradient-to-br from-blue-600/30 to-cyan-600/30 rounded-2xl p-4 text-center">
-                <p className="text-xs text-gray-400">Skin Age</p>
+                <p className="text-xs text-gray-400">อายุผิว</p>
                 <p className="text-4xl font-bold text-white">
                   {analysisData.skinMetrics?.skinAge || 38}
                 </p>
@@ -376,19 +376,19 @@ export default function MobileSkinAnalysisPage() {
                 <p className="text-xl font-bold text-amber-400">
                   {analysisData.symmetry?.overallSymmetry || 87}%
                 </p>
-                <p className="text-xs text-gray-400">Symmetry</p>
+                <p className="text-xs text-gray-400">ความสมมาตร</p>
               </div>
               <div className="bg-white/5 rounded-xl p-3 text-center">
                 <p className="text-xl font-bold text-amber-400">
                   {analysisData.symmetry?.goldenRatio || 1.58}
                 </p>
-                <p className="text-xs text-gray-400">Golden Ratio</p>
+                <p className="text-xs text-gray-400">สัดส่วนทองคำ</p>
               </div>
               <div className="bg-white/5 rounded-xl p-3 text-center">
                 <p className="text-xl font-bold text-rose-400">
                   {analysisData.wrinkleAnalysis?.overallAgingLevel || 5}/10
                 </p>
-                <p className="text-xs text-gray-400">Wrinkles</p>
+                <p className="text-xs text-gray-400">ริ้วรอย</p>
               </div>
             </div>
 
@@ -403,8 +403,8 @@ export default function MobileSkinAnalysisPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">📊</span>
                     <div>
-                      <p className="font-semibold text-white">8 Skin Metrics</p>
-                      <p className="text-xs text-gray-400">VISIA-Equivalent Analysis</p>
+                      <p className="font-semibold text-white">8 คะแนนผิว</p>
+                      <p className="text-xs text-gray-400">การวิเคราะห์ VISIA</p>
                     </div>
                   </div>
                   <span className="text-gray-400">{activeDetail === 'metrics' ? '▲' : '▼'}</span>
@@ -441,7 +441,7 @@ export default function MobileSkinAnalysisPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">🔮</span>
                     <div>
-                      <p className="font-semibold text-white">AI Time Travel</p>
+                      <p className="font-semibold text-white">การคาดการณ์อนาคต AI</p>
                       <p className="text-xs text-gray-400">ดูอนาคตผิวใน 10 ปี</p>
                     </div>
                   </div>
@@ -454,7 +454,7 @@ export default function MobileSkinAnalysisPage() {
                       {analysisData.timeTravel.naturalAging?.map((p: any, i: number) => (
                         <div key={i} className="text-center">
                           <p className="text-xs text-gray-500">
-                            {p.year === 0 ? 'Now' : `+${p.year}y`}
+                            {p.year === 0 ? 'ตอนนี้' : `+${p.year}ปี`}
                           </p>
                           <p className="text-sm font-bold text-red-400">{p.skinScore}</p>
                           <p className="text-sm font-bold text-green-400">

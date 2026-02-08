@@ -168,17 +168,18 @@ export async function POST(request: NextRequest) {
     // ─── Build Response: Combine HF + Gemini + Fallback ───
     const symmetry = FacialSymmetryAnalyzer.getSampleResult();
     
-    // Enhance skin metrics with HF results
-    const baseSkinMetrics = SkinMetricsEngine.getSampleResult(customerInfo.age);
+    // Build skin metrics from AI signals when available
     const hfSignals = hfResults ? hfToVISIASignals(hfResults, customerInfo.age) : null;
     
-    const skinMetrics = aiAnalysis?.metrics 
-      ? { ...baseSkinMetrics, ...aiAnalysis }
-      : hfSignals 
-        ? { ...baseSkinMetrics, visiaScores: hfSignals }
-        : baseSkinMetrics;
+    const skinMetrics = hfSignals
+      ? SkinMetricsEngine.calculateFromSignals(customerInfo.age, hfSignals)
+      : SkinMetricsEngine.getSampleResult(customerInfo.age);
 
-    const wrinkleAnalysis = WrinkleZoneMapper.getSampleResult();
+    // Build wrinkle analysis from AI data when available
+    const wrinkleScore = hfSignals?.wrinkles ?? 60;
+    const wrinkleAnalysis = hfSignals
+      ? WrinkleZoneMapper.analyzeFromData(customerInfo.age, wrinkleScore)
+      : WrinkleZoneMapper.getSampleResult(customerInfo.age);
 
     // Calculate overall score with multi-model data
     let overallScore: number;

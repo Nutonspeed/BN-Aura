@@ -75,108 +75,112 @@ class SkinMetricsEngine {
   /**
    * Calculate all 8 metrics
    */
-  private static calculateMetrics(age: number): SkinMetric[] {
+  private static calculateMetrics(age: number, visiaSignals?: Record<string, number>): SkinMetric[] {
+    const ageFactor = Math.max(0, Math.min(1, (60 - age) / 40));
+    const getScore = (key: string, ageBaseline: number): number => {
+      if (visiaSignals && visiaSignals[key] !== undefined) return Math.round(visiaSignals[key]);
+      return Math.round(ageBaseline * (0.7 + ageFactor * 0.3));
+    };
+    const getSev = (score: number): 'excellent' | 'good' | 'average' | 'concern' | 'severe' => {
+      if (score >= 85) return 'excellent'; if (score >= 70) return 'good'; if (score >= 50) return 'average'; if (score >= 30) return 'concern'; return 'severe';
+    };
+    const getPct = (score: number): number => Math.min(99, Math.max(1, Math.round(score * 0.9 + 5)));
+    const getArea = (score: number): number => Math.round(Math.max(2, (100 - score) * 0.4));
     return [
       {
         id: 'spots',
         name: 'Spots',
         nameThai: 'จุดด่างดำ',
-        score: 89,
-        percentile: 85,
-        severity: 'good',
+        score: getScore('spots', 78),
+        percentile: getPct(getScore('spots', 78)),
+        severity: getSev(getScore('spots', 78)),
         description: 'Surface-level spots and discoloration',
         descriptionThai: 'จุดด่างดำและความไม่สม่ำเสมอของสีผิว',
-        detectedCount: 23,
-        affectedArea: 8,
+        affectedArea: getArea(getScore('spots', 78)),
         recommendations: ['Vitamin C Serum', 'Chemical Peel', 'IPL Treatment'],
       },
       {
         id: 'wrinkles',
         name: 'Wrinkles',
         nameThai: 'ริ้วรอย',
-        score: 58,
-        percentile: 62,
-        severity: 'average',
+        score: getScore('wrinkles', 72),
+        percentile: getPct(getScore('wrinkles', 72)),
+        severity: getSev(getScore('wrinkles', 72)),
         description: 'Fine lines and deep wrinkles',
         descriptionThai: 'ริ้วรอยตื้นและริ้วรอยลึก',
-        detectedCount: 45,
-        affectedArea: 15,
+        affectedArea: getArea(getScore('wrinkles', 72)),
         recommendations: ['Botox', 'Retinol', 'Laser Resurfacing'],
       },
       {
         id: 'texture',
         name: 'Texture',
         nameThai: 'พื้นผิว',
-        score: 91,
-        percentile: 88,
-        severity: 'excellent',
+        score: getScore('texture', 75),
+        percentile: getPct(getScore('texture', 75)),
+        severity: getSev(getScore('texture', 75)),
         description: 'Skin smoothness and evenness',
         descriptionThai: 'ความเรียบเนียนและสม่ำเสมอของผิว',
-        affectedArea: 5,
+        affectedArea: getArea(getScore('texture', 75)),
         recommendations: ['Microdermabrasion', 'Chemical Peel'],
       },
       {
         id: 'pores',
         name: 'Pores',
         nameThai: 'รูขุมขน',
-        score: 42,
-        percentile: 45,
-        severity: 'concern',
+        score: getScore('pores', 65),
+        percentile: getPct(getScore('pores', 65)),
+        severity: getSev(getScore('pores', 65)),
         description: 'Pore size and visibility',
         descriptionThai: 'ขนาดและความเด่นชัดของรูขุมขน',
-        detectedCount: 180,
-        affectedArea: 22,
+        affectedArea: getArea(getScore('pores', 65)),
         recommendations: ['Carbon Peel', 'Fractional Laser', 'Niacinamide'],
       },
       {
         id: 'uvSpots',
         name: 'UV Spots',
         nameThai: 'จุด UV',
-        score: 10,
-        percentile: 35,
-        severity: 'severe',
+        score: getScore('uvSpots', 60),
+        percentile: getPct(getScore('uvSpots', 60)),
+        severity: getSev(getScore('uvSpots', 60)),
         description: 'Sun damage visible under UV light',
         descriptionThai: 'ความเสียหายจากแสงแดดที่มองเห็นภายใต้แสง UV',
-        detectedCount: 67,
-        affectedArea: 35,
+        affectedArea: getArea(getScore('uvSpots', 60)),
         recommendations: ['Sunscreen SPF50+', 'Laser Toning', 'Antioxidant Serum'],
       },
       {
         id: 'brownSpots',
         name: 'Brown Spots',
         nameThai: 'จุดสีน้ำตาล',
-        score: 91,
-        percentile: 82,
-        severity: 'excellent',
+        score: getScore('brownSpots', 74),
+        percentile: getPct(getScore('brownSpots', 74)),
+        severity: getSev(getScore('brownSpots', 74)),
         description: 'Hyperpigmentation and melasma',
         descriptionThai: 'ฝ้า กระ และจุดสีน้ำตาล',
-        detectedCount: 8,
-        affectedArea: 4,
+        affectedArea: getArea(getScore('brownSpots', 74)),
         recommendations: ['Hydroquinone', 'Vitamin C', 'Pico Laser'],
       },
       {
         id: 'redAreas',
         name: 'Red Areas',
         nameThai: 'บริเวณแดง',
-        score: 56,
-        percentile: 55,
-        severity: 'average',
+        score: getScore('redAreas', 70),
+        percentile: getPct(getScore('redAreas', 70)),
+        severity: getSev(getScore('redAreas', 70)),
         description: 'Redness, inflammation, and vascular issues',
         descriptionThai: 'รอยแดง การอักเสบ และปัญหาหลอดเลือด',
-        affectedArea: 18,
+        affectedArea: getArea(getScore('redAreas', 70)),
         recommendations: ['Azelaic Acid', 'Vascular Laser', 'Anti-redness Cream'],
       },
       {
         id: 'porphyrins',
         name: 'Porphyrins',
         nameThai: 'พอร์ฟิริน',
-        score: 26,
-        percentile: 40,
-        severity: 'concern',
+        score: getScore('porphyrins', 68),
+        percentile: getPct(getScore('porphyrins', 68)),
+        severity: getSev(getScore('porphyrins', 68)),
         description: 'Bacterial presence in pores (acne indicator)',
         descriptionThai: 'แบคทีเรียในรูขุมขน (ตัวบ่งชี้สิว)',
-        detectedCount: 95,
-        affectedArea: 12,
+        affectedArea: getArea(getScore('porphyrins', 68)),
         recommendations: ['Blue Light Therapy', 'Salicylic Acid', 'Extraction Facial'],
       },
     ];
@@ -264,6 +268,24 @@ class SkinMetricsEngine {
   /**
    * Get sample result for testing/demo
    */
+  static calculateFromSignals(age: number, visiaSignals: Record<string, number>): SkinMetricsResult {
+    const metrics = this.calculateMetrics(age, visiaSignals);
+    const overallScore = this.calculateOverallScore(metrics);
+    const skinAge = this.calculateSkinAge(metrics, age);
+    return {
+      analysisId: `SKN-AI-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      overallScore, skinAge, actualAge: age,
+      skinAgeDifference: skinAge - age,
+      metrics,
+      summary: this.generateSummary(metrics),
+      comparisonToAverage: {
+        betterThan: this.calculatePercentile(overallScore, age),
+        ageGroup: this.getAgeGroup(age),
+      },
+    };
+  }
+
   static getSampleResult(age: number = 35): SkinMetricsResult {
     const metrics = this.calculateMetrics(age);
     const overallScore = this.calculateOverallScore(metrics);

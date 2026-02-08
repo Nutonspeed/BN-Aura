@@ -69,86 +69,25 @@ class WrinkleZoneMapper {
   /**
    * Analyze each wrinkle zone
    */
-  private static analyzeZones(): WrinkleZone[] {
-    return [
-      {
-        id: 'forehead',
-        name: 'Forehead Lines',
-        nameThai: 'ริ้วรอยหน้าผาก',
-        agingLevel: 7,
-        depth: 'moderate',
-        count: 12,
-        coverage: 35,
-        landmarks: WRINKLE_ZONE_LANDMARKS.forehead,
-        recommendations: ['Botox', 'Retinol Serum', 'Hydration'],
-      },
-      {
-        id: 'gabellar',
-        name: 'Gabellar Lines',
-        nameThai: 'รอยย่นระหว่างคิ้ว',
-        agingLevel: 6,
-        depth: 'moderate',
-        count: 4,
-        coverage: 25,
-        landmarks: WRINKLE_ZONE_LANDMARKS.gabellar,
-        recommendations: ['Botox', 'Filler', 'Relaxation Exercises'],
-      },
-      {
-        id: 'nasolabial',
-        name: 'Nasolabial Folds',
-        nameThai: 'ร่องแก้ม',
-        agingLevel: 5,
-        depth: 'moderate',
-        count: 2,
-        coverage: 40,
-        landmarks: WRINKLE_ZONE_LANDMARKS.nasolabial,
-        recommendations: ['Hyaluronic Acid Filler', 'Thread Lift', 'RF Therapy'],
-      },
-      {
-        id: 'tearTrough',
-        name: 'Tear Troughs',
-        nameThai: 'ร่องใต้ตา',
-        agingLevel: 7,
-        depth: 'deep',
-        count: 2,
-        coverage: 50,
-        landmarks: WRINKLE_ZONE_LANDMARKS.tearTrough,
-        recommendations: ['Under-eye Filler', 'PRP Therapy', 'Eye Cream'],
-      },
-      {
-        id: 'marionette',
-        name: 'Marionette Lines',
-        nameThai: 'ริ้วรอยมุมปาก',
-        agingLevel: 4,
-        depth: 'fine',
-        count: 2,
-        coverage: 20,
-        landmarks: WRINKLE_ZONE_LANDMARKS.marionette,
-        recommendations: ['Filler', 'Botox', 'Thread Lift'],
-      },
-      {
-        id: 'crowsFeet',
-        name: "Crow's Feet",
-        nameThai: 'ตีนกา',
-        agingLevel: 7,
-        depth: 'moderate',
-        count: 18,
-        coverage: 45,
-        landmarks: WRINKLE_ZONE_LANDMARKS.crowsFeet,
-        recommendations: ['Botox', 'Fractional Laser', 'Eye Cream'],
-      },
-      {
-        id: 'frown',
-        name: 'Frown Lines',
-        nameThai: 'รอยขมวดคิ้ว',
-        agingLevel: 7,
-        depth: 'deep',
-        count: 3,
-        coverage: 30,
-        landmarks: WRINKLE_ZONE_LANDMARKS.frown,
-        recommendations: ['Botox', 'Dysport', 'Stress Management'],
-      },
+  private static analyzeZones(age: number = 35, wrinkleScore: number = 60): WrinkleZone[] {
+    const baseAging = Math.max(1, Math.min(9, Math.round((age - 15) / 6)));
+    const scoreAdj = Math.round((50 - wrinkleScore) / 20);
+    const zoneConfigs: Array<{ id: string; name: string; nameThai: string; sensitivity: number; landmarks: number[]; recommendations: string[] }> = [
+      { id: 'forehead', name: 'Forehead Lines', nameThai: 'ริ้วรอยหน้าผาก', sensitivity: 1.1, landmarks: WRINKLE_ZONE_LANDMARKS.forehead, recommendations: ['Botox', 'Retinol Serum', 'Hydration'] },
+      { id: 'gabellar', name: 'Gabellar Lines', nameThai: 'รอยย่นระหว่างคิ้ว', sensitivity: 0.9, landmarks: WRINKLE_ZONE_LANDMARKS.gabellar, recommendations: ['Botox', 'Filler', 'Relaxation Exercises'] },
+      { id: 'nasolabial', name: 'Nasolabial Folds', nameThai: 'ร่องแก้ม', sensitivity: 0.85, landmarks: WRINKLE_ZONE_LANDMARKS.nasolabial, recommendations: ['Hyaluronic Acid Filler', 'Thread Lift', 'RF Therapy'] },
+      { id: 'tearTrough', name: 'Tear Troughs', nameThai: 'ร่องใต้ตา', sensitivity: 1.15, landmarks: WRINKLE_ZONE_LANDMARKS.tearTrough, recommendations: ['Under-eye Filler', 'PRP Therapy', 'Eye Cream'] },
+      { id: 'marionette', name: 'Marionette Lines', nameThai: 'ริ้วรอยมุมปาก', sensitivity: 0.7, landmarks: WRINKLE_ZONE_LANDMARKS.marionette, recommendations: ['Filler', 'Botox', 'Thread Lift'] },
+      { id: 'crowsFeet', name: "Crow's Feet", nameThai: 'ตีนกา', sensitivity: 1.1, landmarks: WRINKLE_ZONE_LANDMARKS.crowsFeet, recommendations: ['Botox', 'Fractional Laser', 'Eye Cream'] },
+      { id: 'frown', name: 'Frown Lines', nameThai: 'รอยขมวดคิ้ว', sensitivity: 1.0, landmarks: WRINKLE_ZONE_LANDMARKS.frown, recommendations: ['Botox', 'Dysport', 'Stress Management'] },
     ];
+    return zoneConfigs.map(zone => {
+      const agingLevel = Math.max(1, Math.min(10, Math.round((baseAging + scoreAdj) * zone.sensitivity)));
+      const depth: 'fine' | 'moderate' | 'deep' = agingLevel <= 3 ? 'fine' : agingLevel <= 6 ? 'moderate' : 'deep';
+      const coverage = Math.round(Math.min(60, agingLevel * 7));
+      const count = Math.max(1, Math.round(agingLevel * (zone.id === 'crowsFeet' ? 3 : zone.id === 'forehead' ? 2 : 0.5)));
+      return { id: zone.id, name: zone.name, nameThai: zone.nameThai, agingLevel, depth, count, coverage, landmarks: zone.landmarks, recommendations: zone.recommendations };
+    });
   }
 
   /**
@@ -230,8 +169,25 @@ class WrinkleZoneMapper {
   /**
    * Get sample result
    */
-  static getSampleResult(): WrinkleAnalysisResult {
-    return this.analyze();
+  static analyzeFromData(age: number, wrinkleScore: number): WrinkleAnalysisResult {
+    const zones = this.analyzeZones(age, wrinkleScore);
+    const overallAgingLevel = this.calculateOverallAging(zones);
+    return {
+      analysisId: `WRK-AI-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      overallAgingLevel,
+      overallAgingDescription: this.getAgingDescription(overallAgingLevel),
+      zones,
+      totalWrinkleCount: zones.reduce((sum, z) => sum + z.count, 0),
+      averageDepth: this.getAverageDepth(zones),
+      skinAgeImpact: Math.round(overallAgingLevel * 0.8),
+      priorityZones: this.getPriorityZones(zones),
+      treatmentPlan: this.generateTreatmentPlan(zones),
+    };
+  }
+
+  static getSampleResult(age: number = 35): WrinkleAnalysisResult {
+    return this.analyzeFromData(age, 60);
   }
 
   /**

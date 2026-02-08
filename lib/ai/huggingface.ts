@@ -360,7 +360,10 @@ export function hfToVISIASignals(hfResult: HFMultiModelResult, actualAge: number
   const hasBrownSpots = hfResult.skinConditions.some(c => 
     ['keratosis', 'milia'].includes(c.condition)
   );
-  signals.spots = hasBrownSpots ? 40 + Math.random() * 20 : 65 + Math.random() * 20;
+  const spotConditionConfidence = hfResult.skinConditions
+    .filter(c => ['keratosis', 'milia'].includes(c.condition))
+    .reduce((max, c) => Math.max(max, c.confidence), 0);
+  signals.spots = hasBrownSpots ? Math.round(30 + (1 - spotConditionConfidence) * 40) : 75;
 
   // Wrinkles: based on age estimation vs actual age
   if (hfResult.ageEstimation) {
@@ -375,7 +378,8 @@ export function hfToVISIASignals(hfResult: HFMultiModelResult, actualAge: number
     const textureMap: Record<string, number> = {
       'normal': 80, 'combination': 65, 'oily': 55, 'dry': 50,
     };
-    signals.texture = (textureMap[hfResult.skinType.label] || 65) + (Math.random() - 0.5) * 10;
+    const skinTypeConfidence = hfResult.skinType.score || 0.5;
+    signals.texture = Math.round((textureMap[hfResult.skinType.label] || 65) + (skinTypeConfidence - 0.5) * 10);
   } else {
     signals.texture = 65;
   }
@@ -385,7 +389,8 @@ export function hfToVISIASignals(hfResult: HFMultiModelResult, actualAge: number
     const poreMap: Record<string, number> = {
       'normal': 75, 'dry': 80, 'combination': 55, 'oily': 45,
     };
-    signals.pores = (poreMap[hfResult.skinType.label] || 60) + (Math.random() - 0.5) * 10;
+    const poreConfidence = hfResult.skinType.score || 0.5;
+    signals.pores = Math.round((poreMap[hfResult.skinType.label] || 60) + (poreConfidence - 0.5) * 8);
   } else {
     signals.pores = 60;
   }
@@ -395,19 +400,22 @@ export function hfToVISIASignals(hfResult: HFMultiModelResult, actualAge: number
   signals.uvSpots = hasBrownSpots ? ageScore - 15 : ageScore;
 
   // Brown Spots: direct from condition classifier
-  signals.brownSpots = hasBrownSpots ? 35 + Math.random() * 20 : 70 + Math.random() * 15;
+  signals.brownSpots = hasBrownSpots ? Math.round(30 + (1 - spotConditionConfidence) * 30) : 78;
 
   // Red Areas: based on rosacea/acne detection
   const hasRedness = hfResult.skinConditions.some(c => 
     ['rosacea', 'eczema'].includes(c.condition)
   );
+  const rednessConfidence = hfResult.skinConditions
+    .filter(c => ['rosacea', 'eczema'].includes(c.condition))
+    .reduce((max, c) => Math.max(max, c.confidence), 0);
   const acneRedness = hfResult.acneSeverity ? hfResult.acneSeverity.level * 10 : 0;
-  signals.redAreas = hasRedness ? 40 + Math.random() * 15 : Math.max(50, 85 - acneRedness);
+  signals.redAreas = hasRedness ? Math.round(35 + (1 - rednessConfidence) * 25) : Math.max(50, 85 - acneRedness);
 
   // Porphyrins: correlated with acne
   signals.porphyrins = hfResult.acneSeverity
     ? Math.max(30, 90 - hfResult.acneSeverity.level * 15)
-    : 80 + Math.random() * 10;
+    : 85;
 
   // Round all scores
   for (const key of Object.keys(signals)) {

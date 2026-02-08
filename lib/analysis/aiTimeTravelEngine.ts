@@ -50,6 +50,7 @@ interface TimeTravelResult {
     messageThai: string;
     yearsToAct: number;
     potentialSavings: string;
+    disclaimer: string;
   };
 }
 
@@ -67,10 +68,10 @@ class AITimeTravelEngine {
     const currentSkinAge = this.calculateSkinAge(currentAge, currentSkinScore);
     
     // Generate natural aging predictions (without treatment)
-    const naturalAging = this.generateNaturalAgingCurve(currentAge, currentSkinScore);
+    const naturalAging = this.generateNaturalAgingCurve(currentAge, currentSkinScore, skinType);
     
     // Generate predictions with treatment
-    const withTreatment = this.generateTreatedAgingCurve(currentAge, currentSkinScore);
+    const withTreatment = this.generateTreatedAgingCurve(currentAge, currentSkinScore, skinType);
     
     // Calculate treatment impact
     const treatmentImpact = this.calculateTreatmentImpact(naturalAging, withTreatment);
@@ -103,14 +104,20 @@ class AITimeTravelEngine {
   /**
    * Generate natural aging curve (without any treatment)
    */
-  private static generateNaturalAgingCurve(currentAge: number, currentScore: number): AgingPrediction[] {
+  private static generateNaturalAgingCurve(currentAge: number, currentScore: number, skinType: string = 'combination'): AgingPrediction[] {
     const predictions: AgingPrediction[] = [];
     const yearIntervals = [0, 1, 3, 5, 10];
     
+    // Skin type decay multiplier: oily ages slower, dry ages faster
+    const decayMultiplier: Record<string, number> = {
+      oily: 0.8, combination: 1.0, normal: 0.9, dry: 1.2, sensitive: 1.15,
+    };
+    const typeFactor = decayMultiplier[skinType] || 1.0;
+    
     for (const years of yearIntervals) {
       const age = currentAge + years;
-      // Natural aging: score decreases ~2-3 points per year
-      const scoreDecline = years * 2.5;
+      // Non-linear decay: accelerates with time (power curve)
+      const scoreDecline = Math.pow(years, 1.3) * 2.0 * typeFactor;
       const skinScore = Math.max(20, Math.round(currentScore - scoreDecline));
       const skinAge = age + Math.round((70 - skinScore) / 10 * 2);
       
@@ -135,19 +142,20 @@ class AITimeTravelEngine {
   /**
    * Generate aging curve with recommended treatments
    */
-  private static generateTreatedAgingCurve(currentAge: number, currentScore: number): AgingPrediction[] {
+  private static generateTreatedAgingCurve(currentAge: number, currentScore: number, skinType: string = 'combination'): AgingPrediction[] {
     const predictions: AgingPrediction[] = [];
     const yearIntervals = [0, 1, 3, 5, 10];
     
+    const decayMultiplier: Record<string, number> = {
+      oily: 0.8, combination: 1.0, normal: 0.9, dry: 1.2, sensitive: 1.15,
+    };
+    const typeFactor = decayMultiplier[skinType] || 1.0;
+    
     for (const years of yearIntervals) {
       const age = currentAge + years;
-      // With treatment: score improves initially, then maintains better
-      let scoreChange = 0;
-      if (years === 0) scoreChange = 0;
-      else if (years === 1) scoreChange = 8; // Improvement after treatment
-      else if (years === 3) scoreChange = 5;
-      else if (years === 5) scoreChange = 0;
-      else scoreChange = -5; // Slight decline after 10 years
+      // With treatment: initial boost then slow non-linear decline
+      const boost = years <= 1 ? 8 : Math.max(-3, 8 - Math.pow(years - 1, 1.1) * 1.5 * typeFactor);
+      const scoreChange = Math.round(boost);
       
       const skinScore = Math.min(95, Math.max(40, Math.round(currentScore + scoreChange)));
       const skinAge = age + Math.round((70 - skinScore) / 10 * 2);
@@ -254,6 +262,7 @@ class AITimeTravelEngine {
       messageThai,
       yearsToAct,
       potentialSavings: `ดูอ่อนกว่าวัยได้ถึง ${Math.round(fiveYearDiff / 2.5)} ปี ใน 5 ปีข้างหน้า`,
+      disclaimer: 'ผลประมาณการจากข้อมูลสถิติเฉลี่ย ผลลัพธ์จริงขึ้นอยู่กับพฤติกรรมและการดูแลรายบุคคล',
     };
   }
 

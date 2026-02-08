@@ -428,9 +428,9 @@ export default function SalesDashboard() {
     // Performance metrics
     const performanceMetrics = {
       avgDealSize: transactions.length > 0 ? transactions.reduce((sum, t) => sum + parseFloat(t.total_amount || 0), 0) / transactions.length : 0,
-      conversionTime: 3.2, // Average days to conversion
-      customerLifetime: 18.5, // Average months
-      retentionRate: 78 // Percentage
+      conversionTime: null as number | null, // TODO: calculate from real data
+      customerLifetime: null as number | null, // TODO: calculate from real data
+      retentionRate: null as number | null, // TODO: calculate from real data
     };
 
     return {
@@ -471,10 +471,10 @@ export default function SalesDashboard() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Total Leads', value: stats.totalLeads, icon: Users, color: 'text-blue-500' },
-          { title: 'Conversions', value: stats.conversions, icon: TrendUp, color: 'text-emerald-500' },
-          { title: 'Revenue', value: `฿${stats.revenue.toLocaleString()}`, icon: ChartBar, color: 'text-primary' },
-          { title: 'Commission', value: `฿${stats.commissionEarned.toLocaleString()}`, icon: Coins, color: 'text-amber-500' },
+          { title: 'ลูกค้าเป้าหมายทั้งหมด', value: stats.totalLeads, icon: Users, color: 'text-blue-500' },
+          { title: 'การแปลง', value: stats.conversions, icon: TrendUp, color: 'text-emerald-500' },
+          { title: 'รายได้', value: `฿${stats.revenue.toLocaleString()}`, icon: ChartBar, color: 'text-primary' },
+          { title: 'ค่าคอมมิชชัน', value: `฿${stats.commissionEarned.toLocaleString()}`, icon: Coins, color: 'text-amber-500' },
         ].map((stat, idx) => (
           <Card key={idx} className="p-6 rounded-2xl border-border/50">
             <div className="flex items-center justify-between">
@@ -496,7 +496,7 @@ export default function SalesDashboard() {
         {[
           { id: 'overview' as const, label: 'Overview', icon: ChartBar },
           { id: 'pipeline' as const, label: 'Workflow Pipeline', icon: Kanban },
-          { id: 'commissions' as const, label: 'Commission Tracker', icon: CurrencyDollar },
+          { id: 'commissions' as const, label: 'ตัวติดตามค่าคอมมิชชัน', icon: CurrencyDollar },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -574,7 +574,7 @@ export default function SalesDashboard() {
                 <div className={`w-2 h-2 rounded-full ${quotaInfo.willIncurCharge ? 'bg-red-500' : 'bg-green-500'}`}></div>
                 <span className="text-xs text-muted-foreground uppercase tracking-widest">Status</span>
               </div>
-              <p className="text-xl font-bold mt-1">{quotaInfo.willIncurCharge ? 'Overage' : 'Normal'}</p>
+              <p className="text-xl font-bold mt-1">{quotaInfo.willIncurCharge ? 'เกินโควต้า' : 'ปกติ'}</p>
             </div>
           </div>
 
@@ -746,7 +746,7 @@ export default function SalesDashboard() {
                       {(customer.full_name || '?').charAt(0)}
                     </div>
                     <div>
-                      <p className="font-bold">{customer.full_name || 'Unknown'}</p>
+                      <p className="font-bold">{customer.full_name || 'ไม่ระบุ'}</p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Envelope className="w-3 h-3" />
                         {customer.email}
@@ -834,7 +834,7 @@ export default function SalesDashboard() {
                         value={customerFormData.firstName}
                         onChange={(e) => setCustomerFormData(prev => ({ ...prev, firstName: e.target.value }))}
                         className="w-full bg-secondary border border-border rounded-xl py-3 px-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
-                        placeholder="Jane"
+                        placeholder="สมศรี"
                       />
                     </div>
 
@@ -968,7 +968,7 @@ export default function SalesDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {customers.slice(0, 2).map((customer) => {
               const customerContext = {
-                name: customer.full_name || 'Unknown',
+                name: customer.full_name || 'ไม่ระบุ',
                 demographics: {
                   age: customer.metadata?.age || 25,
                   gender: customer.metadata?.gender || 'female',
@@ -998,7 +998,7 @@ export default function SalesDashboard() {
               return (
                 <div key={customer.id} className="space-y-3">
                   <h3 className="font-semibold text-sm text-muted-foreground">
-                    Recommendations for {customer.full_name || 'Unknown'}
+                    Recommendations for {customer.full_name || 'ไม่ระบุ'}
                   </h3>
                   <SmartSuggestions 
                     customerContext={customerContext}
@@ -1146,7 +1146,7 @@ export default function SalesDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Conversion Time</p>
                 <p className="text-xl font-bold mt-1">
-                  {analyticsData.performanceMetrics.conversionTime} days
+                  {analyticsData.performanceMetrics.conversionTime != null ? `${analyticsData.performanceMetrics.conversionTime} days` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
                 </p>
               </div>
               <Pulse className="w-6 h-6 text-emerald-500" />
@@ -1158,7 +1158,7 @@ export default function SalesDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Customer Lifetime</p>
                 <p className="text-xl font-bold mt-1">
-                  {analyticsData.performanceMetrics.customerLifetime} months
+                  {analyticsData.performanceMetrics.customerLifetime != null ? `${analyticsData.performanceMetrics.customerLifetime} months` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
                 </p>
               </div>
               <ChartPie className="w-6 h-6 text-amber-500" />
@@ -1170,7 +1170,7 @@ export default function SalesDashboard() {
               <div>
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Retention Rate</p>
                 <p className="text-xl font-bold mt-1">
-                  {analyticsData.performanceMetrics.retentionRate}%
+                  {analyticsData.performanceMetrics.retentionRate != null ? `${analyticsData.performanceMetrics.retentionRate}%` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
                 </p>
               </div>
               <TrendUp className="w-6 h-6 text-rose-500" />

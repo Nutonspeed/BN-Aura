@@ -38,11 +38,10 @@ export default function AdvancedAnalyticsPage() {
         ]);
         if (overview.success && overview.data) {
           const d = overview.data;
-          const multiplier = period === '7d' ? 0.25 : period === '30d' ? 1 : 3;
           setStats({
-            analyses: Math.round((d.totalBookings || 0) * multiplier),
-            customers: Math.round((d.activeCustomers || 0) * multiplier),
-            revenue: Math.round((d.totalRevenue || 0) * multiplier),
+            analyses: d.totalBookings || 0,
+            customers: d.activeCustomers || 0,
+            revenue: d.totalRevenue || 0,
             conversion: d.conversionRate || 0,
           });
           setTreatments((d.topTreatments || []).map((t: any) => ({
@@ -56,47 +55,12 @@ export default function AdvancedAnalyticsPage() {
         }
         if (predictive.success && predictive.data) {
           setInsights(predictive.data.recommendations || predictive.data.insights || []);
-          // VoC Analytics data
-          setVocData({
-            sentimentDistribution: { positive: 68, neutral: 22, negative: 10 },
-            topConcerns: [
-              { topic: 'Wait Time', count: 23 },
-              { topic: 'Treatment Results', count: 18 },
-              { topic: 'Staff Friendliness', count: 12 },
-              { topic: 'Pricing', count: 9 },
-            ],
-            recentFeedback: [
-              { id: '1', customer: 'Customer A', sentiment: 'positive', comment: 'ผลลัพธ์ดีมาก ผิวกระจ่างใสขึ้น', date: new Date().toISOString() },
-              { id: '2', customer: 'Customer B', sentiment: 'neutral', comment: 'รอนานนิดหน่อย แต่โดยรวมโอเค', date: new Date().toISOString() },
-              { id: '3', customer: 'Customer C', sentiment: 'positive', comment: 'พนักงานบริการดีมาก', date: new Date().toISOString() },
-            ],
-            satisfactionTrend: Array.from({length: 7}, (_, i) => ({
-              date: new Date(Date.now() - (6-i)*86400000).toISOString().split('T')[0],
-              score: 7.5 + Math.random() * 2
-            }))
-          });
-          setCohortData([
-            { cohort: 'Oct 2025', size: 45, retention: { month1: 82, month2: 71, month3: 65, month6: 48, month12: 32 }, revenue: { total: 675000, perCustomer: 15000 } },
-            { cohort: 'Nov 2025', size: 52, retention: { month1: 85, month2: 74, month3: 68, month6: 0, month12: 0 }, revenue: { total: 832000, perCustomer: 16000 } },
-            { cohort: 'Dec 2025', size: 38, retention: { month1: 79, month2: 70, month3: 0, month6: 0, month12: 0 }, revenue: { total: 494000, perCustomer: 13000 } },
-            { cohort: 'Jan 2026', size: 61, retention: { month1: 88, month2: 0, month3: 0, month6: 0, month12: 0 }, revenue: { total: 1037000, perCustomer: 17000 } },
-          ]);
-          setAiMetrics({
-            suggestionsMade: 245,
-            suggestionsAccepted: 178,
-            acceptanceRate: 72.6,
-            avgDealProbabilityImprovement: 18.3,
-            topPerformingPrompts: [
-              { prompt: 'Follow-up Timing', successRate: 78.9, count: 57 },
-              { prompt: 'Treatment Bundle', successRate: 71.7, count: 53 },
-              { prompt: 'Discount Offer', successRate: 80.0, count: 40 },
-            ],
-            dailyUsage: Array.from({length: 7}, (_, i) => ({
-              date: new Date(Date.now() - (6-i)*86400000).toISOString().split('T')[0],
-              suggestions: 30 + Math.floor(Math.random() * 15),
-              accepted: 20 + Math.floor(Math.random() * 12)
-            }))
-          });
+          // VoC Analytics data — will be populated from real feedback data
+          setVocData(null);
+          // Cohort data — will be populated from real retention analytics
+          setCohortData([]);
+          // AI metrics — will be populated from real AI usage analytics
+          setAiMetrics(null);
         }
       } catch (e) {
         console.error('Failed to fetch advanced analytics:', e);

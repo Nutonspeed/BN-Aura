@@ -183,44 +183,10 @@ Please provide a comprehensive skin analysis and treatment recommendations.
   } catch (error) {
     console.error('Gemini AI analysis error:', error);
     
-    // Fallback response with mock data
-    return {
-      overallScore: 75 + Math.floor(Math.random() * 15),
-      skinAge: input.customerInfo.age + Math.floor(Math.random() * 6) - 3,
-      skinType: 'Combination',
-      recommendations: [
-        {
-          type: 'laser',
-          name: 'Pico Genesis Laser',
-          description: 'กำจัดจุดด่างดำและปรับสีผิวให้สม่ำเสมอ',
-          price: '8,000-12,000',
-          sessions: 3,
-          urgency: 'medium',
-          confidence: 85,
-          reasoning: 'เหมาะสำหรับปรับปรุงรูขุมขนและสีผิว',
-          expectedResults: 'ผิวใสกว่าเดิม รูขุมขนกระชับ',
-          timeline: '2-4 สัปดาห์'
-        }
-      ],
-      skinMetrics: {
-        hydration: 65 + Math.floor(Math.random() * 20),
-        elasticity: 60 + Math.floor(Math.random() * 25),
-        pigmentation: 55 + Math.floor(Math.random() * 30),
-        texture: 70 + Math.floor(Math.random() * 20),
-        poreSize: 60 + Math.floor(Math.random() * 25),
-        oiliness: 65 + Math.floor(Math.random() * 25)
-      },
-      aiInsights: [
-        `การวิเคราะห์ผิวของคุณ${input.customerInfo.name} เสร็จสิ้น`,
-        'ระบบ AI ตรวจพบจุดที่ควรปรับปรุงและให้คำแนะนำเฉพาะ',
-        'แนะนำให้ปรึกษาผู้เชี่ยวชาญก่อนตัดสินใจรักษา'
-      ],
-      riskFactors: ['ควรหลีกเลี่ยงการสัมผัสแสงแดดโดยตรงหลังรักษา'],
-      followUpAdvice: ['ใช้ครีมกันแดด SPF 30+ ทุกวัน', 'ดื่มน้ำให้เพียงพอ 2-3 ลิตรต่อวัน']
-    };
+    // Re-throw so caller can use HF results as fallback instead of fake data
+    throw new Error(`Gemini analysis failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
-
 // Quick skin analysis using Gemini Flash (faster)
 export async function quickSkinAnalysis(input: SkinAnalysisInput): Promise<AIAnalysisResult> {
   return analyzeSkinWithGemini(input, false);

@@ -50,13 +50,13 @@ export default function SettingsPage() {
   const [upgrading, setUpgrading] = useState<string | null>(null);
 
   const sections = [
-    { id: 'general', label: 'Clinic Information', icon: Buildings },
-    { id: 'appearance', label: 'Brand & Appearance', icon: Palette },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'security', label: 'Security & RLS', icon: Shield },
-    { id: 'billing', label: 'Subscription & Billing', icon: CreditCard },
-    { id: 'loyalty', label: 'Loyalty Program', icon: Sparkle },
-    { id: 'i18n', label: 'Translate', icon: Globe },
+    { id: 'general', label: 'ข้อมูลคลินิก', icon: Buildings },
+    { id: 'appearance', label: 'แบรนด์และรูปลักษณ์', icon: Palette },
+    { id: 'notifications', label: 'การแจ้งเตือน', icon: Bell },
+    { id: 'security', label: 'ความปลอดภัย', icon: Shield },
+    { id: 'billing', label: 'แพ็กเกจและการชำระเงิน', icon: CreditCard },
+    { id: 'loyalty', label: 'โปรแกรมสะสมคะแนน', icon: Sparkle },
+    { id: 'i18n', label: 'ภาษา', icon: Globe },
   ];
 
   const currentPlan = useMemo(() => {
@@ -149,7 +149,7 @@ export default function SettingsPage() {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Syncing Configuration Cluster...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">กำลังโหลดการตั้งค่า...</p>
       </div>
     );
   }
@@ -171,7 +171,7 @@ export default function SettingsPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Gear weight="duotone" className="w-4 h-4" />
-            Workspace Configuration Hub
+            ศูนย์กลางการตั้งค่า
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -187,7 +187,7 @@ export default function SettingsPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating clinical orchestration, brand identity, and security protocol matrices.
+            จัดการตั้งค่าคลินิก แบรนด์ และความปลอดภัย
           </motion.p>
         </div>
 
@@ -208,7 +208,7 @@ export default function SettingsPage() {
             ) : (
               <FloppyDisk weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
             )}
-            <span>{saving ? 'SYNCHRONIZING...' : success ? 'SETTLED' : 'COMMIT CHANGES'}</span>
+            <span>{saving ? 'SYNCHRONIZING...' : success ? 'SETTLED' : 'บันทึกการเปลี่ยนแปลง'}</span>
           </Button>
         </motion.div>
       </div>
@@ -251,10 +251,10 @@ export default function SettingsPage() {
             <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
             <div className="flex items-center gap-3 relative z-10">
               <Sparkle weight="duotone" className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Protocol Intel</h4>
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">ข้อมูลสำคัญ</h4>
             </div>
             <p className="text-[11px] text-muted-foreground italic font-medium leading-relaxed relative z-10 opacity-80 mt-2">
-              Clinical configuration parameters are synchronized across the global cluster matrix in real-time.
+              การตั้งค่าจะมีผลทันทีหลังบันทึก
             </p>
           </Card>
         </motion.div>
@@ -280,8 +280,8 @@ export default function SettingsPage() {
                         <Buildings weight="duotone" className="w-7 h-7" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Clinic Information</CardTitle>
-                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Foundational identity nodes</p>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">ข้อมูลคลินิก</CardTitle>
+                        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">ข้อมูลพื้นฐานคลินิก</p>
                       </div>
                     </div>
                   </CardHeader>
@@ -294,20 +294,20 @@ export default function SettingsPage() {
                           className="w-32 h-28 rounded-[40px] bg-secondary/30 border-2 border-dashed border-border flex flex-col items-center justify-center text-muted-foreground hover:border-primary/50 hover:text-primary transition-all cursor-pointer relative overflow-hidden shadow-inner backdrop-blur-md"
                         >
                           <UploadSimple weight="bold" className="w-7 h-7 mb-2" />
-                          <span className="text-[9px] font-black uppercase tracking-[0.2em]">Upload Node</span>
+                          <span className="text-[9px] font-black uppercase tracking-[0.2em]">อัพโหลดโลโก้</span>
                         </motion.div>
                       </div>
                       <div className="space-y-2">
-                        <h3 className="text-xl font-black text-foreground uppercase tracking-tight">Identity Visual node</h3>
+                        <h3 className="text-xl font-black text-foreground uppercase tracking-tight">โลโก้คลินิก</h3>
                         <p className="text-sm text-muted-foreground font-medium italic leading-relaxed opacity-80 max-w-sm">
-                          Clinical trademark synchronization. Optimized for 512x512px with alpha transparency.
+                          ซิงค์โลโก้คลินิก ขนาดแนะนำ 512x512px
                         </p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-4">
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Clinical Designation *</label>
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">ชื่อคลินิก *</label>
                         <div className="relative group/input">
                           <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-2xl" />
                           <Buildings weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
@@ -321,7 +321,7 @@ export default function SettingsPage() {
                         </div>
                       </div>
                       <div className="space-y-3">
-                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Registry Code</label>
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">รหัสคลินิก</label>
                         <div className="relative group/input">
                           <IdentificationCard weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
                           <input 
@@ -333,7 +333,7 @@ export default function SettingsPage() {
                         </div>
                       </div>
                       <div className="space-y-3 md:col-span-2">
-                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Secure Contact Link *</label>
+                        <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">อีเมลติดต่อ *</label>
                         <div className="relative group/input">
                           <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-2xl" />
                           <EnvelopeSimple weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
@@ -354,8 +354,8 @@ export default function SettingsPage() {
                           <Globe weight="fill" className="w-32 h-32 text-primary" />
                         </div>
                         <div className="space-y-1 relative z-10">
-                          <h4 className="text-sm font-black text-foreground uppercase tracking-widest">Global Visibility node</h4>
-                          <p className="text-[10px] text-muted-foreground font-medium italic opacity-60">Authorize external protocol discovery and neural booking integration.</p>
+                          <h4 className="text-sm font-black text-foreground uppercase tracking-widest">การแสดงผลสาธารณะ</h4>
+                          <p className="text-[10px] text-muted-foreground font-medium italic opacity-60">อนุญาตให้แสดงคลินิกในระบบค้นหาและจองออนไลน์</p>
                         </div>
                         <button
                           type="button"
@@ -465,7 +465,7 @@ export default function SettingsPage() {
                         <Palette weight="duotone" className="w-7 h-7" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Brand & Appearance</CardTitle>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">แบรนด์และรูปลักษณ์</CardTitle>
                         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Visual identity configuration</p>
                       </div>
                     </div>
@@ -491,9 +491,9 @@ export default function SettingsPage() {
                   </CardHeader>
                   <CardContent className="p-8 md:p-12 space-y-6">
                     {[
-                      { label: 'Email Notifications', desc: 'Appointment confirmations, reminders & promotions', enabled: true },
+                      { label: 'Email การแจ้งเตือน', desc: 'Appointment confirmations, reminders & promotions', enabled: true },
                       { label: 'SMS Alerts', desc: 'Critical alerts via SMS gateway', enabled: false },
-                      { label: 'Push Notifications', desc: 'Real-time browser push notifications', enabled: true },
+                      { label: 'Push การแจ้งเตือน', desc: 'Real-time browser push notifications', enabled: true },
                       { label: 'Staff Activity Alerts', desc: 'Notify on staff check-in/check-out events', enabled: true },
                       { label: 'Low Stock Warnings', desc: 'Inventory threshold breach notifications', enabled: false },
                     ].map((item, idx) => (
@@ -519,7 +519,7 @@ export default function SettingsPage() {
                         <Shield weight="duotone" className="w-7 h-7" />
                       </div>
                       <div>
-                        <CardTitle className="text-2xl font-black uppercase tracking-tight">Security & RLS</CardTitle>
+                        <CardTitle className="text-2xl font-black uppercase tracking-tight">ความปลอดภัย</CardTitle>
                         <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Row-level security protocol matrix</p>
                       </div>
                     </div>

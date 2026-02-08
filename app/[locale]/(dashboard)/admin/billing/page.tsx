@@ -38,8 +38,8 @@ export default function BillingManagementPage() {
   const [refreshing, setRefreshing] = useState(false);
 
   const tabs = [
-    { id: 'subscriptions', label: 'Subscriptions', icon: Package },
-    { id: 'invoices', label: 'Invoices & Receipts', icon: FileText }
+    { id: 'subscriptions', label: 'แพ็กเกจ', icon: Package },
+    { id: 'invoices', label: 'ใบแจ้งหนี้และใบเสร็จ', icon: FileText }
   ];
 
   const handleRefresh = async () => {
@@ -49,7 +49,7 @@ export default function BillingManagementPage() {
   };
 
   const handleDownload = (id: string) => {
-    alert(`Downloading invoice ${id}...`);
+    alert(`กำลังดาวน์โหลดใบแจ้งหนี้ ${id}...`);
   };
 
   const formatCurrency = (amount: number) => {
@@ -85,7 +85,7 @@ export default function BillingManagementPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <CreditCard weight="duotone" className="w-4 h-4" />
-            Fiscal Architecture
+            สถาปัตยกรรมทางการเงิน
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -93,7 +93,7 @@ export default function BillingManagementPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Subscription & <span className="text-primary">Billing</span>
+            แพ็กเกจและ<span className="text-primary">การเรียกเก็บเงิน</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}

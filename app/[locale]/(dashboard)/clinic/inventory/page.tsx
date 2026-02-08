@@ -273,7 +273,7 @@ export default function InventoryManagement() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Package weight="duotone" className="w-4 h-4" />
-            Supply Chain Intelligence Node
+            ระบบจัดการคลังสินค้า
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -289,17 +289,17 @@ export default function InventoryManagement() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Real-time asset tracking, clinical supply orchestration, and stock optimization.
+            ติดตามสินค้าแบบเรียลไทม์ จัดการวัตถุดิบ และเพิ่มประสิทธิภาพสต็อก
           </motion.p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <div className="flex bg-secondary/50 border border-border/50 p-1.5 rounded-[24px] shadow-inner mr-2">
             {[
-              { id: 'main', label: 'Vault', icon: Archive, href: '/clinic/inventory' },
-              { id: 'orders', label: 'Orders', icon: Truck, href: '/clinic/inventory/orders' },
-              { id: 'alerts', label: 'Alerts', icon: WarningCircle, href: '/clinic/inventory/alerts' },
-              { id: 'suppliers', label: 'Network', icon: Buildings, href: '/clinic/inventory/suppliers' }
+              { id: 'main', label: 'คลัง', icon: Archive, href: '/clinic/inventory' },
+              { id: 'orders', label: 'คำสั่งซื้อ', icon: Truck, href: '/clinic/inventory/orders' },
+              { id: 'alerts', label: 'แจ้งเตือน', icon: WarningCircle, href: '/clinic/inventory/alerts' },
+              { id: 'suppliers', label: 'ซัพพลายเออร์', icon: Buildings, href: '/clinic/inventory/suppliers' }
             ].map((node) => (
               <Link key={node.id} href={node.href}>
                 <button
@@ -323,14 +323,14 @@ export default function InventoryManagement() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            Sync Vault
+            ซิงค์ข้อมูล
           </Button>
           <Button 
             onClick={handleAddProduct}
             className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            Initialize Asset
+            เพิ่มสินค้า
           </Button>
         </div>
       </div>
@@ -338,20 +338,20 @@ export default function InventoryManagement() {
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="Total Assets"
+          title="สินค้าทั้งหมด"
           value={products.length}
           icon={Cube}
           className="p-4"
         />
         <StatCard
-          title="Critical Depletion"
+          title="สินค้าใกล้หมด"
           value={lowStockProducts.length}
           icon={WarningCircle}
           iconColor="text-rose-500"
           className="p-4"
         />
         <StatCard
-          title="Consolidated Value"
+          title="มูลค่ารวม"
           value={totalValue}
           prefix="฿"
           icon={ChartBar}
@@ -359,7 +359,7 @@ export default function InventoryManagement() {
           className="p-4"
         />
         <StatCard
-          title="Category Clusters"
+          title="หมวดหมู่"
           value={categories.length - 1}
           icon={Tag}
           iconColor="text-purple-500"
@@ -385,7 +385,7 @@ export default function InventoryManagement() {
                       <Warning weight="fill" className="w-7 h-7 animate-pulse" />
                     </div>
                     <div className="space-y-1">
-                      <h3 className="text-lg font-black text-rose-500 uppercase tracking-tight">Critical Depletion Detected</h3>
+                      <h3 className="text-lg font-black text-rose-500 uppercase tracking-tight">สินค้าใกล้หมด Detected</h3>
                       <p className="text-rose-500/70 text-xs font-medium italic">
                         {lowStockProducts.length} asset nodes have reached critical operational thresholds.
                       </p>
@@ -424,7 +424,7 @@ export default function InventoryManagement() {
               <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
               <input 
                 type="text" 
-                placeholder="Query asset name, SKU identity, or cluster category..." 
+                placeholder="ค้นหาสินค้า, SKU หรือหมวดหมู่..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
@@ -439,7 +439,7 @@ export default function InventoryManagement() {
               >
                 {categories.map(category => (
                   <option key={category} value={category} className="bg-card">
-                    {category === 'all' ? 'Protocol: ALL CATEGORIES' : `CLUSTER: ${category.toUpperCase()}`}
+                    {category === 'all' ? 'ทุกหมวดหมู่' : `CLUSTER: ${category.toUpperCase()}`}
                   </option>
                 ))}
               </select>

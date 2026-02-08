@@ -57,7 +57,7 @@ function PermissionsContent() {
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          Synchronizing Permission Matrix...
+          กำลังประมวลผลข้อมูลสิทธิ์การใช้งาน...
         </p>
       </div>
     );

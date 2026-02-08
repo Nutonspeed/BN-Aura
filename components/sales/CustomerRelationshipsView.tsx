@@ -43,7 +43,7 @@ export default function CustomerRelationshipsView({ data }: CustomerRelationship
             </div>
           ) : (
             <div className="p-8 text-center text-muted-foreground">
-              <p>No similar customers found</p>
+              <p>ไม่พบลูกค้าที่คล้ายกัน</p>
             </div>
           )}
         </div>
@@ -69,7 +69,7 @@ export default function CustomerRelationshipsView({ data }: CustomerRelationship
                 </div>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">No staff assigned</p>
+              <p className="text-sm text-muted-foreground">ยังไม่มีพนักงานดูแล</p>
             )}
           </div>
         </div>
@@ -105,7 +105,7 @@ export default function CustomerRelationshipsView({ data }: CustomerRelationship
               </div>
             ) : (
               <div className="p-6 text-center">
-                <p className="text-sm text-muted-foreground">No referrals yet</p>
+                <p className="text-sm text-muted-foreground">ยังไม่มีการแนะนำ</p>
               </div>
             )}
           </div>

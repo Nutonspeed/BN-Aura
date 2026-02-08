@@ -34,12 +34,12 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
     <div className="space-y-6">
       {/* Top Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Churn Risk Card */}
+        {/* ความเสี่ยงลูกค้าหมด Card */}
         <div className={`p-4 rounded-xl border ${getRiskColor(data.churnRisk.level)}`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               {getRiskIcon(data.churnRisk.level)}
-              <h3 className="font-bold">Churn Risk</h3>
+              <h3 className="font-bold">ความเสี่ยงลูกค้าหมด</h3>
             </div>
             <span className="text-2xl font-black">{data.churnRisk.score}%</span>
           </div>
@@ -76,10 +76,10 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 text-emerald-400">
               <TrendUp className="w-5 h-5" />
-              <h3 className="font-bold">Lifetime Value</h3>
+              <h3 className="font-bold">มูลค่าตลอดชีพ</h3>
             </div>
             <div className="text-right">
-              <p className="text-xs text-muted-foreground uppercase font-bold">Predicted</p>
+              <p className="text-xs text-muted-foreground uppercase font-bold">ทำนาย</p>
               <span className="text-2xl font-black text-white">
                 ฿{data.ltv.predicted.toLocaleString()}
               </span>
@@ -94,13 +94,13 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
           </div>
 
           <div className="mt-4 pt-4 border-t border-emerald-500/20 flex justify-between items-center text-sm">
-            <span className="text-muted-foreground">Current Value</span>
+            <span className="text-muted-foreground">ปัจจุบัน Value</span>
             <span className="font-bold text-white">฿{data.ltv.current.toLocaleString()}</span>
           </div>
         </div>
       </div>
 
-      {/* Next Best Action */}
+      {/* การกระทำที่ดีที่สุดถัดไป */}
       <div className="p-1 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600">
         <div className="bg-slate-900 rounded-xl p-5">
           <div className="flex items-start justify-between mb-4">
@@ -109,10 +109,10 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
                 <Lightbulb className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-lg">Next Best Action</h3>
+                <h3 className="font-bold text-white text-lg">การกระทำที่ดีที่สุดถัดไป</h3>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">
-                    {data.nextBestAction.confidence}% Confidence
+                    {data.nextBestAction.confidence}% ความมั่นใจ
                   </span>
                 </div>
               </div>

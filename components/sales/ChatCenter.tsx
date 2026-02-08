@@ -50,7 +50,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
     fetchSessions();
   }, [salesId]);
 
-  const handleSendMessage = async () => {
+  const handleส่งMessage = async () => {
     if (!newMessage.trim() || !activeSession) return;
 
     try {
@@ -80,7 +80,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
   };
 
   const filteredSessions = sessions.filter(s => 
-    s.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+    s.customerName.toต่ำerCase().includes(searchTerm.toต่ำerCase())
   );
 
   return (
@@ -91,11 +91,11 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white uppercase tracking-tight flex items-center gap-2">
               <ChatCircle className="w-5 h-5 text-primary" />
-              Intelligence Chat
+              แชทอัจฉริยะ
             </h3>
             {sessions.reduce((acc, s) => acc + s.unreadCount, 0) > 0 && (
               <span className="bg-primary text-primary-foreground text-[10px] font-black px-2 py-0.5 rounded-full animate-pulse">
-                NEW
+                ใหม่
               </span>
             )}
           </div>
@@ -104,7 +104,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
             <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search conversations..."
+              placeholder="ค้นหาการสนทนา..."
               className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-xs text-white focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -114,9 +114,9 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
 
         <div className="flex-1 overflow-y-auto custom-scrollbar">
           {loading ? (
-            <div className="p-8 text-center text-muted-foreground text-xs animate-pulse">Scanning channels...</div>
+            <div className="p-8 text-center text-muted-foreground text-xs animate-pulse">กำลังสแกนช่อง...</div>
           ) : filteredSessions.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-xs italic">No active channels found.</div>
+            <div className="p-8 text-center text-muted-foreground text-xs italic">ไม่พบช่องที่ใช้งาน</div>
           ) : (
             filteredSessions.map((session) => (
               <button
@@ -140,7 +140,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                     </span>
                   </div>
                   <p className="text-[10px] text-muted-foreground truncate font-light">
-                    {session.messages[session.messages.length - 1]?.messageText || 'Start conversation...'}
+                    {session.messages[session.messages.length - 1]?.messageText || 'เริ่มการสนทนา...'}
                   </p>
                 </div>
                 {session.unreadCount > 0 && (
@@ -175,12 +175,12 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                     <h4 className="text-sm font-bold text-white">{activeSession.customerName}</h4>
                     <p className="text-[9px] text-emerald-400 uppercase tracking-widest font-black flex items-center gap-1">
                       <Circle className="w-1.5 h-1.5 fill-emerald-400" />
-                      Encrypted Channel
+                      ช่องที่เข้ารหัส
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-primary hover:bg-primary/10 transition-all tooltip" title="Send AI Recommendation">
+                  <button className="p-2 bg-white/5 border border-white/10 rounded-lg text-primary hover:bg-primary/10 transition-all tooltip" title="ส่ง AI Recommendation">
                     <Sparkle className="w-4 h-4" />
                   </button>
                 </div>
@@ -204,7 +204,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                       {msg.messageType === 'treatment_recommendation' && (
                         <div className="mb-2 p-2 bg-black/20 rounded-lg border border-white/10 flex items-center gap-2">
                           <Sparkle className="w-3 h-3 text-primary-foreground" />
-                          <span className="text-[10px] font-black uppercase">Clinical Insight</span>
+                          <span className="text-[10px] font-black uppercase">ข้อมูลเชิงลึกทางคลินิก</span>
                         </div>
                       )}
                       <p className="font-light leading-relaxed">{msg.messageText}</p>
@@ -221,14 +221,14 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
-                    placeholder="Type clinical advice..."
+                    placeholder="พิมพ์คำแนะนำทางคลินิก..."
                     className="flex-1 bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-sm text-white focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    onKeyPress={(e) => e.key === 'Enter' && handleส่งMessage()}
                   />
                   <button
-                    onClick={handleSendMessage}
+                    onClick={handleส่งMessage}
                     disabled={!newMessage.trim()}
                     className="p-3 bg-primary text-primary-foreground rounded-xl shadow-premium hover:brightness-110 active:scale-95 disabled:opacity-50 disabled:active:scale-100 transition-all"
                   >
@@ -243,9 +243,9 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
                 <ChatCircle className="w-10 h-10" />
               </div>
               <div className="space-y-2">
-                <h4 className="text-xl font-bold text-white uppercase tracking-tight">Select a Channel</h4>
+                <h4 className="text-xl font-bold text-white uppercase tracking-tight">เลือกช่อง</h4>
                 <p className="text-sm text-muted-foreground max-w-xs font-light">
-                  Choose a customer conversation to start providing personalized aesthetic intelligence.
+                  เลือกการสนทนาลูกค้าเพื่อเริ่มให้ข้อมูลความงามส่วนบุคคล
                 </p>
               </div>
             </div>

@@ -93,10 +93,10 @@ export default function ClinicDashboard() {
             if (result.success) {
               const d = result.data;
               setStats([
-                { label: 'Monthly Revenue', value: Number(d.monthlyRevenue), change: 0, trend: 'up', icon: TrendUp, prefix: '฿' },
-                { label: 'Total AI Scans', value: Number(d.totalScans), change: 0, trend: 'up', icon: Sparkle },
-                { label: 'Active Customers', value: Number(d.activeCustomers), change: 0, trend: 'up', icon: Users },
-                { label: 'Today Appointments', value: Number(d.todayAppointments), change: 0, trend: 'up', icon: CalendarDots },
+                { label: 'รายได้รายเดือน', value: Number(d.monthlyRevenue), change: 0, trend: 'up', icon: TrendUp, prefix: '฿' },
+                { label: 'สแกน AI ทั้งหมด', value: Number(d.totalScans), change: 0, trend: 'up', icon: Sparkle },
+                { label: 'ลูกค้าที่ใช้งาน', value: Number(d.activeCustomers), change: 0, trend: 'up', icon: Users },
+                { label: 'นัดหมายวันนี้', value: Number(d.todayAppointments), change: 0, trend: 'up', icon: CalendarDots },
               ]);
             }
 
@@ -119,7 +119,7 @@ export default function ClinicDashboard() {
       <div className="min-h-[180px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          Synchronizing Executive Node...
+          กำลังประมวลผลข้อมูลผู้บริหาร...
         </p>
       </div>
     );
@@ -142,7 +142,7 @@ export default function ClinicDashboard() {
             className="flex items-center space-xs text-primary text-label"
           >
             <Pulse weight="duotone" className="w-4 h-4" />
-            Executive Oversight Node
+            ศูนย์บัญชาการผู้บริหาร
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -150,7 +150,7 @@ export default function ClinicDashboard() {
             transition={{ delay: 0.1 }}
             className="text-display text-foreground"
           >
-            Clinic <span className="text-primary">Intelligence</span>
+            ศูนย์ข้อมูล<span className="text-primary">คลินิก</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -158,7 +158,7 @@ export default function ClinicDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating multi-tenant operational reporting, clinical performance, and strategic growth matrices.
+            รายงานการดำเนินงาน ประสิทธิภาพคลินิก และกลยุทธ์การเติบโต
           </motion.p>
         </div>
 
@@ -173,7 +173,7 @@ export default function ClinicDashboard() {
             className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium group"
           >
             <ShoppingCart weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Launch Terminal
+            เปิดหน้าขาย
           </Button>
           <Button 
             variant="outline"
@@ -181,7 +181,7 @@ export default function ClinicDashboard() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary"
           >
             <ChartBar weight="duotone" className="w-4 h-4 text-primary" />
-            Analytics Matrix
+            วิเคราะห์ข้อมูล
           </Button>
         </motion.div>
       </div>
@@ -212,8 +212,8 @@ export default function ClinicDashboard() {
                   <TrendUp weight="duotone" className="w-6 h-6" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-black uppercase tracking-tight">Revenue Trajectory</CardTitle>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Global yield synchronization</p>
+                  <CardTitle className="text-xl font-black uppercase tracking-tight">แนวโน้มรายได้</CardTitle>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">ข้อมูลรายได้แบบเรียลไทม์</p>
                 </div>
               </div>
               <div className="flex bg-secondary border border-border/50 p-1 rounded-xl shadow-inner">
@@ -266,10 +266,10 @@ export default function ClinicDashboard() {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
                   <Package weight="duotone" className="w-5 h-5" />
                 </div>
-                <CardTitle className="text-sm font-black uppercase tracking-tight text-foreground/80">Asset Alerts</CardTitle>
+                <CardTitle className="text-sm font-black uppercase tracking-tight text-foreground/80">แจ้งเตือนสินค้า</CardTitle>
               </div>
               {stockAlerts.length > 0 && (
-                <Badge variant="destructive" pulse className="font-black text-[8px] tracking-widest px-3 py-1">CRITICAL_NODE</Badge>
+                <Badge variant="destructive" pulse className="font-black text-[8px] tracking-widest px-3 py-1">วิกฤต</Badge>
               )}
             </CardHeader>
 
@@ -277,7 +277,7 @@ export default function ClinicDashboard() {
               {stockAlerts.length === 0 ? (
                 <div className="py-16 text-center opacity-20 flex flex-col items-center gap-4">
                   <CheckCircle weight="duotone" className="w-12 h-12 text-emerald-500" />
-                  <p className="text-[10px] font-black uppercase tracking-widest">Inventory Nominal</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest">สินค้าคงคลังปกติ</p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -310,7 +310,7 @@ export default function ClinicDashboard() {
                 onClick={() => router.push('/clinic/inventory')}
                 className="w-full mt-4 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary border border-dashed border-border/50 py-4 rounded-2xl"
               >
-                Access Inventory Vault
+                เข้าสู่คลังสินค้า
               </Button>
             </CardContent>
           </Card>
@@ -321,15 +321,15 @@ export default function ClinicDashboard() {
             <CardHeader className="p-8 border-b border-primary/10">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-3 text-primary">
                 <Sparkle weight="duotone" className="w-5 h-5" />
-                Strategic Intelligence
+                ข้อมูลเชิงกลยุทธ์
               </CardTitle>
             </CardHeader>
             
             <CardContent className="p-8 space-y-4 relative z-10">
               {[
-                { title: "Optimal Node Window", desc: "14:00 - 17:00 Workdays", icon: Clock, color: "text-primary", bg: "bg-primary/5" },
-                { title: "Peak Conversion Path", desc: "AI Scan → Premium Protocol", icon: Strategy, color: "text-emerald-500", bg: "bg-emerald-500/5" },
-                { title: "Tenant Retention Rate", desc: "85% Month-over-Month", icon: Pulse, color: "text-blue-500", bg: "bg-blue-500/5" }
+                { title: "ช่วงเวลาที่ดีที่สุด", desc: "14:00 - 17:00 วันทำการ", icon: Clock, color: "text-primary", bg: "bg-primary/5" },
+                { title: "เส้นทางการแปลงสูงสุด", desc: "สแกน AI → แพ็กเกจพรีเมียม", icon: Strategy, color: "text-emerald-500", bg: "bg-emerald-500/5" },
+                { title: "อัตราการรักษาลูกค้า", desc: "85% เทียบรายเดือน", icon: Pulse, color: "text-blue-500", bg: "bg-blue-500/5" }
               ].map((item, i) => (
                 <motion.div 
                   key={i} 
@@ -355,7 +355,7 @@ export default function ClinicDashboard() {
                 onClick={() => router.push('/clinic/reports')}
                 className="w-full mt-4 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary"
               >
-                Extract Full Intelligence Node
+                ดูรายงานทั้งหมด
               </Button>
             </CardContent>
           </Card>

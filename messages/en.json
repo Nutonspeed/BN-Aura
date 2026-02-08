@@ -436,6 +436,48 @@
     }
   },
   "clinic": {
+    "dashboard": {
+      "title": "Clinic Intelligence",
+      "subtitle": "Orchestrating multi-tenant operational reporting, clinical performance, and strategic growth matrices.",
+      "node_label": "Executive Oversight Node",
+      "buttons": {
+        "launch_terminal": "Launch Terminal",
+        "analytics_matrix": "Analytics Matrix"
+      },
+      "revenue": {
+        "title": "Revenue Trajectory",
+        "subtitle": "Global yield synchronization",
+        "periods": {
+          "d30": "30d",
+          "d90": "90d",
+          "all": "All"
+        }
+      },
+      "stock": {
+        "title": "Asset Alerts",
+        "critical_badge": "CRITICAL_NODE",
+        "empty_state": "Inventory Nominal",
+        "depletion_badge": "DEPLETION",
+        "stock_label": "STOCK",
+        "access_button": "Access Inventory Vault"
+      },
+      "strategy": {
+        "title": "Strategic Intelligence",
+        "optimal_window": {
+          "title": "Optimal Node Window",
+          "desc": "14:00 - 17:00 Workdays"
+        },
+        "peak_path": {
+          "title": "Peak Conversion Path",
+          "desc": "AI Scan → Premium Protocol"
+        },
+        "retention": {
+          "title": "Tenant Retention Rate",
+          "desc": "85% Month-over-Month"
+        },
+        "extract_button": "Extract Full Intelligence Node"
+      }
+    },
     "staff": {
       "title": "Staff",
       "add": "Add Staff",
@@ -451,5 +493,85 @@
   },
   "beautician": {
     "title": "Beautician"
+  },
+  "sales": {
+    "dashboard": {
+      "title": "Sales Dashboard",
+      "subtitle": "Commercial Intelligence Center",
+      "stats": {
+        "total_leads": "Total Leads",
+        "conversions": "Conversions",
+        "revenue": "Revenue",
+        "commission": "Commission"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "pipeline": "Workflow Pipeline",
+        "commissions": "Commission Tracker"
+      },
+      "quota": {
+        "title": "AI Quota Status",
+        "neural_savings": "Neural Cache Savings",
+        "usage_label": "Monthly Quota Usage",
+        "used": "used",
+        "total": "total",
+        "remaining": "Remaining",
+        "cache_efficiency": "Cache Efficiency",
+        "status": "Status",
+        "status_overage": "Overage",
+        "status_normal": "Normal",
+        "alert_critical": "🚨 Quota low! Next scan will incur additional charges",
+        "alert_warning": "⚠️ Used {percentage}% of quota - please use carefully",
+        "alert_saved": "🧠 Neural Cache saved {count} scans today from existing customer scans",
+        "tips": "💡 Tips: Use Flash Model (0.2 quota) for initial scan • Pro Model (1.0 quota) for detailed analysis"
+      },
+      "commission": {
+        "tracker_title": "Commission Tracker",
+        "monthly_target": "Monthly Target",
+        "progress_month": "Progress This Month",
+        "today": "Today",
+        "this_month": "This Month",
+        "remaining": "Remaining",
+        "rate_info": "📈 Commission Rate: <strong>{rate}%</strong> of total sales • Next payout: End of month"
+      },
+      "ai_coach": {
+        "performance_title": "AI Coach Performance",
+        "leaderboard_title": "AI Coach Leaderboard"
+      },
+      "customer": {
+        "add_button": "Add Customer",
+        "enhanced_management": "Enhanced Customer Management",
+        "pipeline_title": "Customer Pipeline",
+        "purchases": "purchases"
+      }
+    }
+  },
+  "pdpa": {
+    "title": "Privacy Architecture",
+    "subtitle": "Clinical PDPA Compliance Protocol",
+    "identity_integrity": {
+      "title": "Identity Integrity Commitment",
+      "description": "BN-Aura utilizes advanced cryptographic hashing to secure your clinical identity nodes. By initializing the suite, you authorize aesthetic data processing for personalized diagnostic refinement."
+    },
+    "terms": {
+      "label": "Clinical Terms of Service",
+      "desc": "I authorize BN-Aura usage parameters and neural processing protocols."
+    },
+    "privacy": {
+      "label": "Data Sovereignty Policy",
+      "desc": "I accept the clinical identity storage and encryption architecture."
+    },
+    "marketing": {
+      "label": "Intelligence Stream",
+      "desc": "Authorize personalized aesthetic nodes and protocol updates via digital link."
+    },
+    "buttons": {
+      "authorize": "Authorize & Initialize Suite",
+      "sync": "Sync Selection"
+    },
+    "badges": {
+      "iso": "ISO 27001 SECURE",
+      "compliant": "PDPA 2025 COMPLIANT"
+    }
   }
 }

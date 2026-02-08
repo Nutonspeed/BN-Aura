@@ -134,7 +134,7 @@ export default function BranchModal({ isOpen, onClose, onSuccess, branch }: Bran
                     {branch ? 'Modify Branch Node' : 'Initialize New Branch'}
                   </h3>
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">
-                    {branch ? 'Synchronizing expansion telemetry' : 'Establishing geographic operational node'}
+                    {branch ? 'กำลังประมวลผลข้อมูลการขยายสาขา' : 'กำลังจัดตั้งจุดปฏิบัติการภูมิศาสตร์'}
                   </p>
                 </div>
               </div>

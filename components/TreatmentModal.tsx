@@ -354,7 +354,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                             value={step.action}
                             onChange={(e) => updateProtocolStep(idx, 'action', e.target.value)}
                             className="w-full px-4 py-3 bg-card border border-border rounded-xl text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-all shadow-sm"
-                            placeholder="e.g. Apply localized cooling"
+                            placeholder="เช่น ประคบเย็นเฉพาะจุด"
                           />
                         </div>
                         <div className="space-y-2">
@@ -366,7 +366,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                               value={step.duration}
                               onChange={(e) => updateProtocolStep(idx, 'duration', e.target.value)}
                               className="w-full pl-10 pr-4 py-3 bg-card border border-border rounded-xl text-sm font-bold text-foreground focus:outline-none focus:border-primary/50 transition-all shadow-sm tabular-nums"
-                              placeholder="e.g. 5m"
+                              placeholder="เช่น 5 นาที"
                             />
                           </div>
                         </div>
@@ -379,7 +379,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                           onChange={(e) => updateProtocolStep(idx, 'notes', e.target.value)}
                           rows={2}
                           className="w-full px-4 py-3 bg-card border border-border rounded-xl text-sm font-medium text-foreground/70 placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary/50 transition-all resize-none italic leading-relaxed"
-                          placeholder="Specific operational instructions..."
+                          placeholder="คำแนะนำเฉพาะสำหรับขั้นตอนนี้..."
                         />
                       </div>
 
@@ -406,7 +406,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                   {formData.protocols.length === 0 && (
                     <div className="py-12 text-center bg-secondary/20 border-2 border-dashed border-border rounded-[32px] flex flex-col items-center gap-3">
                       <ListChecks weight="duotone" className="w-10 h-10 text-muted-foreground/30" />
-                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">No protocol steps established.</p>
+                      <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">ยังไม่มีขั้นตอนโปรโตคอล</p>
                     </div>
                   )}
                 </div>
@@ -435,7 +435,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                   disabled={loading}
                   className="w-full sm:flex-1 py-6 rounded-[20px] font-black uppercase tracking-widest text-[10px]"
                 >
-                  Abort
+                  ยกเลิก
                 </Button>
                 <Button
                   type="submit"
@@ -445,7 +445,7 @@ export default function TreatmentModal({ isOpen, onClose, onSuccess, treatment }
                   {loading ? (
                     <>
                       <SpinnerGap className="w-5 h-5 animate-spin" />
-                      Synchronizing...
+                      กำลังประมวลผล...
                     </>
                   ) : (
                     <>

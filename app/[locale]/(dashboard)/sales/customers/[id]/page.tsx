@@ -160,9 +160,9 @@ export default function SalesCustomerDetailPage() {
   if (!customer) {
     return (
       <div className="p-8 text-center">
-        <p className="text-muted-foreground">Customer not found</p>
+        <p className="text-muted-foreground">ไม่พบลูกค้า</p>
         <Button variant="outline" onClick={() => router.back()} className="mt-4">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Go Back
+          <ArrowLeft className="w-4 h-4 mr-2" /> กลับ
         </Button>
       </div>
     );
@@ -189,7 +189,7 @@ export default function SalesCustomerDetailPage() {
           <h1 className="text-2xl font-black uppercase tracking-tight">
             {customer.full_name || 'Unknown Customer'}
           </h1>
-          <p className="text-sm text-muted-foreground">Customer Intelligence Profile</p>
+          <p className="text-sm text-muted-foreground">โปรไฟล์ข้อมูลลูกค้า</p>
         </div>
         <Button
           onClick={() => router.push(`/th/sales/chat?customerId=${customerId}`)}
@@ -234,18 +234,18 @@ export default function SalesCustomerDetailPage() {
                 <div className="flex items-center gap-2">
                   <TrendUp className="w-4 h-4 text-emerald-500" />
                   <span className="text-lg font-bold">฿{totalSpent.toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground">total spent</span>
+                  <span className="text-xs text-muted-foreground">ยอดรวม</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4 text-blue-500" />
                   <span className="font-bold">{totalPurchases}</span>
-                  <span className="text-xs text-muted-foreground">purchases</span>
+                  <span className="text-xs text-muted-foreground">การซื้อ</span>
                 </div>
                 {loyaltyPoints > 0 && (
                   <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 text-amber-500" />
                     <span className="font-bold">{loyaltyPoints}</span>
-                    <span className="text-xs text-muted-foreground">loyalty pts</span>
+                    <span className="text-xs text-muted-foreground">คะแนน</span>
                   </div>
                 )}
               </div>
@@ -255,7 +255,7 @@ export default function SalesCustomerDetailPage() {
                 {customer.metadata?.skin_type && (
                   <div className="flex items-center gap-2 text-sm">
                     <Sparkle className="w-4 h-4 text-purple-500" />
-                    Skin: {customer.metadata.skin_type}
+                    ผิว: {customer.metadata.skin_type}
                   </div>
                 )}
                 {customer.metadata?.gender && (
@@ -296,7 +296,7 @@ export default function SalesCustomerDetailPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <TrendUp weight="duotone" className="w-6 h-6 text-emerald-500" />
-              AI Predictive Analytics
+              การวิเคราะห์ทำนาย AI
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -305,12 +305,12 @@ export default function SalesCustomerDetailPage() {
         </Card>
       )}
 
-      {/* Customer Timeline */}
+      {/* ไทม์ไลน์ลูกค้า */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <CalendarDots weight="duotone" className="w-6 h-6 text-primary" />
-            Customer Timeline
+            ไทม์ไลน์ลูกค้า
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -318,12 +318,12 @@ export default function SalesCustomerDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Conversation History */}
+      {/* ประวัติการสนทนา */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <ChatCircle weight="duotone" className="w-6 h-6 text-blue-500" />
-            Conversation History
+            ประวัติการสนทนา
           </CardTitle>
         </CardHeader>
         <CardContent>

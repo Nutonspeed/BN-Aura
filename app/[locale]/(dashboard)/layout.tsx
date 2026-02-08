@@ -448,7 +448,7 @@ export default function DashboardLayout({
             className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all group"
           >
             <SignOut className="w-5 h-5 group-hover:rotate-180 transition-transform duration-300" />
-            {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && <span className="font-medium text-sm">Logout Session</span>}
+            {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && <span className="font-medium text-sm">ออกจากระบบ</span>}
           </button>
         </div>
 

@@ -21,8 +21,8 @@ const mockAnalysisData = {
   overallScore: 78,
   skinAge: 28,
   actualAge: 32,
-  skinType: "Combination",
-  concerns: ["Fine Lines", "Dark Spots", "Large Pores"],
+  skinType: "ผิวผสม",
+  concerns: ["ริ้วรอย", "จุดด่างดำ", "รูขุมขนกว้าง"],
   recommendations: [
     { 
       type: 'filler', 
@@ -31,8 +31,8 @@ const mockAnalysisData = {
       icon: '💉', 
       sessions: 2,
       price: '12,000-18,000',
-      urgency: 'medium',
-      results: '2-3 weeks'
+      urgency: 'ปานกลาง',
+      results: '2-3 สัปดาห์'
     },
     { 
       type: 'laser', 
@@ -41,8 +41,8 @@ const mockAnalysisData = {
       icon: '✨', 
       sessions: 3,
       price: '8,000-12,000',
-      urgency: 'high',
-      results: '4-6 weeks'
+      urgency: 'สูง',
+      results: '4-6 สัปดาห์'
     },
     { 
       type: 'facial', 
@@ -51,8 +51,8 @@ const mockAnalysisData = {
       icon: '�', 
       sessions: 4,
       price: '3,500-4,500',
-      urgency: 'low',
-      results: 'Immediate'
+      urgency: 'ต่ำ',
+      results: 'ทันที'
     }
   ],
   skinMetrics: {

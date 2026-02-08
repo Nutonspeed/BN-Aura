@@ -59,7 +59,7 @@ export default function MySalesRep({ customerId }: { customerId: string }) {
         <div className="w-12 h-12 rounded-full bg-white/5 mx-auto flex items-center justify-center text-muted-foreground">
           <User className="w-6 h-6" />
         </div>
-        <p className="text-sm text-muted-foreground italic font-light">No advisor assigned yet.</p>
+        <p className="text-sm text-muted-foreground italic font-light">ยังไม่มีที่ปรึกษาที่ได้รับมอบหมาย</p>
       </div>
     );
   }
@@ -76,10 +76,10 @@ export default function MySalesRep({ customerId }: { customerId: string }) {
 
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h3 className="text-lg font-bold text-white uppercase tracking-tight">Your Personal Advisor</h3>
+          <h3 className="text-lg font-bold text-white uppercase tracking-tight">ที่ปรึกษาส่วนตัวของคุณ</h3>
           <div className="flex items-center gap-1.5 text-[10px] font-black text-emerald-400 uppercase tracking-widest">
             <SealCheck className="w-3 h-3" />
-            Verified Professional
+            ผู้เชี่ยวชาญที่ได้รับการรับรอง
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default function MySalesRep({ customerId }: { customerId: string }) {
         </div>
         <div>
           <h4 className="text-xl font-bold text-white">{salesRep.name}</h4>
-          <p className="text-xs text-muted-foreground font-light">Senior Aesthetic Consultant</p>
+          <p className="text-xs text-muted-foreground font-light">ที่ปรึกษาความงามอาวุโส</p>
         </div>
       </div>
 

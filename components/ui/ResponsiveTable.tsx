@@ -28,7 +28,7 @@ export default function ResponsiveTable<T>({
   columns,
   data,
   loading,
-  emptyMessage = "No data found",
+  emptyMessage = "ไม่พบข้อมูล",
   onRowClick,
   rowKey,
   mobileCard
@@ -37,7 +37,7 @@ export default function ResponsiveTable<T>({
     return (
       <div className="py-20 flex flex-col items-center justify-center gap-4 text-muted-foreground">
         <SpinnerGap className="w-10 h-10 animate-spin text-primary" />
-        <p className="text-sm font-medium uppercase tracking-widest animate-pulse">Loading Data...</p>
+        <p className="text-sm font-medium uppercase tracking-widest animate-pulse">กำลังโหลดข้อมูล...</p>
       </div>
     );
   }

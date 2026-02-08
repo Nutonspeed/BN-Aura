@@ -84,7 +84,7 @@ export default function ConversationHistory({
         <div className="flex items-center gap-3">
           <ChatCircle className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-            Conversation History
+            ประวัติการสนทนา
           </h3>
         </div>
         <div className="space-y-3">
@@ -102,7 +102,7 @@ export default function ConversationHistory({
         <div className="flex items-center gap-3 mb-4">
           <ChatCircle className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-            Conversation History
+            ประวัติการสนทนา
           </h3>
         </div>
         <div className="text-center py-8 opacity-50">
@@ -121,7 +121,7 @@ export default function ConversationHistory({
         <div className="flex items-center gap-3">
           <ChatCircle className="w-5 h-5 text-primary" />
           <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-            Conversation History
+            ประวัติการสนทนา
           </h3>
         </div>
         <span className="text-[10px] text-muted-foreground">

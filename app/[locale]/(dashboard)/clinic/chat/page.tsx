@@ -113,9 +113,9 @@ export default function ChatAdvisor() {
               className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
             >
               <Sparkle weight="bold" className="w-3 h-3 animate-pulse" />
-              Cognitive Reasoning Node
+              โหนดการให้เหตุผลทางประสาท
             </motion.div>
-            <h1 className="text-3xl font-heading font-bold text-foreground uppercase tracking-tight">AI Chat <span className="text-primary">Advisor</span></h1>
+            <h1 className="text-3xl font-heading font-bold text-foreground uppercase tracking-tight">AI แชท <span className="text-primary">ที่ปรึกษา</span></h1>
           </div>
         </div>
         <div className="flex gap-3">
@@ -194,7 +194,7 @@ export default function ChatAdvisor() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Inquire about clinical cases or treatment optimization protocol..."
+                placeholder="สอบถามเกี่ยวกับเคสทางคลินิกหรือโปรโตคอลการรักษา..."
                 className="w-full bg-card border border-border/50 rounded-[32px] py-6 pl-10 pr-24 text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary transition-all shadow-inner relative z-10 font-bold"
               />
               <Button 
@@ -208,7 +208,7 @@ export default function ChatAdvisor() {
             <div className="mt-6 flex items-center justify-center gap-3 opacity-40">
               <ShieldCheck weight="fill" className="w-3.5 h-3.5 text-emerald-500" />
               <p className="text-[9px] text-center text-muted-foreground font-black tracking-[0.3em] uppercase">
-                Secure Neural Encryption Active • End-to-End Clinical Verification
+                การเข้ารหัส Neural ที่ปลอดภัยกำลังทำงาน • การตรวจสอบทางคลินิกแบบ End-to-End
               </p>
             </div>
           </div>
@@ -220,7 +220,7 @@ export default function ChatAdvisor() {
             <CardHeader className="p-8 border-b border-border/50 bg-secondary/30">
               <CardTitle className="text-xs font-black uppercase tracking-[0.3em] flex items-center gap-3 text-primary">
                 <Pulse weight="duotone" className="w-5 h-5" />
-                Active Context
+                บริบทที่ใช้งาน
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8 space-y-8 relative overflow-hidden">
@@ -228,16 +228,16 @@ export default function ChatAdvisor() {
               
               <div className="space-y-6 relative z-10">
                 <div className="p-6 bg-primary/5 rounded-[32px] border border-primary/10 shadow-inner group-hover:border-primary/20 transition-all duration-500">
-                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">Subject Node Focus</p>
-                  <p className="text-base font-black text-foreground tracking-tight uppercase">Identity Hub <span className="text-[10px] text-muted-foreground ml-1">#SYNC-2026</span></p>
+                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">โฟกัสโหนดหลัก</p>
+                  <p className="text-base font-black text-foreground tracking-tight uppercase">ศูนย์ข้อมูลตัวตน <span className="text-[10px] text-muted-foreground ml-1">#SYNC-2026</span></p>
                 </div>
                 
                 <div className="space-y-4">
-                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Transmission History</p>
+                  <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">ประวัติการส่งข้อมูล</p>
                   <div className="space-y-3">
                     {[
-                      "Neural Analysis (91%)",
-                      "Protocol: Pico Rejuvenation"
+                      "การวิเคราะห์ Neural (91%)",
+                      "โปรโตคอล: Pico Rejuvenation"
                     ].map((activity, i) => (
                       <div key={i} className="flex gap-3 items-center group/item">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:scale-150 transition-transform shadow-[0_0_8px_rgba(var(--primary),0.4)]" />
@@ -254,12 +254,12 @@ export default function ChatAdvisor() {
             <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:scale-110 transition-transform">
               <Lightning weight="fill" className="w-24 h-24 text-primary" />
             </div>
-            <h3 className="text-xs font-black text-foreground uppercase tracking-[0.2em] relative z-10">Neural Prompt Links</h3>
+            <h3 className="text-xs font-black text-foreground uppercase tracking-[0.2em] relative z-10">ลิงก์ Prompt Neural</h3>
             <div className="flex flex-wrap gap-2.5 relative z-10">
-              {['Compare Nodes', 
-                'Optimize Delta', 
-                'Neural Logic', 
-                'Fiscal Analysis'
+              {['เปรียบเทียบโหนด', 
+                'เพิ่มประสิทธิภาพ Delta', 
+                'ตรรกะ Neural', 
+                'การวิเคราะห์ทางการเงิน'
               ].map((tag) => (
                 <button 
                   key={tag} 

@@ -68,15 +68,15 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
             <Wallet className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white uppercase tracking-tight">Earning Intelligence</h3>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Real-time Commission Tracking</p>
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight">ข้อมูลรายได้</h3>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">ติดตามค่าคอมมิชชันแบบเรียลไทม์</p>
           </div>
         </div>
         
         <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
           {(['daily', 'weekly', 'monthly'] as const).map((p) => (
             <button
-              key={p}
+              key={p === 'daily' ? 'รายวัน' : p === 'weekly' ? 'รายสัปดาห์' : 'รายเดือน'}
               onClick={() => setPeriod(p)}
               className={`px-3 py-1.5 text-[10px] font-bold uppercase tracking-tighter rounded-lg transition-all ${
                 period === p 
@@ -84,7 +84,7 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
                   : 'text-muted-foreground hover:text-white'
               }`}
             >
-              {p}
+              {p === 'daily' ? 'รายวัน' : p === 'weekly' ? 'รายสัปดาห์' : 'รายเดือน'}
             </button>
           ))}
         </div>
@@ -108,7 +108,7 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
             </div>
             
             <div className="p-5 bg-white/5 rounded-[32px] border border-white/5 space-y-1 hover:border-primary/30 transition-all">
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Pending</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">รอดำเนินการ</p>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black text-primary">฿{(summary?.pendingCommission || 0).toLocaleString()}</span>
                 <Clock className="w-3 h-3 text-primary animate-pulse" />
@@ -138,7 +138,7 @@ export default function CommissionTracker({ salesId }: { salesId: string }) {
             {/* Progress Bar */}
             <div className="space-y-2">
               <div className="flex justify-between text-[9px] uppercase tracking-tighter font-bold">
-                <span className="text-muted-foreground">Monthly Target Progress</span>
+                <span className="text-muted-foreground">Monthly ความก้าวหน้าเป้าหมาย</span>
                 <span className="text-primary">{Math.round(progressValue)}%</span>
               </div>
               <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">

@@ -162,7 +162,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                       value={formData.name}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tracking-tight relative z-10 shadow-inner"
-                      placeholder="e.g. BioCore Pharmaceutical"
+                      placeholder="เช่น บริษัท ไบโอคอร์ ฟาร์มา"
                     />
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                       value={formData.contact_name}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium"
-                      placeholder="Contact Person Name"
+                      placeholder="ชื่อผู้ติดต่อ"
                     />
                   </div>
                 </div>
@@ -254,7 +254,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                     onChange={handleInputChange}
                     rows={3}
                     className="w-full pl-12 pr-5 py-4 bg-secondary/30 border border-border rounded-[24px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none font-medium leading-relaxed italic shadow-inner"
-                    placeholder="Full physical distribution address..."
+                    placeholder="ที่อยู่สำหรับจัดส่งสินค้า..."
                   />
                 </div>
               </div>
@@ -282,7 +282,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                   disabled={loading}
                   className="w-full sm:flex-1 py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                 >
-                  Abort Cycle
+                  ยกเลิก
                 </Button>
                 <Button
                   type="submit"
@@ -292,7 +292,7 @@ export default function SupplierModal({ isOpen, onClose, onSuccess, supplier }: 
                   {loading ? (
                     <>
                       <SpinnerGap className="w-4 h-4 animate-spin" />
-                      Synchronizing...
+                      กำลังประมวลผล...
                     </>
                   ) : (
                     <>

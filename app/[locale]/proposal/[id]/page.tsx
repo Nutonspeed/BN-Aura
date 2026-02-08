@@ -89,7 +89,7 @@ export default function ProposalPreviewPage() {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-muted-foreground animate-pulse font-display uppercase tracking-widest text-xs">Preparing your personal aura plan...</p>
+        <p className="text-muted-foreground animate-pulse font-display uppercase tracking-widest text-xs">กำลังเตรียมแผนความงามส่วนตัวของคุณ...</p>
       </div>
     );
   }
@@ -100,8 +100,8 @@ export default function ProposalPreviewPage() {
         <div className="w-20 h-20 rounded-3xl bg-rose-500/10 flex items-center justify-center text-rose-500 mb-4">
           <ShieldCheck className="w-10 h-10" />
         </div>
-        <h1 className="text-2xl font-bold text-white">Proposal Not Found</h1>
-        <p className="text-muted-foreground max-w-xs font-light text-sm">The proposal you are looking for does not exist or has expired. Please contact your clinic.</p>
+        <h1 className="text-2xl font-bold text-white">ไม่พบข้อเสนอ</h1>
+        <p className="text-muted-foreground max-w-xs font-light text-sm">ข้อเสนอที่คุณกำลังค้นหาไม่มีอยู่หรือหมดอายุแล้ว กรุณาติดต่อคลินิกของคุณ</p>
       </div>
     );
   }
@@ -140,9 +140,9 @@ export default function ProposalPreviewPage() {
           >
             <div className="px-5 py-2 bg-white/5 border border-white/10 rounded-full flex items-center gap-3 backdrop-blur-md shadow-lg">
               <ShieldCheck className="w-4 h-4 text-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.4)]" />
-              <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">Exclusively Authenticated for {proposal.lead?.name}</span>
+              <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">รับรองเฉพาะสำหรับ {proposal.lead?.name}</span>
             </div>
-            <p className="text-[9px] text-muted-foreground uppercase tracking-[0.5em] font-bold">Neural Diagnostic Cycle 2026.4</p>
+            <p className="text-[9px] text-muted-foreground uppercase tracking-[0.5em] font-bold">รอบการวินิจฉัยประสาท 2026.4</p>
           </motion.div>
         </div>
       </header>
@@ -222,7 +222,7 @@ export default function ProposalPreviewPage() {
                   <div className="space-y-1.5">
                     <h4 className="text-xl font-black text-white group-hover:text-primary transition-colors tracking-tight uppercase">{item.name}</h4>
                     <div className="flex items-center gap-3">
-                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{item.sessions} Cycle Sessions</span>
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{item.sessions} Cycle ครั้ง</span>
                       <div className="w-1 h-1 rounded-full bg-white/10" />
                       <span className="text-[10px] font-black text-primary uppercase tracking-widest">Clinical Grade</span>
                     </div>
@@ -231,7 +231,7 @@ export default function ProposalPreviewPage() {
                 
                 <div className="text-right space-y-1 min-w-[150px]">
                   <p className="text-3xl font-black text-white group-hover:text-emerald-400 transition-colors tracking-tighter tabular-nums">฿{Number(item.price).toLocaleString()}</p>
-                  <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.3em]">Projected Investment</p>
+                  <p className="text-[9px] text-muted-foreground uppercase font-black tracking-[0.3em]">Projected การลงทุน</p>
                 </div>
               </motion.div>
             ))}
@@ -295,7 +295,7 @@ export default function ProposalPreviewPage() {
             className="bg-black/60 backdrop-blur-2xl border border-white/10 p-4 rounded-[32px] flex items-center justify-between shadow-[0_0_40px_rgba(0,0,0,0.5)]"
           >
             <div className="pl-4 space-y-0.5">
-              <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Total Value</p>
+              <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">มูลค่ารวม</p>
               <p className="text-xl font-black text-white tracking-tighter">฿{Number(proposal.total_value).toLocaleString()}</p>
             </div>
             <button className="px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-black text-[10px] shadow-premium uppercase tracking-[0.2em] hover:brightness-110 active:scale-95 transition-all">

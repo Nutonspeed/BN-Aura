@@ -96,7 +96,7 @@ export function FormField({
             } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             <option value="" className="bg-slate-800">
-              {placeholder || 'Select an option'}
+              {placeholder || 'เลือกตัวเลือก'}
             </option>
             {options.map((option) => (
               <option key={option.value} value={option.value} className="bg-slate-800">
@@ -229,8 +229,8 @@ export function ConfirmModal({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText = 'ยืนยัน',
+  cancelText = 'ยกเลิก',
   variant = 'info',
   loading = false
 }: ConfirmModalProps) {
@@ -288,8 +288,8 @@ export function FormModal({
   children,
   onSubmit,
   loading = false,
-  submitText = 'FloppyDisk',
-  cancelText = 'Cancel',
+  submitText = 'บันทึก',
+  cancelText = 'ยกเลิก',
   size = 'md',
   className = ''
 }: FormModalProps) {

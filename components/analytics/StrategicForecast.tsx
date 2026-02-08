@@ -74,13 +74,13 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
             <ChartBar className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-foreground">Strategic <span className="text-primary">Forecast</span></h2>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">AI-Powered Predictive Intelligence</p>
+            <h2 className="text-xl font-semibold text-foreground">การคาดการณ์<span className="text-primary">เชิงกลยุทธ์</span></h2>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-bold">ระบบคาดการณ์อัจฉริยะ</p>
           </div>
         </div>
         <div className="flex items-center gap-3 px-4 py-2 bg-secondary border border-border rounded-xl">
           <Sparkle className="w-4 h-4 text-primary animate-glow-pulse" />
-          <span className="text-[10px] font-semibold text-foreground uppercase tracking-widest">Confidence: {(data?.confidenceScore || 0.85 * 100).toFixed(0)}%</span>
+          <span className="text-[10px] font-semibold text-foreground uppercase tracking-widest">ความเชื่อมั่น: {(data?.confidenceScore || 0.85 * 100).toFixed(0)}%</span>
         </div>
       </div>
 
@@ -89,19 +89,19 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
         <div className="p-6 bg-secondary rounded-2xl border border-border hover:border-primary/30 transition-all group/item overflow-hidden relative">
           <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 blur-[40px] rounded-full group-hover/item:bg-primary/20 transition-all duration-700" />
           <div className="space-y-6 relative z-10">
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Projected Monthly Revenue</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">รายได้รายเดือนที่คาดการณ์</p>
             <div className="space-y-1">
               <p className="text-3xl font-bold text-foreground tracking-tight tabular-nums">
-                ฿{data?.revenueForecast.nextMonth.toLocaleString() || '---'}
+                ฿{data?.revenueForecast?.nextMonth?.toLocaleString() || 'ข้อมูลไม่เพียงพอ'}
               </p>
               <div className="flex items-center gap-2 text-emerald-400 font-black text-[11px] uppercase tracking-widest">
                 <ArrowUpRight className="w-4 h-4" />
-                {data?.revenueForecast.projectedGrowth} Growth Trend
+                {data?.revenueForecast?.projectedGrowth || '---'} แนวโน้มการเติบโต
               </div>
             </div>
             <div className="pt-4 border-t border-white/5">
               <p className="text-[9px] text-muted-foreground font-light leading-relaxed italic">
-                Based on historical multi-channel conversion nodes and seasonal dermal trends.
+                อ้างอิงจากข้อมูลการแปลงหลายช่องทางและแนวโน้มตามฤดูกาล
               </p>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
         <div className="p-6 bg-secondary rounded-2xl border border-border hover:border-rose-500/30 transition-all group/item overflow-hidden relative">
           <div className="absolute -top-6 -right-6 w-24 h-24 bg-rose-500/10 blur-[40px] rounded-full group-hover/item:bg-rose-500/20 transition-all duration-700" />
           <div className="space-y-6 relative z-10">
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Supply Chain Risk Nodes</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">ความเสี่ยงซัพพลายเชน</p>
             
             <div className="space-y-3">
               {data?.inventoryForecasting && data.inventoryForecasting.length > 0 ? (
@@ -129,13 +129,13 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
               ) : (
                 <div className="flex items-center gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/20">
                   <TrendUp className="w-4 h-4 text-emerald-400" />
-                  <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">All nodes optimized</p>
+                  <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">ระบบทั้งหมดทำงานปกติ</p>
                 </div>
               )}
             </div>
 
             <button className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-[0.2em] group-hover/item:gap-3 transition-all">
-              Supply Chain Registry <CaretRight className="w-3 h-3" />
+              ดูข้อมูลซัพพลายเชน <CaretRight className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -147,11 +147,11 @@ export default function StrategicForecast({ clinicId }: { clinicId: string }) {
             <Sparkle className="w-5 h-5 animate-glow-pulse" />
           </div>
           <p className="text-[11px] text-muted-foreground font-light leading-relaxed max-w-md">
-            Neural model suggests a <span className="text-primary font-black uppercase">Bullish Cycle</span> ahead. Increasing advertising bandwidth for <span className="text-primary font-black">HydraFacial Plus</span> could optimize ROI by 14.2%.
+            ระบบ AI แนะนำว่าอยู่ในช่วง<span className="text-primary font-black uppercase">ขาขึ้น</span> การเพิ่มงบโฆษณาสำหรับ <span className="text-primary font-black">HydraFacial Plus</span> สามารถเพิ่ม ROI ได้ 14.2%
           </p>
         </div>
         <button className="px-6 py-3 bg-secondary border border-border rounded-xl text-[10px] font-semibold uppercase tracking-widest text-foreground hover:bg-accent transition-all active:scale-95 whitespace-nowrap">
-          Execute Strategy
+          ดำเนินกลยุทธ์
         </button>
       </div>
     </motion.div>

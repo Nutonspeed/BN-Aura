@@ -115,7 +115,7 @@ export default function AICoachInsights() {
     return (
       <div className="p-8 text-center">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-xs text-muted-foreground">Loading AI Coach insights...</p>
+        <p className="text-xs text-muted-foreground">กำลังโหลดข้อมูล AI Coach...</p>
       </div>
     );
   }
@@ -137,7 +137,7 @@ export default function AICoachInsights() {
         />
         <StatCard
           icon={<Target className="w-4 h-4 text-emerald-400" />}
-          label="Avg Deal Probability"
+          label="Avg ความน่าจะเป็นการขาย"
           value={`${insights.avgDealProbability}%`}
           sub="across all sessions"
           color="emerald"
@@ -197,12 +197,12 @@ export default function AICoachInsights() {
         </div>
       )}
 
-      {/* Top Objections & Products */}
+      {/* ข้อต่อต้านยอดนิยม & Products */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {insights.topObjections.length > 0 && (
           <div className="p-3 bg-muted/30 border border-border rounded-xl">
             <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-              Top Objections Handled
+              ข้อต่อต้านยอดนิยม Handled
             </h4>
             <div className="space-y-1">
               {insights.topObjections.map((obj, i) => (
@@ -234,8 +234,8 @@ export default function AICoachInsights() {
       {insights.totalSessions === 0 && (
         <div className="text-center py-6 text-muted-foreground">
           <Sparkle className="w-10 h-10 mx-auto mb-2 opacity-40" />
-          <p className="text-sm">No AI Coach sessions yet</p>
-          <p className="text-xs mt-1">Use the AI Coach during skin analysis consultations to start tracking insights</p>
+          <p className="text-sm">ยังไม่มีเซสชัน AI Coach</p>
+          <p className="text-xs mt-1">ใช้ AI Coach ระหว่างการปรึกษาวิเคราะห์ผิวเพื่อเริ่มติดตามข้อมูลเชิงลึก</p>
         </div>
       )}
     </div>

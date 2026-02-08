@@ -97,7 +97,7 @@ function CustomerManagementContent() {
 
   const columns = [
     {
-      header: 'Patient Identity',
+      header: 'ข้อมูลผู้ป่วย',
       accessor: (customer: Customer) => (
         <div className="flex items-center gap-4">
           <div className="w-12 h-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold shadow-sm shrink-0">
@@ -108,21 +108,21 @@ function CustomerManagementContent() {
               {customer.full_name} {customer.nickname ? `(${customer.nickname})` : ''}
             </Link>
             <div className="flex flex-wrap items-center gap-3 text-[10px] text-muted-foreground mt-0.5">
-              <span className="flex items-center gap-1"><EnvelopeSimple className="w-3 h-3" /> {customer.email || 'No Email'}</span>
-              <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {customer.phone || 'No Phone'}</span>
+              <span className="flex items-center gap-1"><EnvelopeSimple className="w-3 h-3" /> {customer.email || 'ไม่มีอีเมล'}</span>
+              <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {customer.phone || 'ไม่มีโทรศัพท์'}</span>
             </div>
           </div>
         </div>
       )
     },
     {
-      header: 'Cutaneous Health',
+      header: 'สุขภาพผิว',
       accessor: (customer: Customer) => {
         const skinScore = customer.metadata?.skinScore || 0;
         return (
           <div className="space-y-1.5 w-32">
             <div className="flex justify-between items-center">
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Score</span>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">คะแนน</span>
               <span className="text-[10px] font-bold text-foreground">{skinScore}%</span>
             </div>
             <div className="h-1 w-full bg-secondary rounded-full overflow-hidden border border-border">
@@ -140,7 +140,7 @@ function CustomerManagementContent() {
       }
     },
     {
-      header: 'Security Tier',
+      header: 'ระดับความปลอดภัย',
       accessor: (customer: Customer) => (
         <span className={cn(
           "px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider border",
@@ -153,13 +153,13 @@ function CustomerManagementContent() {
       )
     },
     {
-      header: 'Last Diagnostic',
+      header: 'การวินิจฉัยล่าสุด',
       accessor: (customer: Customer) => {
         const lastScan = customer.metadata?.lastScan || customer.created_at;
         return (
           <div className="flex flex-col">
             <span className="text-[10px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkle className="w-3 h-3 animate-pulse" /> AI Validated
+              <Sparkle className="w-3 h-3 animate-pulse" /> AI ตรวจสอบแล้ว
             </span>
             <span className="text-xs text-muted-foreground mt-0.5">
               {new Date(lastScan).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
@@ -206,7 +206,7 @@ function CustomerManagementContent() {
             className="flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-[0.3em]"
           >
             <Users className="w-4 h-4" />
-            Patient Identity Management
+            การจัดการข้อมูลผู้ป่วย
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -214,7 +214,7 @@ function CustomerManagementContent() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground uppercase tracking-tight"
           >
-            Customer <span className="text-primary">Database</span>
+            <span className="text-primary">ฐานข้อมูล</span>ลูกค้า
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -222,7 +222,7 @@ function CustomerManagementContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Managing patient profiles, cutaneous history, and aesthetic progress nodes.
+            จัดการโปรไฟล์ผู้ป่วย ประวัติผิว และโหนดความก้าวหน้าด้านความงาม
           </motion.p>
         </div>
         <motion.button 
@@ -232,7 +232,7 @@ function CustomerManagementContent() {
           className="flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-2xl font-bold uppercase tracking-[0.1em] shadow-premium hover:brightness-110 transition-all active:scale-95 text-xs"
         >
           <UserPlus className="w-4 h-4 stroke-[3px]" />
-          <span>Register New Patient</span>
+          <span>ลงทะเบียนผู้ป่วยใหม่</span>
         </motion.button>
       </div>
 
@@ -250,7 +250,7 @@ function CustomerManagementContent() {
             <MagnifyingGlass className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
-              placeholder="Filter by identity, digital mail, or neural ID..."
+              placeholder="กรองตามข้อมูล อีเมล หรือรหัสประสาท..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-secondary border border-border rounded-xl py-4 pl-14 pr-6 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner backdrop-blur-md relative z-10"
@@ -263,7 +263,7 @@ function CustomerManagementContent() {
             className="flex items-center gap-3 px-6 py-4 bg-secondary border border-border rounded-xl text-xs font-bold uppercase tracking-widest text-foreground hover:bg-accent transition-all backdrop-blur-md"
           >
             <Funnel className="w-4 h-4 text-primary" />
-            <span>Advanced Filters</span>
+            <span>ตัวกรองขั้นสูง</span>
           </motion.button>
         </div>
         <motion.div 
@@ -277,7 +277,7 @@ function CustomerManagementContent() {
             <Users className="w-16 h-16 text-foreground" />
           </div>
           <div>
-            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-1">Active Population</p>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-1">จำนวนที่ใช้งาน</p>
             <p className="text-3xl font-bold text-foreground tracking-tighter">{totalCount.toLocaleString()}</p>
           </div>
           <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-premium group-hover:scale-110 transition-transform">
@@ -292,7 +292,7 @@ function CustomerManagementContent() {
         data={customers}
         loading={loading}
         rowKey={(c) => c.id}
-        emptyMessage="No patients found in the neural database"
+        emptyMessage="ไม่พบผู้ป่วยในฐานข้อมูลประสาท"
         onRowClick={(c) => router.push(`/clinic/customers/${c.id}`)}
         mobileCard={(c) => (
           <div className="space-y-4">
@@ -313,13 +313,13 @@ function CustomerManagementContent() {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Skin Score</p>
+                <p className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">คะแนนผิว</p>
                 <p className="text-sm font-bold text-primary">{c.metadata?.skinScore || 0}%</p>
               </div>
             </div>
             <div className="flex justify-between items-center pt-3 border-t border-border">
               <span className="text-[10px] text-muted-foreground italic">
-                Last Diagnostic: {new Date(c.metadata?.lastScan || c.created_at).toLocaleDateString()}
+                การวินิจฉัยล่าสุด: {new Date(c.metadata?.lastScan || c.created_at).toLocaleDateString()}
               </span>
               <button 
                 onClick={(e) => {
@@ -343,7 +343,7 @@ export default function CustomerManagement() {
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Customer Interface...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">กำลังเริ่มต้นอินเทอร์เฟซลูกค้า...</p>
       </div>
     }>
       <CustomerManagementContent />

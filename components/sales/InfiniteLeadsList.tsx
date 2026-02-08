@@ -78,9 +78,9 @@ export default function InfiniteLeadsList({
   if (allLeads.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <p className="text-muted-foreground text-lg">No leads found</p>
+        <p className="text-muted-foreground text-lg">ไม่พบรายชื่อลูกค้าเป้าหมาย</p>
         <p className="text-sm text-muted-foreground mt-2">
-          Start by scanning customers or importing leads
+          เริ่มต้นด้วยการสแกนลูกค้าหรือนำเข้ารายชื่อ
         </p>
       </div>
     );
@@ -185,7 +185,7 @@ export default function InfiniteLeadsList({
           {isFetchingNextPage ? (
             <div className="flex items-center gap-2 text-muted-foreground">
               <SpinnerGap className="w-5 h-5 animate-spin" />
-              <span className="text-sm">Loading more...</span>
+              <span className="text-sm">กำลังโหลดเพิ่มเติม...</span>
             </div>
           ) : (
             <div className="text-sm text-muted-foreground">

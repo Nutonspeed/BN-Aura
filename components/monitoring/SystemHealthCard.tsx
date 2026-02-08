@@ -21,14 +21,14 @@ interface HealthData {
 }
 
 const statusConfig = {
-  healthy: { color: 'bg-green-500', text: 'text-green-500', icon: '✅', label: 'Healthy' },
-  degraded: { color: 'bg-yellow-500', text: 'text-yellow-500', icon: '⚠️', label: 'Degraded' },
+  healthy: { color: 'bg-green-500', text: 'text-green-500', icon: '✅', label: 'ปกติ' },
+  degraded: { color: 'bg-yellow-500', text: 'text-yellow-500', icon: '⚠️', label: 'มีปัญหา' },
   unhealthy: { color: 'bg-red-500', text: 'text-red-500', icon: '❌', label: 'Unhealthy' },
 };
 
 const serviceNames: Record<string, string> = {
   database: 'ฐานข้อมูล',
-  ai_gateway: 'AI Gateway',
+  ai_gateway: 'เกตเวย์ AI',
   storage: 'Storage',
   email: 'อีเมล',
   sms: 'SMS',
@@ -92,7 +92,7 @@ export default function SystemHealthCard() {
           <div className="flex items-center gap-2">
             <span className="text-2xl">{config.icon}</span>
             <div>
-              <h3 className="font-bold text-lg">System Status: {config.label}</h3>
+              <h3 className="font-bold text-lg">สถานะระบบ: {config.label}</h3>
               <p className="text-sm opacity-90">v{data.version} • {data.environment}</p>
             </div>
           </div>

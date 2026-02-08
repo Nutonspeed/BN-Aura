@@ -72,8 +72,8 @@ export default function PDPAModal() {
                   <ShieldCheck weight="duotone" className="w-8 h-8" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-heading font-bold text-foreground tracking-tight">Privacy Architecture</h2>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-1">Clinical PDPA Compliance Protocol</p>
+                  <h2 className="text-3xl font-heading font-bold text-foreground tracking-tight">สถาปัตยกรรมความเป็นส่วนตัว</h2>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-1">โปรโตคอลการปฏิบัติตาม PDPA ทางคลินิก</p>
                 </div>
               </div>
 
@@ -87,7 +87,7 @@ export default function PDPAModal() {
                       <Lock weight="bold" className="w-5 h-5 text-primary" />
                     </div>
                     <div className="space-y-2">
-                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">Identity Integrity Commitment</h3>
+                      <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">พันธสัญญาความสมบูรณ์ของข้อมูล</h3>
                       <p className="text-xs text-muted-foreground font-medium leading-relaxed italic">
                         BN-Aura utilizes advanced cryptographic hashing to secure your clinical identity nodes. By initializing the suite, you authorize aesthetic data processing for personalized diagnostic refinement.
                       </p>
@@ -97,9 +97,9 @@ export default function PDPAModal() {
 
                 <div className="space-y-3">
                   {[
-                    { id: 'terms', label: 'Clinical Terms of Service', desc: 'I authorize BN-Aura usage parameters and neural processing protocols.' },
-                    { id: 'privacy', label: 'Data Sovereignty Policy', desc: 'I accept the clinical identity storage and encryption architecture.' },
-                    { id: 'marketing', label: 'Intelligence Stream', desc: 'Authorize personalized aesthetic nodes and protocol updates via digital link.' }
+                    { id: 'terms', label: 'เงื่อนไขการให้บริการทางคลินิก', desc: 'ข้าพเจ้าอนุญาตให้ใช้พารามิเตอร์การใช้งาน BN-Aura และโปรโตคอลการประมวลผลทางประสาท' },
+                    { id: 'privacy', label: 'นโยบายอธิปไตยของข้อมูล', desc: 'ข้าพเจ้ายอมรับสถาปัตยกรรมการจัดเก็บและการเข้ารหัสข้อมูลระบุตัวตนทางคลินิก' },
+                    { id: 'marketing', label: 'กระแสข้อมูลอัจฉริยะ', desc: 'อนุญาตให้รับข้อมูลความงามส่วนบุคคลและอัปเดตโปรโตคอลผ่านช่องทางดิจิทัล' }
                   ].map((item) => (
                     <button
                       key={item.id}
@@ -137,7 +137,7 @@ export default function PDPAModal() {
                   className="flex-1 py-7 rounded-[24px] shadow-premium group/btn overflow-hidden relative"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000" />
-                  <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.2em]">Authorize & Initialize Suite</span>
+                  <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.2em]">อนุญาตและเริ่มต้นใช้งาน</span>
                 </Button>
                 <Button
                   variant="outline"
@@ -145,7 +145,7 @@ export default function PDPAModal() {
                   disabled={!agreed.terms || !agreed.privacy}
                   className="px-10 py-7 rounded-[24px] text-[11px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary transition-all disabled:opacity-20"
                 >
-                  Sync Selection
+                  บันทึกการเลือก
                 </Button>
               </div>
 

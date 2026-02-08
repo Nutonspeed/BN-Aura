@@ -208,7 +208,7 @@ function POSHistoryContent() {
           {loading ? (
             <div className="py-32 flex flex-col items-center justify-center gap-4 bg-card border border-border/50 rounded-[40px] shadow-inner">
               <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Synchronizing Audit Matrix...</p>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">กำลังประมวลผลข้อมูลการตรวจสอบ...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
             <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-[40px]">

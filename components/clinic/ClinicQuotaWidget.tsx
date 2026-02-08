@@ -64,7 +64,7 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
         <CardTitle className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-2">
             <Lightning weight="duotone" className="w-5 h-5 text-purple-500" />
-            AI Scan Quota
+            โควต้าการสแกน AI
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="text-[9px]">{quota?.plan?.toUpperCase()}</Badge>
@@ -78,7 +78,7 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
         <div className="flex items-center justify-between">
           <div>
             <div className="text-3xl font-black">{quota?.remaining || 0}</div>
-            <div className="text-xs text-muted-foreground">scans เหลือ</div>
+            <div className="text-xs text-muted-foreground">การสแกนคงเหลือ</div>
           </div>
           <div className="text-right">
             <div className="text-lg font-bold text-muted-foreground">{quota?.used}/{quota?.total}</div>
@@ -96,7 +96,7 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
             />
           </div>
           <div className="flex justify-between text-[10px] text-muted-foreground">
-            <span>{rate}% used</span>
+            <span>ใช้ไป {rate}%</span>
             <span>Reset: สิ้นเดือน</span>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function ClinicQuotaWidget({ clinicId }: ClinicQuotaWidgetProps) 
           <div className="text-center p-2 bg-secondary/30 rounded-lg">
             <Brain className="w-4 h-4 mx-auto text-purple-500 mb-1" />
             <div className="text-sm font-bold">{quota?.quotaSaved || 0}</div>
-            <div className="text-[9px] text-muted-foreground">Cache Saved</div>
+            <div className="text-[9px] text-muted-foreground">บันทึกแคช</div>
           </div>
           <Button variant="outline" size="sm" className="h-auto py-2 flex-col gap-1">
             <ShoppingCart className="w-4 h-4" />

@@ -40,11 +40,11 @@ export function DataTable<T extends Record<string, unknown>>({
   data,
   loading = false,
   searchable = false,
-  searchPlaceholder = 'Search...',
+  searchPlaceholder = 'ค้นหา...',
   onSearch,
   pagination = true,
   pageSize = 10,
-  emptyMessage = 'No data available',
+  emptyMessage = 'ไม่พบข้อมูล',
   onRowClick,
   className,
   stickyHeader = false,
@@ -155,7 +155,7 @@ export function DataTable<T extends Record<string, unknown>>({
                 <tr>
                   <td colSpan={columns.length} className="px-4 py-12 text-center">
                     <SpinnerGap className="w-6 h-6 mx-auto animate-spin text-primary" />
-                    <p className="text-sm text-muted-foreground mt-2">Loading...</p>
+                    <p className="text-sm text-muted-foreground mt-2">กำลังโหลด...</p>
                   </td>
                 </tr>
               ) : paginatedData.length === 0 ? (

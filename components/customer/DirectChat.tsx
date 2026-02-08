@@ -123,7 +123,7 @@ export default function DirectChat({
                   <h4 className="text-sm font-bold text-white">{salesName}</h4>
                   <p className="text-[10px] text-emerald-400 uppercase tracking-widest font-black flex items-center gap-1">
                     <Circle className="w-1.5 h-1.5 fill-emerald-400" />
-                    Your Personal Advisor
+                    ที่ปรึกษาส่วนตัว
                   </p>
                 </div>
               </div>
@@ -140,12 +140,12 @@ export default function DirectChat({
               {loading ? (
                 <div className="h-full flex flex-col items-center justify-center space-y-2 opacity-50">
                   <SpinnerGap className="w-6 h-6 animate-spin text-primary" />
-                  <p className="text-[10px] uppercase tracking-widest">Securing Channel...</p>
+                  <p className="text-[10px] uppercase tracking-widest">กำลังเชื่อมต่อ...</p>
                 </div>
               ) : messages.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center space-y-4 opacity-40">
                   <ChatCircle className="w-12 h-12" />
-                  <p className="text-xs font-light max-w-[200px]">Start a conversation with your advisor for personalized insights.</p>
+                  <p className="text-xs font-light max-w-[200px]">เริ่มสนทนากับที่ปรึกษาของคุณเพื่อรับคำแนะนำเฉพาะบุคคล</p>
                 </div>
               ) : (
                 messages.map((msg, idx) => (
@@ -164,7 +164,7 @@ export default function DirectChat({
                       {msg.messageType === 'treatment_recommendation' && (
                         <div className="mb-2 p-2 bg-black/20 rounded-lg border border-white/10 flex items-center gap-2">
                           <Sparkle className="w-3.5 h-3.5 text-primary" />
-                          <span className="text-[10px] font-black uppercase tracking-tighter text-primary">Advisor Suggestion</span>
+                          <span className="text-[10px] font-black uppercase tracking-tighter text-primary">คำแนะนำจากที่ปรึกษา</span>
                         </div>
                       )}
                       <p className="font-light leading-relaxed">{msg.messageText}</p>
@@ -183,7 +183,7 @@ export default function DirectChat({
               <div className="flex items-center gap-2">
                 <input
                   type="text"
-                  placeholder="Ask your advisor..."
+                  placeholder="ถามที่ปรึกษาของคุณ..."
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}

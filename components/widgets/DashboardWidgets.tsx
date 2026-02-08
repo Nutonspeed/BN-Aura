@@ -109,7 +109,7 @@ export function QuickActions({ actions, className }: QuickActionsProps) {
   return (
     <Card className={className}>
       <CardContent className="p-4">
-        <h3 className="font-semibold mb-3">Quick Actions</h3>
+        <h3 className="font-semibold mb-3">การดำเนินการด่วน</h3>
         <div className="grid grid-cols-4 gap-2">
           {actions.map((action, i) => (
             <button

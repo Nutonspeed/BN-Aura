@@ -200,7 +200,7 @@ export default function UnifiedCommissionTracker() {
               <CurrencyDollar className="w-8 h-8 text-green-400" />
               <TrendUp className="w-5 h-5 text-green-400" />
             </div>
-            <p className="text-gray-400 text-sm mb-1">Total Commission</p>
+            <p className="text-gray-400 text-sm mb-1">ค่าคอมมิชชันรวม</p>
             <p className="text-2xl font-bold text-white">
               ฿{summary.totalCommission.toLocaleString()}
             </p>
@@ -216,7 +216,7 @@ export default function UnifiedCommissionTracker() {
               <Clock className="w-8 h-8 text-orange-400" />
               <WarningCircle className="w-5 h-5 text-orange-400" />
             </div>
-            <p className="text-gray-400 text-sm mb-1">Pending</p>
+            <p className="text-gray-400 text-sm mb-1">รอดำเนินการ</p>
             <p className="text-2xl font-bold text-white">
               ฿{summary.pendingCommission.toLocaleString()}
             </p>
@@ -232,7 +232,7 @@ export default function UnifiedCommissionTracker() {
               <CheckCircle className="w-8 h-8 text-blue-400" />
               <CalendarDots className="w-5 h-5 text-blue-400" />
             </div>
-            <p className="text-gray-400 text-sm mb-1">Paid</p>
+            <p className="text-gray-400 text-sm mb-1">จ่ายแล้ว</p>
             <p className="text-2xl font-bold text-white">
               ฿{summary.paidCommission.toLocaleString()}
             </p>
@@ -285,8 +285,8 @@ export default function UnifiedCommissionTracker() {
             className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 focus:outline-none focus:border-primary/50"
           >
             <option value="all">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="paid">Paid</option>
+            <option value="pending">รอดำเนินการ</option>
+            <option value="paid">จ่ายแล้ว</option>
           </select>
 
           <button
@@ -360,7 +360,7 @@ export default function UnifiedCommissionTracker() {
           {commissions.length === 0 && (
             <div className="text-center py-12">
               <CurrencyDollar className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400">No commissions found for this period</p>
+              <p className="text-gray-400">ไม่พบค่าคอมมิชชันในช่วงเวลานี้</p>
             </div>
           )}
         </div>

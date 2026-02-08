@@ -105,7 +105,7 @@ function CustomerDetailPageContent() {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Syncing Patient Identity Node...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">กำลังซิงโครไนซ์โหนดข้อมูลผู้ป่วย...</p>
       </div>
     );
   }
@@ -114,8 +114,8 @@ function CustomerDetailPageContent() {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <ShieldCheck className="w-12 h-12 text-rose-500" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground">Patient Node Not Detected</p>
-        <button onClick={() => goBack('/clinic/customers')} className="text-primary font-bold uppercase text-xs tracking-widest hover:underline">Return to Cluster</button>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground">ไม่พบโหนดผู้ป่วย</p>
+        <button onClick={() => goBack('/clinic/customers')} className="text-primary font-bold uppercase text-xs tracking-widest hover:underline">กลับสู่คลัสเตอร์</button>
       </div>
     );
   }
@@ -128,7 +128,7 @@ function CustomerDetailPageContent() {
     >
       <Breadcrumb 
         customLabels={{ 
-          [customerId]: customer?.full_name || 'Patient Detail'
+          [customerId]: customer?.full_name || 'รายละเอียดผู้ป่วย'
         }} 
       />
 
@@ -152,7 +152,7 @@ function CustomerDetailPageContent() {
           <div className="space-y-1">
             <div className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
               <User weight="duotone" className="w-4 h-4" />
-              Patient Identity Node
+              โหนดข้อมูลผู้ป่วย
             </div>
             <h1 className="text-4xl font-bold text-foreground tracking-tight uppercase">
               {customer.full_name} 
@@ -168,11 +168,11 @@ function CustomerDetailPageContent() {
             className="flex items-center gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
           >
             <PencilSimple weight="bold" className="w-4 h-4" />
-            Modify Protocol
+            แก้ไขโปรโตคอล
           </Button>
           <Button className="flex items-center gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
             <ChatCircle weight="bold" className="w-4 h-4" />
-            Establish Direct Link
+            สร้างลิงก์โดยตรง
           </Button>
         </div>
       </div>
@@ -197,15 +197,15 @@ function CustomerDetailPageContent() {
 
                 <div className="space-y-6">
                   <div className="space-y-1.5">
-                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Temporal Node</p>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">โหนดเวลา</p>
                     <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-2xl border border-border/50">
                       <CalendarDots weight="duotone" className="w-4 h-4 text-primary/60" />
-                      <span className="text-sm font-bold text-foreground">{customer.date_of_birth ? new Date(customer.date_of_birth).toLocaleDateString() : 'UNDEFINED'}</span>
+                      <span className="text-sm font-bold text-foreground">{customer.date_of_birth ? new Date(customer.date_of_birth).toLocaleDateString() : 'ไม่ระบุ'}</span>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Neural Address</p>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">ที่อยู่ประสาท</p>
                     <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-2xl border border-border/50">
                       <EnvelopeSimple weight="duotone" className="w-4 h-4 text-primary/60" />
                       <span className="text-sm font-bold text-foreground truncate">{customer.email || 'NONE'}</span>
@@ -213,7 +213,7 @@ function CustomerDetailPageContent() {
                   </div>
 
                   <div className="space-y-1.5">
-                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Comm Channel</p>
+                    <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">ช่องสื่อสาร</p>
                     <div className="flex items-center gap-3 p-3 bg-secondary/30 rounded-2xl border border-border/50">
                       <Phone weight="duotone" className="w-4 h-4 text-primary/60" />
                       <span className="text-sm font-bold text-foreground">{customer.phone || 'NONE'}</span>
@@ -222,13 +222,13 @@ function CustomerDetailPageContent() {
 
                   <div className="pt-6 border-t border-border/50 space-y-4">
                     <div className="flex justify-between items-center px-1">
-                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Security Tier</span>
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">ระดับความปลอดภัย</span>
                       <Badge variant="ghost" size="sm" className="bg-primary/5 border-none text-primary font-black uppercase text-[9px] px-3">
                         {customer.customer_type}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center px-1">
-                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Node Status</span>
+                      <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">สถานะโหนด</span>
                       <div className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                         <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">{customer.status}</span>
@@ -249,10 +249,10 @@ function CustomerDetailPageContent() {
             <Card className="p-8 rounded-[40px] border-rose-500/10 bg-rose-500/[0.02] space-y-4 group">
               <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] flex items-center gap-3">
                 <ShieldCheck weight="duotone" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                Critical Telemetry
+                ข้อมูลสำคัญ
               </h4>
               <p className="text-xs text-muted-foreground italic font-medium leading-relaxed">
-                {customer.notes || 'No critical contraindications detected in current registry node.'}
+                {customer.notes || 'ไม่พบข้อห้ามใช้ในข้อมูลปัจจุบัน'}
               </p>
             </Card>
           </motion.div>
@@ -263,10 +263,10 @@ function CustomerDetailPageContent() {
           {/* Section Navigation */}
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide bg-secondary/30 p-1.5 rounded-[24px] border border-border/50">
             {[
-              { id: 'overview', label: 'Clinical Overview', icon: SquaresFour },
-              { id: 'journey', label: 'Treatment Cycles', icon: ClockCounterClockwise },
-              { id: 'analysis', label: 'Neural Diagnostics', icon: Sparkle },
-              { id: 'transactions', label: 'Fiscal Node', icon: CreditCard },
+              { id: 'overview', label: 'ภาพรวมคลินิก', icon: SquaresFour },
+              { id: 'journey', label: 'รอบการรักษา', icon: ClockCounterClockwise },
+              { id: 'analysis', label: 'การวินิจฉัยประสาท', icon: Sparkle },
+              { id: 'transactions', label: 'โหนดการเงิน', icon: CreditCard },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -296,7 +296,7 @@ function CustomerDetailPageContent() {
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <StatCard
-                    title="Latest Aura Score"
+                    title="คะแนน Aura ล่าสุด"
                     value={84}
                     icon={Sparkle}
                     trend="up"
@@ -304,13 +304,13 @@ function CustomerDetailPageContent() {
                     className="p-4"
                   />
                   <StatCard
-                    title="Protocol Density"
+                    title="ความหนาแน่นโปรโตคอล"
                     value={Number(customer.sales_commissions.length.toString()) || 0}
                     icon={ClockCounterClockwise}
                     className="p-4"
                   />
                   <StatCard
-                    title="Lifetime Valuation"
+                    title="มูลค่ารวมตลอด"
                     value={customer.sales_commissions.reduce((acc: number, c: any) => acc + Number(c.base_amount), 0)}
                     icon={CreditCard}
                     trend="up"
@@ -322,8 +322,8 @@ function CustomerDetailPageContent() {
                 {/* Recent Activity */}
                 <Card className="rounded-[40px] border-border/50 overflow-hidden">
                   <CardHeader className="p-8 border-b border-border/50 flex flex-row items-center justify-between">
-                    <CardTitle className="text-xl font-black uppercase tracking-tight">Recent Activity Stream</CardTitle>
-                    <Badge variant="ghost" className="font-black text-[10px] tracking-widest uppercase bg-primary/5 text-primary border-none">Live Sync</Badge>
+                    <CardTitle className="text-xl font-black uppercase tracking-tight">สตรีมกิจกรรมล่าสุด</CardTitle>
+                    <Badge variant="ghost" className="font-black text-[10px] tracking-widest uppercase bg-primary/5 text-primary border-none">ซิงโครไนซ์สด</Badge>
                   </CardHeader>
                   <CardContent className="p-8">
                     <div className="space-y-8">
@@ -340,7 +340,7 @@ function CustomerDetailPageContent() {
                               <h4 className="text-base font-bold text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">{txn.transaction_type}</h4>
                               <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">{new Date(txn.transaction_date).toLocaleDateString()}</span>
                             </div>
-                            <p className="text-xs text-muted-foreground font-medium mb-4 italic opacity-80">Execution confirmed at clinical terminal alpha-node.</p>
+                            <p className="text-xs text-muted-foreground font-medium mb-4 italic opacity-80">ยืนยันการดำเนินการที่เทอร์มินอลคลินิก</p>
                             <span className="text-2xl font-black text-foreground tabular-nums tracking-tight">฿{Number(txn.base_amount).toLocaleString()}</span>
                           </div>
                         </div>
@@ -350,7 +350,7 @@ function CustomerDetailPageContent() {
                           <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
                             <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
                           </div>
-                          <p className="text-sm font-black uppercase tracking-[0.3em]">No activity records detected in current sector.</p>
+                          <p className="text-sm font-black uppercase tracking-[0.3em]">ไม่พบบันทึกกิจกรรมในพื้นที่ปัจจุบัน</p>
                         </div>
                       )}
                     </div>
@@ -372,7 +372,7 @@ function CustomerDetailPageContent() {
                   <div className="space-y-6">
                     <h3 className="text-xl font-black text-foreground uppercase tracking-[0.2em] px-4 flex items-center gap-4">
                       <ArrowsCounterClockwise weight="bold" className="w-6 h-6 text-primary" />
-                      Evolution Deltas
+                      การเปลี่ยนแปลง
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       {customer.comparisons.map((comp, i) => (
@@ -387,12 +387,12 @@ function CustomerDetailPageContent() {
                               </div>
                             </div>
                             <div>
-                              <p className="text-xs font-black text-foreground uppercase tracking-widest">Aesthetic Delta</p>
+                              <p className="text-xs font-black text-foreground uppercase tracking-widest">การเปลี่ยนแปลงความงาม</p>
                               <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest mt-1">TS-{new Date(comp.created_at).toLocaleDateString()}</p>
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">Improvement</p>
+                            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">การปรับปรุง</p>
                             <div className="flex items-center gap-2 justify-end">
                               <TrendUp weight="bold" className="w-4 h-4 text-emerald-500" />
                               <p className="text-2xl font-black text-emerald-500">+{comp.overall_improvement}%</p>
@@ -414,21 +414,21 @@ function CustomerDetailPageContent() {
                             <Sparkle weight="duotone" className="w-7 h-7" />
                           </div>
                           <div>
-                            <h4 className="text-base font-bold text-foreground uppercase tracking-tight">Diagnostic Node</h4>
+                            <h4 className="text-base font-bold text-foreground uppercase tracking-tight">โหนดการวินิจฉัย</h4>
                             <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest mt-1">{new Date(scan.analyzed_at).toLocaleString()}</p>
                           </div>
                         </div>
                         <div className="text-center">
-                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">Aura Score</p>
+                          <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-1">คะแนน Aura</p>
                           <p className="text-3xl font-black text-primary tracking-tighter">{scan.overall_score}</p>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-4 pt-6 border-t border-border/50">
                         {[
-                          { label: 'Pores', value: scan.pores_score },
-                          { label: 'Wrinkles', value: scan.wrinkles_score },
-                          { label: 'Texture', value: scan.texture_score }
+                          { label: 'รูขุมขน', value: scan.pores_score },
+                          { label: 'ริ้วรอย', value: scan.wrinkles_score },
+                          { label: 'ความเรียบเนียน', value: scan.texture_score }
                         ].map((metric) => (
                           <div key={metric.label} className="text-center p-4 bg-secondary/30 rounded-2xl border border-border/50">
                             <p className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mb-1">{metric.label}</p>
@@ -438,7 +438,7 @@ function CustomerDetailPageContent() {
                       </div>
 
                       <Button variant="outline" className="w-full py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] gap-3 border-border/50 hover:bg-secondary">
-                        Access Full Diagnostic Payload
+                        เข้าถึงข้อมูลการวินิจฉัยเต็มรูปแบบ
                         <ArrowRight weight="bold" className="w-4 h-4" />
                       </Button>
                     </Card>
@@ -449,7 +449,7 @@ function CustomerDetailPageContent() {
                     <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
                       <Sparkle weight="duotone" className="w-10 h-10" />
                     </div>
-                    <p className="text-sm font-black uppercase tracking-[0.3em]">Zero diagnostic data detected in sector.</p>
+                    <p className="text-sm font-black uppercase tracking-[0.3em]">ไม่พบข้อมูลการวินิจฉัยในพื้นที่</p>
                   </Card>
                 )}
               </motion.div>
@@ -472,14 +472,14 @@ function CustomerDetailPageContent() {
                         </div>
                         <div>
                           <h4 className="text-lg font-bold text-foreground uppercase tracking-tight">
-                            {(journey.treatment_plan as any)?.treatment_name || 'Protocol Execution Node'}
+                            {(journey.treatment_plan as any)?.treatment_name || 'โหนดดำเนินการโปรโตคอล'}
                           </h4>
                           <div className="flex items-center gap-3 mt-1">
                             <Badge variant="success" size="sm" className="bg-emerald-500/5 text-emerald-500 border-none font-black text-[8px] tracking-widest uppercase">
                               {journey.journey_status.replace('_', ' ')}
                             </Badge>
                             <div className="w-1 h-1 rounded-full bg-border" />
-                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Active Cycle</p>
+                            <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">รอบที่ใช้งาน</p>
                           </div>
                         </div>
                       </div>
@@ -490,7 +490,7 @@ function CustomerDetailPageContent() {
                         <FileText weight="duotone" className="w-12 h-12 text-primary" />
                       </div>
                       <p className="text-sm text-muted-foreground font-medium leading-relaxed italic relative z-10">
-                        {journey.progress_notes || 'No operational notes recorded for this cycle execution node.'}
+                        {journey.progress_notes || 'ไม่มีบันทึกสำหรับโหนดดำเนินการรอบนี้'}
                       </p>
                     </div>
                   </Card>
@@ -500,7 +500,7 @@ function CustomerDetailPageContent() {
                     <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
                       <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
                     </div>
-                    <p className="text-sm font-black uppercase tracking-[0.3em]">Zero cycle history detected in neural registry.</p>
+                    <p className="text-sm font-black uppercase tracking-[0.3em]">ไม่พบประวัติรอบในฐานข้อมูลประสาท</p>
                   </Card>
                 )}
               </motion.div>
@@ -518,10 +518,10 @@ function CustomerDetailPageContent() {
                     <table className="w-full text-left border-collapse">
                       <thead>
                         <tr className="bg-secondary/50 border-b border-border/50">
-                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">TXN Identity</th>
-                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Protocol Node</th>
-                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Fiscal Valuation</th>
-                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Verification</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">รหัส TXN</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">โหนดโปรโตคอล</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">มูลค่าการเงิน</th>
+                          <th className="px-10 py-6 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">การตรวจสอบ</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/30">
@@ -532,7 +532,7 @@ function CustomerDetailPageContent() {
                             </td>
                             <td className="px-10 py-6">
                               <p className="text-sm font-bold text-foreground uppercase tracking-tight">{txn.transaction_type}</p>
-                              <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-1">Processed Node Alpha</p>
+                              <p className="text-[9px] text-muted-foreground font-black uppercase tracking-widest mt-1">โหนดประมวลผล Alpha</p>
                             </td>
                             <td className="px-10 py-6">
                               <span className="text-lg font-black text-foreground tabular-nums tracking-tight">฿{Number(txn.base_amount).toLocaleString()}</span>
@@ -555,7 +555,7 @@ function CustomerDetailPageContent() {
                       <div className="w-20 h-20 rounded-[40px] bg-secondary flex items-center justify-center text-muted-foreground">
                         <CreditCard weight="duotone" className="w-10 h-10" />
                       </div>
-                      <p className="text-sm font-black uppercase tracking-[0.3em]">Zero fiscal telemetry detected.</p>
+                      <p className="text-sm font-black uppercase tracking-[0.3em]">ไม่พบข้อมูลการเงิน</p>
                     </div>
                   )}
                 </Card>
@@ -564,12 +564,12 @@ function CustomerDetailPageContent() {
           </AnimatePresence>
         </div>
 
-        {/* Treatment Journey */}
+        {/* การเดินทางการรักษา */}
         <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden">
           <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
             <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
               <Sparkle weight="duotone" className="w-5 h-5 text-primary" />
-              Treatment Journey
+              การเดินทางการรักษา
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
@@ -583,7 +583,7 @@ function CustomerDetailPageContent() {
             <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
               <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
                 <TrendUp weight="duotone" className="w-5 h-5 text-amber-500" />
-                Loyalty Program
+                โปรแกรมความภักดี
               </CardTitle>
             </CardHeader>
             <CardContent className="p-8">
@@ -601,7 +601,7 @@ export default function CustomerDetailPage() {
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Interface node...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">กำลังเริ่มต้นโหนดอินเทอร์เฟซ...</p>
       </div>
     }>
       <CustomerDetailPageContent />

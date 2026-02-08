@@ -143,9 +143,9 @@ export default function MyCustomersSection({ salesId }: { salesId?: string }) {
 
       <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
         {loading ? (
-          <div className="py-8 text-center text-muted-foreground text-sm animate-pulse">Loading customers...</div>
+          <div className="py-8 text-center text-muted-foreground text-sm animate-pulse">กำลังโหลดข้อมูลลูกค้า...</div>
         ) : filteredCustomers.length === 0 ? (
-          <div className="py-8 text-center text-muted-foreground text-sm italic">No customers found.</div>
+          <div className="py-8 text-center text-muted-foreground text-sm italic">ไม่พบลูกค้า</div>
         ) : (
           filteredCustomers.map((customer) => (
             <CustomerCard key={customer.id} customer={customer} />

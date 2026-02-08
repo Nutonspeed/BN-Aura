@@ -85,7 +85,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
     return (
       <div className="py-48 flex flex-col items-center justify-center gap-6 bg-card border border-border/50 rounded-[40px] shadow-inner opacity-60">
         <SpinnerGap weight="bold" className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] text-center">Synchronizing Loyalty Matrix...</p>
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] text-center">กำลังซิงโครไนซ์ระบบสิทธิพิเศษ...</p>
       </div>
     );
   }
@@ -106,16 +106,16 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">{profile?.currentTier || 'Aura Basic'} Protocol</h2>
-                  <Badge variant="success" className="font-black text-[10px] tracking-widest px-4 py-1.5 shadow-sm">ACTIVE_NODE</Badge>
+                  <h2 className="text-3xl font-black text-foreground uppercase tracking-tight">{profile?.currentTier || 'Aura Basic'}</h2>
+                  <Badge variant="success" className="font-black text-[10px] tracking-widest px-4 py-1.5 shadow-sm">ใช้งานอยู่</Badge>
                 </div>
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Identity Tier Status & Evolution Progress</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">สถานะระดับสมาชิกและความคืบหน้า</p>
               </div>
             </div>
 
             <div className="flex items-center gap-8">
               <div className="text-right">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Accumulated Flux</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">คะแนนสะสม</p>
                 <div className="flex items-center justify-end gap-2">
                   <Coins weight="fill" className="w-5 h-5 text-amber-500" />
                   <span className="text-4xl font-black text-foreground tabular-nums tracking-tighter">{profile?.totalPoints || 0}</span>
@@ -123,8 +123,8 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               </div>
               <div className="h-12 w-px bg-border/50" />
               <div className="text-right">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Next Evolution</p>
-                <span className="text-xl font-bold text-foreground/60 uppercase tracking-tighter italic">Elite Tier</span>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">ระดับถัดไป</p>
+                <span className="text-xl font-bold text-foreground/60 uppercase tracking-tighter italic">ระดับอีลิท</span>
               </div>
             </div>
           </div>
@@ -133,8 +133,8 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
         <CardContent className="p-10 md:p-12 space-y-10 relative z-10">
           <div className="space-y-6">
             <div className="flex justify-between items-center px-2">
-              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Evolution Trajectory</span>
-              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">750 / 1000 Flux Units</span>
+              <span className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">เส้นทางความคืบหน้า</span>
+              <span className="text-[10px] font-black text-primary uppercase tracking-[0.2em]">750 / 1000 หน่วย</span>
             </div>
             <div className="h-3 w-full bg-secondary/50 rounded-full overflow-hidden p-0.5 border border-border shadow-inner">
               <motion.div 
@@ -145,7 +145,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
               />
             </div>
             <p className="text-[11px] text-muted-foreground font-medium italic text-center opacity-60">
-              Increase engagement delta by 250 units to establish high-fidelity status node.
+              เพิ่มการมีส่วนร่วมอีก 250 หน่วยเพื่อบรรลุสถานะระดับสูง
             </p>
           </div>
         </CardContent>
@@ -157,7 +157,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
           <div className="flex items-center justify-between px-4">
             <div className="flex items-center gap-3">
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(var(--primary),0.6)]" />
-              <h3 className="text-xl font-black text-foreground uppercase tracking-tight">Privilege <span className="text-primary text-glow">Matrix</span></h3>
+              <h3 className="text-xl font-black text-foreground uppercase tracking-tight">สิทธิประโยชน์</h3>
             </div>
             <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">
               {achievements.length} Nodes Unlocked
@@ -219,7 +219,7 @@ export default function LoyaltyDashboard({ customerId, clinicId }: LoyaltyDashbo
                   <div className="w-16 h-16 rounded-[32px] bg-secondary flex items-center justify-center mx-auto mb-4 shadow-inner">
                     <ClockCounterClockwise weight="duotone" className="w-8 h-8" />
                   </div>
-                  <p className="text-[10px] font-black uppercase tracking-widest">No Protocol Logs</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest">ไม่มีประวัติกิจกรรม</p>
                 </div>
               ) : (
                 <div className="space-y-6">

@@ -61,7 +61,7 @@ export default function AnalyticsDashboard() {
     },
     {
       id: 'predictions' as const,
-      label: 'Predictions',
+      label: 'การทำนาย',
       icon: TrendUp,
       badge: null
     }
@@ -89,10 +89,10 @@ export default function AnalyticsDashboard() {
         </div>
         <div className="text-center space-y-3">
           <p className="text-xl font-black text-foreground uppercase tracking-widest">
-            Establishing <span className="text-primary">Intelligence</span>
+            กำลังสร้าง <span className="text-primary">ระบบข้อมูล</span>
           </p>
           <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">
-            Synchronizing global metrics & cognitive nodes...
+            กำลังซิงโครไนซ์ข้อมูลและโหนดต่างๆ...
           </p>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function AnalyticsDashboard() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Brain weight="duotone" className="w-4 h-4" />
-            Executive Intelligence Matrix
+            ระบบข้อมูลเชิงลึกสำหรับผู้บริหาร
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -122,7 +122,7 @@ export default function AnalyticsDashboard() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            AI <span className="text-primary">Business</span> Analytics
+            การวิเคราะห์ <span className="text-primary">ธุรกิจ</span>ด้วย AI
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -130,7 +130,7 @@ export default function AnalyticsDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic max-w-2xl leading-relaxed"
           >
-            Orchestrating autonomous diagnostic insights, predictive revenue modeling, and real-time risk mitigation protocols.
+            การวิเคราะห์เชิงลึก การคาดการณ์รายได้ และการจัดการความเสี่ยงแบบเรียลไทม์
           </motion.p>
         </div>
 
@@ -152,7 +152,7 @@ export default function AnalyticsDashboard() {
                     {metrics.revenue?.formatted || '฿0'}
                   </div>
                   <div className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">
-                    Monthly Yield
+                    รายได้รายเดือน
                   </div>
                 </div>
               </Card>
@@ -165,7 +165,7 @@ export default function AnalyticsDashboard() {
                     {metrics.customers?.formatted || '0 คน'}
                   </div>
                   <div className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mt-0.5">
-                    New Identity Links
+                    ลูกค้าใหม่
                   </div>
                 </div>
               </Card>
@@ -181,7 +181,7 @@ export default function AnalyticsDashboard() {
                   {criticalCount + highCount}
                 </div>
                 <div className="text-[8px] font-black text-rose-400/60 uppercase tracking-widest mt-0.5">
-                  Anomalies
+                  ความผิดปกติ
                 </div>
               </div>
             </Card>
@@ -204,7 +204,7 @@ export default function AnalyticsDashboard() {
               )}
             >
               <tab.icon weight={activeTab === tab.id ? "fill" : "bold"} className="w-4 h-4" />
-              <span>{tab.label} Node</span>
+              <span>{tab.label}</span>
               {tab.badge && (
                 <span className="ml-2 w-5 h-5 bg-rose-500 text-white text-[9px] font-black rounded-full flex items-center justify-center shadow-glow-sm">
                   {tab.badge}
@@ -231,7 +231,7 @@ export default function AnalyticsDashboard() {
                 <section className="space-y-6">
                   <div className="flex items-center gap-3 px-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Critical Biomarkers</h2>
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">ตัวชี้วัดสำคัญ</h2>
                   </div>
                   <InsightCards />
                 </section>
@@ -242,9 +242,9 @@ export default function AnalyticsDashboard() {
                     <div className="flex items-center justify-between px-2">
                       <div className="flex items-center gap-3">
                         <div className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Anomaly Registry</h2>
+                        <h2 className="text-xl font-black text-foreground uppercase tracking-tight">บันทึกความผิดปกติ</h2>
                       </div>
-                      <Badge variant="ghost" className="bg-rose-500/5 text-rose-500 border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">Real-time Detection</Badge>
+                      <Badge variant="ghost" className="bg-rose-500/5 text-rose-500 border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">ตรวจจับแบบเรียลไทม์</Badge>
                     </div>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {alerts.slice(0, 4).map((alert, index) => (
@@ -289,7 +289,7 @@ export default function AnalyticsDashboard() {
                           onClick={() => setActiveTab('alerts')}
                           className="text-[10px] font-black uppercase tracking-[0.3em] text-primary hover:bg-primary/5 gap-3 rounded-xl px-8 py-4"
                         >
-                          Access Global Alert Center ({alerts.length})
+                          เข้าถึงศูนย์แจ้งเตือน ({alerts.length})
                           <CaretRight weight="bold" className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -301,7 +301,7 @@ export default function AnalyticsDashboard() {
                 <section className="space-y-6">
                   <div className="flex items-center gap-3 px-2">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">Intelligence Orchestration</h2>
+                    <h2 className="text-xl font-black text-foreground uppercase tracking-tight">การประสานงานข้อมูล</h2>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <Card 
@@ -317,13 +317,13 @@ export default function AnalyticsDashboard() {
                           <ChatCircle weight="duotone" className="w-7 h-7" />
                         </div>
                         <div className="space-y-2">
-                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">Neural Advisor</h3>
+                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-primary transition-colors">ที่ปรึกษา AI</h3>
                           <p className="text-xs text-muted-foreground font-medium italic leading-relaxed">
-                            Interact with high-fidelity cognitive models for real-time strategy synthesis.
+                            ปรึกษา AI เพื่อวิเคราะห์กลยุทธ์แบบเรียลไทม์
                           </p>
                         </div>
                         <div className="flex items-center gap-2 text-[9px] font-black text-primary uppercase tracking-widest pt-2">
-                          Initialize Link <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                          เริ่มต้น <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </div>
                     </Card>
@@ -340,13 +340,13 @@ export default function AnalyticsDashboard() {
                           <ChartBar weight="duotone" className="w-7 h-7" />
                         </div>
                         <div className="space-y-2">
-                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-emerald-500 transition-colors">Fiscal Reports</h3>
+                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-emerald-500 transition-colors">รายงานทางการเงิน</h3>
                           <p className="text-xs text-muted-foreground font-medium italic leading-relaxed">
-                            Access periodic audit payloads and predictive revenue trajectory nodes.
+                            เข้าถึงรายงานการตรวจสอบและการคาดการณ์รายได้
                           </p>
                         </div>
                         <div className="flex items-center gap-2 text-[9px] font-black text-emerald-500 uppercase tracking-widest pt-2">
-                          Scan Registry <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                          สแกนข้อมูล <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </div>
                     </Card>
@@ -363,13 +363,13 @@ export default function AnalyticsDashboard() {
                           <Users weight="duotone" className="w-7 h-7" />
                         </div>
                         <div className="space-y-2">
-                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-blue-500 transition-colors">Staff Oversight</h3>
+                          <h3 className="text-xl font-black text-foreground uppercase tracking-tight group-hover:text-blue-500 transition-colors">การดูแลพนักงาน</h3>
                           <p className="text-xs text-muted-foreground font-medium italic leading-relaxed">
-                            Monitor personnel efficiency nodes and establish functional task queues.
+                            ติดตามประสิทธิภาพพนักงานและจัดการคิวงาน
                           </p>
                         </div>
                         <div className="flex items-center gap-2 text-[9px] font-black text-blue-500 uppercase tracking-widest pt-2">
-                          Deploy Matrix <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                          เปิดใช้งาน <CaretRight weight="bold" className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                         </div>
                       </div>
                     </Card>
@@ -388,13 +388,13 @@ export default function AnalyticsDashboard() {
               <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
                 <SalesFunnelChart 
                   data={[
-                    { name: 'Leads', value: 450, percentage: 100 },
-                    { name: 'Qualified', value: 280, percentage: 62 },
-                    { name: 'Consulted', value: 195, percentage: 43 },
-                    { name: 'Quoted', value: 140, percentage: 31 },
-                    { name: 'Converted', value: 85, percentage: 19 },
+                    { name: 'ผู้มุ่งหวัง', value: 450, percentage: 100 },
+                    { name: 'ผ่านเกณฑ์', value: 280, percentage: 62 },
+                    { name: 'ปรึกษาแล้ว', value: 195, percentage: 43 },
+                    { name: 'เสนอราคา', value: 140, percentage: 31 },
+                    { name: 'ปิดการขาย', value: 85, percentage: 19 },
                   ]}
-                  period="This Month"
+                  period="เดือนนี้"
                 />
                 <PredictiveDashboard />
               </motion.div>

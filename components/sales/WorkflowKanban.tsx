@@ -187,7 +187,7 @@ export default function WorkflowKanban() {
     return (
       <div className="flex flex-col items-center justify-center h-96 space-y-6">
         <SpinnerGap weight="bold" className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">Synchronizing Workflow Matrix...</p>
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">กำลังประมวลผลข้อมูลเวิร์กโฟลว์...</p>
       </div>
     );
   }
@@ -458,7 +458,7 @@ export default function WorkflowKanban() {
                       const currentIndex = workflowStages.findIndex(s => s.id === selectedWorkflow.current_stage);
                       const isNext = index === currentIndex + 1;
                       const isCompleted = index < currentIndex;
-                      const isCurrent = index === currentIndex;
+                      const isปัจจุบัน = index === currentIndex;
                       
                       return (
                         <Button
@@ -469,8 +469,8 @@ export default function WorkflowKanban() {
                           className={cn(
                             "px-5 py-6 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all h-auto min-w-[100px]",
                             isCompleted && "text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 border-none opacity-60 shadow-none",
-                            isCurrent && "border-primary text-primary bg-primary/10 shadow-glow-sm",
-                            !isNext && !isCompleted && !isCurrent && "opacity-20 border-border/30 grayscale"
+                            isปัจจุบัน && "border-primary text-primary bg-primary/10 shadow-glow-sm",
+                            !isNext && !isCompleted && !isปัจจุบัน && "opacity-20 border-border/30 grayscale"
                           )}
                         >
                           {isCompleted ? <CheckCircle weight="bold" className="w-5 h-5" /> : stage.label}

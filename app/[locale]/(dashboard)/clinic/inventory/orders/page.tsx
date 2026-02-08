@@ -167,7 +167,7 @@ function PurchaseOrderManagementInner() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating clinical supply acquisition, inventory scaling, and fiscal procurement telemetry.
+            จัดการคำสั่งซื้อ สินค้าคงคลัง และการเงินการจัดซื้อ
           </motion.p>
         </div>
 
@@ -269,7 +269,7 @@ function PurchaseOrderManagementInner() {
         {loading ? (
           <div className="py-32 flex flex-col items-center justify-center gap-4">
             <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Synchronizing Procurement Matrix...</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">กำลังประมวลผลข้อมูลการสั่งซื้อ...</p>
           </div>
         ) : filteredOrders.length === 0 ? (
           <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-[40px]">

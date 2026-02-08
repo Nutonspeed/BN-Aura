@@ -109,7 +109,7 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
               <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
               <input 
                 type="text"
-                placeholder="Query clinical manual or protocol nodes..."
+                placeholder="ค้นหาคู่มือหรือโปรโตคอล..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-5 py-4 bg-secondary/50 border border-border rounded-2xl text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner"
@@ -150,11 +150,11 @@ export default function HelpModal({ isOpen, onClose, role }: HelpModalProps) {
                       </div>
                       <div className="space-y-1">
                         <h4 className="text-lg font-black text-foreground uppercase tracking-tight">Direct Human Protocol</h4>
-                        <p className="text-[11px] text-muted-foreground font-medium italic">Establish secure link with clinical architects for complex node orchestration.</p>
+                        <p className="text-[11px] text-muted-foreground font-medium italic">สร้างการเชื่อมต่อที่ปลอดภัยกับสถาปนิกคลินิกสำหรับการประสานงานโหนดที่ซับซ้อน</p>
                       </div>
                     </div>
                     <Button className="w-full md:w-auto px-10 py-6 rounded-2xl shadow-premium text-xs font-black uppercase tracking-widest gap-3">
-                      Initialize Link
+                      เริ่มต้นการเชื่อมต่อ
                       <CaretRight weight="bold" className="w-4 h-4" />
                     </Button>
                   </div>

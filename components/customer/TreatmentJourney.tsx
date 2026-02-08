@@ -50,21 +50,21 @@ export default function TreatmentJourney({ customerId }: { customerId: string })
             const isCompleted = ['completed', 'follow_up', 'closed'].includes(item.journey_status);
             const isCurrent = !isCompleted && (item.journey_status === 'in_progress' || (isLast && item.journey_status === 'consultation'));
             
-            let title = 'Skin Analysis';
-            let description = 'Initial skin diagnostic and consultation.';
+            let title = 'การวิเคราะห์ผิว';
+            let description = 'การวินิจฉัยผิวเบื้องต้นและการปรึกษา';
             
             if (item.journey_status === 'treatment_planned') {
-              title = item.treatment_name || 'Treatment Planned';
-              description = 'Custom protocol developed by aesthetic advisor.';
+              title = item.treatment_name || 'วางแผนการรักษา';
+              description = 'โปรโตคอลเฉพาะที่พัฒนาโดยที่ปรึกษาความงาม';
             } else if (item.journey_status === 'in_progress') {
-              title = item.treatment_name || 'Treatment Active';
-              description = 'Clinical procedures currently being performed.';
+              title = item.treatment_name || 'กำลังรักษา';
+              description = 'กำลังดำเนินการรักษาทางคลินิก';
             } else if (item.journey_status === 'completed') {
-              title = 'Treatment Cycle Complete';
-              description = 'Successful execution of planned aesthetic protocol.';
+              title = 'การรักษาเสร็จสมบูรณ์';
+              description = 'ดำเนินการตามโปรโตคอลความงามที่วางแผนไว้สำเร็จ';
             } else if (item.journey_status === 'follow_up') {
-              title = 'Post-Treatment Follow-up';
-              description = 'Progress monitoring and home-care optimization.';
+              title = 'ติดตามผลหลังการรักษา';
+              description = 'ติดตามความคืบหน้าและปรับปรุงการดูแลที่บ้าน';
             }
 
             return {
@@ -103,8 +103,8 @@ export default function TreatmentJourney({ customerId }: { customerId: string })
             <Sparkle className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-white uppercase tracking-tight">Your Skin Journey</h3>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Progressive Aesthetic Intelligence</p>
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight">เส้นทางการดูแลผิวของคุณ</h3>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">ระบบอัจฉริยะดูแลความงามต่อเนื่อง</p>
           </div>
         </div>
       </div>

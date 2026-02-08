@@ -140,8 +140,8 @@ export function ConfirmModal({
   onConfirm,
   title,
   message,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
+  confirmText = 'ยืนยัน',
+  cancelText = 'ยกเลิก',
   variant = 'danger',
   loading = false,
 }: ConfirmModalProps) {
@@ -170,7 +170,7 @@ export function ConfirmModal({
             buttonStyles[variant]
           )}
         >
-          {loading ? 'Loading...' : confirmText}
+          {loading ? 'กำลังโหลด...' : confirmText}
         </button>
       </ModalFooter>
     </Modal>

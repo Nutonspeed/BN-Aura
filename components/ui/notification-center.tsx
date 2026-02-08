@@ -122,7 +122,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             <button
               onClick={() => onMarkAsRead(notification.id)}
               className="p-1 text-gray-400 hover:text-green-600 transition-colors"
-              title="Mark as read"
+              title="ทำเครื่องหมายอ่านแล้ว"
             >
               <Check className="w-4 h-4" />
             </button>
@@ -130,7 +130,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <button
             onClick={() => onDelete(notification.id)}
             className="p-1 text-gray-400 hover:text-red-600 transition-colors"
-            title="Delete notification"
+            title="ลบการแจ้งเตือน"
           >
             <X className="w-4 h-4" />
           </button>
@@ -198,7 +198,7 @@ const NotificationCenter: React.FC = () => {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
-        title="Notifications"
+        title="การแจ้งเตือน"
       >
         <Bell className="w-6 h-6" />
         
@@ -220,7 +220,7 @@ const NotificationCenter: React.FC = () => {
         <div className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+            <h3 className="text-lg font-semibold text-gray-900">การแจ้งเตือน</h3>
             <div className="flex items-center space-x-2">
               {unreadCount > 0 && (
                 <button
@@ -249,7 +249,7 @@ const NotificationCenter: React.FC = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              All ({notifications.length})
+              ทั้งหมด ({notifications.length})
             </button>
             <button
               onClick={() => setFilter('unread')}
@@ -259,7 +259,7 @@ const NotificationCenter: React.FC = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Unread ({unreadCount})
+              ยังไม่อ่าน ({unreadCount})
             </button>
           </div>
 
@@ -268,7 +268,7 @@ const NotificationCenter: React.FC = () => {
             {isLoading ? (
               <div className="p-4 text-center text-gray-500">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-                Loading notifications...
+                กำลังโหลดข้อมูลแจ้งเตือน...
               </div>
             ) : error ? (
               <div className="p-4 text-center text-red-500">
@@ -278,7 +278,7 @@ const NotificationCenter: React.FC = () => {
             ) : filteredNotifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
                 <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-                {filter === 'unread' ? 'No unread notifications' : 'No notifications'}
+                {filter === 'unread' ? 'ไม่มีการแจ้งเตือนที่ยังไม่อ่าน' : 'ไม่มีการแจ้งเตือน'}
               </div>
             ) : (
               <div className="p-2">

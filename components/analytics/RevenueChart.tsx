@@ -51,8 +51,8 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
             <TrendUp className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-foreground">Revenue Intelligence</h3>
-            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">Growth Analytics & Trends</p>
+            <h3 className="text-lg font-semibold text-foreground">ข้อมูลรายได้</h3>
+            <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-medium">วิเคราะห์แนวโน้มการเติบโต</p>
           </div>
         </div>
 
@@ -80,8 +80,8 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
       ) : data.length === 0 ? (
         <div className="h-[120px] flex flex-col items-center justify-center text-muted-foreground/50 relative z-10">
           <TrendUp className="w-10 h-10 mb-2 opacity-30" />
-          <p className="text-xs font-medium uppercase tracking-widest">No Revenue Data Yet</p>
-          <p className="text-[10px] mt-1">Transactions will appear here as they occur</p>
+          <p className="text-xs font-medium uppercase tracking-widest">ยังไม่มีข้อมูลรายได้</p>
+          <p className="text-[10px] mt-1">ธุรกรรมจะแสดงที่นี่เมื่อเกิดขึ้น</p>
         </div>
       ) : (
         <div className="h-[250px] w-full relative z-10">
@@ -138,11 +138,11 @@ export default function RevenueChart({ clinicId }: { clinicId: string }) {
       <div className="pt-4 border-t border-border flex items-center justify-between text-[10px] uppercase tracking-widest font-medium text-muted-foreground relative z-10">
         <div className="flex items-center gap-2">
           <CalendarDots className="w-3 h-3" />
-          Data updated in real-time
+          ข้อมูลอัพเดทแบบเรียลไทม์
         </div>
         <button className="flex items-center gap-2 hover:text-foreground transition-colors">
           <Funnel className="w-3 h-3" />
-          Filter Advanced
+          ตัวกรองขั้นสูง
         </button>
       </div>
     </div>

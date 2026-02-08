@@ -70,7 +70,7 @@ export default function POSCart({
           <div className="w-10 h-10 rounded-2xl bg-primary/20 flex items-center justify-center text-primary">
             <ShoppingCart className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground">Current Bill</h3>
+          <h3 className="text-lg font-semibold text-foreground">บิลปัจจุบัน</h3>
         </div>
         <span className="px-3 py-1 rounded-full bg-secondary border border-border text-xs font-medium text-muted-foreground">
           {items.length} Items
@@ -100,10 +100,10 @@ export default function POSCart({
                 "text-[10px] font-black uppercase tracking-widest mb-0.5",
                 customer ? "text-primary" : "text-muted-foreground"
               )}>
-                Patient Identity
+                ข้อมูลผู้ป่วย
               </p>
               <p className="text-sm font-semibold text-foreground truncate max-w-[180px]">
-                {customer ? customer.full_name : 'Select or Link Patient'}
+                {customer ? customer.full_name : 'เลือกหรือเชื่อมต่อผู้ป่วย'}
               </p>
             </div>
           </div>
@@ -163,8 +163,8 @@ export default function POSCart({
           ) : (
             <div className="h-full flex flex-col items-center justify-center opacity-20 py-20 text-center">
               <ShoppingCart className="w-16 h-16 mb-4 stroke-[1px]" />
-              <p className="text-xs font-black uppercase tracking-[0.3em]">Empty Cart Node</p>
-              <p className="text-[10px] font-light mt-2 max-w-[150px]">Select treatments or products to begin orchestration.</p>
+              <p className="text-xs font-black uppercase tracking-[0.3em]">ตะกร้าว่าง</p>
+              <p className="text-[10px] font-light mt-2 max-w-[150px]">เลือกทรีทเมนต์หรือสินค้าเพื่อเริ่มต้น</p>
             </div>
           )}
         </AnimatePresence>
@@ -176,7 +176,7 @@ export default function POSCart({
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
               <Star weight="fill" className="w-3.5 h-3.5" />
-              Loyalty Points
+              คะแนนสะสม
             </span>
             <span className="text-xs font-bold text-amber-400 tabular-nums">{customerPoints.toLocaleString()} pts</span>
           </div>
@@ -202,7 +202,7 @@ export default function POSCart({
                   onClick={() => onRedeemPointsChange(Math.min(customerPoints, subtotal))}
                   className="text-amber-400/70 hover:text-amber-400 transition font-bold"
                 >
-                  Use Max
+                  ใช้ทั้งหมด
                 </button>
               </div>
             </div>
@@ -214,15 +214,15 @@ export default function POSCart({
       <div className="p-8 bg-white/[0.02] border-t border-white/10 space-y-6">
         <div className="space-y-3">
           <div className="flex justify-between items-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            <span>Operational Subtotal</span>
+            <span>ยอดรวมย่อย</span>
             <span className="tabular-nums">{displayPrice(subtotal)}</span>
           </div>
           <div className="flex justify-between items-center text-xs font-bold text-muted-foreground uppercase tracking-widest">
-            <span>Protocol Discounts</span>
+            <span>ส่วนลด</span>
             <span className="text-emerald-400 tabular-nums">-{displayPrice(pointsDiscount)}</span>
           </div>
           <div className="pt-3 border-t border-white/5 flex justify-between items-center">
-            <span className="text-sm font-black text-white uppercase tracking-[0.2em]">Total Value</span>
+            <span className="text-sm font-black text-white uppercase tracking-[0.2em]">ยอดรวมทั้งหมด</span>
             <span className="text-3xl font-black text-primary tracking-tighter text-glow tabular-nums">
               {displayPrice(total)}
             </span>
@@ -236,12 +236,12 @@ export default function POSCart({
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
           <CreditCard className="w-5 h-5" />
-          <span>Execute Transaction</span>
+          <span>ชำระเงิน</span>
         </button>
         
         <div className="flex items-center justify-center gap-2 text-white/20 hover:text-white/40 transition-colors cursor-default">
           <Receipt className="w-3 h-3" />
-          <span className="text-[9px] font-black uppercase tracking-widest">Neural Receipt System 1.0</span>
+          <span className="text-[9px] font-black uppercase tracking-widest">ระบบใบเสร็จ 1.0</span>
         </div>
       </div>
     </div>

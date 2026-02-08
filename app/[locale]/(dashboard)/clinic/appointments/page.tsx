@@ -142,7 +142,7 @@ export default function AppointmentPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <CalendarDots weight="duotone" className="w-4 h-4" />
-            Temporal Orchestration Node
+            โหนดการจัดการเวลา
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -150,7 +150,7 @@ export default function AppointmentPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Appointment <span className="text-primary">Calendar</span>
+            ปฏิทิน<span className="text-primary">นัดหมาย</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -158,7 +158,7 @@ export default function AppointmentPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Scheduling clinical transformations and cognitive consultations across temporal nodes.
+            จัดการนัดหมายการรักษาและการปรึกษาทางคลินิกผ่านโหนดเวลา
           </motion.p>
         </div>
 
@@ -170,14 +170,14 @@ export default function AppointmentPage() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            Sync Schedule
+            ซิงโครไนซ์ตาราง
           </Button>
           <Button 
             onClick={handleAddAppointment}
             className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            Initialize Node
+            เริ่มต้นโหนด
           </Button>
         </div>
       </div>
@@ -185,27 +185,27 @@ export default function AppointmentPage() {
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="Daily Node Load"
+          title="โหลดโหนดรายวัน"
           value={stats.total}
           icon={Monitor as Icon}
           className="p-4"
         />
         <StatCard
-          title="Confirmed Cycles"
+          title="รอบที่ยืนยันแล้ว"
           value={stats.confirmed}
           icon={CheckCircle as Icon}
           iconColor="text-emerald-500"
           className="p-4"
         />
         <StatCard
-          title="Awaiting Sync"
+          title="รอซิงโครไนซ์"
           value={stats.pending}
           icon={Clock as Icon}
           iconColor="text-amber-500"
           className="p-4"
         />
         <StatCard
-          title="Completed Nodes"
+          title="โหนดที่เสร็จสิ้น"
           value={stats.completed}
           icon={CheckCircle as Icon}
           iconColor="text-primary"
@@ -283,10 +283,10 @@ export default function AppointmentPage() {
             <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
             <div className="flex items-center gap-3 relative z-10">
               <Sparkle weight="duotone" className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">Temporal Intel</h4>
+              <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">ข้อมูลเชิงลึกเวลา</h4>
             </div>
             <p className="text-xs text-muted-foreground italic font-medium leading-relaxed relative z-10">
-              Optimal diagnostic throughput detected in afternoon temporal slots. Protocol efficiency +12.4% during peak nodes.
+              ตรวจพบประสิทธิภาพการวินิจฉัยสูงสุดในช่วงบ่าย ประสิทธิภาพโปรโตคอล +12.4% ในช่วงพีค
             </p>
           </Card>
         </div>
@@ -295,7 +295,7 @@ export default function AppointmentPage() {
         <div className="xl:col-span-3 space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 bg-secondary/30 p-2 rounded-[32px] border border-border/50 shadow-inner">
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 no-scrollbar px-2">
-              {['All Nodes', 'Confirmed', 'Scheduled', 'Processing', 'Completed'].map((tab, i) => (
+              {['ทั้งหมด', 'ยืนยันแล้ว', 'กำหนดการ', 'กำลังดำเนินการ', 'เสร็จสิ้น'].map((tab, i) => (
                 <button 
                   key={tab} 
                   className={cn(
@@ -322,12 +322,12 @@ export default function AppointmentPage() {
             {loading ? (
               <div className="py-32 flex flex-col items-center justify-center gap-4">
                 <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Synchronizing Temporal Grid...</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังซิงโครไนซ์กริดเวลา...</p>
               </div>
             ) : appointments.length === 0 ? (
               <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-[40px]">
                 <CalendarDots weight="duotone" className="w-16 h-16 text-muted-foreground" />
-                <p className="text-sm font-black uppercase tracking-widest text-center">Zero Operational Nodes Detected In This Cycle</p>
+                <p className="text-sm font-black uppercase tracking-widest text-center">ไม่พบโหนดที่ใช้งานในรอบนี้</p>
               </Card>
             ) : (
               <AnimatePresence mode="popLayout">
@@ -348,7 +348,7 @@ export default function AppointmentPage() {
                             <p className="text-2xl font-black text-foreground group-hover:text-primary transition-colors tracking-tighter tabular-nums">
                               {apt.start_time.substring(0, 5)}
                             </p>
-                            <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] tracking-widest uppercase px-2">CYCLE_START</Badge>
+                            <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] tracking-widest uppercase px-2">เริ่มรอบ</Badge>
                           </div>
                           
                           <div className="h-14 w-px bg-border/50 hidden md:block" />
@@ -367,7 +367,7 @@ export default function AppointmentPage() {
                                 </Badge>
                                 <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-widest">
                                   <Clock weight="bold" className="w-3.5 h-3.5 opacity-60" />
-                                  60M Node
+                                  โหนด 60M
                                 </div>
                               </div>
                             </div>
@@ -376,7 +376,7 @@ export default function AppointmentPage() {
 
                         <div className="flex flex-wrap items-center gap-8 md:gap-12">
                           <div className="flex flex-col md:items-end gap-1.5 min-w-[120px]">
-                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em]">Practitioner</p>
+                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em]">ผู้ปฏิบัติงาน</p>
                             <div className="flex items-center gap-2.5">
                               <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                               <span className="text-sm font-bold text-foreground uppercase tracking-tight">{apt.staff?.full_name}</span>

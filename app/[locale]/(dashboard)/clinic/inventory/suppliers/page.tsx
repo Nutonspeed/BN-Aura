@@ -148,7 +148,7 @@ export default function SupplierManagementContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating clinical acquisition nodes, material pipelines, and vendor telemetry.
+            จัดการข้อมูลซัพพลายเออร์ วัตถุดิบ และการจัดซื้อ
           </motion.p>
         </div>
 
@@ -251,7 +251,7 @@ export default function SupplierManagementContent() {
         {loading ? (
           <div className="py-32 flex flex-col items-center justify-center gap-4">
             <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">Synchronizing Acquisition Matrix...</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">กำลังประมวลผลข้อมูลการจัดซื้อ...</p>
           </div>
         ) : filteredSuppliers.length === 0 ? (
           <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-[40px]">

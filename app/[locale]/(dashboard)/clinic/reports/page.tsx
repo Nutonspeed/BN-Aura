@@ -177,9 +177,9 @@ export default function ReportsPage() {
           </>
         ) : reportType === 'staff' ? (
           <>
-            <StatCard title="Active Practitioners" value={data.length} icon={UserCheck} trend="neutral" />
-            <StatCard title="Top Performance" value={data.length ? Math.max(...data.map(i => i.sales || 0)) : 0} prefix="฿" icon={TrendUp} trend="up" change={15.2} />
-            <StatCard title="Efficiency Mean" value={data.length ? Math.round(data.reduce((acc, i) => acc + (i.sales || 0), 0) / data.length) : 0} prefix="฿" icon={Pulse} trend="neutral" />
+            <StatCard title="พนักงานที่ใช้งาน" value={data.length} icon={UserCheck} trend="neutral" />
+            <StatCard title="ประสิทธิภาพสูงสุด" value={data.length ? Math.max(...data.map(i => i.sales || 0)) : 0} prefix="฿" icon={TrendUp} trend="up" change={15.2} />
+            <StatCard title="ค่าเฉลี่ยประสิทธิภาพ" value={data.length ? Math.round(data.reduce((acc, i) => acc + (i.sales || 0), 0) / data.length) : 0} prefix="฿" icon={Pulse} trend="neutral" />
           </>
         ) : (
           <>

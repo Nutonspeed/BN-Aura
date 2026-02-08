@@ -294,7 +294,7 @@ export default function POSPage() {
     return (
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Sales Interface...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">กำลังเริ่มต้นระบบขาย...</p>
       </div>
     );
   }
@@ -329,7 +329,7 @@ export default function POSPage() {
                 className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
               >
                 <SquaresFour weight="duotone" className="w-4 h-4" />
-                Sales Orchestration Node
+                ระบบจุดขาย
               </motion.div>
               <motion.h1 
                 initial={{ opacity: 0, x: -20 }}
@@ -364,7 +364,7 @@ export default function POSPage() {
                 className="gap-2"
               >
                 <ClockCounterClockwise weight="bold" className="w-4 h-4" />
-                Recent Logs
+                ประวัติล่าสุด
               </Button>
             </div>
           </div>

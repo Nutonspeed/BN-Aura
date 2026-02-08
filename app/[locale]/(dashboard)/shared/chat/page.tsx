@@ -237,7 +237,7 @@ export default function SharedChatPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            {isCustomer ? 'Synchronizing with your dedicated clinical advisor.' : 'Orchestrating active customer dialogue streams and identity nodes.'}
+            {isCustomer ? 'กำลังเชื่อมต่อกับที่ปรึกษาคลินิกของคุณ' : 'กำลังจัดการข้อมูลการสนทนาและข้อมูลลูกค้า'}
           </motion.p>
         </div>
       </div>

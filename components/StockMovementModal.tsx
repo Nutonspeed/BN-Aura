@@ -218,7 +218,7 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                   onChange={handleInputChange}
                   rows={2}
                   className="w-full px-8 py-5 bg-secondary/30 border border-border rounded-[28px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none font-medium leading-relaxed italic"
-                  placeholder="Clinical reason for node synchronization..."
+                  placeholder="เหตุผลทางคลินิกสำหรับการเคลื่อนไหวสต็อก..."
                 />
               </div>
 
@@ -245,7 +245,7 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                   disabled={loading}
                   className="w-full sm:flex-1 py-7 rounded-[24px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                 >
-                  Abort Cycle
+                  ยกเลิก
                 </Button>
                 <Button
                   type="submit"
@@ -255,7 +255,7 @@ export default function StockMovementModal({ isOpen, onClose, onSuccess, product
                   {loading ? (
                     <>
                       <SpinnerGap className="w-5 h-5 animate-spin" />
-                      Synchronizing...
+                      กำลังประมวลผล...
                     </>
                   ) : (
                     <>

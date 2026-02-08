@@ -245,7 +245,7 @@ export default function SetTargetModal({ isOpen, onClose, onSuccess, staffId, st
                   disabled={loading}
                   className="w-full sm:flex-1 py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                 >
-                  Abort
+                  ยกเลิก
                 </Button>
                 <Button
                   type="submit"
@@ -255,7 +255,7 @@ export default function SetTargetModal({ isOpen, onClose, onSuccess, staffId, st
                   {loading ? (
                     <>
                       <SpinnerGap className="w-4 h-4 animate-spin" />
-                      Synchronizing...
+                      กำลังประมวลผล...
                     </>
                   ) : (
                     <>

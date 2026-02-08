@@ -125,7 +125,7 @@ export default function AICoachLeaderboard() {
     return (
       <div className="text-center py-6 text-muted-foreground">
         <Trophy className="w-10 h-10 mx-auto mb-2 opacity-30" />
-        <p className="text-sm">No AI Coach usage data yet</p>
+        <p className="text-sm">ยังไม่มีข้อมูลการใช้งาน AI Coach</p>
       </div>
     );
   }

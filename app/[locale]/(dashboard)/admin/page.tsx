@@ -64,10 +64,10 @@ export default function SuperAdminDashboard() {
     activeSessions: 0
   });
   const [systemStatus, setSystemHealth] = useState<Record<string, string>>({
-    database: 'Checking...',
-    storage: 'Checking...',
-    ai_gateway: 'Checking...',
-    auth_service: 'Checking...'
+    database: 'กำลังตรวจสอบ...',
+    storage: 'กำลังตรวจสอบ...',
+    ai_gateway: 'กำลังตรวจสอบ...',
+    auth_service: 'กำลังตรวจสอบ...'
   });
   
   // Register Clinic Modal State
@@ -204,7 +204,7 @@ export default function SuperAdminDashboard() {
       }
     } catch (error) {
       console.error('Error creating user:', error);
-      setUserError('Failed to create user');
+      setUserError('สร้างผู้ใช้ไม่สำเร็จ');
     } finally {
       setCreatingUser(false);
     }
@@ -312,7 +312,7 @@ export default function SuperAdminDashboard() {
       // Refresh data
       await fetchData();
     } catch (error) {
-      setRegisterError(error instanceof Error ? error.message : 'An error occurred');
+      setRegisterError(error instanceof Error ? error.message : 'เกิดข้อผิดพลาด');
     } finally {
       setRegistering(false);
     }
@@ -323,17 +323,17 @@ export default function SuperAdminDashboard() {
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          Accessing Global Control Node...
+          กำลังเข้าถึงโหนดควบคุมระดับโลก...
         </p>
       </div>
     );
   }
 
   const stats = [
-    { label: 'Total Clinics', value: globalStats.totalClinics, icon: Buildings, trend: 'up' as const, change: 0 },
-    { label: 'Global Customers', value: globalStats.globalCustomers, icon: Users, trend: 'up' as const, change: 0 },
-    { label: 'Monthly AI Load', value: globalStats.monthlyAILoad, icon: Lightning, suffix: ' reqs', trend: 'up' as const, change: 0 },
-    { label: 'Active Personnel', value: globalStats.activeSessions, icon: Pulse, trend: 'neutral' as const, change: 0 },
+    { label: 'คลินิกทั้งหมด', value: globalStats.totalClinics, icon: Buildings, trend: 'up' as const, change: 0 },
+    { label: 'ลูกค้าทั่วโลก', value: globalStats.globalCustomers, icon: Users, trend: 'up' as const, change: 0 },
+    { label: 'ภาระ AI รายเดือน', value: globalStats.monthlyAILoad, icon: Lightning, suffix: ' รายการ', trend: 'up' as const, change: 0 },
+    { label: 'บุคลากรที่ใช้งาน', value: globalStats.activeSessions, icon: Pulse, trend: 'neutral' as const, change: 0 },
   ];
 
   return (
@@ -353,7 +353,7 @@ export default function SuperAdminDashboard() {
             className="flex items-center space-xs text-primary text-label"
           >
             <ShieldCheck weight="duotone" className="w-4 h-4" />
-            System Authority Node
+            โหนดอำนาจระบบ
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -361,7 +361,7 @@ export default function SuperAdminDashboard() {
             transition={{ delay: 0.1 }}
             className="text-display text-foreground"
           >
-            Super Admin <span className="text-primary">Console</span>
+            ซูเปอร์แอดมิน <span className="text-primary">คอนโซล</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -369,7 +369,7 @@ export default function SuperAdminDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Global orchestration and multi-tenant performance oversight.
+            การประสานงานระดับโลกและการกำกับดูแลประสิทธิภาพ
           </motion.p>
         </div>
 
@@ -385,14 +385,14 @@ export default function SuperAdminDashboard() {
             className="space-xs pad-md radius-lg text-micro border-border/50"
           >
             <Globe weight="duotone" className="w-4 h-4 text-primary" />
-            Network Map
+            แผนที่เครือข่าย
           </Button>
           <Button 
             onClick={() => setShowRegisterModal(true)}
             className="space-xs pad-lg radius-lg text-micro shadow-premium"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            Register Clinic
+            ลงทะเบียนคลินิก
           </Button>
           <Button 
             variant="outline"
@@ -400,7 +400,7 @@ export default function SuperAdminDashboard() {
             onClick={() => setShowUserModal(true)}
           >
             <Users weight="bold" className="w-4 h-4" />
-            Initialize Owner
+            สร้างเจ้าของ
           </Button>
         </motion.div>
       </div>
@@ -435,8 +435,8 @@ export default function SuperAdminDashboard() {
                   <IdentificationBadge weight="duotone" className="w-6 h-6" />
                 </div>
                 <div>
-                  <CardTitle className="text-heading-2">Global Clinic Registry</CardTitle>
-                  <p className="text-label text-muted-foreground mt-0.5">Managed cluster instances</p>
+                  <CardTitle className="text-heading-2">ทะเบียนคลินิกระดับโลก</CardTitle>
+                  <p className="text-label text-muted-foreground mt-0.5">อินสแตนซ์คลัสเตอร์ที่จัดการ</p>
                 </div>
               </div>
               <div className="relative group w-full md:w-72">
@@ -444,7 +444,7 @@ export default function SuperAdminDashboard() {
                 <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
                 <input 
                   type="text" 
-                  placeholder="Query cluster nodes..." 
+                  placeholder="ค้นหาโหนดคลัสเตอร์..." 
                   className="w-full bg-card border border-border/50 radius-lg py-3 pl-11 pr-4 text-caption text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
                 />
               </div>
@@ -482,11 +482,11 @@ export default function SuperAdminDashboard() {
                       <div className="flex gap-8">
                         <div className="text-center min-w-[60px]">
                           <p className="text-lg font-black text-foreground tabular-nums tracking-tight">{clinic.customerCount.toLocaleString()}</p>
-                          <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Entities</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">ลูกค้า</p>
                         </div>
                         <div className="text-center min-w-[60px]">
                           <p className="text-lg font-black text-foreground tabular-nums tracking-tight">{clinic.staffCount.toLocaleString()}</p>
-                          <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">Personnel</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">บุคลากร</p>
                         </div>
                       </div>
                       
@@ -500,7 +500,7 @@ export default function SuperAdminDashboard() {
                               : "bg-rose-500/5 text-rose-500 border-rose-500/20 hover:bg-rose-500/10"
                           )}
                         >
-                          {clinic.status === 'active' ? 'Operational' : 'Offline'}
+                          {clinic.status === 'active' ? 'ใช้งาน' : 'ออฟไลน์'}
                         </button>
                         <Button 
                           variant="ghost"
@@ -520,7 +520,7 @@ export default function SuperAdminDashboard() {
                 variant="ghost" 
                 className="w-full mt-8 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary border border-dashed border-border/50"
               >
-                Access Full Cluster Matrix
+                เข้าถึงเมทริกซ์คลัสเตอร์ทั้งหมด
               </Button>
             </CardContent>
           </Card>
@@ -533,7 +533,7 @@ export default function SuperAdminDashboard() {
             <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
               <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
-                Infrastructure Health
+                สถานะโครงสร้างพื้นฐาน
               </CardTitle>
             </CardHeader>
             
@@ -559,8 +559,8 @@ export default function SuperAdminDashboard() {
               <div className="p-5 bg-amber-500/5 rounded-[24px] border border-amber-500/10 flex gap-4 relative z-10 backdrop-blur-md mt-6">
                 <WarningCircle weight="fill" className="w-6 h-6 text-amber-500 flex-shrink-0" />
                 <p className="text-[10px] text-muted-foreground font-medium leading-relaxed italic">
-                  <span className="text-amber-500 font-black uppercase tracking-tighter mr-1.5">Anomaly Detected:</span>
-                  Minor latency in vision clusters. Automated regional sync scheduled for 02:00 UTC.
+                  <span className="text-amber-500 font-black uppercase tracking-tighter mr-1.5">พบความผิดปกติ:</span>
+                  ความล่าช้าเล็กน้อยในระบบ กำหนดการซิงโครไนซ์อัตโนมัติ 02:00 UTC.
                 </p>
               </div>
             </CardContent>
@@ -577,16 +577,16 @@ export default function SuperAdminDashboard() {
             <CardHeader className="border-b border-border/50 p-8 bg-secondary/30">
               <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3 text-primary">
                 <Gear weight="duotone" className="w-5 h-5" />
-                Global Control
+                ควบคุมระดับโลก
               </CardTitle>
             </CardHeader>
             
             <CardContent className="p-8">
               <div className="space-y-3">
                 {[
-                  { title: "Distributed Database Backup", sub: "Interval: 4h Cycle", icon: Database },
-                  { title: "Neural Cache Invalidation", sub: "AI Gateway & Redis", icon: Lightning },
-                  { title: "Security Cluster Audit", sub: "3 identities expiring", icon: ShieldCheck }
+                  { title: "สำรองฐานข้อมูลแบบกระจาย", sub: "ช่วง: 4 ชั่วโมง", icon: Database },
+                  { title: "การล้างแคชประสาท", sub: "เกตเวย์ AI และ Redis", icon: Lightning },
+                  { title: "การตรวจสอบความปลอดภัย", sub: "3 ไอเด็นติตี้กำลังหมดอายุ", icon: ShieldCheck }
                 ].map((tool, i) => (
                   <motion.button 
                     key={i} 
@@ -633,8 +633,8 @@ export default function SuperAdminDashboard() {
                       <Users weight="duotone" className="w-8 h-8" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">Identity Initialization</h3>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Create clinical administrator node</p>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">การสร้างตัวตน</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">สร้างโหนดผู้ดูแลระบบ</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setShowUserModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
@@ -649,20 +649,20 @@ export default function SuperAdminDashboard() {
                     className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center gap-3"
                   >
                     <WarningCircle weight="fill" className="w-5 h-5 text-rose-500" />
-                    <p className="text-rose-500 text-xs font-bold uppercase tracking-widest">Exception: {userError}</p>
+                    <p className="text-rose-500 text-xs font-bold uppercase tracking-widest">ข้อผิดพลาด: {userError}</p>
                   </motion.div>
                 )}
 
                 <form onSubmit={handleCreateUser} className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Identity Mail node *</label>
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">อีเมลตัวตน *</label>
                     <div className="relative">
                       <EnvelopeSimple weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                       <input
                         type="email"
                         value={newUser.email}
                         onChange={(e) => setNewUser(prev => ({ ...prev, email: e.target.value }))}
-                        placeholder="owner@clinical-node.com"
+                        placeholder="owner@clinic.com"
                         className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
                         required
                       />
@@ -670,14 +670,14 @@ export default function SuperAdminDashboard() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Full Entity Name *</label>
+                    <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">ชื่อตัวตนเต็ม *</label>
                     <div className="relative">
                       <IdentificationBadge weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                       <input
                         type="text"
                         value={newUser.fullName}
                         onChange={(e) => setNewUser(prev => ({ ...prev, fullName: e.target.value }))}
-                        placeholder="Clinical Identity Name"
+                        placeholder="ชื่อผู้ใช้งาน"
                         className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-sm text-foreground focus:border-primary outline-none transition-all font-bold"
                         required
                       />
@@ -686,7 +686,7 @@ export default function SuperAdminDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Target Cluster *</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">คลัสเตอร์เป้าหมาย *</label>
                       <div className="relative">
                         <Buildings weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                         <select
@@ -695,7 +695,7 @@ export default function SuperAdminDashboard() {
                           className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
                           required
                         >
-                          <option value="" className="bg-card">SELECT_CLUSTER</option>
+                          <option value="" className="bg-card">เลือกคลัสเตอร์</option>
                           {clinics.map(clinic => (
                             <option key={clinic.id} value={clinic.id} className="bg-card">
                               {clinic.name.toUpperCase()}
@@ -707,7 +707,7 @@ export default function SuperAdminDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">Access Protocol *</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">โปรโตคอลการเข้าถึง *</label>
                       <div className="relative">
                         <Shield weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                         <select
@@ -716,9 +716,9 @@ export default function SuperAdminDashboard() {
                           className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
                           required
                         >
-                          <option value="clinic_owner" className="bg-card">CLINIC_OWNER</option>
-                          <option value="clinic_admin" className="bg-card">CLINIC_ADMIN</option>
-                          <option value="sales_staff" className="bg-card">SALES_STAFF</option>
+                          <option value="clinic_owner" className="bg-card">เจ้าของคลินิก</option>
+                          <option value="clinic_admin" className="bg-card">ผู้ดูแลคลินิก</option>
+                          <option value="sales_staff" className="bg-card">พนักงานขาย</option>
                         </select>
                         <CaretRight weight="bold" className="absolute right-5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rotate-90 text-muted-foreground/40 pointer-events-none" />
                       </div>
@@ -728,10 +728,10 @@ export default function SuperAdminDashboard() {
                   <div className="p-5 bg-primary/5 border border-primary/20 rounded-3xl space-y-2">
                     <div className="flex items-center gap-3">
                       <Key weight="fill" className="w-4 h-4 text-primary" />
-                      <p className="text-[10px] font-black text-primary uppercase tracking-widest">Initial Credentials</p>
+                      <p className="text-[10px] font-black text-primary uppercase tracking-widest">ข้อมูลรับรองเริ่มต้น</p>
                     </div>
                     <p className="text-xl font-mono font-black text-foreground tracking-tighter">BNAura2024!</p>
-                    <p className="text-[9px] text-muted-foreground font-medium italic">Identity node must regenerate access token after primary sync.</p>
+                    <p className="text-[9px] text-muted-foreground font-medium italic">โหนดตัวตนต้องสร้างโทเค็นการเข้าถึงใหม่หลังจากซิงโครไนซ์</p>
                   </div>
 
                   <div className="flex gap-4 pt-4">
@@ -741,7 +741,7 @@ export default function SuperAdminDashboard() {
                       onClick={() => setShowUserModal(false)}
                       className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary"
                     >
-                      Abort
+                      ยกเลิก
                     </Button>
                     <Button
                       type="submit"
@@ -751,12 +751,12 @@ export default function SuperAdminDashboard() {
                       {creatingUser ? (
                         <>
                           <SpinnerGap weight="bold" className="w-4 h-4 animate-spin" />
-                          Synchronizing...
+                          กำลังซิงโครไนซ์...
                         </>
                       ) : (
                         <>
                           <CheckCircle weight="bold" className="w-4 h-4" />
-                          Commit Identity
+                          ยืนยันตัวตน
                         </>
                       )}
                     </Button>
@@ -800,8 +800,8 @@ export default function SuperAdminDashboard() {
                       <Buildings weight="duotone" className="w-8 h-8" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">Cluster Registration</h3>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Initialize clinical infrastructure node</p>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">การลงทะเบียนคลัสเตอร์</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">เริ่มต้นโหนดโครงสร้างพื้นฐาน</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setShowRegisterModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">

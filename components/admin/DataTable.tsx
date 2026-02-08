@@ -58,7 +58,7 @@ export function DataTable<T>({
   onRefresh,
   onRowClick,
   onSort,
-  emptyMessage = 'No data available',
+  emptyMessage = 'ไม่พบข้อมูล',
   className = ''
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -147,7 +147,7 @@ export function DataTable<T>({
               <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="ค้นหา..."
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -223,7 +223,7 @@ export function DataTable<T>({
                   </th>
                 ))}
                 <th className="px-4 py-3 text-right text-xs font-bold text-white/70 uppercase">
-                  Actions
+                  การดำเนินการ
                 </th>
               </tr>
             </thead>

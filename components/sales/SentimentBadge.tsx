@@ -109,12 +109,12 @@ export default function SentimentBadge({
               "text-sm font-bold capitalize",
               getSentimentColor(sentiment.overall_sentiment)
             )}>
-              {sentiment.overall_sentiment === 'positive' && 'Positive'}
-              {sentiment.overall_sentiment === 'negative' && 'Negative'}
-              {sentiment.overall_sentiment === 'neutral' && 'Neutral'}
+              {sentiment.overall_sentiment === 'positive' && 'เชิงบวก'}
+              {sentiment.overall_sentiment === 'negative' && 'เชิงลบ'}
+              {sentiment.overall_sentiment === 'neutral' && 'เป็นกลาง'}
             </p>
             <p className="text-xs text-muted-foreground">
-              Confidence: {(sentiment.confidence * 100).toFixed(0)}%
+              ความมั่นใจ: {(sentiment.confidence * 100).toFixed(0)}%
             </p>
           </div>
         </div>
@@ -158,11 +158,11 @@ export default function SentimentBadge({
         </div>
       )}
 
-      {/* Positive Signals */}
+      {/* เชิงบวก Signals */}
       {sentiment.positive_signals.length > 0 && (
         <div className="mt-2">
           <p className="text-xs font-bold text-muted-foreground mb-2">
-            Positive Signals:
+            เชิงบวก Signals:
           </p>
           <div className="flex flex-wrap gap-1.5">
             {sentiment.positive_signals.map((signal, i) => (

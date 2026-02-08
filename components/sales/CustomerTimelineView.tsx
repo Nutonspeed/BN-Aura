@@ -23,7 +23,7 @@ export default function CustomerTimelineView({ events }: CustomerTimelineViewPro
         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
           <CalendarDots className="w-6 h-6 text-muted-foreground" />
         </div>
-        <p className="text-muted-foreground">No timeline events found</p>
+        <p className="text-muted-foreground">ไม่พบเหตุการณ์ในไทม์ไลน์</p>
       </div>
     );
   }

@@ -232,7 +232,7 @@ export default function ProductModal({ isOpen, onClose, onSuccess, product }: Pr
                 {/* Cost Price */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Unit Acquisition Cost *
+                    Unit ราคาทุน *
                   </label>
                   <div className="relative group">
                     <CurrencyDollar className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />

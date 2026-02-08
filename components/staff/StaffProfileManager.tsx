@@ -143,7 +143,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <ShieldCheck weight="duotone" className="w-4 h-4" />
-            Personnel Management Node
+            ระบบจัดการบุคลากร
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -159,7 +159,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating clinical personnel, operational roles, and identity access protocols.
+            จัดการบุคลากร ตำแหน่งงาน และสิทธิ์การเข้าถึง
           </motion.p>
         </div>
 
@@ -173,7 +173,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
             className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest group"
           >
             <Plus weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            <span>Initialize Staff Node</span>
+            <span>เพิ่มพนักงานใหม่</span>
           </Button>
         </motion.div>
       </div>
@@ -181,7 +181,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="Active Personnel"
+          title="พนักงานที่ใช้งาน"
           value={stats.active}
           suffix={` / ${stats.total}`}
           icon={UserCheck}
@@ -189,21 +189,21 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
           className="p-4"
         />
         <StatCard
-          title="Authority Nodes"
+          title="ผู้จัดการ"
           value={stats.admins}
           icon={Shield}
           iconColor="text-blue-500"
           className="p-4"
         />
         <StatCard
-          title="Operational Staff"
+          title="พนักงานปฏิบัติการ"
           value={profiles.filter(p => p.role === 'clinic_staff').length}
           icon={Users}
           iconColor="text-primary"
           className="p-4"
         />
         <StatCard
-          title="Practitioners"
+          title="ผู้เชี่ยวชาญ"
           value={stats.practitioners}
           icon={IdentificationBadge}
           iconColor="text-purple-500"
@@ -220,7 +220,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
               <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors relative z-10" />
               <input 
                 type="text" 
-                placeholder="Filter by personnel name, email, or role node..." 
+                placeholder="กรองตามชื่อ, อีเมล หรือตำแหน่ง..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-12 pr-4 py-3.5 bg-secondary/50 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10 font-bold text-sm"
@@ -228,7 +228,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
             </div>
             <Button variant="outline" className="gap-2 px-8 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary shrink-0">
               <Funnel weight="bold" className="w-4 h-4" />
-              Protocol Filter
+              ตัวกรอง
             </Button>
           </div>
         </Card>
@@ -239,14 +239,14 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
         {loading ? (
           <div className="py-48 flex flex-col items-center justify-center gap-6 bg-card border border-border/50 rounded-[40px] shadow-inner opacity-60">
             <SpinnerGap weight="bold" className="w-12 h-12 text-primary animate-spin" />
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] text-center">Synchronizing Personnel Matrix...</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] text-center">กำลังประมวลผลข้อมูลบุคลากร...</p>
           </div>
         ) : filteredProfiles.length === 0 ? (
           <Card variant="ghost" className="py-48 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-8 opacity-40 rounded-[40px]">
             <IdentificationCard weight="duotone" className="w-20 h-20 text-muted-foreground" />
             <div className="text-center space-y-3">
-              <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">Registry Empty</h3>
-              <p className="text-sm text-muted-foreground font-medium italic max-w-sm mx-auto">No clinical personnel established in this matrix node.</p>
+              <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">ไม่มีข้อมูลพนักงาน</h3>
+              <p className="text-sm text-muted-foreground font-medium italic max-w-sm mx-auto">ยังไม่มีบุคลากรทางคลินิกในระบบ</p>
             </div>
           </Card>
         ) : (
@@ -326,7 +326,7 @@ export default function StaffProfileManager({ clinicId }: { clinicId?: string })
         )}
       </div>
 
-      {/* Initialize Staff Modal Protocol */}
+      {/* เพิ่มพนักงานใหม่ */}
       <AnimatePresence>
         {showForm && (
           <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 overflow-y-auto">

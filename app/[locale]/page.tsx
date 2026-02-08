@@ -51,7 +51,7 @@ export default function LandingPage() {
               className="text-center"
             >
               <div className="text-5xl md:text-7xl font-bold text-primary mb-1">468</div>
-              <div className="text-sm text-muted-foreground uppercase tracking-wider">Facial Points</div>
+              <div className="text-sm text-muted-foreground uppercase tracking-wider">จุดบนใบหน้า</div>
             </motion.div>
             <div className="h-16 w-px bg-white/10"></div>
             <motion.div
@@ -61,7 +61,7 @@ export default function LandingPage() {
               className="text-center"
             >
               <div className="text-5xl md:text-7xl font-bold text-primary mb-1">30<span className="text-3xl">s</span></div>
-              <div className="text-sm text-muted-foreground uppercase tracking-wider">Analysis Time</div>
+              <div className="text-sm text-muted-foreground uppercase tracking-wider">เวลาวิเคราะห์</div>
             </motion.div>
             <div className="h-16 w-px bg-white/10"></div>
             <motion.div
@@ -71,7 +71,7 @@ export default function LandingPage() {
               className="text-center"
             >
               <div className="text-5xl md:text-7xl font-bold text-primary mb-1">95<span className="text-3xl">%</span></div>
-              <div className="text-sm text-muted-foreground uppercase tracking-wider">Accuracy</div>
+              <div className="text-sm text-muted-foreground uppercase tracking-wider">ความแม่นยำ</div>
             </motion.div>
           </div>
 
@@ -112,7 +112,7 @@ export default function LandingPage() {
 
           {/* Social Proof */}
           <div className="pt-12 flex flex-col items-center gap-4">
-            <div className="text-sm text-muted-foreground uppercase tracking-widest">Trusted by leading clinics</div>
+            <div className="text-sm text-muted-foreground uppercase tracking-widest">ได้รับความไว้วางใจจากคลินิกชั้นนำ</div>
             <div className="flex items-center gap-6 text-foreground/70">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-400" />
@@ -124,7 +124,7 @@ export default function LandingPage() {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-emerald-400" />
-                <span className="text-sm">Enterprise Security</span>
+                <span className="text-sm">ความปลอดภัยระดับองค์กร</span>
               </div>
             </div>
           </div>
@@ -421,7 +421,7 @@ export default function LandingPage() {
                 desc: "สำหรับคลินิกเปิดใหม่",
                 scans: "50",
                 staff: "3 Accounts",
-                features: ["AI Skin Analysis พื้นฐาน", "สร้าง AI Proposal", "ระบบจัดการลูกค้า", "Commission Tracking"],
+                features: ["การวิเคราะห์ผิวด้วย AI พื้นฐาน", "สร้าง AI Proposal", "ระบบจัดการลูกค้า", "Commission Tracking"],
                 color: "text-blue-400",
                 recommended: false
               },

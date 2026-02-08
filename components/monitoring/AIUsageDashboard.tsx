@@ -62,7 +62,7 @@ export default function AIUsageDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold flex items-center gap-2">
-          🤖 AI Usage Dashboard
+          🤖 แดชบอร์ดการใช้งาน AI
         </h2>
         <div className="flex gap-2">
           {[7, 14, 30].map(d => (
@@ -101,7 +101,7 @@ export default function AIUsageDashboard() {
 
         <Card>
           <CardContent className="p-6">
-            <div className="text-sm text-muted-foreground">จำนวน Requests</div>
+            <div className="text-sm text-muted-foreground">จำนวนคำขอ</div>
             <div className="text-3xl font-bold">{data.totalRequests.toLocaleString()}</div>
             <div className="text-xs text-muted-foreground mt-1">
               เฉลี่ย {Math.round(data.totalRequests / days)}/วัน
@@ -111,7 +111,7 @@ export default function AIUsageDashboard() {
 
         <Card>
           <CardContent className="p-6">
-            <div className="text-sm text-muted-foreground">Total Tokens</div>
+            <div className="text-sm text-muted-foreground">โทเค็นทั้งหมด</div>
             <div className="text-3xl font-bold">{(data.totalTokens / 1000).toFixed(1)}K</div>
             <div className="text-xs text-muted-foreground mt-1">
               ~฿{(data.totalTokens / 1000 * 0.001).toFixed(2)}/1K tokens
@@ -121,7 +121,7 @@ export default function AIUsageDashboard() {
 
         <Card>
           <CardContent className="p-6">
-            <div className="text-sm text-muted-foreground">Budget Used</div>
+            <div className="text-sm text-muted-foreground">งบประมาณที่ใช้</div>
             <div className="text-3xl font-bold">{budgetPercent.toFixed(1)}%</div>
             <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full mt-2">
               <div
@@ -138,7 +138,7 @@ export default function AIUsageDashboard() {
       {/* Top Models */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">🏆 Top AI Models</CardTitle>
+          <CardTitle className="text-lg">🏆 โมเดล AI ยอดนิยม</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
@@ -163,10 +163,10 @@ export default function AIUsageDashboard() {
         </CardContent>
       </Card>
 
-      {/* Daily Usage Chart (Simple) */}
+      {/* การใช้งานรายวัน Chart (Simple) */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">📊 Daily Usage</CardTitle>
+          <CardTitle className="text-lg">📊 การใช้งานรายวัน</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-end gap-1 h-32">

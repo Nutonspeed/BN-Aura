@@ -35,11 +35,11 @@ const navConfig: Record<string, NavItem[]> = {
     { href: '/sales/profile', icon: <User size={20} />, label: 'โปรไฟล์' },
   ],
   clinic: [
-    { href: '/clinic', icon: <Home size={20} />, label: 'Dashboard' },
+    { href: '/clinic', icon: <Home size={20} />, label: 'แดชบอร์ด' },
     { href: '/clinic/analytics', icon: <BarChart3 size={20} />, label: 'Analytics' },
     { href: '/clinic/staff', icon: <Users size={20} />, label: 'Staff' },
     { href: '/clinic/appointments', icon: <Calendar size={20} />, label: 'Booking' },
-    { href: '/clinic/settings', icon: <Settings size={20} />, label: 'Settings' },
+    { href: '/clinic/settings', icon: <Settings size={20} />, label: 'ตั้งค่า' },
   ],
   beautician: [
     { href: '/beautician', icon: <Home size={20} />, label: 'หน้าหลัก' },
@@ -51,7 +51,7 @@ const navConfig: Record<string, NavItem[]> = {
   customer: [
     { href: '/customer', icon: <Home size={20} />, label: 'หน้าหลัก' },
     { href: '/customer/analysis', icon: <Camera size={20} />, label: 'วิเคราะห์' },
-    { href: '/customer/treatments', icon: <Calendar size={20} />, label: 'Treatment' },
+    { href: '/customer/treatments', icon: <Calendar size={20} />, label: 'การรักษา' },
     { href: '/shared/chat', icon: <MessageCircle size={20} />, label: 'แชท' },
     { href: '/customer/profile', icon: <User size={20} />, label: 'โปรไฟล์' },
   ],

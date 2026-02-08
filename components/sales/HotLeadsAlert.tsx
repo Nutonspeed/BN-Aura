@@ -174,7 +174,7 @@ export default function HotLeadsAlert() {
             ))}
           </div>
 
-          {/* View All Button */}
+          {/* ดูทั้งหมด Button */}
           {count > 5 && (
             <div className="p-4 border-t border-border bg-muted/30">
               <button className="w-full py-2 px-4 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all">

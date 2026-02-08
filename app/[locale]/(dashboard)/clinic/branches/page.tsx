@@ -78,7 +78,7 @@ function BranchManagementContent() {
   };
 
   const handleDeleteBranch = async (id: string) => {
-    if (!confirm('Are you sure you want to terminate this branch node? This action cannot be reversed.')) return;
+    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการยุติโหนดสาขานี้? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
     
     try {
       const res = await fetch(`/api/branches/${id}`, { method: 'DELETE' });
@@ -121,7 +121,7 @@ function BranchManagementContent() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Buildings weight="duotone" className="w-4 h-4" />
-            Clinical Expansion Node
+            โหนดขยายคลินิก
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -129,7 +129,7 @@ function BranchManagementContent() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Branch <span className="text-primary">Orchestration</span>
+            การ<span className="text-primary">จัดการสาขา</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -137,7 +137,7 @@ function BranchManagementContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Managing multi-geographic operational clusters and regional telemetry modules.
+            จัดการกลุ่มการดำเนินงานหลายภูมิภาคและโมดูลการตรวจสอบภูมิภาค
           </motion.p>
         </div>
 
@@ -146,7 +146,7 @@ function BranchManagementContent() {
           className="gap-2 shadow-premium px-8"
         >
           <Plus weight="bold" className="w-4 h-4" />
-          Initialize Branch
+          เริ่มต้นสาขา
         </Button>
       </div>
 
@@ -158,7 +158,7 @@ function BranchManagementContent() {
             <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
             <input 
               type="text" 
-              placeholder="Filter by branch designation, code, or city..."
+              placeholder="กรองตามชื่อสาขา รหัส หรือเมือง..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full bg-secondary/50 border border-border rounded-2xl py-3 pl-11 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
@@ -167,7 +167,7 @@ function BranchManagementContent() {
         </div>
         
         <StatCard
-          title="Active Clusters"
+          title="กลุ่มที่ใช้งาน"
           value={branches.length}
           icon={SquaresFour}
           trend="neutral"
@@ -180,7 +180,7 @@ function BranchManagementContent() {
         {loading ? (
           <div className="py-32 flex flex-col items-center gap-4">
             <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Syncing Expansion Grid...</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังซิงโครไนซ์กริดขยาย...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -206,7 +206,7 @@ function BranchManagementContent() {
                           <div className="flex items-center gap-2">
                             <Badge variant="ghost" size="sm" className="font-mono text-[9px] px-2 py-0.5 border-none bg-primary/5 text-primary">{branch.branch_code}</Badge>
                             <Badge variant={branch.is_active ? 'success' : 'secondary'} size="sm" className="font-black uppercase text-[8px] tracking-widest">
-                              {branch.is_active ? 'Operational' : 'Offline'}
+                              {branch.is_active ? 'ใช้งาน' : 'ออฟไลน์'}
                             </Badge>
                           </div>
                           <CardTitle className="text-xl font-bold tracking-tight truncate">{branch.branch_name}</CardTitle>
@@ -252,10 +252,10 @@ function BranchManagementContent() {
                     <div className="pt-6 border-t border-border/50 flex items-center justify-between">
                       <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest">
                         <Clock weight="bold" className="w-3.5 h-3.5 opacity-60" />
-                        Established: {new Date(branch.created_at).toLocaleDateString()}
+                        สร้างเมื่อ: {new Date(branch.created_at).toLocaleDateString()}
                       </div>
                       <Button variant="ghost" size="sm" className="text-primary font-black uppercase text-[10px] tracking-widest gap-2">
-                        View Node <CaretRight weight="bold" className="w-3 h-3" />
+                        ดูโหนด <CaretRight weight="bold" className="w-3 h-3" />
                       </Button>
                     </div>
                   </CardContent>
@@ -266,7 +266,7 @@ function BranchManagementContent() {
             {filteredBranches.length === 0 && !loading && (
               <Card variant="ghost" className="col-span-full py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-4 opacity-40">
                 <Buildings weight="duotone" className="w-16 h-16" />
-                <p className="text-xs font-black uppercase tracking-widest">Zero Operational Clusters Detected</p>
+                <p className="text-xs font-black uppercase tracking-widest">ไม่พบกลุ่มที่ใช้งาน</p>
               </Card>
             )}
           </div>
@@ -281,7 +281,7 @@ export default function BranchManagement() {
     <Suspense fallback={
       <div className="h-[80vh] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">Initializing Expansion Grid...</p>
+        <p className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground animate-pulse">กำลังเริ่มต้นกริดขยาย...</p>
       </div>
     }>
       <BranchManagementContent />

@@ -266,8 +266,8 @@ export default function NotificationCenter() {
             >
               <div className="p-6 border-b border-white/5 flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-widest">Notifications</h3>
-                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">System Intelligence Feed</p>
+                  <h3 className="text-sm font-black text-white uppercase tracking-widest">การแจ้งเตือน</h3>
+                  <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tighter">ฟีดข้อมูลระบบ</p>
                 </div>
                 <button 
                   onClick={() => setIsOpen(false)}
@@ -281,12 +281,12 @@ export default function NotificationCenter() {
                 {loading ? (
                   <div className="p-12 text-center">
                     <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest">Syncing Feed...</p>
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-widest">กำลังซิงโครไนซ์...</p>
                   </div>
                 ) : notifications.length === 0 ? (
                   <div className="p-12 text-center space-y-4 opacity-40">
                     <Bell className="w-12 h-12 mx-auto" />
-                    <p className="text-xs font-light">All clear! No new updates at this node.</p>
+                    <p className="text-xs font-light">ไม่มีการแจ้งเตือนใหม่</p>
                   </div>
                 ) : (
                   <div className="divide-y divide-white/5">
@@ -323,7 +323,7 @@ export default function NotificationCenter() {
                             {!n.is_read && (
                               <div className="pt-2 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                <span className="text-[9px] font-black text-primary uppercase tracking-widest">New Priority</span>
+                                <span className="text-[9px] font-black text-primary uppercase tracking-widest">ใหม่</span>
                               </div>
                             )}
                           </div>

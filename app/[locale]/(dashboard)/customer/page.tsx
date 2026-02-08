@@ -134,19 +134,19 @@ export default function CustomerDashboard() {
           <User weight="duotone" className="w-6 h-6" />
         </div>
         <div>
-          <h1 className="text-2xl font-black uppercase tracking-tight">Customer Portal</h1>
+          <h1 className="text-2xl font-black uppercase tracking-tight">พอร์ทัลลูกค้า</h1>
           <p className="text-sm text-muted-foreground">
-            Welcome back, {customerData?.first_name || 'Valued Customer'}
+            ยินดีต้อนรับกลับ, {customerData?.first_name || 'ลูกค้าที่มีคุณค่า'}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Loyalty Points', value: loyaltyPoints.toLocaleString(), icon: Star, color: 'text-amber-500' },
-          { title: 'Total Spent', value: `฿${totalSpent.toLocaleString()}`, icon: TrendUp, color: 'text-emerald-500' },
-          { title: 'Purchases', value: totalPurchases.toString(), icon: Receipt, color: 'text-blue-500' },
-          { title: 'Rewards Earned', value: Math.floor(loyaltyPoints / 100).toString(), icon: Heart, color: 'text-pink-500' },
+          { title: 'คะแนนสะสม', value: loyaltyPoints.toLocaleString(), icon: Star, color: 'text-amber-500' },
+          { title: 'ยอดรวม', value: `฿${totalSpent.toLocaleString()}`, icon: TrendUp, color: 'text-emerald-500' },
+          { title: 'การซื้อ', value: totalPurchases.toString(), icon: Receipt, color: 'text-blue-500' },
+          { title: 'รางวัลที่ได้รับ', value: Math.floor(loyaltyPoints / 100).toString(), icon: Heart, color: 'text-pink-500' },
         ].map((stat, idx) => (
           <Card key={idx} className="p-6 rounded-2xl border-border/50">
             <div className="flex items-center justify-between">
@@ -166,7 +166,7 @@ export default function CustomerDashboard() {
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-lg font-black uppercase flex items-center gap-3">
               <Star weight="duotone" className="w-6 h-6 text-amber-500" />
-              Recent Transactions
+              ธุรกรรมล่าสุด
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pb-0">
@@ -180,10 +180,10 @@ export default function CustomerDashboard() {
                       </div>
                       <div>
                         <p className="font-semibold text-sm">
-                          {transaction.source === 'purchase' ? 'Purchase Reward' : transaction.source}
+                          {transaction.source === 'purchase' ? 'รางวัลการซื้อ' : transaction.source}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {transaction.description || 'Loyalty points earned'}
+                          {transaction.description || 'ได้รับคะแนนสะสม'}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(transaction.created_at).toLocaleDateString()}
@@ -192,15 +192,15 @@ export default function CustomerDashboard() {
                     </div>
                     <div className="text-right">
                       <p className="font-bold text-amber-500">+{transaction.points}</p>
-                      <p className="text-xs text-muted-foreground">points</p>
+                      <p className="text-xs text-muted-foreground">คะแนน</p>
                     </div>
                   </div>
                 ))
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <Star className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                  <p>No transactions yet</p>
-                  <p className="text-sm mt-2">Make your first purchase to earn loyalty points</p>
+                  <p>ยังไม่มีธุรกรรม</p>
+                  <p className="text-sm mt-2">ซื้อสินค้าครั้งแรกเพื่อรับคะแนนสะสม</p>
                 </div>
               )}
             </div>
@@ -211,7 +211,7 @@ export default function CustomerDashboard() {
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-lg font-black uppercase flex items-center gap-3">
               <CalendarDots weight="duotone" className="w-6 h-6 text-blue-500" />
-              Upcoming Appointments
+              นัดหมายที่จะถึง
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pb-0">
@@ -224,21 +224,21 @@ export default function CustomerDashboard() {
                         <CalendarDots className="w-4 h-4 text-blue-500" />
                       </div>
                       <div>
-                        <p className="font-semibold text-sm">{apt.appointment_type || 'Appointment'}</p>
+                        <p className="font-semibold text-sm">{apt.appointment_type || 'นัดหมาย'}</p>
                         <p className="text-xs text-muted-foreground">
                           {new Date(apt.appointment_date).toLocaleDateString('th-TH', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </p>
                       </div>
                     </div>
                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${apt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
-                      {apt.status === 'confirmed' ? 'Confirmed' : apt.status}
+                      {apt.status === 'confirmed' ? 'ยืนยันแล้ว' : apt.status}
                     </span>
                   </div>
                 ))
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
-                  <p>No upcoming appointments</p>
-                  <p className="text-sm mt-2">Schedule your next beauty session</p>
+                  <p>ไม่มีนัดหมายที่จะถึง</p>
+                  <p className="text-sm mt-2">นัดหมายครั้งต่อไป</p>
                 </div>
               )}
             </div>
@@ -252,7 +252,7 @@ export default function CustomerDashboard() {
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-lg font-black uppercase flex items-center gap-3">
               <User weight="duotone" className="w-6 h-6 text-primary" />
-              My Beauty Advisor
+              ที่ปรึกษาความงาม
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pb-0">
@@ -267,7 +267,7 @@ export default function CustomerDashboard() {
           <CardHeader className="px-0 pt-0">
             <CardTitle className="text-lg font-black uppercase flex items-center gap-3">
               <Heart weight="duotone" className="w-6 h-6 text-pink-500" />
-              My Treatment Journey
+              การเดินทางการรักษา
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pb-0">

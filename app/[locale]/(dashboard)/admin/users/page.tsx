@@ -70,10 +70,10 @@ export default function UserManagementPage() {
       if (data.success) {
         setUsers(data.data.users);
       } else {
-        setError('Failed to load users');
+        setError('โหลดผู้ใช้ไม่สำเร็จ');
       }
     } catch (err) {
-      setError('Failed to load users');
+      setError('โหลดผู้ใช้ไม่สำเร็จ');
     } finally {
       setLoading(false);
     }
@@ -94,7 +94,7 @@ export default function UserManagementPage() {
       const data = await response.json();
       if (data.success) {
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, is_active: !currentStatus } : u));
-        setSuccess('Status updated successfully');
+        setSuccess('อัปเดตสถานะสำเร็จ');
       } else {
         setError(data.error || 'Failed to update status');
       }

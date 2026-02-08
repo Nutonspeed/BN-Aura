@@ -91,7 +91,7 @@ export default function ConfirmPaymentModal({
         paymentMethod,
       });
 
-      toast.success('Payment confirmed! Task assigned to beautician.');
+      toast.success('ยืนยันการชำระเงินสำเร็จ! มอบหมายงานให้ช่างแล้ว');
       onClose();
       
       // Reset form
@@ -142,7 +142,7 @@ export default function ConfirmPaymentModal({
                     <CreditCard weight="duotone" className="w-7 h-7" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground tracking-tight">Confirm Settlement</h3>
+                    <h3 className="text-2xl font-bold text-foreground tracking-tight">ยืนยันการชำระเงิน</h3>
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Client: {customerName}</p>
                   </div>
                 </div>
@@ -268,8 +268,7 @@ export default function ConfirmPaymentModal({
                   onClick={onClose}
                   className="w-full sm:flex-1 py-6 rounded-[20px] font-black uppercase tracking-widest text-[10px]"
                   disabled={loading}
-                >
-                  Abort
+                >ยกเลิก
                 </Button>
                 <Button
                   type="submit"
@@ -279,7 +278,7 @@ export default function ConfirmPaymentModal({
                   {loading ? (
                     <>
                       <SpinnerGap className="w-5 h-5 animate-spin" />
-                      Processing...
+                      กำลังดำเนินการ...
                     </>
                   ) : (
                     <>

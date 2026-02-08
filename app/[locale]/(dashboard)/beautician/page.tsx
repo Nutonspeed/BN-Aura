@@ -168,8 +168,8 @@ export default function BeauticianDashboard() {
               workflow_id: workflow.id,
               assigned_to: userId,
               task_type: 'preparation',
-              title: `Prepare for ${treatmentName}`,
-              description: `Set up equipment and materials for ${treatmentName}`,
+              title: `เตรียมสำหรับ ${treatmentName}`,
+              description: `เตรียมอุปกรณ์และวัสดุสำหรับ ${treatmentName}`,
               priority: 'medium',
               due_date: appointmentDateTime.toISOString()
             },
@@ -177,8 +177,8 @@ export default function BeauticianDashboard() {
               workflow_id: workflow.id,
               assigned_to: userId,
               task_type: 'consultation',
-              title: 'Customer Consultation',
-              description: 'Review customer skin analysis and treatment plan',
+              title: 'ปรึกษาลูกค้า',
+              description: 'ตรวจสอบการวิเคราะห์ผิวและแผนการรักษา',
               priority: 'high',
               due_date: appointmentDateTime.toISOString()
             }
@@ -379,7 +379,7 @@ export default function BeauticianDashboard() {
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          Syncing Protocol Node...
+          กำลังซิงโครไนซ์โหนดโปรโตคอล...
         </p>
       </div>
     );
@@ -409,7 +409,7 @@ export default function BeauticianDashboard() {
             className="flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Stethoscope weight="duotone" className="w-4 h-4" />
-            Clinical Operations Node
+            โหนดการดำเนินงานคลินิก
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -417,7 +417,7 @@ export default function BeauticianDashboard() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Systems <span className="text-primary">Active</span>, {staffName || 'Operator'}
+            ระบบ<span className="text-primary">ทำงาน</span>, {staffName || 'ผู้ดำเนินการ'}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -425,7 +425,7 @@ export default function BeauticianDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Delivering high-precision aesthetic treatments via clinical cognitive protocols.
+            ให้บริการความงามที่มีความแม่นยำสูงผ่านโปรโตคอลทางคลินิก
           </motion.p>
         </div>
 
@@ -438,16 +438,16 @@ export default function BeauticianDashboard() {
           <Card className="px-6 py-3 border-emerald-500/20 bg-emerald-500/5">
             <div className="flex items-center gap-8">
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Shift Status</span>
+                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">สถานะกะ</span>
                 <span className="text-xs font-bold text-emerald-500 flex items-center gap-1.5 uppercase">
                   <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
-                  On Duty
+                  ปฏิบัติงาน
                 </span>
               </div>
               <div className="h-8 w-px bg-emerald-500/10" />
               <div className="flex flex-col">
-                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">Session Output</span>
-                <span className="text-xs font-bold text-foreground uppercase tabular-nums">{throughput.completed}/{throughput.total} Cases</span>
+                <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mb-0.5">ผลผลิตเซสชัน</span>
+                <span className="text-xs font-bold text-foreground uppercase tabular-nums">{throughput.completed}/{throughput.total} เคส</span>
               </div>
             </div>
           </Card>
@@ -507,11 +507,11 @@ export default function BeauticianDashboard() {
                                 ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' 
                                 : 'bg-amber-500/10 text-amber-600 border-amber-500/20'
                             }`}>
-                              {appointment.workflow_id ? '✓ Workflow Ready' : '⚠ Setting Up...'}
+                              {appointment.workflow_id ? '✓ พร้อม' : '⚠ กำลังตั้งค่า...'}
                             </Badge>
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            {appointment.treatment?.name || 'Treatment'}
+                            {appointment.treatment?.name || 'การรักษา'}
                           </p>
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <span>
@@ -538,7 +538,7 @@ export default function BeauticianDashboard() {
                               className="text-xs h-6 px-2 border-blue-500/30 text-blue-600 hover:bg-blue-500/10"
                               onClick={() => {
                                 // Navigate to workflow or start preparation
-                                toast.info('Opening workflow management...');
+                                toast.info('กำลังเปิดการจัดการเวิร์กโฟลว์...');
                               }}
                             >
                               View Tasks
@@ -555,7 +555,7 @@ export default function BeauticianDashboard() {
                               <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-1.5 rounded-full transition-all duration-500"
                                    style={{ width: '25%' }} />
                             </div>
-                            <span className="text-xs text-muted-foreground">Pre-prep</span>
+                            <span className="text-xs text-muted-foreground">ก่อนเตรียม</span>
                           </div>
                         </div>
                       )}
@@ -564,8 +564,8 @@ export default function BeauticianDashboard() {
                 ) : (
                   <div className="text-center py-12 text-muted-foreground">
                     <ClockCounterClockwise className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                    <p className="text-sm">No upcoming appointments</p>
-                    <p className="text-xs mt-2">Check your schedule or contact management</p>
+                    <p className="text-sm">ไม่มีนัดหมายที่จะถึง</p>
+                    <p className="text-xs mt-2">ตรวจสอบตารางหรือติดต่อผู้จัดการ</p>
                   </div>
                 )}
               </CardContent>
@@ -597,11 +597,11 @@ export default function BeauticianDashboard() {
                         </div>
                         <div className="space-y-1">
                           <h3 className="text-2xl font-bold text-foreground tracking-tight">
-                            {activeCase.customers?.name || 'Customer'}
+                            {activeCase.customers?.name || 'ลูกค้า'}
                           </h3>
                           <div className="flex items-center gap-3">
                             <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest flex items-center gap-2">
-                              Protocol: <span className="text-primary">{activeCase.treatment_name || 'Registry'}</span>
+                              โปรโตคอล: <span className="text-primary">{activeCase.treatment_name || 'ทะเบียน'}</span>
                             </p>
                             <div className="w-1 h-1 rounded-full bg-border" />
                             <span className="text-[10px] text-muted-foreground font-mono">ID: {activeCase.id.slice(0,8)}</span>
@@ -610,7 +610,7 @@ export default function BeauticianDashboard() {
                       </div>
                       <Badge variant={activeCase.priority === 'high' ? 'destructive' : 'default'} pulse={activeCase.priority === 'high'} className="font-black uppercase tracking-widest py-1.5 px-4">
                         <Lightning weight="fill" className="w-3 h-3 mr-2" />
-                        {activeCase.priority || 'Normal'} Priority
+                        ความสำคัญ {activeCase.priority || 'ปกติ'}
                       </Badge>
                     </div>
                   </CardContent>
@@ -627,8 +627,8 @@ export default function BeauticianDashboard() {
                     <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
                   </div>
                   <div className="space-y-2">
-                    <h4 className="text-xl font-black text-foreground/30 uppercase tracking-[0.2em]">Awaiting Case Node</h4>
-                    <p className="text-xs text-muted-foreground italic font-light tracking-widest">Assign a prioritized identity from your clinical registry to initiate protocol.</p>
+                    <h4 className="text-xl font-black text-foreground/30 uppercase tracking-[0.2em]">กำลังรอโหนดเคส</h4>
+                    <p className="text-xs text-muted-foreground italic font-light tracking-widest">มอบหมายลำดับความสำคัญจากทะเบียนคลินิกเพื่อเริ่มโปรโตคอล</p>
                   </div>
                 </Card>
               </motion.div>
@@ -650,12 +650,12 @@ export default function BeauticianDashboard() {
                       <ListChecks weight="duotone" className="w-6 h-6" />
                     </div>
                     <div>
-                      <CardTitle>Active Protocol Checklist</CardTitle>
-                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">Surgical precision tracking</p>
+                      <CardTitle>รายการตรวจสอบโปรโตคอลที่ใช้งาน</CardTitle>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">การติดตามความแม่นยำ</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Session Progress</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">ความคืบหน้า</p>
                     <Badge variant="default" className="font-black text-base">
                       {checklist.filter(c => c.completed).length}/{checklist.length}
                     </Badge>
@@ -718,7 +718,7 @@ export default function BeauticianDashboard() {
                   <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm border border-emerald-500/20">
                     <CheckCircle weight="duotone" className="w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-emerald-600 transition-colors">Finalize Session</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-emerald-600 transition-colors">สิ้นสุดเซสชัน</span>
                 </button>
 
                 <button 
@@ -729,7 +729,7 @@ export default function BeauticianDashboard() {
                   <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm border border-primary/20">
                     <Camera weight="duotone" className="w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Visual Evolution</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-primary transition-colors">การเปลี่ยนแปลง</span>
                 </button>
 
                 <button className="p-8 bg-card border border-border rounded-[32px] hover:border-rose-500/40 hover:shadow-card-hover transition-all group text-center relative overflow-hidden">
@@ -737,7 +737,7 @@ export default function BeauticianDashboard() {
                   <div className="w-14 h-14 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm border border-rose-500/20">
                     <ChatCircle weight="duotone" className="w-7 h-7" />
                   </div>
-                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-rose-600 transition-colors">Sales Intel Node</span>
+                  <span className="text-[10px] font-black text-foreground uppercase tracking-[0.2em] group-hover:text-rose-600 transition-colors">ข้อมูลการขาย</span>
                 </button>
               </motion.div>
             )}

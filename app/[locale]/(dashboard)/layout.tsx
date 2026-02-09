@@ -1,5 +1,6 @@
 'use client';
 
+import '@/sentry.client.config';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Bell,

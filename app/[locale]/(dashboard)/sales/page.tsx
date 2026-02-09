@@ -54,7 +54,7 @@ export default function SalesDashboard() {
     cacheHitRate: 0,
     quotaSavedToday: 0
   });
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [ลูกค้า, setCustomers] = useState<any[]>([]);
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [dailyCommissions, setDailyCommissions] = useState<any[]>([]);
   const [monthlyTarget, setMonthlyTarget] = useState(0);
@@ -405,10 +405,10 @@ export default function SalesDashboard() {
 
     // Customer growth over time
     const customerGrowth = last30Days.map(date => {
-      const newCustomers = customers.filter(c => 
+      const newCustomers = ลูกค้า.filter(c => 
         new Date(c.created_at) <= date
       ).length;
-      const convertedCustomers = customers.filter(c => 
+      const convertedCustomers = ลูกค้า.filter(c => 
         c.status === 'converted' && new Date(c.updated_at) <= date
       ).length;
       return {
@@ -420,9 +420,9 @@ export default function SalesDashboard() {
 
     // Conversion rates by urgency score
     const conversionRates = [
-      { urgency: 'High (70-100%)', rate: 85, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.7).length },
-      { urgency: 'Medium (40-69%)', rate: 65, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.4 && (c.aiEnhanced?.urgencyScore || 0) <= 0.7).length },
-      { urgency: 'Low (0-39%)', rate: 35, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) <= 0.4).length }
+      { urgency: 'High (70-100%)', rate: 85, count: ลูกค้า.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.7).length },
+      { urgency: 'Medium (40-69%)', rate: 65, count: ลูกค้า.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.4 && (c.aiEnhanced?.urgencyScore || 0) <= 0.7).length },
+      { urgency: 'Low (0-39%)', rate: 35, count: ลูกค้า.filter(c => (c.aiEnhanced?.urgencyScore || 0) <= 0.4).length }
     ];
 
     // Performance metrics
@@ -731,12 +731,12 @@ export default function SalesDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Users weight="duotone" className="w-6 h-6 text-primary" />
-            Customer Pipeline ({customers.length})
+            ลูกค้าในกระบวนการ ({ลูกค้า.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {customers
+            {ลูกค้า
               .sort((a, b) => (b.aiEnhanced?.urgencyScore || 0) - (a.aiEnhanced?.urgencyScore || 0))
               .slice(0, 5).map((customer: any, idx) => (
               <div key={customer.id} className="p-4 bg-secondary/20 rounded-xl border border-border/50">
@@ -791,7 +791,7 @@ export default function SalesDashboard() {
                 </div>
               </div>
             ))}
-            {customers.length === 0 && (
+            {ลูกค้า.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <Users className="w-16 h-16 mx-auto mb-4 opacity-20" />
                 <p>No customers yet - start by adding your first customer</p>
@@ -959,14 +959,14 @@ export default function SalesDashboard() {
       </AnimatePresence>
 
       {/* AI Sales Coach Recommendations */}
-      {customers.length > 0 && (
+      {ลูกค้า.length > 0 && (
         <div className="space-y-6">
           <h2 className="text-lg font-bold flex items-center gap-3">
             <TrendUp weight="duotone" className="w-6 h-6 text-primary" />
             AI Sales Coach
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {customers.slice(0, 2).map((customer) => {
+            {ลูกค้า.slice(0, 2).map((customer) => {
               const customerContext = {
                 name: customer.full_name || 'ไม่ระบุ',
                 demographics: {

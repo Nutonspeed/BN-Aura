@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import { IBM_Plex_Sans_Thai, Anuphan, Inter } from "next/font/google";
 import "@/app/globals.css";
+import "@/sentry.client.config";
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 
 const ibmPlexThai = IBM_Plex_Sans_Thai({

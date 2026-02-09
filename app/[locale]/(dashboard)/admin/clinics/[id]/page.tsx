@@ -152,11 +152,22 @@ export default function ClinicDetailPage() {
         .eq('clinic_id', clinicId)
         .gte('analyzed_at', thirtyDaysAgo);
 
+      // Monthly revenue from POS transactions
+      const { data: revenueData } = await supabase
+        .from('pos_transactions')
+        .select('total_amount')
+        .eq('clinic_id', clinicId)
+        .gte('created_at', thirtyDaysAgo);
+
+      const monthlyRevenue = (revenueData || []).reduce(
+        (sum, t) => sum + parseFloat(t.total_amount || '0'), 0
+      );
+
       setStats({
         customerCount: customerCount || 0,
         staffCount: staffCount || 0,
         monthlyScans: monthlyScans || 0,
-        monthlyRevenue: 0 // TODO: Calculate from payments
+        monthlyRevenue
       });
     } catch (err) {
       console.error('Error fetching clinic:', err);

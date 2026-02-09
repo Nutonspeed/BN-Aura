@@ -119,12 +119,12 @@ export default function MyCustomersSection({ salesId }: { salesId?: string }) {
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
             <Users className="w-5 h-5" />
           </div>
-          <h3 className="text-lg font-semibold text-foreground">My Managed Customers</h3>
+          <h3 className="text-lg font-semibold text-foreground">ลูกค้าที่ดูแล</h3>
         </div>
         <button 
           onClick={() => setShowCustomerModal(true)}
           className="p-2 bg-secondary border border-border rounded-lg text-foreground hover:bg-accent transition-all active:scale-95"
-          title="Add New Customer"
+          title="เพิ่มลูกค้าใหม่"
         >
           <Plus className="w-5 h-5" />
         </button>
@@ -134,7 +134,7 @@ export default function MyCustomersSection({ salesId }: { salesId?: string }) {
         <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <input
           type="text"
-          placeholder="Search your customers..."
+          placeholder="ค้นหาลูกค้า..."
           className="w-full bg-secondary border border-border rounded-xl py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-all"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

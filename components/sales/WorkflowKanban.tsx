@@ -45,13 +45,13 @@ import { useWorkflowEvents } from '@/hooks/useWorkflowEvents';
 import { workflowBridge, WorkflowData } from '@/lib/workflow/workflowBridge';
 
 const workflowStages = [
-  { id: 'lead_created', label: 'Lead Entry', color: 'text-blue-500', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-  { id: 'scanned', label: 'Diagnostic', color: 'text-purple-500', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
-  { id: 'proposal_sent', label: 'Quotation', color: 'text-orange-500', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
-  { id: 'payment_confirmed', label: 'Settlement', color: 'text-green-500', bg: 'bg-green-500/10', border: 'border-green-500/20' },
-  { id: 'treatment_scheduled', label: 'Scheduling', color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
-  { id: 'in_treatment', label: 'Execution', color: 'text-pink-500', bg: 'bg-pink-500/10', border: 'border-pink-500/20' },
-  { id: 'treatment_completed', label: 'Operational', color: 'text-emerald-500', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' }
+  { id: 'lead_created', label: 'นำเข้าลีด', color: 'text-blue-500', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
+  { id: 'scanned', label: 'การวินิจฉัย', color: 'text-purple-500', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
+  { id: 'proposal_sent', label: 'ใบเสนอราคา', color: 'text-orange-500', bg: 'bg-orange-500/10', border: 'border-orange-500/20' },
+  { id: 'payment_confirmed', label: 'การชำระเงิน', color: 'text-green-500', bg: 'bg-green-500/10', border: 'border-green-500/20' },
+  { id: 'treatment_scheduled', label: 'การนัดหมาย', color: 'text-indigo-500', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
+  { id: 'in_treatment', label: 'การดำเนินการ', color: 'text-pink-500', bg: 'bg-pink-500/10', border: 'border-pink-500/20' },
+  { id: 'treatment_completed', label: 'การปฏิบัติงาน', color: 'text-emerald-500', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' }
 ];
 
 interface WorkflowCard {

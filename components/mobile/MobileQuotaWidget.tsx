@@ -108,9 +108,9 @@ export default function MobileQuotaWidget({
   };
 
   const getStatusText = () => {
-    if (quotaData.utilizationRate >= 95) return 'Critical';
-    if (quotaData.utilizationRate >= 80) return 'Warning';
-    return 'Normal';
+    if (quotaData.utilizationRate >= 95) return 'วิกฤต';
+    if (quotaData.utilizationRate >= 80) return 'เตือน';
+    return 'ปกติ';
   };
 
   if (loading) {
@@ -132,12 +132,12 @@ export default function MobileQuotaWidget({
       <Card className="w-full max-w-md mx-auto bg-card border border-red-500/20 rounded-2xl">
         <CardContent className="p-4">
           <div className="text-center text-red-500">
-            <p className="text-sm">Failed to load quota data</p>
+            <p className="text-sm">โหลดข้อมูลโควต้าไม่สำเร็จ</p>
             <button 
               onClick={fetchQuotaData}
               className="mt-2 text-xs text-red-400 hover:text-red-300 transition-colors"
             >
-              Tap to retry
+              แตะเพื่อลองใหม่
             </button>
           </div>
         </CardContent>
@@ -157,7 +157,7 @@ export default function MobileQuotaWidget({
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Pulse weight="duotone" className="w-4 h-4 text-primary" />
-                <span className="text-xs font-medium text-muted-foreground">Quota</span>
+                <span className="text-xs font-medium text-muted-foreground">โควต้า</span>
               </div>
               <div className={`px-2 py-1 rounded-lg text-xs font-bold border ${getStatusColor()}`}>
                 {getStatusText()}
@@ -167,7 +167,7 @@ export default function MobileQuotaWidget({
             <div className="mt-2">
               <div className="flex items-baseline gap-1">
                 <span className="text-lg font-black">{quotaData.remainingScans}</span>
-                <span className="text-xs text-muted-foreground">remaining</span>
+                <span className="text-xs text-muted-foreground">คงเหลือ</span>
               </div>
               
               <div className="mt-2">
@@ -200,7 +200,7 @@ export default function MobileQuotaWidget({
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Pulse weight="duotone" className="w-5 h-5 text-purple-500" />
-              <span className="text-sm font-bold">AI Quota Status</span>
+              <span className="text-sm font-bold">สถานะโควต้า AI</span>
             </div>
             <div className="text-right">
               <p className="text-xs text-muted-foreground">{quotaData.clinicName}</p>
@@ -213,10 +213,10 @@ export default function MobileQuotaWidget({
           <div className="text-center">
             <div className="inline-flex items-baseline gap-1">
               <span className="text-3xl font-black text-foreground">{quotaData.remainingScans}</span>
-              <span className="text-sm text-muted-foreground">scans left</span>
+              <span className="text-sm text-muted-foreground">สแกนคงเหลือ</span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {quotaData.currentUsage} of {quotaData.monthlyQuota} used ({quotaData.utilizationRate}%)
+              {quotaData.currentUsage} of {quotaData.monthlyQuota} ใช้ไป ({quotaData.utilizationRate}%)
             </p>
           </div>
 
@@ -239,7 +239,7 @@ export default function MobileQuotaWidget({
             <div className="bg-card border border-border/30 rounded-xl p-3">
               <div className="flex items-center gap-1.5">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span className="text-xs text-muted-foreground">Cache Hit</span>
+                <span className="text-xs text-muted-foreground">ประสิทธิภาพแคช</span>
               </div>
               <p className="text-sm font-bold mt-1">{quotaData.cacheHitRate}%</p>
             </div>
@@ -247,7 +247,7 @@ export default function MobileQuotaWidget({
             <div className="bg-card border border-border/30 rounded-xl p-3">
               <div className="flex items-center gap-1.5">
                 <div className={`w-2 h-2 rounded-full ${quotaData.willIncurCharge ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                <span className="text-xs text-muted-foreground">Status</span>
+                <span className="text-xs text-muted-foreground">สถานะ</span>
               </div>
               <p className="text-sm font-bold mt-1">{getStatusText()}</p>
             </div>

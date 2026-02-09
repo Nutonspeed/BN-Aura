@@ -150,10 +150,10 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">
-                    {customer ? 'Modify Patient' : 'Initialize Patient'}
+                    {customer ? 'แก้ไขข้อมูลลูกค้า' : 'เพิ่มลูกค้าใหม่'}
                   </h3>
                   <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">
-                    {customer ? 'Updating existing cutaneous identity' : 'Initializing new clinical record node'}
+                    {customer ? 'กำลังอัปเดตข้อมูลลูกค้าที่มีอยู่' : 'กำลังสร้างข้อมูลลูกค้าใหม่'}
                   </p>
                 </div>
               </div>
@@ -171,7 +171,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Full Name */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Full Identity Designation *
+                    ชื่อ-นามสกุล *
                   </label>
                   <div className="relative group/input">
                     <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 group-focus-within/input:opacity-100 transition-opacity rounded-2xl" />
@@ -183,7 +183,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       value={formData.full_name}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tracking-tight relative z-10 shadow-inner"
-                      placeholder="Neural ID Name"
+                      placeholder="กรุณาป้อนชื่อ-นามสกุล"
                     />
                   </div>
                 </div>
@@ -191,7 +191,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Nickname */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Alias / Protocol Name
+                    ชื่อเล่น
                   </label>
                   <input
                     type="text"
@@ -199,14 +199,14 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     value={formData.nickname}
                     onChange={handleInputChange}
                     className="w-full px-6 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold uppercase text-xs tracking-widest"
-                    placeholder="Short Identifier"
+                    placeholder="ชื่อเล่น"
                   />
                 </div>
 
                 {/* Email */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Digital Mail Node
+                    อีเมล
                   </label>
                   <div className="relative group/input">
                     <EnvelopeSimple weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
@@ -216,7 +216,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       value={formData.email}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium italic"
-                      placeholder="address@network.com"
+                      placeholder="example@email.com"
                     />
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Phone */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Comm Node (Phone)
+                    เบอร์โทรศัพท์
                   </label>
                   <div className="relative group/input">
                     <Phone weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
@@ -234,7 +234,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       value={formData.phone}
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-bold tabular-nums"
-                      placeholder="+66 00-000-0000"
+                      placeholder="081-234-5678"
                     />
                   </div>
                 </div>
@@ -242,7 +242,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Date of Birth */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Temporal Origin (DOB)
+                    วันเกิด
                   </label>
                   <div className="relative group/input">
                     <CalendarDots weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
@@ -259,7 +259,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Gender */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Biological Profile
+                    เพศ
                   </label>
                   <div className="relative group/input">
                     <GenderIntersex weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
@@ -269,9 +269,9 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-xs tracking-widest"
                     >
-                      <option value="male" className="bg-card">MALE</option>
-                      <option value="female" className="bg-card">FEMALE</option>
-                      <option value="other" className="bg-card">OTHER / UNKNOWN</option>
+                      <option value="male" className="bg-card">ชาย</option>
+                      <option value="female" className="bg-card">หญิง</option>
+                      <option value="other" className="bg-card">อื่นๆ</option>
                     </select>
                     <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
                   </div>
@@ -280,7 +280,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Customer Type */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Operational Tier
+                    ประเภทลูกค้า
                   </label>
                   <div className="relative group/input">
                     <Tag weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
@@ -294,9 +294,9 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                         formData.customer_type === 'premium' ? "text-primary" : "text-foreground"
                       )}
                     >
-                      <option value="regular" className="bg-card">REGULAR NODE</option>
-                      <option value="premium" className="bg-card">PREMIUM NODE</option>
-                      <option value="vip" className="bg-card">VIP ARCHIVE</option>
+                      <option value="regular" className="bg-card">ลูกค้าทั่วไป</option>
+                      <option value="premium" className="bg-card">ลูกค้า Premium</option>
+                      <option value="vip" className="bg-card">ลูกค้า VIP</option>
                     </select>
                     <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
                   </div>
@@ -305,7 +305,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                 {/* Source */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                    Acquisition Vector
+                    ช่องทางที่รู้จัก
                   </label>
                   <div className="relative group/input">
                     <Megaphone weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within/input:text-primary transition-colors" />
@@ -315,10 +315,10 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                       onChange={handleInputChange}
                       className="w-full pl-12 pr-4 py-4 bg-secondary/30 border border-border rounded-2xl text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none font-bold uppercase text-[10px] tracking-widest"
                     >
-                      <option value="walk_in" className="bg-card">WALK-IN NODE</option>
-                      <option value="social_media" className="bg-card">SOCIAL MATRIX</option>
-                      <option value="referral" className="bg-card">IDENTITY LINK</option>
-                      <option value="advertisement" className="bg-card">CAMPAIGN SIGNAL</option>
+                      <option value="walk_in" className="bg-card">เดินผ่านมาหน้าร้าน</option>
+                      <option value="social_media" className="bg-card">โซเชียลมีเดีย</option>
+                      <option value="referral" className="bg-card">การแนะนำ</option>
+                      <option value="advertisement" className="bg-card">การโฆษณา</option>
                     </select>
                     <CaretDown weight="bold" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 pointer-events-none" />
                   </div>
@@ -328,7 +328,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
               {/* Notes */}
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">
-                  Clinical Directives / Notes
+                  หมายเหตุ
                 </label>
                 <textarea
                   name="notes"
@@ -336,7 +336,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   onChange={handleInputChange}
                   rows={3}
                   className="w-full px-6 py-4 bg-secondary/30 border border-border rounded-[24px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all resize-none font-medium leading-relaxed italic shadow-inner"
-                  placeholder="Additional patient telemetry and clinical context..."
+                  placeholder="ข้อมูลเพิ่มเติมเกี่ยวกับลูกค้า..."
                 />
               </div>
 
@@ -349,7 +349,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                     exit={{ opacity: 0, y: -10 }}
                     className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-2xl text-rose-500 text-[10px] font-black uppercase tracking-widest text-center"
                   >
-                    System Exception: {error}
+                    เกิดข้อผิดพลาด: {error}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -363,7 +363,7 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   disabled={loading}
                   className="w-full sm:flex-1 py-7 rounded-[20px] font-black uppercase tracking-widest text-[10px] border-border/50 hover:bg-secondary"
                 >
-                  Abort Cycle
+                  ยกเลิก
                 </Button>
                 <Button
                   type="submit"
@@ -373,12 +373,12 @@ export default function CustomerModal({ isOpen, onClose, onSuccess, customer }: 
                   {loading ? (
                     <>
                       <SpinnerGap className="w-4 h-4 animate-spin" />
-                      Synchronizing...
+                      กำลังบันทึก...
                     </>
                   ) : (
                     <>
                       <CheckCircle weight="bold" className="w-5 h-5" />
-                      {customer ? 'Commit Updates' : 'Initialize Identity'}
+                      {customer ? 'บันทึกการแก้ไข' : 'สร้างลูกค้าใหม่'}
                     </>
                   )}
                 </Button>

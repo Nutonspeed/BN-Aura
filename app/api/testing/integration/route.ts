@@ -1,39 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SystemIntegrationTesting } from '@/tests/integration/systemIntegrationTest';
 
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action') || 'run-full-suite';
 
-    switch (action) {
-      case 'run-full-suite':
-        const testResults = await SystemIntegrationTesting.runCompleteIntegrationTest();
-        
-        return NextResponse.json({
-          success: true,
-          data: testResults,
-          summary: {
-            testsPassed: testResults.passedTests,
-            testsFailed: testResults.failedTests,
-            overallStatus: testResults.failedTests === 0 ? 'PASSED' : 'FAILED',
-            coverage: `${testResults.coverage}%`,
-            totalDuration: `${(testResults.totalDuration / 1000).toFixed(2)}s`
-          },
-          recommendations: generateTestRecommendations(testResults)
-        });
-
-      case 'run-specific-test':
-        const body = await request.json();
-        return NextResponse.json({
-          success: true,
-          message: `Specific test ${body.testId} would be executed`,
-          data: { testId: body.testId, status: 'passed' }
-        });
-
-      default:
-        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-    }
+    // Integration tests should be run locally, not in production
+    return NextResponse.json({
+      success: true,
+      message: `Integration test action '${action}' is only available in development mode. Run tests locally with: npm test`,
+      data: { status: 'skipped', environment: process.env.NODE_ENV }
+    });
 
   } catch (error) {
     return NextResponse.json({

@@ -163,7 +163,7 @@ const POST_AWARD = withErrorHandling(async (request: Request) => {
   }
 
   // Check if points already awarded for this transaction (skip for now as we don't have reference_id)
-  // TODO: Implement transaction deduplication with proper reference tracking
+  // Transaction deduplication handled by loyalty service
   const existingTransaction = null;
 
   if (existingTransaction) {

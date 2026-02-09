@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { chatManager } from '@/lib/chat/chatManager';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 import { createClient } from '@/lib/supabase/server';
+import { realtimeManager } from '@/lib/supabase/realtime';
 
 /**
  * Secure API for Integrated Chat System
@@ -326,6 +327,32 @@ export async function POST(request: Request) {
           messageType || 'text',
           contextData
         );
+
+        // Broadcast message via realtime
+        try {
+          // Get conversation ID for the chat
+          const { data: conversation } = await supabase
+            .from('chat_sessions')
+            .select('id')
+            .eq('customer_id', customerId)
+            .eq('sales_staff_id', user.id)
+            .single();
+
+          if (conversation) {
+            await realtimeManager.sendChatMessage(conversation.id, {
+              id: message.id,
+              content: messageText,
+              sender_type: 'sales',
+              sender_id: user.id,
+              created_at: message.createdAt,
+              is_read: false
+            });
+          }
+        } catch (broadcastError) {
+          console.error('Failed to broadcast message:', broadcastError);
+          // Continue even if broadcast fails
+        }
+
         return successResponse({ message });
       } else if (['customer', 'premium_customer', 'free_customer', 'free_user'].includes(effectiveRole)) {
         const { data: customer } = await supabase
@@ -346,6 +373,32 @@ export async function POST(request: Request) {
           messageType || 'text',
           contextData
         );
+
+        // Broadcast message via realtime
+        try {
+          // Get conversation ID for the chat
+          const { data: conversation } = await supabase
+            .from('chat_sessions')
+            .select('id')
+            .eq('customer_id', customerId)
+            .eq('sales_staff_id', customer.assigned_sales_id)
+            .single();
+
+          if (conversation) {
+            await realtimeManager.sendChatMessage(conversation.id, {
+              id: message.id,
+              content: messageText,
+              sender_type: 'customer',
+              sender_id: user.id,
+              created_at: message.createdAt,
+              is_read: false
+            });
+          }
+        } catch (broadcastError) {
+          console.error('Failed to broadcast message:', broadcastError);
+          // Continue even if broadcast fails
+        }
+
         return successResponse({ message });
       } else {
         return NextResponse.json({ error: 'Invalid role for chat access' }, { status: 403 });

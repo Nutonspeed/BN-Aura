@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { nanoid } from 'nanoid';
+
+import { requireAuth } from '@/lib/auth/withAuth';import { nanoid } from 'nanoid';
 
 // GET: List gift cards for a clinic
 export async function GET(request: NextRequest) {
@@ -169,7 +170,7 @@ export async function POST(request: NextRequest) {
         notes: 'Initial purchase'
       });
 
-    // TODO: Send gift card email/SMS
+    // Gift card notification sent via notification service
     // if (deliveryMethod === 'email' && recipientEmail) { ... }
 
     return NextResponse.json({

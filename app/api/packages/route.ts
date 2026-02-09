@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: List service packages for a clinic
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: List service packages for a clinic
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

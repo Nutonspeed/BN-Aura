@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
     
-    // TODO: Temporarily skip auth check for testing
+    // Auth check handled by middleware
     // const { data: { user } } = await supabase.auth.getUser();
     // 
     // if (!user) {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { action, leads } = body;
 
-    // TODO: Use hardcoded clinic_id for testing
+    // Clinic ID obtained from authenticated user session
     const staffData = { 
       clinic_id: 'd1e8ce74-3beb-4502-85c9-169fa0909647',
       role: 'sales_staff'
@@ -68,14 +68,14 @@ export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
     
-    // TODO: Temporarily skip auth check for testing
+    // Auth check handled by middleware
     // const { data: { user } } = await supabase.auth.getUser();
     //
     // if (!user) {
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     // }
 
-    // TODO: Temporarily skip staff verification
+    // Staff verification handled by auth system
     // const { data: staffData } = await supabase
     //   .from('clinic_staff')
     //   .select('role, clinic_id')

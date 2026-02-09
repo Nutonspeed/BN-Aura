@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: Get customer's packages
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: Get customer's packages
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();

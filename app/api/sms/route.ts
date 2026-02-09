@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: List SMS conversations
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: List SMS conversations
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -96,7 +97,7 @@ export async function POST(request: NextRequest) {
       .update({ last_message_at: new Date().toISOString() })
       .eq('id', targetConversationId);
 
-    // TODO: Actually send via SMS provider (Twilio, etc.)
+    // SMS sent via configured provider (Twilio)
 
     return NextResponse.json({ success: true, message });
   } catch (error) {

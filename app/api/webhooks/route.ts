@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import crypto from 'crypto';
+
+import { requireAuth } from '@/lib/auth/withAuth';import crypto from 'crypto';
 
 // GET: List webhooks
 export async function GET(request: NextRequest) {

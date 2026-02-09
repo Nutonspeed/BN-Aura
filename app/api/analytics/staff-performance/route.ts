@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: Get staff performance metrics
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: Get staff performance metrics
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();

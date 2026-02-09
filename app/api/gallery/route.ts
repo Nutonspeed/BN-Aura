@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: List treatment photos / gallery
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: List treatment photos / gallery
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

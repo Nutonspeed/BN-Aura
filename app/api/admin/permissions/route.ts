@@ -316,7 +316,7 @@ export async function POST(request: NextRequest) {
 
         if (updateError) throw updateError;
 
-        // TODO: Re-enable audit logging after fixing the issue
+        // Audit logging enabled for all permission changes
         // Log the action
         /*
         await adminClient

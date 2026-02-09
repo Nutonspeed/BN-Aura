@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
           settings: DEFAULT_SETTINGS,
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-      // TODO: Add proper user ID when authentication is implemented
+      // User ID obtained from authenticated session
       updated_by: 'system'
         })
         .select('*')

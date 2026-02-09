@@ -4,7 +4,8 @@
 import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-interface OpenAPISpec {
+
+import { requireAuth } from '@/lib/auth/withAuth';interface OpenAPISpec {
   openapi: string;
   info: {
     title: string;

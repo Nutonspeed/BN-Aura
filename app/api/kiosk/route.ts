@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: Get kiosk settings or queue
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: Get kiosk settings or queue
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

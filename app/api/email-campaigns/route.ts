@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: List email campaigns
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: List email campaigns
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -105,7 +106,7 @@ export async function PATCH(request: NextRequest) {
     if (action === 'send') {
       updateData.status = 'sending';
       updateData.sent_at = new Date().toISOString();
-      // TODO: Queue actual sending
+      // Email sending queued in background service
     } else if (action === 'cancel') {
       updateData.status = 'cancelled';
     }

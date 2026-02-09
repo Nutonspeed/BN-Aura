@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { createLineService } from '@/lib/integrations/line';
+
+import { requireAuth } from '@/lib/auth/withAuth';import { createLineService } from '@/lib/integrations/line';
 
 export async function POST(request: NextRequest) {
   try {

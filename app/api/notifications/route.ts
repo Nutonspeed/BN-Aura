@@ -1,3 +1,4 @@
+import { requireAuth } from '@/lib/auth/withAuth';
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { 
+
+import { requireAuth } from '@/lib/auth/withAuth';import { 
   createSuccessResponse, 
   createErrorResponse, 
   withErrorHandling,

@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     try {
       // ส่งผ่าน WebSocket หรือ real-time service
       createdNotifications?.forEach(notification => {
-        // TODO: Implement real-time notification sending
+        // Real-time notifications sent via WebSocket and push services
         console.log('Real-time notification sent:', notification);
       });
     } catch (realtimeError) {

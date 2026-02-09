@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// GET: List dynamic pricing rules or calculate price
+
+import { requireAuth } from '@/lib/auth/withAuth';// GET: List dynamic pricing rules or calculate price
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();

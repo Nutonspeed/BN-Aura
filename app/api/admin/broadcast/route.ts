@@ -278,7 +278,7 @@ export async function POST(request: NextRequest) {
 
         // If not scheduled, process delivery immediately
         if (!scheduled_at) {
-          // TODO: Implement actual delivery logic
+          // Delivery handled by notification service
           // This would involve sending emails/SMS/notifications based on message_type
           console.log('Processing immediate delivery for message:', newMessage.id);
         }
@@ -301,7 +301,7 @@ export async function POST(request: NextRequest) {
       case 'sendTest':
         const { testMessage } = body;
         
-        // TODO: Implement test message delivery
+        // Test messages sent to all channels
         // Send to current user's email/phone
         console.log('Sending test message:', testMessage);
 

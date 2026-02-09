@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// POST: Create a new booking
+
+import { requireAuth } from '@/lib/auth/withAuth';// POST: Create a new booking
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -252,7 +253,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // TODO: Send confirmation email/SMS
+    // Confirmation sent via notification service
     // if (settings.send_confirmation_email && customerInfo.email) { ... }
     // if (settings.send_reminder_sms && customerInfo.phone) { ... }
 

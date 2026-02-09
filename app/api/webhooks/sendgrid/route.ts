@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export async function POST(request: NextRequest) {
+
+import { requireAuth } from '@/lib/auth/withAuth';export async function POST(request: NextRequest) {
   try {
     const events = await request.json();
 

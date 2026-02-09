@@ -5,7 +5,8 @@ import { NextRequest } from 'next/server';
 import { Server as NetServer } from 'http';
 import { Server as ServerIO, Socket } from 'socket.io';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { ErrorHandler } from '@/lib/monitoring/sentry';
+
+import { requireAuth } from '@/lib/auth/withAuth';import { ErrorHandler } from '@/lib/monitoring/sentry';
 
 interface AuthenticatedSocket extends Socket {
   userId: string;

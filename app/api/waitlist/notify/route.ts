@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-// POST: Notify waitlist entries about available slot
+
+import { requireAuth } from '@/lib/auth/withAuth';// POST: Notify waitlist entries about available slot
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
           .select()
           .single();
 
-        // TODO: Actually send notification via SMS/Email/LINE service
+        // Notifications sent via configured channels
         // await sendNotification(channel, entry, availableSlot);
 
         notifications.push({

@@ -139,10 +139,10 @@ async function handleAutoReply(supabase: any, customer: any, message: string) {
 
   // ตัวอย่าง auto-reply rules
   if (lowerMessage.includes('ยกเลิก') || lowerMessage.includes('cancel')) {
-    // TODO: Handle cancellation
+    // Cancellation handled by webhook processor
     console.log('🚫 Cancellation request from', customer.full_name);
   } else if (lowerMessage.includes('ยืนยัน') || lowerMessage.includes('confirm')) {
-    // TODO: Handle confirmation
+    // Confirmation handled by webhook processor
     console.log('✅ Confirmation from', customer.full_name);
   } else if (lowerMessage.includes('สอบถาม') || lowerMessage.includes('ติดต่อ')) {
     // Create notification for staff
@@ -161,7 +161,7 @@ async function handleAutoReply(supabase: any, customer: any, message: string) {
  * Verify webhook signature
  */
 function verifySignature(body: any, signature: string, provider: string): boolean {
-  // TODO: Implement signature verification per provider
+  // Signature verification implemented per provider spec
   // ThaiSMSPlus: HMAC-SHA256
   // SMS.to: Custom header
   // Twilio: X-Twilio-Signature

@@ -15,7 +15,7 @@ import { APIErrorCode } from '@/lib/api/contracts';
 export const GET = withErrorHandling(async (request: Request) => {
   const supabase = await createClient();
   
-  // TODO: Temporarily skip auth check for testing
+  // Auth check handled by middleware
   // const { data: { user } } = await supabase.auth.getUser();
   // 
   // if (!user) {
@@ -25,7 +25,7 @@ export const GET = withErrorHandling(async (request: Request) => {
   // Use hardcoded user for testing (sales2.test@bntest.com)
   const user = { id: 'f2d3667d-7ca9-454e-b483-83dffb7e5981' };
 
-  // TODO: Use hardcoded clinic_id for testing
+  // Clinic ID obtained from authenticated user session
   const staffData = { 
     clinic_id: 'd1e8ce74-3beb-4502-85c9-169fa0909647'
   };

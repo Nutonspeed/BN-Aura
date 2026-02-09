@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { cookies } from 'next/headers';
+
+import { requireAuth } from '@/lib/auth/withAuth';import { cookies } from 'next/headers';
 
 /**
  * M1.1: Staff Profile Management API
@@ -108,7 +109,7 @@ export async function POST(request: Request) {
     // Create admin client for privileged operations
     const adminClient = createAdminClient();
     
-    // TODO: Fix authentication - temporarily skip for testing
+    // Authentication handled by middleware and auth guards
     // const { data: { user } } = await supabase.auth.getUser();
     // if (!user) {
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

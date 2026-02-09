@@ -6,3 +6,4 @@ At C:\nvm4w\nodejs\vercel.ps1:16 char:5
     + FullyQualifiedErrorId : NativeCommandError
  
 ? No Project Settings found locally. Run `vercel pull` for retrieving them?
+(Y/n)[1A[83G

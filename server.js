@@ -60,11 +60,38 @@ app.prepare().then(() => {
         return next(new Error('Authentication token required'));
       }
 
-      // For now, skip detailed auth validation and allow connection
-      // TODO: Implement proper auth validation with dynamic imports
-      socket.userId = 'test-user';
-      socket.clinicId = 'test-clinic';
-      socket.role = 'clinic_admin';
+      // Validate JWT token with Supabase
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_ROLE_KEY
+      );
+
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      
+      if (error || !user) {
+        return next(new Error('Invalid authentication token'));
+      }
+
+      // Get user's clinic and role
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role, clinic_id')
+        .eq('id', user.id)
+        .single();
+
+      // Check clinic_staff for role override
+      const { data: staffData } = await supabase
+        .from('clinic_staff')
+        .select('role, clinic_id')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      // Set socket user data from JWT
+      socket.userId = user.id;
+      socket.clinicId = staffData?.clinic_id || userData?.clinic_id;
+      socket.role = staffData?.role || userData?.role || 'free_user';
       
       next();
     } catch (error) {

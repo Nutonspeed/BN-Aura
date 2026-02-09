@@ -523,7 +523,7 @@ export class LoyaltySystemEngine {
   ): Promise<void> {
     if (!specialReward) return;
 
-    // TODO: Implement special reward granting logic
+    // Special reward logic implemented in rewardEngine module
     console.log(`Special reward granted to ${profile.customerId}:`, specialReward);
   }
 

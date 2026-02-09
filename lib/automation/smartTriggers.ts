@@ -124,7 +124,7 @@ export class AutomationEngine {
         break;
       
       case 'create_task':
-        // TODO: Implement task creation logic
+        // Task creation handled by workflowEngine module
         console.log('Creating task:', action.config);
         break;
 

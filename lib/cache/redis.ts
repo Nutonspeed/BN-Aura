@@ -1,5 +1,5 @@
 // Redis Caching Utility for BN-Aura
-// Optimizes frequently accessed data with intelligent cache strategies
+// Redis cache implementation with intelligent strategies
 
 interface CacheOptions {
   ttl?: number; // Time to live in seconds (default: 300 = 5 minutes)

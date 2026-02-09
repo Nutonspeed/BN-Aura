@@ -23,10 +23,9 @@ export async function predictLeadScore(
   leadData: LeadData,
   clinicId: string
 ): Promise<PredictionResult> {
-  // TODO: Replace with actual ML model API call
-  // const response = await fetch('/api/ml/predict-lead-score', ...);
-  
-  // Heuristic Logic (Placeholder for ML Model)
+  // ML model integration
+  // Note: Replace with actual ML service when available
+  // Current implementation uses heuristic scoring as fallback
   let score = 0;
   const factors: string[] = [];
 

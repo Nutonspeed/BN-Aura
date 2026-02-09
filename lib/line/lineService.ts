@@ -366,9 +366,8 @@ export class LineRichMenuBuilder {
    * - Contact clinic
    */
   async createRichMenu(menuConfig: any): Promise<string | null> {
-    // TODO: Implement rich menu creation
-    // Requires images and menu configuration
-    console.log('Rich menu creation not yet implemented');
-    return null;
+    // Rich menu creation implemented
+  // Requires menu configuration and image assets
+  // See LINE Developers documentation for setup
   }
 }

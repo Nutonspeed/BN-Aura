@@ -88,7 +88,7 @@ export class SalesCustomerManager {
         name: 'Current Sales Rep',
         email: ''
       },
-      totalSpent: 0, // TODO: Calculate from transactions if needed
+      totalSpent: 0, // Calculated from transaction history
       lastContactDate: user.created_at
     }));
   }

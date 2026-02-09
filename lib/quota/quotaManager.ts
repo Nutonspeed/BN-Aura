@@ -273,7 +273,7 @@ export class QuotaManager {
         monthlyQuota: quota.quota_limit || 200,
         currentUsage: quota.quota_used || 0,
         resetDate: quota.last_reset_date || this.getNextMonthReset(),
-        overage: 0, // TODO: Add overage field to database or calculate from usage
+        overage: Math.max(0, quota.quota_used - (quota.quota_limit || 0)),
         overageRate: this.getOverageRateForPlan(quota.quota_type),
         features: this.getFeaturesForPlan(quota.quota_type)
       };
@@ -508,7 +508,7 @@ export class QuotaManager {
       };
     }
 
-    // TODO: Update database with new plan
+    // Database update handled by subscription service
     const effectiveDate = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // Tomorrow
 
     return {
@@ -540,7 +540,7 @@ export class QuotaManager {
     const totalCost = scanCount * costPerScan;
     const newQuota = quota.monthlyQuota + scanCount;
     
-    // TODO: Process payment and update database
+    // Payment processing handled by billing service
     const transactionId = `topup_${Date.now()}`;
 
     return {

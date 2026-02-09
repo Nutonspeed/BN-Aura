@@ -1,8 +1,10 @@
 // Complete Clinic Owner Creation Script
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST() {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     // 1. Create or get the clinic first

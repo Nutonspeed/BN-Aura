@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 const supabaseAdmin = createClient(
   'https://royeyoxaaieipdajijni.supabase.co',

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient, createClientWithAuth } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 /**
  * Super Admin Billing API
@@ -11,6 +12,7 @@ import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 
 export async function GET(request: Request) {
   try {
+    await requireSuperAdmin();
     // Get user session from server client
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -105,10 +107,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const adminClient = createAdminClient();
+  try {    const adminClient = createAdminClient();
     const user = { id: 'b07c41f2-8171-4d2f-a4de-12c24cfe8cff' }; // Super admin user ID
 
     const body = await request.json();

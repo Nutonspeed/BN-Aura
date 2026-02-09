@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 // GET - List all announcements
 export async function GET(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -58,10 +56,7 @@ export async function GET(request: NextRequest) {
 
 // POST - Create new announcement
 export async function POST(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
     const body = await request.json();
 
     // Create announcement

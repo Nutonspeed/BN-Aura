@@ -1,9 +1,11 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function GET(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     const adminClient = await createAdminClient();
     const authClient = await createClient();
     

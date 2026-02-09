@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 function successResponse(data: any) {
   return NextResponse.json({ success: true, data });
@@ -13,6 +14,7 @@ function errorResponse(message: string, status: number = 500) {
 // GET - Get billing records
 export async function GET(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     const supabase = await createClient();
     const supabaseAdmin = createAdminClient();
     
@@ -106,6 +108,7 @@ export async function GET(request: NextRequest) {
 // POST - Create new billing record
 export async function POST(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     const supabase = await createClient();
     const supabaseAdmin = createAdminClient();
     const body = await request.json();
@@ -163,6 +166,7 @@ export async function POST(request: NextRequest) {
 // PATCH - Update billing record
 export async function PATCH(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     const supabase = await createClient();
     const supabaseAdmin = createAdminClient();
     const body = await request.json();

@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 // Cache for security metrics (5 minutes TTL)
 const securityCache = new Map<string, { data: any; timestamp: number }>();
@@ -233,6 +234,7 @@ async function getSecurityAlerts(adminClient: any, timeRange: string = '24h') {
 
 export async function GET(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     // For Super Admin operations, we can use the admin client directly
     // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();
@@ -290,6 +292,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     // For Super Admin operations, we can use the admin client directly
     // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();

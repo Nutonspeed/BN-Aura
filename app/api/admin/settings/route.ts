@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function GET(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
 
     // Get system settings from database (we'll store in a system_settings table)
     const { data: settingsData, error: settingsError } = await supabaseAdmin
@@ -154,10 +152,7 @@ const DEFAULT_SETTINGS = {
 };
 
 export async function PUT(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
     const body = await request.json();
 
     // Get current settings

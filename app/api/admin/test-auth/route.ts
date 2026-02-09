@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function GET(request: Request) {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     // Get the authorization header to extract the JWT token

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 /**
  * Super Admin Global Management API
@@ -9,6 +10,7 @@ import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 
 export async function GET(request: Request) {
   try {
+    await requireSuperAdmin();
     // For development: Use admin client directly
     // TODO: Add proper authentication in production
     const adminClient = createAdminClient();
@@ -145,6 +147,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    await requireSuperAdmin();
     // For development: Use admin client directly
     // TODO: Add proper authentication in production
     const adminClient = createAdminClient();

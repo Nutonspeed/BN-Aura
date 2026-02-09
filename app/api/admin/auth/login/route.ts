@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST(request: Request) {
   try {
+    await requireSuperAdmin();
     const body = await request.json();
     const { email, password } = body;
 

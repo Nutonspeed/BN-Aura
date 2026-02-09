@@ -1,5 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 function successResponse(data: any) {
   return NextResponse.json({ success: true, data });
@@ -56,10 +57,7 @@ async function getBroadcastMessages(adminClient: any, filters: any = {}) {
 }
 
 export async function GET(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const adminClient = createAdminClient();
+  try {    const adminClient = createAdminClient();
 
     const { searchParams } = new URL(request.url);
     

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST(request: NextRequest) {
   console.log('\n🎯 === SIMPLE TEST USERS CREATION ===');

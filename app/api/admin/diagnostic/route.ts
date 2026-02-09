@@ -1,8 +1,10 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { NextResponse } from 'next/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function GET() {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     // Test 1: Check if we can connect to Supabase

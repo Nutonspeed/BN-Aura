@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 // GET - Get clinics for announcement targeting
 export async function GET(request: NextRequest) {
   try {
-    console.log('Announcements clinics API called');
-    
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+    await requireSuperAdmin();
+    console.log('Announcements clinics API called');    const supabaseAdmin = createAdminClient();
 
     console.log('Using admin client directly for development');
 

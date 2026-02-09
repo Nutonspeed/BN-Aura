@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient, createClientWithAuth } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 /**
  * Super Admin Analytics API
@@ -10,6 +11,7 @@ import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 
 export async function GET(request: Request) {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
 
     const url = new URL(request.url);

@@ -1,8 +1,10 @@
 // Direct database update for user role
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST() {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     // Update clinic.owner@bntest.com role to clinic_owner

@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import fs from 'fs';
 import path from 'path';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST(request: Request) {
   try {
+    await requireSuperAdmin();
     const supabase = createAdminClient();
     
     // Read the SQL file

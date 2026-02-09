@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 function successResponse(data: any) {
   return NextResponse.json({ success: true, data });
@@ -166,6 +167,7 @@ async function getAuditStats(adminClient: any, filters: any = {}) {
 
 export async function GET(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     // For Super Admin operations, we can use the admin client directly
     // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();
@@ -265,6 +267,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     // For Super Admin operations, we can use the admin client directly
     // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();

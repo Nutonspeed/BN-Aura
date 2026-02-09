@@ -1,8 +1,10 @@
 // Fix RLS policies for Clinic Owner
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST() {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     console.log('Fixing RLS policies for Clinic Owner...');

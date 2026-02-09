@@ -1,8 +1,10 @@
 // Fix user role for clinic owner
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST() {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     console.log('Fixing user role for clinic owner...');

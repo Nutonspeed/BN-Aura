@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 function successResponse(data: any) {
   return NextResponse.json({ success: true, data });
@@ -224,6 +225,7 @@ async function getNetworkStats(adminClient: any, clinicsCount: number) {
 
 export async function GET(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     // Get user session from server client
     const supabase = await createClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();

@@ -3,9 +3,11 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { handleAPIError, successResponse } from '@/lib/utils/errorHandler';
 import { VoCService } from '@/lib/analytics/vocService';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function GET(request: Request) {
   try {
+    await requireSuperAdmin();
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     

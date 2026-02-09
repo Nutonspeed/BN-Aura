@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UATExecutionMonitoring } from '@/lib/testing/uatExecutionMonitoring';
+import { devOnly } from '@/lib/auth/withAuth';
 
 export async function POST(request: NextRequest) {
+  const blocked = devOnly();
+  if (blocked) return blocked;
   try {
     const { searchParams } = new URL(request.url);
     const action = searchParams.get('action') || 'start-session';
@@ -102,6 +105,8 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const blocked = devOnly();
+  if (blocked) return blocked;
   try {
     const { searchParams } = new URL(request.url);
     const reportType = searchParams.get('type') || 'dashboard';

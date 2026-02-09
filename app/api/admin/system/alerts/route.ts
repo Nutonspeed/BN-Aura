@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 // GET - Get system alerts
 export async function GET(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
 
     const { searchParams } = new URL(request.url);
     const severity = searchParams.get('severity');
@@ -49,10 +47,7 @@ export async function GET(request: NextRequest) {
 
 // POST - Create new system alert
 export async function POST(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
     const body = await request.json();
 
     // Create system alert
@@ -88,10 +83,7 @@ export async function POST(request: NextRequest) {
 
 // PATCH - Update system alert
 export async function PATCH(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
     const body = await request.json();
     const { searchParams } = new URL(request.url);
     const alertId = searchParams.get('id');

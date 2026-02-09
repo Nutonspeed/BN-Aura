@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 function successResponse(data: any) {
   return NextResponse.json({ success: true, data });
@@ -12,6 +13,7 @@ function errorResponse(message: string, status: number = 500) {
 
 export async function GET(request: Request) {
   try {
+    await requireSuperAdmin();
     // For Super Admin operations, we can use the admin client directly
     // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();
@@ -128,6 +130,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    await requireSuperAdmin();
     // For Super Admin operations, we can use the admin client directly
     // but we still need to verify the user is authenticated and has super_admin role
     const adminClient = createAdminClient();

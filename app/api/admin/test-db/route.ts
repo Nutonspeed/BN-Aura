@@ -1,8 +1,10 @@
 // Test API endpoint for debugging
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function GET() {
   try {
+    await requireSuperAdmin();
     const adminClient = createAdminClient();
     
     // Test database connection

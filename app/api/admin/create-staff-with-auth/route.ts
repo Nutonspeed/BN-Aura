@@ -5,6 +5,7 @@ import { apiMiddleware } from '@/lib/security/middleware';
 import { validateBody } from '@/lib/security/input-validator';
 import { businessSchemas } from '@/lib/security/input-validator';
 import auditLogger from '@/lib/security/audit-logger';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 const supabaseAdmin = createClient(
   'https://royeyoxaaieipdajijni.supabase.co',

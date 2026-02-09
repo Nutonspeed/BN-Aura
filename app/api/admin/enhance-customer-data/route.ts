@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 export async function POST(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     const supabase = await createClient();
     
     // Get auth user
@@ -164,6 +166,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    await requireSuperAdmin();
     const supabase = await createClient();
     
     // Get auth user

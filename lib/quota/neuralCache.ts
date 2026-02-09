@@ -118,6 +118,9 @@ class NeuralCache {
 
     this.customerScans.set(customerId, record);
     
+    // Write-through to Supabase for durability
+    this.persistToDb(customerId, clinicId, record);
+    
     console.log(`🧠 Neural Cache: Recorded scan for ${customerInfo.name} (scan #${scanCount})`);
 
     // Clean up expired entries periodically
@@ -129,10 +132,14 @@ class NeuralCache {
   /**
    * Get cached analysis for repeat customer
    */
-  static getCachedAnalysis(clinicId: string, customerInfo: { name: string; email?: string; age?: number }): any | null {
+  static async getCachedAnalysis(clinicId: string, customerInfo: { name: string; email?: string; age?: number }): Promise<any | null> {
     const customerId = this.generateCustomerId(clinicId, customerInfo);
-    const cached = this.customerScans.get(customerId);
+    let cached = this.customerScans.get(customerId);
     
+    // L2: Fall back to Supabase if not in memory (survives deploys)
+    if (!cached) {
+      cached = await this.loadFromDb(customerId) || undefined;
+    }
     if (!cached) return null;
 
     const timeElapsed = Date.now() - new Date(cached.lastScanTimestamp).getTime();

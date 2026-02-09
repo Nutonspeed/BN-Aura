@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { requireSuperAdmin, handleAuthError } from '@/lib/auth/withAuth';
 
 // GET - Get system metrics
 export async function GET(request: NextRequest) {
-  try {
-    // For development: Use admin client directly
-    // TODO: Add proper authentication in production
-    const supabaseAdmin = createAdminClient();
+  try {    const supabaseAdmin = createAdminClient();
 
     // Get real system metrics
     const now = new Date();

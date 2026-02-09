@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck,
@@ -18,6 +19,7 @@ import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
 
 export default function PDPAModal() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [agreed, setAgreed] = useState({
     terms: false,
@@ -25,12 +27,15 @@ export default function PDPAModal() {
     marketing: false
   });
 
+  const isAuthPage = pathname?.includes('/login') || pathname?.includes('/auth');
+
   useEffect(() => {
+    if (isAuthPage) return;
     const hasAgreed = localStorage.getItem('pdpa_agreed');
     if (!hasAgreed) {
       setIsOpen(true);
     }
-  }, []);
+  }, [isAuthPage]);
 
   const handleAgreeAll = () => {
     setAgreed({ terms: true, privacy: true, marketing: true });

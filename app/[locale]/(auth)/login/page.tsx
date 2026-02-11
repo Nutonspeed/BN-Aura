@@ -58,22 +58,23 @@ export default function LoginPage() {
             else if (metaRole === 'beautician') { target = '/beautician'; }
             else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(metaRole)) { target = '/clinic'; }
           } else {
-            // 2) Fallback: query DB with timeout
-            const timeout = setTimeout(() => {}, 5000);
+            // 2) Fallback: query DB with real timeout (5s)
             try {
-              const [staffResult, userResult] = await Promise.all([
+              const dbQuery = Promise.all([
                 supabase.from('clinic_staff').select('role, clinic_id').eq('user_id', data.user.id).eq('is_active', true).order('created_at', { ascending: true }).limit(1).maybeSingle(),
                 supabase.from('users').select('role').eq('id', data.user.id).maybeSingle()
               ]);
-              clearTimeout(timeout);
-              const staffData = staffResult.data;
-              const userData = userResult.data;
+              const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+              const [staffResult, userResult] = await Promise.race([dbQuery, timeoutPromise]) as any;
+              const staffData = staffResult?.data;
+              const userData = userResult?.data;
               if (userData?.role === 'super_admin') { target = '/admin'; }
               else if (staffData?.role === 'sales_staff') { target = '/sales'; }
               else if (staffData?.role === 'beautician') { target = '/beautician'; }
               else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { target = '/clinic'; }
             } catch {
-              clearTimeout(timeout);
+              // timeout or error — use default /customer
+              console.warn('Login: DB role query timed out, using default redirect');
             }
           }
 

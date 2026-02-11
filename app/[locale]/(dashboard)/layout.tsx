@@ -50,7 +50,7 @@ import {
   Tag,
   UsersThree,
   Handshake
-} from '@phosphor-icons/react';
+, SpinnerGap } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
@@ -291,6 +291,17 @@ export default function DashboardLayout({
       ]
     },
   ];
+
+  if (loading || !isClient) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <SpinnerGap className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">กำลังเตรียมระบบ...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

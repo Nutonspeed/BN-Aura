@@ -154,7 +154,7 @@ export default function CRMPage() {
         <Card className="p-5 rounded-2xl border-border/50">
           <p className="text-xs text-muted-foreground uppercase tracking-widest">CLV เฉลี่ย</p>
           <p className="text-2xl font-black mt-1 text-emerald-500">
-            {analytics ? `฿${analytics.averageCLV.toLocaleString()}` : '—'}
+            {analytics ? `฿${(analytics.averageCLV || 0).toLocaleString()}` : '—'}
           </p>
         </Card>
         <Card className="p-5 rounded-2xl border-border/50">
@@ -354,17 +354,17 @@ export default function CRMPage() {
               <Card className="p-5 rounded-2xl border-border/50 bg-gradient-to-br from-emerald-500/5 to-emerald-500/10">
                 <CurrencyCircleDollar weight="duotone" className="w-5 h-5 text-emerald-500 mb-2" />
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">CLV เฉลี่ย</p>
-                <p className="text-3xl font-black text-emerald-500 mt-1">{analytics ? `฿${analytics.averageCLV.toLocaleString()}` : '—'}</p>
+                <p className="text-3xl font-black text-emerald-500 mt-1">{analytics ? `฿${(analytics.averageCLV || 0).toLocaleString()}` : '—'}</p>
               </Card>
               <Card className="p-5 rounded-2xl border-border/50 bg-gradient-to-br from-blue-500/5 to-blue-500/10">
                 <TrendUp weight="duotone" className="w-5 h-5 text-blue-500 mb-2" />
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">มูลค่ารวม</p>
-                <p className="text-3xl font-black text-blue-500 mt-1">{analytics ? `฿${(analytics.averageCLV * analytics.totalCustomers).toLocaleString()}` : '—'}</p>
+                <p className="text-3xl font-black text-blue-500 mt-1">{analytics ? `฿${((analytics.averageCLV || 0) * (analytics.totalCustomers || 0)).toLocaleString()}` : '—'}</p>
               </Card>
               <Card className="p-5 rounded-2xl border-border/50 bg-gradient-to-br from-purple-500/5 to-purple-500/10">
                 <Medal weight="duotone" className="w-5 h-5 text-purple-500 mb-2" />
                 <p className="text-xs text-muted-foreground uppercase tracking-widest">Premium Members</p>
-                <p className="text-3xl font-black text-purple-500 mt-1">{analytics ? (analytics.loyaltyDistribution.gold + analytics.loyaltyDistribution.platinum) : 0}</p>
+                <p className="text-3xl font-black text-purple-500 mt-1">{analytics ? ((analytics.loyaltyDistribution?.gold || 0) + (analytics.loyaltyDistribution?.platinum || 0)) : 0}</p>
               </Card>
             </div>
             {analytics && (

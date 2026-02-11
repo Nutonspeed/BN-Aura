@@ -161,7 +161,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     };
-    initAuth();
+    // Global timeout: if entire auth init takes >10s, force loading=false
+    const globalTimeout = setTimeout(() => {
+      console.warn('Auth: global timeout reached, forcing loading=false');
+      setLoading(false);
+    }, 10000);
+    initAuth().finally(() => clearTimeout(globalTimeout));
 
     // Listen for auth changes
     const {

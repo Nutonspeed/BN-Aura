@@ -206,12 +206,12 @@ function POSHistoryContent() {
         {/* Transaction List Node */}
         <div className="lg:col-span-2 space-y-6">
           {loading ? (
-            <div className="py-32 flex flex-col items-center justify-center gap-4 bg-card border border-border/50 rounded-[40px] shadow-inner">
+            <div className="py-32 flex flex-col items-center justify-center gap-4 bg-card border border-border/50 rounded-2xl shadow-inner">
               <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
               <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest text-center">กำลังประมวลผลข้อมูลการตรวจสอบ...</p>
             </div>
           ) : filteredTransactions.length === 0 ? (
-            <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-[40px]">
+            <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-2xl">
               <ShoppingCart weight="duotone" className="w-16 h-16 text-muted-foreground" />
               <p className="text-sm font-black uppercase tracking-widest text-center">Zero Transaction Nodes Detected</p>
             </Card>
@@ -290,7 +290,7 @@ function POSHistoryContent() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="sticky top-24"
               >
-                <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden bg-card/50 backdrop-blur-xl group">
+                <Card className="rounded-2xl border-border/50 shadow-premium overflow-hidden bg-card/50 backdrop-blur-xl group">
                   <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
                     <IdentificationCard weight="fill" className="w-48 h-48 text-primary" />
                   </div>
@@ -377,8 +377,8 @@ function POSHistoryContent() {
                 </Card>
               </motion.div>
             ) : (
-              <Card variant="ghost" className="h-[500px] flex flex-col items-center justify-center bg-secondary/10 border-2 border-dashed border-border/50 rounded-[40px] opacity-40 text-center p-12">
-                <div className="w-20 h-20 rounded-[40px] bg-card border border-border/50 flex items-center justify-center mb-8 shadow-inner">
+              <Card variant="ghost" className="h-[500px] flex flex-col items-center justify-center bg-secondary/10 border-2 border-dashed border-border/50 rounded-2xl opacity-40 text-center p-12">
+                <div className="w-20 h-20 rounded-2xl bg-card border border-border/50 flex items-center justify-center mb-8 shadow-inner">
                   <ClockCounterClockwise weight="duotone" className="w-10 h-10 text-muted-foreground" />
                 </div>
                 <div className="space-y-2">

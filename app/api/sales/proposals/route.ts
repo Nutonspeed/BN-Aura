@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { requireAuth } from '@/lib/auth/withAuth';
+
 
 export async function POST(request: NextRequest) {
   try {
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     // Create workflow if not exists
     const { data: existingWorkflow } = await adminClient
       .from('workflows')
-      .select('id')
+      .select('id, metadata')
       .eq('customer_id', customer_id)
       .eq('clinic_id', staffData.clinic_id)
       .single();

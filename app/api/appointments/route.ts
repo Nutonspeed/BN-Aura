@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-import { requireAuth } from '@/lib/auth/withAuth';import { 
+import { 
   createSuccessResponse, 
   createErrorResponse, 
   withErrorHandling,
@@ -54,11 +54,10 @@ export const GET = withErrorHandling(async (request: Request) => {
   console.log('Query params:', { date, status, customerId });
 
   // Choose client based on user role and data access needs
-  let dataClient;
   const useAdminClient = false;
   
   // Use regular client with proper RLS policies
-  dataClient = supabase;
+  const dataClient = supabase;
   console.log('Using regular client with RLS policies for role:', staffData.role);
 
   let query = dataClient

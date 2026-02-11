@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';/**
+/**
  * POST /api/notifications/queue
  * Send notification when a queue number is called
  * Supports SMS and LINE channels

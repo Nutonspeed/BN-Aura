@@ -7,8 +7,8 @@ import { z } from 'zod';
 let DOMPurify: typeof import('isomorphic-dompurify').default | null = null;
 const getDOMPurify = async () => {
   if (!DOMPurify) {
-    const module = await import('isomorphic-dompurify');
-    DOMPurify = module.default;
+    const mod = await import('isomorphic-dompurify');
+    DOMPurify = mod.default;
   }
   return DOMPurify;
 };

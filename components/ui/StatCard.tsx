@@ -11,14 +11,14 @@ import { ComponentType } from 'react';
 
 interface StatCardProps {
   title: string;
-  value: number;
+  value: number | string;
   prefix?: string;
   suffix?: string;
   change?: number;
   changeLabel?: string;
   icon?: ComponentType<any>;
   iconColor?: string;
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: 'up' | 'down' | 'neutral' | { value: number; isPositive: boolean };
   className?: string;
   decimals?: number;
 }
@@ -36,9 +36,11 @@ export function StatCard({
   className,
   decimals = 0,
 }: StatCardProps) {
-  const trendColor = trend === 'up' 
+  const normalizedTrend = typeof trend === 'object' ? (trend.isPositive ? 'up' : 'down') : trend;
+  const numericValue = typeof value === 'string' ? parseFloat(value) || 0 : value;
+  const trendColor = normalizedTrend === 'up' 
     ? 'text-success bg-success/10' 
-    : trend === 'down' 
+    : normalizedTrend === 'down' 
       ? 'text-destructive bg-destructive/10' 
       : 'text-muted-foreground bg-muted';
 
@@ -60,7 +62,7 @@ export function StatCard({
             <span className="text-2xl font-bold text-foreground">
               {prefix}
               <CountUp
-                end={value}
+                end={numericValue}
                 duration={2}
                 separator=","
                 decimals={decimals}
@@ -70,9 +72,9 @@ export function StatCard({
           </div>
           {change !== undefined && (
             <div className={cn("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium", trendColor)}>
-              {trend === 'up' ? (
+              {normalizedTrend === 'up' ? (
                 <ArrowUp weight="bold" className="w-3 h-3" />
-              ) : trend === 'down' ? (
+              ) : normalizedTrend === 'down' ? (
                 <ArrowDown weight="bold" className="w-3 h-3" />
               ) : null}
               <span>{change > 0 ? '+' : ''}{change}%</span>

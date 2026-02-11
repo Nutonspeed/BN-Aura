@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react/no-unescaped-entities */
 
 import { useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';

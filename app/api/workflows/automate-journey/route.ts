@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     const customer = customerResult.data;
     const workflow = workflowResult.data;
 
-    let automationResults = [];
+    const automationResults = [];
 
     // ดำเนินการ automation ตาม trigger event
     switch (triggerEvent) {

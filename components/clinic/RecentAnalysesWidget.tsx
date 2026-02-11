@@ -49,7 +49,7 @@ export function RecentAnalysesWidget({ clinicId }: { clinicId: string }) {
         
         const formattedData = (data || []).map(item => ({
           id: item.id,
-          customer_name: item.customers.full_name,
+          customer_name: (item.customers as any)?.full_name,
           overall_score: item.overall_score,
           skin_health_grade: item.skin_health_grade,
           analyzed_at: item.analyzed_at,

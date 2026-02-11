@@ -54,7 +54,7 @@ export default function SalesDashboard() {
     cacheHitRate: 0,
     quotaSavedToday: 0
   });
-  const [ลูกค้า, setCustomers] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
   const [commissionHistory, setCommissionHistory] = useState<any[]>([]);
   const [dailyCommissions, setDailyCommissions] = useState<any[]>([]);
   const [monthlyTarget, setMonthlyTarget] = useState(0);
@@ -405,10 +405,10 @@ export default function SalesDashboard() {
 
     // Customer growth over time
     const customerGrowth = last30Days.map(date => {
-      const newCustomers = ลูกค้า.filter(c => 
+      const newCustomers = customers.filter(c => 
         new Date(c.created_at) <= date
       ).length;
-      const convertedCustomers = ลูกค้า.filter(c => 
+      const convertedCustomers = customers.filter(c => 
         c.status === 'converted' && new Date(c.updated_at) <= date
       ).length;
       return {
@@ -420,9 +420,9 @@ export default function SalesDashboard() {
 
     // Conversion rates by urgency score
     const conversionRates = [
-      { urgency: 'High (70-100%)', rate: 85, count: ลูกค้า.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.7).length },
-      { urgency: 'Medium (40-69%)', rate: 65, count: ลูกค้า.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.4 && (c.aiEnhanced?.urgencyScore || 0) <= 0.7).length },
-      { urgency: 'Low (0-39%)', rate: 35, count: ลูกค้า.filter(c => (c.aiEnhanced?.urgencyScore || 0) <= 0.4).length }
+      { urgency: 'High (70-100%)', rate: 85, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.7).length },
+      { urgency: 'Medium (40-69%)', rate: 65, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.4 && (c.aiEnhanced?.urgencyScore || 0) <= 0.7).length },
+      { urgency: 'Low (0-39%)', rate: 35, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) <= 0.4).length }
     ];
 
     // Performance metrics
@@ -459,8 +459,8 @@ export default function SalesDashboard() {
             <TrendUp weight="duotone" className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-black uppercase tracking-tight">Sales Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Commercial Intelligence Center</p>
+            <h1 className="text-2xl font-black uppercase tracking-tight">แดชบอร์ดการขาย</h1>
+            <p className="text-sm text-muted-foreground">ศูนย์ข้อมูลเชิงพาณิชย์</p>
           </div>
         </div>
         <Button onClick={() => setShowCreateCustomerForm(true)} className="gap-2">
@@ -494,8 +494,8 @@ export default function SalesDashboard() {
       {/* Tab Navigation */}
       <div className="flex gap-2 border-b border-border/50 pb-1">
         {[
-          { id: 'overview' as const, label: 'Overview', icon: ChartBar },
-          { id: 'pipeline' as const, label: 'Workflow Pipeline', icon: Kanban },
+          { id: 'overview' as const, label: 'ภาพรวม', icon: ChartBar },
+          { id: 'pipeline' as const, label: 'ไปป์ไลน์งาน', icon: Kanban },
           { id: 'commissions' as const, label: 'ตัวติดตามค่าคอมมิชชัน', icon: CurrencyDollar },
         ].map((tab) => (
           <button
@@ -621,10 +621,10 @@ export default function SalesDashboard() {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Coins weight="duotone" className="w-6 h-6 text-emerald-500" />
-              Commission Tracker
+              ตัวติดตามค่าคอม
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Monthly Target</p>
+              <p className="text-sm text-muted-foreground">เป้าหมายรายเดือน</p>
               <p className="text-lg font-bold text-foreground">฿{monthlyTarget.toLocaleString()}</p>
             </div>
           </CardTitle>
@@ -633,7 +633,7 @@ export default function SalesDashboard() {
           {/* Progress Bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Progress This Month</span>
+              <span className="text-muted-foreground">ความคืบหน้าเดือนนี้</span>
               <span className="font-semibold">{getCommissionProgress().toFixed(1)}%</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-3">
@@ -731,12 +731,12 @@ export default function SalesDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Users weight="duotone" className="w-6 h-6 text-primary" />
-            ลูกค้าในกระบวนการ ({ลูกค้า.length})
+            Customer Pipeline ({customers.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {ลูกค้า
+            {customers
               .sort((a, b) => (b.aiEnhanced?.urgencyScore || 0) - (a.aiEnhanced?.urgencyScore || 0))
               .slice(0, 5).map((customer: any, idx) => (
               <div key={customer.id} className="p-4 bg-secondary/20 rounded-xl border border-border/50">
@@ -791,7 +791,7 @@ export default function SalesDashboard() {
                 </div>
               </div>
             ))}
-            {ลูกค้า.length === 0 && (
+            {customers.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <Users className="w-16 h-16 mx-auto mb-4 opacity-20" />
                 <p>No customers yet - start by adding your first customer</p>
@@ -959,14 +959,14 @@ export default function SalesDashboard() {
       </AnimatePresence>
 
       {/* AI Sales Coach Recommendations */}
-      {ลูกค้า.length > 0 && (
+      {customers.length > 0 && (
         <div className="space-y-6">
           <h2 className="text-lg font-bold flex items-center gap-3">
             <TrendUp weight="duotone" className="w-6 h-6 text-primary" />
             AI Sales Coach
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {ลูกค้า.slice(0, 2).map((customer) => {
+            {customers.slice(0, 2).map((customer) => {
               const customerContext = {
                 name: customer.full_name || 'ไม่ระบุ',
                 demographics: {

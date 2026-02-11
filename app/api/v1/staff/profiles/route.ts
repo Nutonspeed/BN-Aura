@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-import { requireAuth } from '@/lib/auth/withAuth';import { cookies } from 'next/headers';
+import { cookies } from 'next/headers';
 
 /**
  * M1.1: Staff Profile Management API

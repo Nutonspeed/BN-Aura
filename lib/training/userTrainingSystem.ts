@@ -116,9 +116,9 @@ class UserTrainingSystem {
 
   static completeModule(userId: string, moduleId: string, score: number): UserProgress {
     const progress = this.userProgress.get(userId)!;
-    const module = this.modules.get(moduleId)!;
+    const trainingModule = this.modules.get(moduleId)!;
 
-    if (score >= module.completionCriteria.minimumScore) {
+    if (score >= trainingModule.completionCriteria.minimumScore) {
       progress.completedModules.push(moduleId);
       progress.totalProgress = Math.round((progress.completedModules.length / this.modules.size) * 100);
       

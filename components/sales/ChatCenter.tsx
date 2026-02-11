@@ -80,7 +80,7 @@ export default function ChatCenter({ salesId }: { salesId: string }) {
   };
 
   const filteredSessions = sessions.filter(s => 
-    s.customerName.toต่ำerCase().includes(searchTerm.toต่ำerCase())
+    s.customerName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (

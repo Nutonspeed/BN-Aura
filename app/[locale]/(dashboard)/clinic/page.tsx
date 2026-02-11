@@ -81,27 +81,43 @@ export default function ClinicDashboard() {
           if (staff) {
             setClinicId(staff.clinic_id);
             
-            // Fetch real overview stats and stock alerts
-            const [reportRes, alertsRes] = await Promise.all([
-              fetch('/api/reports?type=clinic_overview'),
-              fetch('/api/reports?type=stock_alerts')
-            ]);
-            
-            const result = await reportRes.json();
-            const alertsResult = await alertsRes.json();
-            
-            if (result.success) {
-              const d = result.data;
-              setStats([
-                { label: 'รายได้รายเดือน', value: Number(d.monthlyRevenue), change: 0, trend: 'up', icon: TrendUp, prefix: '฿' },
-                { label: 'สแกน AI ทั้งหมด', value: Number(d.totalScans), change: 0, trend: 'up', icon: Sparkle },
-                { label: 'ลูกค้าที่ใช้งาน', value: Number(d.activeCustomers), change: 0, trend: 'up', icon: Users },
-                { label: 'นัดหมายวันนี้', value: Number(d.todayAppointments), change: 0, trend: 'up', icon: CalendarDots },
-              ]);
-            }
+            // Fetch real overview stats and stock alerts with timeout
+            const fetchWithTimeout = (url: string, ms = 10000) => {
+              const controller = new AbortController();
+              const id = setTimeout(() => controller.abort(), ms);
+              return fetch(url, { signal: controller.signal }).finally(() => clearTimeout(id));
+            };
 
-            if (alertsResult.success) {
-              setStockAlerts(alertsResult.data);
+            try {
+              const [reportRes, alertsRes] = await Promise.all([
+                fetchWithTimeout('/api/reports?type=clinic_overview'),
+                fetchWithTimeout('/api/reports?type=stock_alerts')
+              ]);
+              
+              const result = await reportRes.json();
+              const alertsResult = await alertsRes.json();
+              
+              if (result.success) {
+                const d = result.data;
+                setStats([
+                  { label: 'รายได้รายเดือน', value: Number(d.monthlyRevenue || 0), change: 0, trend: 'up', icon: TrendUp, prefix: '฿' },
+                  { label: 'สแกน AI ทั้งหมด', value: Number(d.totalScans || 0), change: 0, trend: 'up', icon: Sparkle },
+                  { label: 'ลูกค้าที่ใช้งาน', value: Number(d.activeCustomers || 0), change: 0, trend: 'up', icon: Users },
+                  { label: 'นัดหมายวันนี้', value: Number(d.todayAppointments || 0), change: 0, trend: 'up', icon: CalendarDots },
+                ]);
+              }
+
+              if (alertsResult.success) {
+                setStockAlerts(alertsResult.data || []);
+              }
+            } catch (fetchErr) {
+              console.error('Clinic Dashboard: API fetch error (timeout or network):', fetchErr);
+              setStats([
+                { label: 'รายได้รายเดือน', value: 0, change: 0, trend: 'up', icon: TrendUp, prefix: '฿' },
+                { label: 'สแกน AI ทั้งหมด', value: 0, change: 0, trend: 'up', icon: Sparkle },
+                { label: 'ลูกค้าที่ใช้งาน', value: 0, change: 0, trend: 'up', icon: Users },
+                { label: 'นัดหมายวันนี้', value: 0, change: 0, trend: 'up', icon: CalendarDots },
+              ]);
             }
           }
         }
@@ -205,7 +221,7 @@ export default function ClinicDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 px-2">
         {/* Revenue Projection & Forecasting */}
         <div className="lg:col-span-3 space-y-8">
-          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+          <Card className="rounded-2xl border-border/50 shadow-premium overflow-hidden group">
             <CardHeader className="p-8 border-b border-border/50 bg-secondary/30 flex flex-row items-center justify-between">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary border border-primary/20 shadow-inner">
@@ -256,7 +272,7 @@ export default function ClinicDashboard() {
             </motion.div>
           )}
 
-          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+          <Card className="rounded-2xl border-border/50 shadow-premium overflow-hidden group">
             <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
               <Package className="w-64 h-64 text-primary" />
             </div>
@@ -315,7 +331,7 @@ export default function ClinicDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="rounded-[40px] border-primary/10 bg-primary/[0.02] overflow-hidden group">
+          <Card className="rounded-2xl border-primary/10 bg-primary/[0.02] overflow-hidden group">
             <div className="absolute -top-12 -left-12 w-48 h-48 bg-primary/5 blur-[60px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
             
             <CardHeader className="p-8 border-b border-primary/10">

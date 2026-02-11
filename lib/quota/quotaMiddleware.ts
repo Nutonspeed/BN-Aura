@@ -32,7 +32,7 @@ export async function checkQuotaBeforeAnalysis(
 
   // Check neural cache first (24-hour repeat scan protection)
   if (customerId) {
-    const cached = NeuralCache.getCachedAnalysis(clinicId, { name: customerId });
+    const cached = await NeuralCache.getCachedAnalysis(clinicId, { name: customerId });
     if (cached) {
       return {
         allowed: true,

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';// POST: Sign a consent form
+// POST: Sign a consent form
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();

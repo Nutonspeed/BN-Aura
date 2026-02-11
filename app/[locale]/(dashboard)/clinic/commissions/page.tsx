@@ -311,7 +311,7 @@ export default function CommissionsPage() {
 
       {/* Ledger Table */}
       <div className="px-2">
-        <Card className="rounded-[40px] border-border/50 overflow-hidden shadow-premium">
+        <Card className="rounded-2xl border-border/50 overflow-hidden shadow-premium">
           <ResponsiveTable
             columns={columns}
             data={filteredRecords}

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';// POST: Validate a gift card code
+// POST: Validate a gift card code
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

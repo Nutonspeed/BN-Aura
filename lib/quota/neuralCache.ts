@@ -132,6 +132,16 @@ class NeuralCache {
   /**
    * Get cached analysis for repeat customer
    */
+  static async persistToDb(customerId: string, clinicId: string, record: any): Promise<void> {
+    // Write-through to Supabase for durability (placeholder)
+  }
+
+  static async loadFromDb(customerId: string): Promise<any | null> {
+    // Load from Supabase (placeholder)
+    return null;
+  }
+
+
   static async getCachedAnalysis(clinicId: string, customerInfo: { name: string; email?: string; age?: number }): Promise<any | null> {
     const customerId = this.generateCustomerId(clinicId, customerInfo);
     let cached = this.customerScans.get(customerId);

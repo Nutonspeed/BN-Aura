@@ -5,6 +5,7 @@
 
 import { createClient } from '@/lib/supabase/client';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
 
 export interface WorkflowEvent {
   id: string;
@@ -282,6 +283,3 @@ export function useWorkflowEvents(userId: string, onEvent: (event: WorkflowEvent
 
   return { isSubscribed, error };
 }
-
-// Import useState and useEffect
-import { useState, useEffect } from 'react';

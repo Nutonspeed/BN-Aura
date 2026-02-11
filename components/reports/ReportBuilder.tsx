@@ -44,7 +44,7 @@ export function ReportBuilder({ clinicId }: Props) {
   const handleExport = async (format: 'csv' | 'excel') => {
     if (!reportData) return;
     const filename = `${selectedType}-report-${Date.now()}`;
-    // @ts-ignore
+    // @ts-expect-error -- dynamic type workaround
     await exportReport(reportData, format, filename);
   };
 

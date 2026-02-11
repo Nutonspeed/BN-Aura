@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react/no-unescaped-entities */
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';

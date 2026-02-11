@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';// GET: List follow-up sequences
+// GET: List follow-up sequences
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient();

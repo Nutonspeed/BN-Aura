@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
         user_id: customer.assigned_sales_id,
         clinic_id: clinicId,
         title: 'Commission Calculated',
-        // @ts-ignore
+        // @ts-expect-error -- dynamic type workaround
         message: `New commission of ฿${calculationResult.amount.toLocaleString()} calculated for customer ${customer.full_name}`,
         type: 'commission_update',
         metadata: {

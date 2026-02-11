@@ -46,7 +46,10 @@ import {
   VideoCamera,
   Wallet,
   Warning,
-  X
+  X,
+  Tag,
+  UsersThree,
+  Handshake
 } from '@phosphor-icons/react';
 import { useState, useEffect } from 'react';
 import { Link, usePathname, useRouter } from '@/i18n/routing';
@@ -56,7 +59,9 @@ import BranchSwitcher from "@/components/ui/BranchSwitcher";
 import HelpModal from "@/components/ui/HelpModal";
 // import DashboardFooter from "@/components/ui/DashboardFooter"; // Moved to individual pages as needed
 import { useAuth } from '@/hooks/useAuth';
+import { Toaster } from 'sonner';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import MobileBottomNav from '@/components/ui/MobileBottomNav';
 
 export default function DashboardLayout({
   children,
@@ -204,6 +209,9 @@ export default function DashboardLayout({
         { icon: Image, label: 'แกลเลอรี่', href: '/clinic/gallery', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: Gift, label: 'บัตรของขวัญ', href: '/clinic/gift-cards', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: IdentificationCard, label: 'สมาชิก', href: '/clinic/memberships', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Tag, label: 'โปรโมชัน', href: '/clinic/promotions', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Handshake, label: 'แนะนำเพื่อน', href: '/clinic/referrals', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: UsersThree, label: 'CRM', href: '/clinic/crm', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
     {
@@ -285,7 +293,9 @@ export default function DashboardLayout({
   ];
 
   return (
-    <div className="flex h-screen bg-background text-foreground overflow-hidden">
+    <>
+      <Toaster position="top-right" richColors closeButton />
+      <div className="flex h-screen bg-background text-foreground overflow-hidden">
       <HelpModal 
         isOpen={isHelpOpen} 
         onClose={() => setIsHelpOpen(false)} 
@@ -519,11 +529,23 @@ export default function DashboardLayout({
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="p-4 md:p-6">
+          <div className="p-4 md:p-6 pb-20 md:pb-6">
             {children}
           </div>
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      {isClient && (() => {
+        const role = getUserRole();
+        const navRole = 
+          ['clinic_owner', 'clinic_admin'].includes(role) ? 'clinic' :
+          role === 'sales_staff' ? 'sales' :
+          role === 'clinic_staff' ? 'beautician' :
+          'customer';
+        return <MobileBottomNav role={navRole} />;
+      })()}
     </div>
+  </>
   );
 }

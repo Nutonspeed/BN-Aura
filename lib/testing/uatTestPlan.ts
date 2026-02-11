@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 /**
  * User Acceptance Testing (UAT) Test Plan System
  */

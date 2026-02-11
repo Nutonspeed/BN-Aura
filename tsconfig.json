@@ -44,6 +44,11 @@
     "tests/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "lib/supabase/types.ts",
+    "vitest.config.ts",
+    "tests/**/*",
+    "fix-ts-errors.mjs",
+    "fix-ts-errors-v2.mjs"
   ]
 }

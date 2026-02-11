@@ -379,7 +379,7 @@ export default function ConsultationsPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-card p-10 rounded-[40px] border border-border shadow-premium w-full max-w-lg relative overflow-hidden group"
+              className="bg-card p-10 rounded-2xl border border-border shadow-premium w-full max-w-lg relative overflow-hidden group"
               onClick={e => e.stopPropagation()}
             >
               <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">

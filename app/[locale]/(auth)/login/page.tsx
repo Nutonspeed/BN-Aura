@@ -46,22 +46,37 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        console.log('Login: Auth successful, routing...');
-        setLoading(false);
+        // Keep loading=true during redirect to prevent button flicker
         try {
-          const [staffResult, userResult] = await Promise.all([
-            supabase.from('clinic_staff').select('role, clinic_id').eq('user_id', data.user.id).eq('is_active', true).order('created_at', { ascending: true }).limit(1).maybeSingle(),
-            supabase.from('users').select('role').eq('id', data.user.id).maybeSingle()
-          ]);
-          const staffData = staffResult.data;
-          const userData = userResult.data;
-          console.log('Login: Roles:', { staff: staffData?.role, user: userData?.role });
+          // 1) Try JWT metadata role first (fastest, no RLS issues)
+          const metaRole = data.user.user_metadata?.role;
           let target = '/customer';
-          if (userData?.role === 'super_admin') { target = '/admin'; }
-          else if (staffData?.role === 'sales_staff') { target = '/sales'; }
-          else if (staffData?.role === 'beautician') { target = '/beautician'; }
-          else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { target = '/clinic'; }
-          console.log('Login: Redirecting to', '/' + locale + target);
+
+          if (metaRole) {
+            if (metaRole === 'super_admin') { target = '/admin'; }
+            else if (metaRole === 'sales_staff') { target = '/sales'; }
+            else if (metaRole === 'beautician') { target = '/beautician'; }
+            else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(metaRole)) { target = '/clinic'; }
+          } else {
+            // 2) Fallback: query DB with timeout
+            const timeout = setTimeout(() => {}, 5000);
+            try {
+              const [staffResult, userResult] = await Promise.all([
+                supabase.from('clinic_staff').select('role, clinic_id').eq('user_id', data.user.id).eq('is_active', true).order('created_at', { ascending: true }).limit(1).maybeSingle(),
+                supabase.from('users').select('role').eq('id', data.user.id).maybeSingle()
+              ]);
+              clearTimeout(timeout);
+              const staffData = staffResult.data;
+              const userData = userResult.data;
+              if (userData?.role === 'super_admin') { target = '/admin'; }
+              else if (staffData?.role === 'sales_staff') { target = '/sales'; }
+              else if (staffData?.role === 'beautician') { target = '/beautician'; }
+              else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { target = '/clinic'; }
+            } catch {
+              clearTimeout(timeout);
+            }
+          }
+
           window.location.href = '/' + locale + target;
         } catch (routeError) {
           console.error('Login: Route error:', routeError);

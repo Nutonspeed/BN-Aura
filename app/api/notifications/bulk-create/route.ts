@@ -185,7 +185,7 @@ function getDefaultLink(type: string): string {
     'birthday': '/th/customer/rewards'
   };
   
-  // @ts-ignore
+  // @ts-expect-error -- dynamic type workaround
   return links[type] || '/th/dashboard';
 }
 
@@ -202,6 +202,6 @@ function getDefaultActionUrl(type: string): string {
     'birthday': '/th/customer/birthday-offer'
   };
   
-  // @ts-ignore
+  // @ts-expect-error -- dynamic type workaround
   return actionUrls[type] || '/th/dashboard';
 }

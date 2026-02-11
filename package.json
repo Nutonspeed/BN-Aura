@@ -54,6 +54,7 @@
     "next-intl": "^3.10.0",
     "next-themes": "^0.4.6",
     "node-fetch": "^3.3.2",
+    "omise": "^1.1.0",
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
     "react-countup": "^6.5.3",
@@ -63,6 +64,7 @@
     "sonner": "^2.0.7",
     "stripe": "^20.3.1",
     "tailwind-merge": "^3.4.0",
+    "web-push": "^3.6.7",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -74,7 +76,7 @@
     "@playwright/test": "^1.58.1",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.5.0",
-    "@sentry/nextjs": "^7.120.4",
+    "@sentry/nextjs": "^10.38.0",
     "@tensorflow/tfjs-backend-webgl": "^4.22.0",
     "@tensorflow/tfjs-converter": "^4.22.0",
     "@tensorflow/tfjs-core": "^4.22.0",
@@ -87,6 +89,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.182.0",
+    "@types/web-push": "^3.6.4",
     "dotenv": "^17.2.4",
     "earcut": "^3.0.2",
     "eslint": "^9",

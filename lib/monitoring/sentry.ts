@@ -139,13 +139,7 @@ export const clientConfig = {
 // Performance monitoring utilities
 export class PerformanceTracker {
   static startTransaction(name: string, operation: string) {
-    return Sentry.startTransaction({
-      name,
-      op: operation,
-      data: {
-        component: 'bn-aura'
-      }
-    });
+    return Sentry.startSpan({ name, op: operation }, () => {});
   }
   
   static trackAPICall(endpoint: string, method: string, duration: number) {
@@ -251,39 +245,27 @@ export class ErrorHandler {
 
 // Health check utilities
 export class HealthMonitor {
-  static checkPerformance() {
-    const transaction = PerformanceTracker.startTransaction('health-check', 'http');
-    
-    try {
-      // Check various system metrics
-      const checks = Promise.all([
-        this.checkDatabasePerformance(),
-        this.checkCachePerformance(),
-        this.checkAPIPerformance()
-      ]);
-      
-      transaction.setData('checks', 'completed');
-      transaction.setStatus('ok');
-      
-      return checks;
-    } catch (error) {
-      transaction.setStatus('internal_error');
-      ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
-      throw error;
-    } finally {
-      transaction.finish();
-    }
+  static async checkPerformance() {
+    return Sentry.startSpan({ name: 'health-check', op: 'http' }, async () => {
+      try {
+        const checks = await Promise.all([
+          this.checkDatabasePerformance(),
+          this.checkCachePerformance(),
+          this.checkAPIPerformance()
+        ]);
+        return checks;
+      } catch (error) {
+        ErrorHandler.captureException(error instanceof Error ? error : new Error(String(error)));
+        throw error;
+      }
+    });
   }
   
   private static async checkDatabasePerformance() {
     const start = Date.now();
     // Simulate database health check
-    // @ts-ignore
     await new Promise(resolve => setTimeout(resolve, 50));
     const duration = Date.now() - start;
-    
-    // @ts-ignore
-    PerformanceTracker.trackDatabaseQuery('SELECT');
     
     if (duration > 1000) {
       throw new Error('Database performance degraded');

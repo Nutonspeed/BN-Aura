@@ -8,12 +8,18 @@ import {
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
 interface BreadcrumbProps {
   className?: string;
   customLabels?: Record<string, string>;
+  items?: BreadcrumbItem[];
 }
 
-export default function Breadcrumb({ className, customLabels = {} }: BreadcrumbProps) {
+export default function Breadcrumb({ className, customLabels = {}, items }: BreadcrumbProps) {
   const pathname = usePathname();
   const t = useTranslations('navigation');
   

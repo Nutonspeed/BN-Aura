@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  CheckCircle,
+import {CheckCircle,
   Clock,
   User,
   CalendarDots,
@@ -18,8 +17,7 @@ import {
   ArrowRight,
   Warning,
   CheckSquare,
-  Square
-} from '@phosphor-icons/react';
+  Square, TrendUp } from '@phosphor-icons/react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/Badge';

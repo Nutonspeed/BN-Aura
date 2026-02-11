@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';// GET: Get kiosk settings or queue
+// GET: Get kiosk settings or queue
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

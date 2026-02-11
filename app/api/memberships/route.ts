@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';// GET: List memberships for a clinic
+// GET: List memberships for a clinic
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

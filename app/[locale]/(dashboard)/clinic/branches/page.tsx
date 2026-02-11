@@ -17,7 +17,12 @@ import {
   SquaresFour,
   MapTrifold,
   ArrowLeft,
-  CaretRight
+  CaretRight,
+  ChartBar,
+  TrendUp,
+  Wallet,
+  Users,
+  CalendarDots
 } from '@phosphor-icons/react';
 import { StatCard } from '@/components/ui/StatCard';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
@@ -47,6 +52,10 @@ function BranchManagementContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<Branch | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState<'manage' | 'compare'>('manage');
+  const [comparison, setComparison] = useState<any[]>([]);
+  const [compTotals, setCompTotals] = useState<any>(null);
+  const [compLoading, setCompLoading] = useState(false);
 
   const fetchBranches = useCallback(async () => {
     setLoading(true);
@@ -150,6 +159,17 @@ function BranchManagementContent() {
         </Button>
       </div>
 
+      {/* Tab Toggle */}
+      <div className="flex gap-2">
+        <button onClick={() => setActiveTab('manage')} className={cn('flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all', activeTab === 'manage' ? 'bg-primary text-white shadow-md' : 'bg-secondary text-muted-foreground hover:bg-accent')}>
+          <Buildings weight="duotone" className="w-4 h-4" /> จัดการสาขา
+        </button>
+        <button onClick={() => setActiveTab('compare')} className={cn('flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-all', activeTab === 'compare' ? 'bg-primary text-white shadow-md' : 'bg-secondary text-muted-foreground hover:bg-accent')}>
+          <ChartBar weight="duotone" className="w-4 h-4" /> เปรียบเทียบผลงาน
+        </button>
+      </div>
+
+      {activeTab === 'manage' && (<>
       {/* Search & Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <div className="lg:col-span-3">
@@ -272,6 +292,80 @@ function BranchManagementContent() {
           </div>
         )}
       </div>
+    </>)}
+
+      {/* Branch Comparison Tab */}
+      {activeTab === 'compare' && (
+        <div className="space-y-6">
+          {compLoading ? (
+            <div className="py-20 flex flex-col items-center gap-4">
+              <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังโหลดข้อมูลเปรียบเทียบ...</p>
+            </div>
+          ) : comparison.length === 0 ? (
+            <Card className="py-20 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-4 opacity-40 rounded-2xl">
+              <ChartBar weight="duotone" className="w-16 h-16" />
+              <p className="text-xs font-black uppercase tracking-widest">ยังไม่มีข้อมูลเปรียบเทียบ</p>
+            </Card>
+          ) : (<>
+            {compTotals && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Card className="p-5 rounded-2xl border-border/50">
+                  <div className="flex items-center gap-2 mb-1"><Wallet weight="duotone" className="w-4 h-4 text-emerald-500" /><p className="text-xs text-muted-foreground uppercase tracking-widest">รายได้รวม</p></div>
+                  <p className="text-2xl font-black text-emerald-500">฿{compTotals.totalRevenue?.toLocaleString()}</p>
+                </Card>
+                <Card className="p-5 rounded-2xl border-border/50">
+                  <div className="flex items-center gap-2 mb-1"><TrendUp weight="duotone" className="w-4 h-4 text-blue-500" /><p className="text-xs text-muted-foreground uppercase tracking-widest">ธุรกรรม</p></div>
+                  <p className="text-2xl font-black text-blue-500">{compTotals.totalTransactions?.toLocaleString()}</p>
+                </Card>
+                <Card className="p-5 rounded-2xl border-border/50">
+                  <div className="flex items-center gap-2 mb-1"><CalendarDots weight="duotone" className="w-4 h-4 text-purple-500" /><p className="text-xs text-muted-foreground uppercase tracking-widest">นัดหมาย</p></div>
+                  <p className="text-2xl font-black text-purple-500">{compTotals.totalAppointments?.toLocaleString()}</p>
+                </Card>
+                <Card className="p-5 rounded-2xl border-border/50">
+                  <div className="flex items-center gap-2 mb-1"><Users weight="duotone" className="w-4 h-4 text-amber-500" /><p className="text-xs text-muted-foreground uppercase tracking-widest">พนักงาน</p></div>
+                  <p className="text-2xl font-black text-amber-500">{compTotals.totalStaff}</p>
+                </Card>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {comparison.map((b: any, i: number) => (
+                <motion.div key={b.branchId} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
+                  <Card className="rounded-2xl border-border/50 overflow-hidden hover:shadow-md transition-all">
+                    <div className="p-5 border-b border-border/50 bg-secondary/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-black text-lg">#{b.rank}</div>
+                        <div>
+                          <p className="font-bold text-sm">{b.branchName}</p>
+                          <p className="text-[10px] text-muted-foreground truncate max-w-[200px]">{b.address}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-5 space-y-3">
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">รายได้</span><span className="font-black text-emerald-500">฿{b.metrics.revenue?.toLocaleString()}</span></div>
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">ธุรกรรม</span><span className="font-bold">{b.metrics.transactionCount}</span></div>
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">เฉลี่ย/รายการ</span><span className="font-bold">฿{b.metrics.avgTransactionValue?.toLocaleString()}</span></div>
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">นัดหมาย</span><span className="font-bold">{b.metrics.appointmentCount}</span></div>
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">อัตราสำเร็จ</span><span className="font-bold">{b.metrics.completionRate}%</span></div>
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">พนักงาน</span><span className="font-bold">{b.metrics.staffCount}</span></div>
+                      <div className="flex justify-between items-center"><span className="text-xs text-muted-foreground">รายได้/พนักงาน</span><span className="font-bold text-blue-500">฿{b.metrics.revenuePerStaff?.toLocaleString()}</span></div>
+                    </div>
+                    {comparison[0] && comparison[0].metrics.revenue > 0 && (
+                      <div className="px-5 pb-5">
+                        <div className="w-full bg-secondary rounded-full h-2">
+                          <div className="h-2 rounded-full bg-primary transition-all" style={{ width: `${(b.metrics.revenue / comparison[0].metrics.revenue) * 100}%` }} />
+                        </div>
+                      </div>
+                    )}
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </>)}
+        </div>
+      )}
+
     </motion.div>
   );
 }

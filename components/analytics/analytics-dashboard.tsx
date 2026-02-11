@@ -311,7 +311,7 @@ const AnalyticsDashboard: React.FC = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
-              {/* @ts-ignore */}
+              {/* @ts-expect-error -- dynamic type */}
               <Tooltip formatter={(value) => [`฿${value.toLocaleString()}`, '']} />
               <Legend />
               <Area
@@ -398,7 +398,7 @@ const AnalyticsDashboard: React.FC = () => {
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              {/* @ts-ignore */}
+              {/* @ts-expect-error -- dynamic type */}
               <Tooltip formatter={(value) => [`฿${value.toLocaleString()}`, 'Revenue']} />
             </PieChart>
           </ResponsiveContainer>

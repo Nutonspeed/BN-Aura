@@ -43,7 +43,7 @@ class WebSocketService {
   private maxReconnectAttempts = 5;
   private reconnectDelay = 1000;
   private isConnecting = false;
-  private eventListeners = new Map<string, Function[]>();
+  private eventListeners = new Map<string, ((...args: any[]) => void)[]>();
 
   /**
    * Connect to WebSocket server
@@ -303,7 +303,7 @@ class WebSocketService {
   /**
    * Add event listener
    */
-  on(event: string, callback: Function): void {
+  on(event: string, callback: (...args: any[]) => any): void {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
@@ -313,7 +313,7 @@ class WebSocketService {
   /**
    * Remove event listener
    */
-  off(event: string, callback?: Function): void {
+  off(event: string, callback?: (...args: any[]) => any): void {
     if (!this.eventListeners.has(event)) return;
 
     if (callback) {

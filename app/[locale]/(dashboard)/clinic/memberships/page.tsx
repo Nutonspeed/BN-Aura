@@ -118,7 +118,6 @@ export default function MembershipsPage() {
 
   return (
     <div className="space-y-8 p-6">
-      { /* @ts-ignore */ }
       <Breadcrumb items={[{ label: 'Clinic', href: '/clinic' }, { label: 'Memberships' }]} />
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">

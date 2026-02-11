@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';// POST: Create a before/after comparison
+// POST: Create a before/after comparison
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();

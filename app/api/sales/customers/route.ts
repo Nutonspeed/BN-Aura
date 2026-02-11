@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 
-import { requireAuth } from '@/lib/auth/withAuth';export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const { full_name, email, phone, nickname, date_of_birth, gender, customer_type, source, notes } = await request.json();
 

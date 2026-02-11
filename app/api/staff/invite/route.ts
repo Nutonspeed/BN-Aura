@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth/withAuth';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/client';
 import { sendInvitationEmail } from '@/lib/email/emailService';

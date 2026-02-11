@@ -246,7 +246,7 @@ function generateIntegrationRecommendations(integrations: any[]) {
 }
 
 function extractAvailableFeatures(connected: any[]) {
-  // @ts-ignore
+  // @ts-expect-error -- dynamic type workaround
   const features = [];
   
   connected.forEach(integration => {
@@ -269,7 +269,7 @@ function extractAvailableFeatures(connected: any[]) {
     }
   });
   
-  // @ts-ignore
+  // @ts-expect-error -- dynamic type workaround
   return [...new Set(features)];
 }
 

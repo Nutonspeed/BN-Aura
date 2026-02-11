@@ -216,7 +216,7 @@ export default function AppointmentPage() {
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-10 px-2">
         {/* Calendar Sidebar */}
         <div className="xl:col-span-1 space-y-8">
-          <Card className="rounded-[40px] border-border/50 shadow-premium overflow-hidden group">
+          <Card className="rounded-2xl border-border/50 shadow-premium overflow-hidden group">
             <CardHeader className="p-8 border-b border-border/50 bg-secondary/30 flex flex-row items-center justify-between">
               <CardTitle className="text-sm font-black uppercase tracking-widest text-foreground truncate">
                 {selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })}
@@ -279,7 +279,7 @@ export default function AppointmentPage() {
             </CardContent>
           </Card>
 
-          <Card className="p-8 rounded-[40px] border-primary/10 bg-primary/[0.02] space-y-4 group overflow-hidden relative">
+          <Card className="p-8 rounded-2xl border-primary/10 bg-primary/[0.02] space-y-4 group overflow-hidden relative">
             <div className="absolute -bottom-12 -right-12 w-32 h-32 bg-primary/5 blur-[50px] rounded-full group-hover:bg-primary/10 transition-all duration-700" />
             <div className="flex items-center gap-3 relative z-10">
               <Sparkle weight="duotone" className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
@@ -325,7 +325,7 @@ export default function AppointmentPage() {
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังซิงโครไนซ์กริดเวลา...</p>
               </div>
             ) : appointments.length === 0 ? (
-              <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-[40px]">
+              <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-2xl">
                 <CalendarDots weight="duotone" className="w-16 h-16 text-muted-foreground" />
                 <p className="text-sm font-black uppercase tracking-widest text-center">ไม่พบโหนดที่ใช้งานในรอบนี้</p>
               </Card>
@@ -340,7 +340,7 @@ export default function AppointmentPage() {
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: i * 0.05 }}
                   >
-                    <Card className="rounded-[40px] border-border/50 hover:border-primary/30 transition-all group overflow-hidden bg-card/50">
+                    <Card className="rounded-2xl border-border/50 hover:border-primary/30 transition-all group overflow-hidden bg-card/50">
                       <div className="absolute top-0 left-0 w-1.5 h-full bg-primary opacity-0 group-hover:opacity-100 transition-all duration-500" />
                       <div className="p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
                         <div className="flex items-center gap-10">

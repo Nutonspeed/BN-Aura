@@ -150,11 +150,11 @@ class NotificationService {
     try {
       // Check cache first
       const cacheKey = `notifications:${userId}:${JSON.stringify(filters)}`;
-      // @ts-ignore
+      // @ts-expect-error -- dynamic type workaround
       const cached = await cache.get(cacheKey);
       
       if (cached) {
-        // @ts-ignore
+        // @ts-expect-error -- dynamic type workaround
         return JSON.parse(cached);
       }
 
@@ -212,7 +212,7 @@ class NotificationService {
       };
 
       // Cache for 2 minutes
-      // @ts-ignore
+      // @ts-expect-error -- dynamic type workaround
       await cache.set(cacheKey, 120, JSON.stringify(result));
 
       return result;
@@ -338,7 +338,7 @@ class NotificationService {
    */
   private async sendRealTimeNotification(notification: NotificationData): Promise<void> {
     try {
-      // @ts-ignore
+      // @ts-expect-error -- dynamic type workaround
       this.websocketService.sendToUser(notification.userId, {
         type: 'notification',
         data: notification
@@ -353,7 +353,7 @@ class NotificationService {
    */
   private async sendRealTimeUpdate(userId: string, update: any): Promise<void> {
     try {
-      // @ts-ignore
+      // @ts-expect-error -- dynamic type workaround
       this.websocketService.sendToUser(userId, {
         type: 'notification_update',
         data: update

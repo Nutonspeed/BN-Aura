@@ -167,9 +167,9 @@ async function analyzeCustomer(body: any) {
       serviceCount: transactions.length,
       averageOrderValue: totalRevenue / transactions.length,
       lastServiceDate: transactions[transactions.length - 1]?.date,
-      // @ts-ignore
+      // @ts-expect-error -- dynamic type workaround
       topServices: this.getTopServices(transactions),
-      // @ts-ignore
+      // @ts-expect-error -- dynamic type workaround
       profitTrend: this.calculateProfitTrend(transactions)
     };
     

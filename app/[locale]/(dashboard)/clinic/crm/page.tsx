@@ -160,7 +160,7 @@ export default function CRMPage() {
         <Card className="p-5 rounded-2xl border-border/50">
           <p className="text-xs text-muted-foreground uppercase tracking-widest">เสี่ยงสูง</p>
           <p className="text-2xl font-black mt-1 text-amber-500">
-            {analytics ? analytics.churnRisk.high : 0}
+            {analytics ? (analytics?.churnRisk?.high || 0) : 0}
           </p>
         </Card>
       </div>
@@ -371,7 +371,7 @@ export default function CRMPage() {
               <div>
                 <h3 className="text-sm font-bold mb-4 flex items-center gap-2"><Medal weight="duotone" className="w-4 h-4 text-primary" /> การกระจายระดับสมาชิก</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {Object.entries(analytics.loyaltyDistribution).map(([tier, count]) => (
+                  {Object.entries(analytics?.loyaltyDistribution || {}).map(([tier, count]) => (
                     <Card key={tier} className="p-4 rounded-2xl border-border/50 text-center">
                       <div className="w-10 h-10 rounded-full mx-auto mb-2 flex items-center justify-center" style={{ backgroundColor: `${TIER_COLORS[tier]}30`, color: TIER_COLORS[tier] }}><Medal weight="fill" className="w-5 h-5" /></div>
                       <p className="text-xs font-bold uppercase tracking-widest" style={{ color: TIER_COLORS[tier] }}>{tier}</p>
@@ -400,33 +400,33 @@ export default function CRMPage() {
                 <Card className="p-5 rounded-2xl border-red-500/20 bg-red-500/5">
                   <ShieldWarning weight="duotone" className="w-5 h-5 text-red-500 mb-2" />
                   <p className="text-xs text-muted-foreground uppercase">เสี่ยงสูง</p>
-                  <p className="text-3xl font-black text-red-500 mt-1">{analytics.churnRisk.high}</p>
+                  <p className="text-3xl font-black text-red-500 mt-1">{(analytics?.churnRisk?.high || 0)}</p>
                   <p className="text-xs text-muted-foreground mt-1">ต้องดำเนินการทันที</p>
                 </Card>
                 <Card className="p-5 rounded-2xl border-amber-500/20 bg-amber-500/5">
                   <Warning weight="duotone" className="w-5 h-5 text-amber-500 mb-2" />
                   <p className="text-xs text-muted-foreground uppercase">เสี่ยงปานกลาง</p>
-                  <p className="text-3xl font-black text-amber-500 mt-1">{analytics.churnRisk.medium}</p>
+                  <p className="text-3xl font-black text-amber-500 mt-1">{(analytics?.churnRisk?.medium || 0)}</p>
                   <p className="text-xs text-muted-foreground mt-1">ติดตามภายใน 7 วัน</p>
                 </Card>
                 <Card className="p-5 rounded-2xl border-emerald-500/20 bg-emerald-500/5">
                   <Heart weight="duotone" className="w-5 h-5 text-emerald-500 mb-2" />
                   <p className="text-xs text-muted-foreground uppercase">เสี่ยงต่ำ</p>
-                  <p className="text-3xl font-black text-emerald-500 mt-1">{analytics.churnRisk.low}</p>
+                  <p className="text-3xl font-black text-emerald-500 mt-1">{(analytics?.churnRisk?.low || 0)}</p>
                   <p className="text-xs text-muted-foreground mt-1">สถานะดี</p>
                 </Card>
               </div>
               <div className="flex rounded-xl overflow-hidden h-8">
-                {analytics.churnRisk.high > 0 && <div className="bg-red-500 h-full flex items-center justify-center text-white text-[10px] font-bold" style={{ width: `${(analytics.churnRisk.high / analytics.totalCustomers) * 100}%`, minWidth: '20px' }}>{analytics.churnRisk.high}</div>}
-                {analytics.churnRisk.medium > 0 && <div className="bg-amber-500 h-full flex items-center justify-center text-white text-[10px] font-bold" style={{ width: `${(analytics.churnRisk.medium / analytics.totalCustomers) * 100}%`, minWidth: '20px' }}>{analytics.churnRisk.medium}</div>}
-                {analytics.churnRisk.low > 0 && <div className="bg-emerald-500 h-full flex items-center justify-center text-white text-[10px] font-bold" style={{ width: `${(analytics.churnRisk.low / analytics.totalCustomers) * 100}%`, minWidth: '20px' }}>{analytics.churnRisk.low}</div>}
+                {(analytics?.churnRisk?.high || 0) > 0 && <div className="bg-red-500 h-full flex items-center justify-center text-white text-[10px] font-bold" style={{ width: `${((analytics?.churnRisk?.high || 0) / (analytics?.totalCustomers || 1)) * 100}%`, minWidth: '20px' }}>{(analytics?.churnRisk?.high || 0)}</div>}
+                {(analytics?.churnRisk?.medium || 0) > 0 && <div className="bg-amber-500 h-full flex items-center justify-center text-white text-[10px] font-bold" style={{ width: `${((analytics?.churnRisk?.medium || 0) / (analytics?.totalCustomers || 1)) * 100}%`, minWidth: '20px' }}>{(analytics?.churnRisk?.medium || 0)}</div>}
+                {(analytics?.churnRisk?.low || 0) > 0 && <div className="bg-emerald-500 h-full flex items-center justify-center text-white text-[10px] font-bold" style={{ width: `${((analytics?.churnRisk?.low || 0) / (analytics?.totalCustomers || 1)) * 100}%`, minWidth: '20px' }}>{(analytics?.churnRisk?.low || 0)}</div>}
               </div>
               <div>
                 <h3 className="text-sm font-bold mb-3 flex items-center gap-2"><Lightning weight="duotone" className="w-4 h-4 text-primary" /> แผนรักษาลูกค้า</h3>
                 <div className="space-y-3">
-                  {analytics.churnRisk.high > 0 && <div className="flex items-center gap-4 p-4 border border-red-500/20 bg-red-500/5 rounded-2xl"><div className="flex-1"><p className="text-sm font-bold text-red-500">เสี่ยงสูง ({analytics.churnRisk.high} คน)</p><p className="text-xs text-muted-foreground">ส่ง SMS/LINE พร้อมส่วนลด 20% ทันที</p></div><ArrowRight className="w-4 h-4 text-muted-foreground" /></div>}
-                  {analytics.churnRisk.medium > 0 && <div className="flex items-center gap-4 p-4 border border-amber-500/20 bg-amber-500/5 rounded-2xl"><div className="flex-1"><p className="text-sm font-bold text-amber-500">เสี่ยงปานกลาง ({analytics.churnRisk.medium} คน)</p><p className="text-xs text-muted-foreground">ส่งข้อเสนอพิเศษภายใน 7 วัน</p></div><ArrowRight className="w-4 h-4 text-muted-foreground" /></div>}
-                  {analytics.churnRisk.low > 0 && <div className="flex items-center gap-4 p-4 border border-emerald-500/20 bg-emerald-500/5 rounded-2xl"><div className="flex-1"><p className="text-sm font-bold text-emerald-500">เสี่ยงต่ำ ({analytics.churnRisk.low} คน)</p><p className="text-xs text-muted-foreground">ส่ง Newsletter รายเดือน</p></div><ArrowRight className="w-4 h-4 text-muted-foreground" /></div>}
+                  {(analytics?.churnRisk?.high || 0) > 0 && <div className="flex items-center gap-4 p-4 border border-red-500/20 bg-red-500/5 rounded-2xl"><div className="flex-1"><p className="text-sm font-bold text-red-500">เสี่ยงสูง ({(analytics?.churnRisk?.high || 0)} คน)</p><p className="text-xs text-muted-foreground">ส่ง SMS/LINE พร้อมส่วนลด 20% ทันที</p></div><ArrowRight className="w-4 h-4 text-muted-foreground" /></div>}
+                  {(analytics?.churnRisk?.medium || 0) > 0 && <div className="flex items-center gap-4 p-4 border border-amber-500/20 bg-amber-500/5 rounded-2xl"><div className="flex-1"><p className="text-sm font-bold text-amber-500">เสี่ยงปานกลาง ({(analytics?.churnRisk?.medium || 0)} คน)</p><p className="text-xs text-muted-foreground">ส่งข้อเสนอพิเศษภายใน 7 วัน</p></div><ArrowRight className="w-4 h-4 text-muted-foreground" /></div>}
+                  {(analytics?.churnRisk?.low || 0) > 0 && <div className="flex items-center gap-4 p-4 border border-emerald-500/20 bg-emerald-500/5 rounded-2xl"><div className="flex-1"><p className="text-sm font-bold text-emerald-500">เสี่ยงต่ำ ({(analytics?.churnRisk?.low || 0)} คน)</p><p className="text-xs text-muted-foreground">ส่ง Newsletter รายเดือน</p></div><ArrowRight className="w-4 h-4 text-muted-foreground" /></div>}
                 </div>
               </div>
             </>) : <p className="text-sm text-muted-foreground text-center py-8">ไม่สามารถโหลดข้อมูลได้</p>}

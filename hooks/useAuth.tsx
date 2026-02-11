@@ -137,20 +137,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
+      console.log('[useAuth] Starting initAuth...');
       try {
+        console.log('[useAuth] Calling getSession...');
         const { data: { session } } = await supabase.auth.getSession();
+        console.log('[useAuth] getSession returned:', !!session);
         const authUser = session?.user as AuthUser || null;
         setUser(authUser);
         if (authUser?.id) {
+          console.log('[useAuth] Fetching user profile for:', authUser.id.substring(0, 8));
           await fetchUserProfile(authUser.id);
+          console.log('[useAuth] fetchUserProfile completed');
         }
       } catch (err) {
-        console.error('Auth init error:', err);
+        console.error('[useAuth] Auth init error:', err);
       } finally {
+        console.log('[useAuth] Setting loading=false');
         setLoading(false);
       }
     };
-    initAuth();
+    
+    // Aggressive safety timeout: force loading=false after 10s
+    const safetyTimeout = setTimeout(() => {
+      console.warn('[useAuth] SAFETY TIMEOUT after 10s - forcing loading=false');
+      setLoading(false);
+    }, 10000);
+    
+    initAuth().finally(() => {
+      console.log('[useAuth] initAuth finished, clearing timeout');
+      clearTimeout(safetyTimeout);
+    });
 
     // Listen for auth changes
     const {

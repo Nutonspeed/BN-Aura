@@ -271,7 +271,7 @@ export default function CRMPage() {
                             <div key={c.customerId} className="flex items-center justify-between text-sm">
                               <span className="font-medium truncate">{c.fullName}</span>
                               <div className="flex items-center gap-3 text-xs text-muted-foreground flex-shrink-0">
-                                <span>฿{c.totalSpent.toLocaleString()}</span>
+                                <span>฿{(c.totalSpent || 0).toLocaleString()}</span>
                                 <span>{c.visitCount} ครั้ง</span>
                               </div>
                             </div>

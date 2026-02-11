@@ -136,24 +136,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   useEffect(() => {
-    // Get initial session (with timeout to prevent infinite loading)
     const initAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const authUser = session?.user as AuthUser || null;
         setUser(authUser);
         if (authUser?.id) {
-          // Set initial role from JWT immediately so sidebar can render
-          setUser(prev => prev ? {
-            ...prev,
-            user_metadata: {
-              ...prev.user_metadata,
-              role: prev.user_metadata?.role || 'guest',
-            }
-          } : prev);
-          // Fetch full profile with timeout
-          const profileTimeout = new Promise<void>((resolve) => setTimeout(resolve, 8000));
-          await Promise.race([fetchUserProfile(authUser.id), profileTimeout]);
+          await fetchUserProfile(authUser.id);
         }
       } catch (err) {
         console.error('Auth init error:', err);
@@ -161,12 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     };
-    // Global timeout: if entire auth init takes >10s, force loading=false
-    const globalTimeout = setTimeout(() => {
-      console.warn('Auth: global timeout reached, forcing loading=false');
-      setLoading(false);
-    }, 10000);
-    initAuth().finally(() => clearTimeout(globalTimeout));
+    initAuth();
 
     // Listen for auth changes
     const {

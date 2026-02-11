@@ -24,23 +24,25 @@ export default function PDPAModal() {
   }, [isAuthPage]);
 
   const saveConsent = useCallback(async (consents: Record<string, boolean>) => {
-    setSaving(true);
-    try {
-      const supabase = createClient();
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        await fetch('/api/consent', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
-          body: JSON.stringify({ action: 'record', consents })
-        });
-      }
-    } catch (e) { console.warn('Failed to save consent to DB:', e); }
-    finally { setSaving(false); }
+    // Optimistic: close modal and save to localStorage immediately
     localStorage.setItem('pdpa_agreed', 'true');
     localStorage.setItem('pdpa_timestamp', new Date().toISOString());
     localStorage.setItem('pdpa_consents', JSON.stringify(consents));
     setIsOpen(false);
+    setSaving(false);
+
+    // Fire-and-forget: save to DB in background
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.access_token) {
+        fetch('/api/consent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${session.access_token}` },
+          body: JSON.stringify({ action: 'record', consents })
+        }).catch(() => {});
+      }
+    } catch (e) { /* silent */ }
   }, []);
 
   const handleAgreeAll = () => {

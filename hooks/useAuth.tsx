@@ -136,72 +136,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   useEffect(() => {
-    const initAuth = async () => {
-      console.log('[useAuth] Starting initAuth...');
-      try {
-        console.log('[useAuth] Calling getSession...');
-        const { data: { session } } = await supabase.auth.getSession();
-        console.log('[useAuth] getSession returned:', !!session);
-        const authUser = session?.user as AuthUser || null;
-        setUser(authUser);
-        if (authUser?.id) {
-          console.log('[useAuth] Fetching user profile for:', authUser.id.substring(0, 8));
-          await fetchUserProfile(authUser.id);
-          console.log('[useAuth] fetchUserProfile completed');
-        }
-      } catch (err) {
-        console.error('[useAuth] Auth init error:', err);
-      } finally {
-        console.log('[useAuth] Setting loading=false');
-        setLoading(false);
-      }
-    };
-    
-    // Aggressive safety timeout: force loading=false after 10s
-    const safetyTimeout = setTimeout(() => {
-      console.warn('[useAuth] SAFETY TIMEOUT after 10s - forcing loading=false');
-      setLoading(false);
-    }, 10000);
-    
-    initAuth().finally(() => {
-      console.log('[useAuth] initAuth finished, clearing timeout');
-      clearTimeout(safetyTimeout);
-    });
-
-    // Listen for auth changes
+    // Use onAuthStateChange as the SOLE session source.
+    // Do NOT call getSession() — it can hang due to navigator.locks contention.
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       const authUser = session?.user as AuthUser || null;
       setUser(authUser);
+
       if (authUser?.id) {
-        await fetchUserProfile(authUser.id);
+        try {
+          await fetchUserProfile(authUser.id);
+        } catch (err) {
+          console.error('[useAuth] fetchUserProfile error:', err);
+        }
       }
+
+      // Always resolve loading after handling auth state
       setLoading(false);
     });
 
-    // Auto refresh session every 30 minutes
-    const refreshInterval = setInterval(async () => {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      if (session && !error) {
-        // Check if session expires in less than 1 hour
-        const now = Math.floor(Date.now() / 1000);
-        const expiresAt = session.expires_at || 0;
-        const timeUntilExpiry = expiresAt - now;
-        
-        if (timeUntilExpiry < 3600) { // Less than 1 hour
-          console.log('Refreshing session...');
-          const { error: refreshError } = await supabase.auth.refreshSession();
-          if (refreshError) {
-            console.error('Session refresh failed:', refreshError);
-          }
+    // Safety timeout: if onAuthStateChange never fires (e.g. broken cookie),
+    // force loading=false after 5s so the app is still usable
+    const safetyTimeout = setTimeout(() => {
+      setLoading((current) => {
+        if (current) {
+          console.warn('[useAuth] Safety timeout 5s — forcing loading=false');
         }
-      }
-    }, 30 * 60 * 1000); // 30 minutes
+        return false;
+      });
+    }, 5000);
 
     return () => {
       subscription.unsubscribe();
-      clearInterval(refreshInterval);
+      clearTimeout(safetyTimeout);
     };
   }, [supabase.auth, fetchUserProfile]);
 

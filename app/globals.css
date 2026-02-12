@@ -278,10 +278,10 @@
   }
   
   /* Keep text-white for elements with dark backgrounds */
-  .bg-primary .text-white,
-  .bg-sidebar .text-white,
-  .bg-destructive .text-white,
-  .bg-success .text-white {
+  .bg-primary .text-white[class][class],
+  .bg-sidebar .text-white[class][class],
+  .bg-destructive .text-white[class][class],
+  .bg-success .text-white[class][class] {
     color: white !important;
   }
   

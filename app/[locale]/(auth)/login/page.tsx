@@ -110,12 +110,12 @@ export default function LoginPage() {
               <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
                 <Sparkle weight="fill" className="w-7 h-7 text-white" />
               </div>
-              <span className="text-2xl font-bold text-white">BN-Aura</span>
+              <span className="text-2xl font-bold text-[#ffffff]">BN-Aura</span>
             </div>
-            <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-4">
+            <h1 className="text-4xl xl:text-5xl font-bold text-[#ffffff] leading-tight mb-4">
               Premium Aesthetic<br />Intelligence Platform
             </h1>
-            <p className="text-lg text-white/60 max-w-md">
+            <p className="text-lg text-[#ffffff99] max-w-md">
               ระบบจัดการคลินิกความงามครบวงจร ด้วย AI วิเคราะห์ผิวและระบบบริหารลูกค้าระดับ Enterprise
             </p>
           </motion.div>

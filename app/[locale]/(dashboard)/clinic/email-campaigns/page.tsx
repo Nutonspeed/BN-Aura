@@ -100,7 +100,7 @@ export default function EmailCampaignsPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Email <span className="text-primary">Campaigns</span>
+            แคมเปญ<span className="text-primary">อีเมล</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}

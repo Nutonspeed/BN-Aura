@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/Badge';
 import { cn } from '@/lib/utils';
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/hooks/useAuth';
 
 interface AppointmentModalProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ interface AppointmentModalProps {
 }
 
 export default function AppointmentModal({ isOpen, onClose, onSuccess, appointment, selectedDate }: AppointmentModalProps) {
+  const { getUserId } = useAuth();
   const [loading, setLoading] = useState(false);
   const [fetchingData, setFetchingData] = useState(false);
   const [error, setError] = useState('');
@@ -56,20 +58,22 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
   const fetchData = useCallback(async () => {
     setFetchingData(true);
     try {
-      const [customersRes, staffRes, treatmentsRes] = await Promise.all([
-        fetch('/api/customers?limit=100'),
-        fetch('/api/staff/invite?type=list'), // Assuming this exists or using a generic staff list
-        fetch('/api/pricing?type=treatments')
-      ]);
+      // Fetch each independently so one failure doesn't block others
+      const safeFetch = async (url: string) => {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) return { success: false };
+          return await res.json();
+        } catch { return { success: false }; }
+      };
 
       const [customersData, staffData, treatmentsData] = await Promise.all([
-        customersRes.json(),
-        staffRes.json(),
-        treatmentsRes.json()
+        safeFetch('/api/customers?limit=100'),
+        safeFetch('/api/staff/invite?type=list'),
+        safeFetch('/api/pricing?type=treatments')
       ]);
 
       if (customersData.success) setCustomers(customersData.data);
-      // Fallback for staff if the endpoint isn't ready
       if (staffData.success) setStaffList(staffData.data);
       if (treatmentsData.success) setTreatments(treatmentsData.data);
     } catch (err) {
@@ -123,10 +127,16 @@ export default function AppointmentModal({ isOpen, onClose, onSuccess, appointme
       const url = appointment ? `/api/appointments/${appointment.id}` : '/api/appointments';
       const method = appointment ? 'PATCH' : 'POST';
 
+      // Resolve 'current' staff_id to actual user UUID
+      const submitData = { ...formData };
+      if (submitData.staff_id === 'current') {
+        submitData.staff_id = getUserId() || '';
+      }
+
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       });
 
       const result = await res.json();

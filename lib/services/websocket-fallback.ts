@@ -2,10 +2,11 @@
 // This replaces Socket.IO which is not supported in v0 environment
 
 import { createClient } from '@/lib/supabase/client';
+import type { SupabaseClient, RealtimeChannel } from '@supabase/supabase-js';
 
 export class WebSocketFallback {
-  private supabase: ReturnType<typeof createClient>;
-  private channels: Map<string, any> = new Map();
+  private supabase: SupabaseClient;
+  private channels: Map<string, RealtimeChannel> = new Map();
 
   constructor() {
     this.supabase = createClient();
@@ -14,7 +15,7 @@ export class WebSocketFallback {
   /**
    * Subscribe to real-time updates for a specific table
    */
-  subscribe(channelName: string, table: string, callback: (payload: any) => void) {
+  subscribe(channelName: string, table: string, callback: (payload: Record<string, unknown>) => void) {
     if (this.channels.has(channelName)) {
       console.warn(`[v0] Channel ${channelName} already subscribed`);
       return;
@@ -31,7 +32,7 @@ export class WebSocketFallback {
         },
         (payload) => {
           console.log('[v0] Realtime event:', payload);
-          callback(payload);
+          callback(payload as Record<string, unknown>);
         }
       )
       .subscribe();
@@ -55,7 +56,7 @@ export class WebSocketFallback {
   /**
    * Broadcast message to a channel (using Supabase Broadcast)
    */
-  async broadcast(channelName: string, event: string, payload: any) {
+  async broadcast(channelName: string, event: string, payload: unknown) {
     let channel = this.channels.get(channelName);
     
     if (!channel) {
@@ -77,14 +78,14 @@ export class WebSocketFallback {
   /**
    * Listen to broadcast messages
    */
-  onBroadcast(channelName: string, event: string, callback: (payload: any) => void) {
+  onBroadcast(channelName: string, event: string, callback: (payload: Record<string, unknown>) => void) {
     let channel = this.channels.get(channelName);
     
     if (!channel) {
       channel = this.supabase
         .channel(channelName)
         .on('broadcast', { event: event }, ({ payload }) => {
-          callback(payload);
+          callback(payload as Record<string, unknown>);
         })
         .subscribe();
       

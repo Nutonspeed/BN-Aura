@@ -662,8 +662,8 @@ export default function PricingSettings({ onSettingsChange }: PricingSettingsPro
                       <Sparkle weight="duotone" className="w-8 h-8" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">Peripheral Sync</h3>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Inject new add-on protocol node</p>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">เพิ่มบริการเสริม</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">เพิ่มบริการเสริมใหม่</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setShowAddOn(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">

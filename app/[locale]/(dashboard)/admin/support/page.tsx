@@ -70,7 +70,7 @@ function SupportContent() {
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          Synchronizing Support Registry...
+          กำลังโหลดข้อมูลฝ่ายสนับสนุน...
         </p>
       </div>
     );
@@ -93,7 +93,7 @@ function SupportContent() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Headset weight="duotone" className="w-4 h-4" />
-            Support Intelligence Node
+            ฝ่ายสนับสนุน
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -101,7 +101,7 @@ function SupportContent() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Clinical <span className="text-primary">Support</span>
+            ฝ่าย<span className="text-primary">สนับสนุน</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -109,7 +109,7 @@ function SupportContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating multi-tenant support protocols and clinical issue resolution.
+            จัดการตั๋วสนับสนุนและแก้ไขปัญหาของคลินิก
           </motion.p>
         </div>
 
@@ -121,14 +121,14 @@ function SupportContent() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            Sync Registry
+            อัปเดต
           </Button>
           <Button 
             onClick={handleCreateTicket}
             className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            Initialize Ticket
+            สร้างตั๋ว
           </Button>
         </div>
       </div>
@@ -147,8 +147,8 @@ function SupportContent() {
                 <ChatCircleText weight="duotone" className="w-6 h-6" />
               </div>
               <div>
-                <CardTitle className="text-xl font-black uppercase tracking-tight">Active Protocol Registry</CardTitle>
-                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Real-time clinical support nodes</p>
+                <CardTitle className="text-xl font-black uppercase tracking-tight">รายการตั๋วที่ใช้งาน</CardTitle>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">ข้อมูลตั๋วสนับสนุนแบบเรียลไทม์</p>
               </div>
             </div>
             <TicketFilters />
@@ -175,8 +175,8 @@ function SupportContent() {
                     <Plus weight="bold" className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground tracking-tight">Create Support Ticket</h2>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Initiate assistance node</p>
+                    <h2 className="text-2xl font-bold text-foreground tracking-tight">สร้างตั๋วสนับสนุน</h2>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">กรอกรายละเอียดปัญหา</p>
                   </div>
                 </div>
                 <button 
@@ -190,11 +190,11 @@ function SupportContent() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Target Clinic</label>
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">คลินิกเป้าหมาย</label>
                     <div className="relative group">
                       <Buildings className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary" />
                       <select className="w-full bg-secondary/30 border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium appearance-none">
-                        <option value="" className="bg-card">Select Clinic Instance</option>
+                        <option value="" className="bg-card">เลือกคลินิก</option>
                         <option value="clinic-1" className="bg-card">Bangkok Premium Clinic</option>
                         <option value="clinic-2" className="bg-card">Phuket Beauty Center</option>
                       </select>
@@ -202,59 +202,59 @@ function SupportContent() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Priority Level</label>
+                    <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">ระดับความสำคัญ</label>
                     <div className="relative group">
                       <Tag className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary" />
                       <select className="w-full bg-secondary/30 border border-border rounded-2xl py-4 pl-12 pr-4 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium appearance-none">
-                        <option value="low" className="bg-card">Low (Standard)</option>
-                        <option value="medium" className="bg-card" selected>Medium (Moderate)</option>
-                        <option value="high" className="bg-card">High (Accelerated)</option>
-                        <option value="urgent" className="bg-card">Urgent (Immediate)</option>
+                        <option value="low" className="bg-card">ต่ำ (ปกติ)</option>
+                        <option value="medium" className="bg-card" selected>ปานกลาง</option>
+                        <option value="high" className="bg-card">สูง (เร่งด่วน)</option>
+                        <option value="urgent" className="bg-card">ฉุกเฉิน (ทันที)</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Inquiry Category</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">หมวดหมู่</label>
                   <select className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-5 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium appearance-none">
-                    <option value="general" className="bg-card" selected>General Consultation</option>
-                    <option value="technical" className="bg-card">Technical Infrastructure</option>
-                    <option value="billing" className="bg-card">Financial / Billing</option>
-                    <option value="feature_request" className="bg-card">Feature Enhancement</option>
-                    <option value="bug_report" className="bg-card">Diagnostic / Bug Report</option>
+                    <option value="general" className="bg-card" selected>ปรึกษาทั่วไป</option>
+                    <option value="technical" className="bg-card">ปัญหาทางเทคนิค</option>
+                    <option value="billing" className="bg-card">การเงิน / การเรียกเก็บเงิน</option>
+                    <option value="feature_request" className="bg-card">ขอฟีเจอร์ใหม่</option>
+                    <option value="bug_report" className="bg-card">แจ้งปัญหา / บั๊ก</option>
                   </select>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Subject</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">หัวข้อ</label>
                   <input
                     type="text"
                     className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-5 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium placeholder:text-muted-foreground/40"
-                    placeholder="Brief objective summary"
+                    placeholder="สรุปปัญหาสั้นๆ"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">Description</label>
+                  <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest ml-1">รายละเอียด</label>
                   <textarea
                     rows={4}
                     className="w-full bg-secondary/30 border border-border rounded-2xl py-4 px-5 text-foreground focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium placeholder:text-muted-foreground/40"
-                    placeholder="Detailed infrastructure or operational context"
+                    placeholder="อธิบายรายละเอียดปัญหาที่พบ"
                   />
                 </div>
               </form>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 mt-10">
                 <Button className="w-full sm:w-auto px-10 py-4 shadow-premium">
-                  Initiate Ticket
+                  สร้างตั๋ว
                 </Button>
                 <Button 
                   variant="ghost" 
                   onClick={() => setShowCreateModal(false)}
                   className="w-full sm:w-auto text-xs font-black uppercase tracking-widest text-muted-foreground"
                 >
-                  Cancel
+                  ยกเลิก
                 </Button>
               </div>
             </motion.div>
@@ -278,7 +278,7 @@ function SupportContent() {
                     <ChatCircleText weight="duotone" className="w-6 h-6" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-foreground tracking-tight">Ticket Node Analysis</h2>
+                    <h2 className="text-2xl font-bold text-foreground tracking-tight">รายละเอียดตั๋ว</h2>
                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Status: {selectedTicket.status}</p>
                   </div>
                 </div>
@@ -296,7 +296,7 @@ function SupportContent() {
                     selectedTicket.priority === 'urgent' ? 'destructive' : 
                     selectedTicket.priority === 'high' ? 'warning' : 'default'
                   } className="font-black uppercase tracking-widest px-4 py-1.5">
-                    {selectedTicket.priority} Priority
+                    {selectedTicket.priority} ความสำคัญ
                   </Badge>
                   <Badge variant={
                     selectedTicket.status === 'open' ? 'warning' : 
@@ -317,31 +317,31 @@ function SupportContent() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 p-6 bg-secondary/50 rounded-3xl border border-border shadow-inner">
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Source Clinic</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">คลินิกต้นทาง</p>
                     <div className="flex items-center gap-2 text-foreground font-bold">
                       <Buildings weight="bold" className="w-4 h-4 text-primary" />
                       <span className="text-sm truncate">{selectedTicket.clinic?.name}</span>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Identity Origin</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">ผู้แจ้ง</p>
                     <div className="flex items-center gap-2 text-foreground font-bold">
                       <User weight="bold" className="w-4 h-4 text-primary" />
                       <span className="text-sm truncate">{selectedTicket.user?.full_name}</span>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Initiated At</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">วันที่แจ้ง</p>
                     <div className="flex items-center gap-2 text-foreground font-bold">
                       <Clock weight="bold" className="w-4 h-4 text-primary" />
                       <span className="text-sm">{new Date(selectedTicket.created_at).toLocaleDateString()}</span>
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">Handler Node</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">ผู้รับผิดชอบ</p>
                     <div className="flex items-center gap-2 text-foreground font-bold">
                       <Badge variant="ghost" size="sm" className="font-bold">
-                        {selectedTicket.assigned_user?.full_name || 'UNASSIGNED'}
+                        {selectedTicket.assigned_user?.full_name || 'ยังไม่มอบหมาย'}
                       </Badge>
                     </div>
                   </div>
@@ -350,7 +350,7 @@ function SupportContent() {
                 <div className="space-y-6">
                   <h4 className="text-sm font-black text-foreground uppercase tracking-[0.2em] flex items-center gap-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
-                    Communication Log
+                    ประวัติการสนทนา
                   </h4>
                   
                   <div className="space-y-4">
@@ -378,12 +378,12 @@ function SupportContent() {
                           <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-sm">
                             <ShieldCheck weight="fill" className="w-4 h-4" />
                           </div>
-                          <span className="font-bold text-foreground text-sm">System Support Node</span>
+                          <span className="font-bold text-foreground text-sm">ฝ่ายสนับสนุนระบบ</span>
                           <Badge variant="default" size="sm" className="text-[8px] font-black">ADMIN</Badge>
                         </div>
                         <span className="text-[10px] text-muted-foreground font-medium italic">2 hours ago</span>
                       </div>
-                      <p className="text-foreground/80 text-sm leading-relaxed">Identity node processed. Diagnostic algorithms initiated for technical review.</p>
+                      <p className="text-foreground/80 text-sm leading-relaxed">ได้รับข้อมูลแล้ว กำลังตรวจสอบปัญหาทางเทคนิค</p>
                     </div>
                   </div>
 
@@ -392,7 +392,7 @@ function SupportContent() {
                     <textarea
                       rows={3}
                       className="w-full bg-card border border-border rounded-2xl py-4 px-5 text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all font-medium text-sm"
-                      placeholder="Input response node..."
+                      placeholder="พิมพ์ข้อความตอบกลับ..."
                     />
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6">
                       <label className="flex items-center gap-3 cursor-pointer group">
@@ -401,10 +401,10 @@ function SupportContent() {
                           <div className="w-5 h-5 bg-card border border-border rounded transition-all peer-checked:bg-primary peer-checked:border-primary" />
                           <CheckCircle weight="fill" className="absolute w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
                         </div>
-                        <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">Internal diagnostic note (Encrypted)</span>
+                        <span className="text-xs font-bold text-muted-foreground group-hover:text-foreground transition-colors">บันทึกภายใน (เข้ารหัส)</span>
                       </label>
                       <Button className="px-8 shadow-premium gap-2">
-                        Transmit Reply
+                        ส่งข้อความ
                         <ArrowRight weight="bold" className="w-3.5 h-3.5" />
                       </Button>
                     </div>

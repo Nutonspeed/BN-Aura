@@ -101,7 +101,7 @@ export default function BillingManagementPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating clinic subscriptions, revenue streams, and automated invoicing nodes.
+            จัดการแพ็กเกจสมาชิก รายได้ และใบแจ้งหนี้
           </motion.p>
         </div>
 
@@ -113,11 +113,11 @@ export default function BillingManagementPage() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", refreshing && "animate-spin")} />
-            Sync Ledger
+            อัปเดต
           </Button>
           <Button className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
             <DownloadSimple weight="bold" className="w-4 h-4" />
-            Export Intelligence
+            ส่งออกรายงาน
           </Button>
         </div>
       </div>
@@ -148,7 +148,7 @@ export default function BillingManagementPage() {
         </div>
 
         <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[10px] tracking-widest uppercase px-4 py-2">
-          Secure Fiscal Node
+          ระบบการเงิน
         </Badge>
       </div>
 

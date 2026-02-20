@@ -40,7 +40,7 @@ export default function AnalyticsHeader({
           className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
         >
           <Pulse weight="duotone" className="w-4 h-4" />
-          Intelligence Matrix Node
+          วิเคราะห์ข้อมูล
         </motion.div>
         <motion.h1 
           initial={{ opacity: 0, x: -20 }}
@@ -56,7 +56,7 @@ export default function AnalyticsHeader({
           transition={{ delay: 0.2 }}
           className="text-muted-foreground font-light text-sm italic"
         >
-          Orchestrating global performance metrics, revenue trajectories, and cluster utilization data.
+          วิเคราะห์ประสิทธิภาพ รายได้ และข้อมูลการใช้งานคลินิก
         </motion.p>
       </div>
 

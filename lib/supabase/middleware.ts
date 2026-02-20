@@ -6,10 +6,10 @@ const ROUTE_ACCESS_RULES = {
   '/admin': ['super_admin'],
   '/clinic': ['clinic_owner', 'clinic_admin', 'clinic_staff'],
   '/sales': ['sales_staff'],
-  '/beautician': ['clinic_staff'],
+  '/beautician': ['clinic_staff', 'beautician'],
   '/customer': ['customer', 'premium_customer', 'free_customer', 'free_user'],
   // Shared routes with cross-role access
-  '/shared/chat': ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'premium_customer', 'free_customer', 'free_user'],
+  '/shared/chat': ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'beautician', 'customer', 'premium_customer', 'free_customer', 'free_user'],
   '/clinic/pos': ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff'],
   '/clinic/appointments': ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'premium_customer', 'free_customer', 'free_user'],
   '/clinic/chat': ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'premium_customer', 'free_customer', 'free_user']
@@ -148,6 +148,9 @@ cookies: {
         break;
       case 'sales_staff':
         url.pathname = `/${locale}/sales`;
+        break;
+      case 'beautician':
+        url.pathname = `/${locale}/beautician`;
         break;
       case 'customer':
       case 'premium_customer':

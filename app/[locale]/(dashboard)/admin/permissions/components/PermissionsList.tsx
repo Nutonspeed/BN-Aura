@@ -118,12 +118,12 @@ export default function PermissionsList() {
           <ShieldCheck weight="duotone" className="w-8 h-8" />
         </div>
         <div className="flex-1 space-y-1 relative z-10 text-center md:text-left">
-          <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em]">Protocol Verification Node</h4>
+          <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em]">การตรวจสอบสิทธิ์</h4>
           <p className="text-xs text-muted-foreground font-medium italic leading-relaxed opacity-80">
-            System permissions are strictly governed by the clinical orchestration layer. All modifications propagate across 128-bit encrypted neural channels.
+            สิทธิ์ระบบถูกควบคุมอย่างเข้มงวด การเปลี่ยนแปลงทั้งหมดจะถูกเข้ารหัสและมีผลทั่วทั้งระบบ
           </p>
         </div>
-        <Badge variant="success" size="sm" className="font-black text-[9px] tracking-[0.2em] px-5 py-2 rounded-full shadow-sm relative z-10">SECURE_PARITY</Badge>
+        <Badge variant="success" size="sm" className="font-black text-[9px] tracking-[0.2em] px-5 py-2 rounded-full shadow-sm relative z-10">ปลอดภัย</Badge>
       </Card>
     </motion.div>
   );

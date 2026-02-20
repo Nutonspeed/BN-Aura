@@ -115,7 +115,7 @@ export default function AICoachInsights() {
     return (
       <div className="p-8 text-center">
         <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-        <p className="text-xs text-muted-foreground">กำลังโหลดข้อมูล AI Coach...</p>
+        <p className="text-xs text-muted-foreground">กำลังโหลดข้อมูล...</p>
       </div>
     );
   }
@@ -130,30 +130,30 @@ export default function AICoachInsights() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <StatCard
           icon={<Sparkle className="w-4 h-4 text-purple-400" />}
-          label="AI Coach Sessions"
+          label="เซสชัน AI Coach"
           value={insights.sessionsWithCoach.toString()}
-          sub={`${coachUsageRate}% of conversations`}
+          sub={`${coachUsageRate}% ของรายการสนทนา`}
           color="purple"
         />
         <StatCard
           icon={<Target className="w-4 h-4 text-emerald-400" />}
-          label="Avg ความน่าจะเป็นการขาย"
+          label="โอกาสปิดการขายเฉลี่ย"
           value={`${insights.avgDealProbability}%`}
-          sub="across all sessions"
+          sub="จากทุกเซสชัน"
           color="emerald"
         />
         <StatCard
           icon={<TrendUp className="w-4 h-4 text-blue-400" />}
-          label="Conversions w/ Coach"
+          label="ปิดการขาย (ใช้ AI)"
           value={insights.conversionWithCoach.toString()}
-          sub="completed deals"
+          sub="ดีลที่ปิดสำเร็จ"
           color="blue"
         />
         <StatCard
           icon={<ChartBar className="w-4 h-4 text-amber-400" />}
-          label="Without Coach"
+          label="ไม่ใช้ AI Coach"
           value={insights.conversionWithoutCoach.toString()}
-          sub="completed deals"
+          sub="ดีลที่ปิดสำเร็จ"
           color="amber"
         />
       </div>
@@ -163,12 +163,12 @@ export default function AICoachInsights() {
         <div className="p-4 bg-gradient-to-r from-purple-500/5 to-emerald-500/5 border border-purple-500/20 rounded-xl">
           <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
             <Lightning className="w-3.5 h-3.5 text-purple-400" />
-            AI Coach Impact
+            ผลลัพธ์จากการใช้ AI Coach
           </h4>
           <div className="flex items-center gap-4">
             <div className="flex-1">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-purple-400 font-bold">With AI Coach</span>
+                <span className="text-purple-400 font-bold">ใช้ AI Coach</span>
                 <span className="text-foreground font-bold">{insights.conversionWithCoach}</span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
@@ -182,7 +182,7 @@ export default function AICoachInsights() {
             <ArrowRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
             <div className="flex-1">
               <div className="flex items-center justify-between text-xs mb-1">
-                <span className="text-gray-400 font-bold">Without</span>
+                <span className="text-gray-400 font-bold">ไม่ใช้</span>
                 <span className="text-foreground font-bold">{insights.conversionWithoutCoach}</span>
               </div>
               <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
@@ -202,7 +202,7 @@ export default function AICoachInsights() {
         {insights.topObjections.length > 0 && (
           <div className="p-3 bg-muted/30 border border-border rounded-xl">
             <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-              ข้อต่อต้านยอดนิยม Handled
+              การจัดการข้อโต้แย้งหลัก
             </h4>
             <div className="space-y-1">
               {insights.topObjections.map((obj, i) => (
@@ -217,7 +217,7 @@ export default function AICoachInsights() {
         {insights.topProducts.length > 0 && (
           <div className="p-3 bg-muted/30 border border-border rounded-xl">
             <h4 className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-2">
-              Most Discussed Products
+              ผลิตภัณฑ์ที่ถูกพูดถึงมากที่สุด
             </h4>
             <div className="space-y-1">
               {insights.topProducts.map((prod, i) => (
@@ -234,8 +234,8 @@ export default function AICoachInsights() {
       {insights.totalSessions === 0 && (
         <div className="text-center py-6 text-muted-foreground">
           <Sparkle className="w-10 h-10 mx-auto mb-2 opacity-40" />
-          <p className="text-sm">ยังไม่มีเซสชัน AI Coach</p>
-          <p className="text-xs mt-1">ใช้ AI Coach ระหว่างการปรึกษาวิเคราะห์ผิวเพื่อเริ่มติดตามข้อมูลเชิงลึก</p>
+          <p className="text-sm">ยังไม่มีข้อมูลเซสชัน AI Coach</p>
+          <p className="text-xs mt-1">ใช้ AI Coach ระหว่างการปรึกษาเพื่อเริ่มเก็บข้อมูลเชิงลึก</p>
         </div>
       )}
     </div>

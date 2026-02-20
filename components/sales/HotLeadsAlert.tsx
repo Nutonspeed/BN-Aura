@@ -94,7 +94,7 @@ export default function HotLeadsAlert() {
             </button>
           </div>
 
-          {/* Hot Leads List */}
+          {/* ลูกค้าสนใจมาก List */}
           <div className="px-4 pb-4 space-y-2 max-h-96 overflow-y-auto">
             {hotLeads.slice(0, 5).map((lead, index) => (
               <motion.div
@@ -178,7 +178,7 @@ export default function HotLeadsAlert() {
           {count > 5 && (
             <div className="p-4 border-t border-border bg-muted/30">
               <button className="w-full py-2 px-4 bg-primary text-primary-foreground rounded-lg font-medium hover:brightness-110 transition-all">
-                ดู Hot Leads ทั้งหมด ({count})
+                ดู ลูกค้าสนใจมาก ทั้งหมด ({count})
               </button>
             </div>
           )}

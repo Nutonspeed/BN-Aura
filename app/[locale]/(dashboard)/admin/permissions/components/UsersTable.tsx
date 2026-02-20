@@ -77,8 +77,8 @@ export default function UsersTable() {
               <ShieldCheck weight="duotone" className="w-7 h-7" />
             </div>
             <div>
-              <CardTitle className="text-2xl font-black uppercase tracking-tight">Identity Access Hub</CardTitle>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-1">Global permission & role orchestration registry</p>
+              <CardTitle className="text-2xl font-black uppercase tracking-tight">ศูนย์จัดการสิทธิ์</CardTitle>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em] font-black mt-1">จัดการสิทธิ์และบทบาทผู้ใช้ทั้งระบบ</p>
             </div>
           </div>
         </CardHeader>

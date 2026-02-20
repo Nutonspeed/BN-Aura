@@ -123,7 +123,7 @@ export default function GiftCardsPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight"
           >
-            Gift <span className="text-primary">Cards</span>
+            บัตร<span className="text-primary">ของขวัญ</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}

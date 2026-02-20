@@ -64,7 +64,7 @@ export default function SupportStats() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Resolution Matrix Node */}
+        {/* สถิติการแก้ไขปัญหา */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

@@ -72,7 +72,7 @@ export default function BeauticianDashboard() {
         .select(`
           *,
           customers(
-            id, first_name, last_name, phone, email
+            id, full_name, nickname, phone, email
           )
         `)
         .eq('staff_id', userId)
@@ -115,7 +115,7 @@ export default function BeauticianDashboard() {
           .from('clinic_staff')
           .select('clinic_id')
           .eq('user_id', userId)
-          .single();
+          .maybeSingle();
 
         if (!beauticianInfo?.clinic_id) {
           console.error('Beautician clinic_id not found');
@@ -244,7 +244,7 @@ export default function BeauticianDashboard() {
         
         // Fetch real-time throughput and staff info
         const [staffRes, reportRes] = await Promise.all([
-          supabase.from('clinic_staff').select('id, users:user_id(full_name)').eq('user_id', user.id).single(),
+          supabase.from('clinic_staff').select('id, users:user_id(full_name)').eq('user_id', user.id).maybeSingle(),
           fetch('/api/reports?type=beautician_overview').then(res => res.json())
         ]);
         
@@ -266,9 +266,6 @@ export default function BeauticianDashboard() {
             *,
             customers (
               full_name
-            ),
-            treatments (
-              protocols
             )
           `)
           .or('journey_status.eq.treatment_planned,journey_status.eq.in_progress')
@@ -379,7 +376,7 @@ export default function BeauticianDashboard() {
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          กำลังซิงโครไนซ์โหนดโปรโตคอล...
+          กำลังเรียกข้อมูลการรักษา...
         </p>
       </div>
     );
@@ -409,7 +406,7 @@ export default function BeauticianDashboard() {
             className="flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Stethoscope weight="duotone" className="w-4 h-4" />
-            โหนดการดำเนินงานคลินิก
+            การดำเนินงานคลินิก
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -425,7 +422,7 @@ export default function BeauticianDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            ให้บริการความงามที่มีความแม่นยำสูงผ่านโปรโตคอลทางคลินิก
+            ให้บริการความงามที่มีความแม่นยำสูงตามขั้นตอนทางคลินิก
           </motion.p>
         </div>
 
@@ -500,7 +497,7 @@ export default function BeauticianDashboard() {
                         <div className="space-y-2">
                           <div className="flex items-center gap-2">
                             <h4 className="font-semibold text-sm">
-                              {appointment.customer?.first_name} {appointment.customer?.last_name}
+                              {appointment.customer?.full_name || appointment.customers?.full_name}
                             </h4>
                             <Badge className={`text-xs ${
                               appointment.workflow_id 
@@ -601,7 +598,7 @@ export default function BeauticianDashboard() {
                           </h3>
                           <div className="flex items-center gap-3">
                             <p className="text-xs text-muted-foreground font-bold uppercase tracking-widest flex items-center gap-2">
-                              โปรโตคอล: <span className="text-primary">{activeCase.treatment_name || 'ทะเบียน'}</span>
+                              แผนการรักษา: <span className="text-primary">{activeCase.treatment_name || 'ทะเบียน'}</span>
                             </p>
                             <div className="w-1 h-1 rounded-full bg-border" />
                             <span className="text-[10px] text-muted-foreground font-mono">ID: {activeCase.id.slice(0,8)}</span>
@@ -627,8 +624,8 @@ export default function BeauticianDashboard() {
                     <ClockCounterClockwise weight="duotone" className="w-10 h-10" />
                   </div>
                   <div className="space-y-2">
-                    <h4 className="text-xl font-black text-foreground/30 uppercase tracking-[0.2em]">กำลังรอโหนดเคส</h4>
-                    <p className="text-xs text-muted-foreground italic font-light tracking-widest">มอบหมายลำดับความสำคัญจากทะเบียนคลินิกเพื่อเริ่มโปรโตคอล</p>
+                    <h4 className="text-xl font-black text-foreground/30 uppercase tracking-[0.2em]">กำลังรอมอบหมายเคส</h4>
+                    <p className="text-xs text-muted-foreground italic font-light tracking-widest">มอบหมายเคสจากทะเบียนคลินิกเพื่อเริ่มการรักษา</p>
                   </div>
                 </Card>
               </motion.div>
@@ -650,7 +647,7 @@ export default function BeauticianDashboard() {
                       <ListChecks weight="duotone" className="w-6 h-6" />
                     </div>
                     <div>
-                      <CardTitle>รายการตรวจสอบโปรโตคอลที่ใช้งาน</CardTitle>
+                      <CardTitle>รายการตรวจสอบขั้นตอนการรักษา</CardTitle>
                       <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest mt-1">การติดตามความแม่นยำ</p>
                     </div>
                   </div>

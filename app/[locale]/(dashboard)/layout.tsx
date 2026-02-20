@@ -133,7 +133,7 @@ export default function DashboardLayout({
     
     // Shared routes accessible by multiple roles
     if (pathname.startsWith('/th/shared/chat')) {
-      const allowedRoles = ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'premium_customer', 'free_customer', 'free_user'];
+      const allowedRoles = ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'premium_customer', 'free_customer', 'free_user', 'beautician'];
       if (!allowedRoles.includes(userRole)) {
         router.push('/login');
         return;
@@ -170,29 +170,29 @@ export default function DashboardLayout({
       id: 'main',
       label: 'หน้าหลัก',
       icon: House,
-      roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'free_user'],
+      roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'customer', 'free_user', 'beautician'],
       items: [
-        { icon: House, label: 'Dashboard', href: '/clinic', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: House, label: 'My Skin Portal', href: '/customer', roles: ['customer', 'premium_customer', 'free_customer', 'free_user'] },
-        { icon: Target, label: 'Sales Intelligence', href: '/sales', roles: ['sales_staff'] },
-        { icon: Stethoscope, label: 'Clinical Node', href: '/beautician', roles: ['clinic_staff'] },
-        { icon: Lightning, label: 'Workflow', href: '/beautician/workflow', roles: ['clinic_staff'] },
+        { icon: House, label: 'แดชบอร์ด', href: '/clinic', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: House, label: 'พอร์ทัลผิวของฉัน', href: '/customer', roles: ['customer', 'premium_customer', 'free_customer', 'free_user'] },
+        { icon: Target, label: 'ข้อมูลการขาย', href: '/sales', roles: ['sales_staff'] },
+        { icon: Stethoscope, label: 'ระบบช่างบิวตี้', href: '/beautician', roles: ['clinic_staff', 'beautician'] },
+        { icon: Lightning, label: 'ขั้นตอนงาน', href: '/beautician/workflow', roles: ['clinic_staff', 'beautician'] },
       ]
     },
     {
       id: 'operations',
       label: 'การดำเนินงาน',
       icon: Stack,
-      roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff'],
+      roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'beautician'],
       items: [
         { icon: Users, label: 'ลูกค้า', href: '/clinic/customers', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
         { icon: ShoppingCart, label: 'POS ขาย', href: '/clinic/pos', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
         { icon: Sparkle, label: 'AI วิเคราะห์ผิว', href: '/sales/skin-analysis', roles: ['sales_staff'] },
         { icon: Clock, label: 'ประวัติ POS', href: '/clinic/pos/history', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: CalendarDots, label: 'นัดหมาย', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
-        { icon: Clock, label: 'คิว', href: '/clinic/queue', roles: ['clinic_owner', 'clinic_admin', 'clinic_staff'] },
+        { icon: CalendarDots, label: 'นัดหมาย', href: '/clinic/appointments', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user', 'beautician'] },
+        { icon: Clock, label: 'คิว', href: '/clinic/queue', roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'beautician'] },
         { icon: UserCheck, label: 'รายชื่อรอ', href: '/clinic/waitlist', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: FirstAidKit, label: 'ทรีทเมนต์', href: '/clinic/treatments', roles: ['clinic_owner', 'clinic_staff'] },
+        { icon: FirstAidKit, label: 'ทรีทเมนต์', href: '/clinic/treatments', roles: ['clinic_owner', 'clinic_staff', 'beautician'] },
         { icon: VideoCamera, label: 'ปรึกษาออนไลน์', href: '/clinic/consultations', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
@@ -202,9 +202,9 @@ export default function DashboardLayout({
       icon: Users,
       roles: ['clinic_owner', 'clinic_admin', 'sales_staff', 'customer', 'free_user'],
       items: [
-        { icon: ChatCircle, label: 'แชท', href: '/shared/chat', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user'] },
+        { icon: ChatCircle, label: 'แชท', href: '/shared/chat', roles: ['clinic_owner', 'clinic_staff', 'sales_staff', 'customer', 'free_user', 'beautician'] },
         { icon: Phone, label: 'SMS', href: '/clinic/sms', roles: ['clinic_owner', 'clinic_admin'] },
-        { icon: EnvelopeSimple, label: 'Email', href: '/clinic/email-campaigns', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: EnvelopeSimple, label: 'อีเมล', href: '/clinic/email-campaigns', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: Star, label: 'รีวิว', href: '/clinic/reviews', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: Image, label: 'แกลเลอรี่', href: '/clinic/gallery', roles: ['clinic_owner', 'clinic_admin'] },
         { icon: Gift, label: 'บัตรของขวัญ', href: '/clinic/gift-cards', roles: ['clinic_owner', 'clinic_admin'] },
@@ -256,38 +256,38 @@ export default function DashboardLayout({
       items: [
         { icon: Gear, label: 'ทั่วไป', href: '/clinic/settings', roles: ['clinic_owner'] },
         { icon: Globe, label: 'เชื่อมต่อ', href: '/clinic/settings/integrations', roles: ['clinic_owner'] },
-        { icon: Lightning, label: 'AI Quota', href: '/clinic/quota', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Lightning, label: 'โควต้า AI', href: '/clinic/quota', roles: ['clinic_owner', 'clinic_admin'] },
       ]
     },
     {
       id: 'admin',
-      label: 'Admin',
+      label: 'ผู้ดูแลระบบ',
       icon: ShieldCheck,
       roles: ['super_admin'],
       items: [
-        { icon: ShieldCheck, label: 'Dashboard', href: '/admin', roles: ['super_admin'] },
+        { icon: ShieldCheck, label: 'แดชบอร์ด', href: '/admin', roles: ['super_admin'] },
         { icon: Buildings, label: 'จัดการคลินิก', href: '/admin/clinics', roles: ['super_admin'] },
-        { icon: Users, label: 'Users', href: '/admin/users', roles: ['super_admin'] },
-        { icon: Shield, label: 'Security', href: '/admin/security', roles: ['super_admin'] },
-        { icon: Eye, label: 'Audit Log', href: '/admin/audit', roles: ['super_admin'] },
-        { icon: ShieldCheck, label: 'Permissions', href: '/admin/permissions', roles: ['super_admin'] },
-        { icon: ChartBar, label: 'Analytics', href: '/admin/analytics', roles: ['super_admin'] },
-        { icon: CreditCard, label: 'Billing', href: '/admin/billing', roles: ['super_admin'] },
-        { icon: Gear, label: 'Settings', href: '/admin/settings', roles: ['super_admin'] },
+        { icon: Users, label: 'ผู้ใช้งาน', href: '/admin/users', roles: ['super_admin'] },
+        { icon: Shield, label: 'ความปลอดภัย', href: '/admin/security', roles: ['super_admin'] },
+        { icon: Eye, label: 'บันทึกการใช้งาน', href: '/admin/audit', roles: ['super_admin'] },
+        { icon: ShieldCheck, label: 'สิทธิ์การเข้าถึง', href: '/admin/permissions', roles: ['super_admin'] },
+        { icon: ChartBar, label: 'วิเคราะห์', href: '/admin/analytics', roles: ['super_admin'] },
+        { icon: CreditCard, label: 'การเงิน', href: '/admin/billing', roles: ['super_admin'] },
+        { icon: Gear, label: 'ตั้งค่า', href: '/admin/settings', roles: ['super_admin'] },
       ]
     },
     {
       id: 'admin_ops',
-      label: 'Admin Operations',
+      label: 'ปฏิบัติการแอดมิน',
       icon: Megaphone,
       roles: ['super_admin'],
       items: [
-        { icon: Megaphone, label: 'Broadcast', href: '/admin/broadcast', roles: ['super_admin'] },
-        { icon: Bell, label: 'Announcements', href: '/admin/announcements', roles: ['super_admin'] },
-        { icon: Headset, label: 'Support', href: '/admin/support', roles: ['super_admin'] },
-        { icon: Phone, label: 'Contact Portal', href: '/admin/contact-portal', roles: ['super_admin'] },
-        { icon: MapTrifold, label: 'Network Map', href: '/admin/network-map', roles: ['super_admin'] },
-        { icon: Cpu, label: 'System', href: '/admin/system', roles: ['super_admin'] },
+        { icon: Megaphone, label: 'ประกาศทั่วไป', href: '/admin/broadcast', roles: ['super_admin'] },
+        { icon: Bell, label: 'ข่าวสาร', href: '/admin/announcements', roles: ['super_admin'] },
+        { icon: Headset, label: 'ฝ่ายสนับสนุน', href: '/admin/support', roles: ['super_admin'] },
+        { icon: Phone, label: 'ช่องทางติดต่อ', href: '/admin/contact-portal', roles: ['super_admin'] },
+        { icon: MapTrifold, label: 'แผนที่เครือข่าย', href: '/admin/network-map', roles: ['super_admin'] },
+        { icon: Cpu, label: 'ระบบ', href: '/admin/system', roles: ['super_admin'] },
       ]
     },
   ];
@@ -360,7 +360,7 @@ export default function DashboardLayout({
                 <span className="font-bold text-lg text-white whitespace-nowrap truncate">
                   {getClinicName()}
                 </span>
-                <span className="text-xs font-medium text-primary uppercase tracking-wide">Clinical Node</span>
+                <span className="text-xs font-medium text-primary uppercase tracking-wide">ระบบคลินิก</span>
               </motion.div>
             )}
           </AnimatePresence>
@@ -552,7 +552,8 @@ export default function DashboardLayout({
         const navRole = 
           ['clinic_owner', 'clinic_admin'].includes(role) ? 'clinic' :
           role === 'sales_staff' ? 'sales' :
-          role === 'clinic_staff' ? 'beautician' :
+          ['beautician', 'clinic_staff'].includes(role) ? 'beautician' :
+          role === 'super_admin' ? 'clinic' :
           'customer';
         return <MobileBottomNav role={navRole} />;
       })()}

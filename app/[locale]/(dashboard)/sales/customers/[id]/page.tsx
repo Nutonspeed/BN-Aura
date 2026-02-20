@@ -69,8 +69,8 @@ export default function SalesCustomerDetailPage() {
         events.push({
           id: analysis.id || `analysis-${idx}`,
           type: 'appointment',
-          title: 'AI Skin Analysis',
-          description: analysis.result_summary || 'Skin analysis performed',
+          title: 'การวิเคราะห์ผิวด้วย AI',
+          description: analysis.result_summary || 'ดำเนินการวิเคราะห์สภาพผิว',
           date: analysis.created_at,
           metadata: {
             skinType: analysis.skin_type,
@@ -86,8 +86,8 @@ export default function SalesCustomerDetailPage() {
         events.push({
           id: journey.id || `journey-${idx}`,
           type: 'status_change',
-          title: `Treatment: ${journey.current_stage || 'In Progress'}`,
-          description: journey.notes || 'Treatment journey updated',
+          title: `การรักษา: ${journey.current_stage || 'กำลังดำเนินการ'}`,
+          description: journey.notes || 'อัปเดตขั้นตอนการรักษา',
           date: journey.updated_at || journey.created_at,
           metadata: {
             stage: journey.current_stage
@@ -102,8 +102,8 @@ export default function SalesCustomerDetailPage() {
         events.push({
           id: commission.id || `commission-${idx}`,
           type: 'purchase',
-          title: `Transaction: ${commission.transaction_type || 'Sale'}`,
-          description: `Commission: ฿${Number(commission.commission_amount || 0).toLocaleString()}`,
+          title: `รายการธุรกรรม: ${commission.transaction_type || 'ขายสำเร็จ'}`,
+          description: `ส่วนแบ่ง: ฿${Number(commission.commission_amount || 0).toLocaleString()}`,
           date: commission.transaction_date || commission.created_at,
           metadata: {
             price: commission.base_amount,
@@ -126,10 +126,10 @@ export default function SalesCustomerDetailPage() {
     const churnScore = hasRecentActivity ? 15 : totalPurchases > 0 ? 35 : 65;
     const churnLevel = churnScore > 50 ? 'high' : churnScore > 30 ? 'medium' : 'low';
     const factors: string[] = [];
-    if (!hasRecentActivity) factors.push('No recent activity detected');
-    if (totalPurchases === 0) factors.push('No purchase history');
-    if (totalSpent === 0) factors.push('Zero lifetime value');
-    if (factors.length === 0) factors.push('Regular engagement pattern');
+    if (!hasRecentActivity) factors.push('ไม่พบกิจกรรมล่าสุด');
+    if (totalPurchases === 0) factors.push('ไม่พบประวัติการซื้อ');
+    if (totalSpent === 0) factors.push('ยังไม่มีมูลค่าการซื้อ');
+    if (factors.length === 0) factors.push('มีการตอบรับสม่ำเสมอ');
 
     setPredictive({
       churnRisk: { score: churnScore, level: churnLevel as 'low' | 'medium' | 'high', factors },
@@ -139,10 +139,10 @@ export default function SalesCustomerDetailPage() {
       },
       nextBestAction: {
         action: totalPurchases === 0
-          ? 'Schedule complimentary skin consultation'
-          : 'Recommend premium treatment upgrade',
+          ? 'นัดหมายปรึกษาผิวฟรี'
+          : 'แนะนำคอร์สพรีเมียมเพิ่มเติม',
         reason: totalPurchases === 0
-          ? 'New customer with no purchase history — a free consultation can build trust and lead to first purchase.'
+          ? 'ลูกค้าใหม่ที่ยังไม่มีประวัติการซื้อ — การปรึกษาฟรีช่วยสร้างความไว้วางใจได้'
           : `Customer has spent ฿${totalSpent.toLocaleString()} — ready for premium upsell based on treatment history.`,
         confidence: hasRecentActivity ? 82 : 68
       }
@@ -187,16 +187,16 @@ export default function SalesCustomerDetailPage() {
         </Button>
         <div className="flex-1">
           <h1 className="text-2xl font-black uppercase tracking-tight">
-            {customer.full_name || 'Unknown Customer'}
+            {customer.full_name || 'ไม่ระบุชื่อ'}
           </h1>
-          <p className="text-sm text-muted-foreground">โปรไฟล์ข้อมูลลูกค้า</p>
+          <p className="text-sm text-muted-foreground">ข้อมูลส่วนบุคคล</p>
         </div>
         <Button
           onClick={() => router.push(`/th/sales/chat?customerId=${customerId}`)}
           className="gap-2"
         >
           <ChatCircle weight="bold" className="w-4 h-4" />
-          Chat
+          แชทคุยกับลูกค้า
         </Button>
       </div>
 
@@ -209,7 +209,7 @@ export default function SalesCustomerDetailPage() {
             </div>
             <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Contact</h3>
+                <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">ข้อมูลติดต่อ</h3>
                 {customer.email && (
                   <div className="flex items-center gap-2 text-sm">
                     <Envelope className="w-4 h-4 text-muted-foreground" />
@@ -230,32 +230,32 @@ export default function SalesCustomerDetailPage() {
                 )}
               </div>
               <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Value</h3>
+                <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">มูลค่าลูกค้า</h3>
                 <div className="flex items-center gap-2">
                   <TrendUp className="w-4 h-4 text-emerald-500" />
                   <span className="text-lg font-bold">฿{totalSpent.toLocaleString()}</span>
-                  <span className="text-xs text-muted-foreground">ยอดรวม</span>
+                  <span className="text-xs text-muted-foreground">ยอดซื้อสะสม</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4 text-blue-500" />
                   <span className="font-bold">{totalPurchases}</span>
-                  <span className="text-xs text-muted-foreground">การซื้อ</span>
+                  <span className="text-xs text-muted-foreground">จำนวนครั้งที่ซื้อ</span>
                 </div>
                 {loyaltyPoints > 0 && (
                   <div className="flex items-center gap-2">
                     <Star className="w-4 h-4 text-amber-500" />
                     <span className="font-bold">{loyaltyPoints}</span>
-                    <span className="text-xs text-muted-foreground">คะแนน</span>
+                    <span className="text-xs text-muted-foreground">คะแนนสะสม</span>
                   </div>
                 )}
               </div>
               <div className="space-y-3">
-                <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">Status</h3>
+                <h3 className="text-xs font-black uppercase tracking-widest text-muted-foreground">สถานะ</h3>
                 <Badge className="bg-primary/10 text-primary">{customer.status || 'active'}</Badge>
                 {customer.metadata?.skin_type && (
                   <div className="flex items-center gap-2 text-sm">
                     <Sparkle className="w-4 h-4 text-purple-500" />
-                    ผิว: {customer.metadata.skin_type}
+                    สภาพผิว: {customer.metadata.skin_type}
                   </div>
                 )}
                 {customer.metadata?.gender && (
@@ -273,19 +273,19 @@ export default function SalesCustomerDetailPage() {
       {/* Stats Quick View */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="p-4 bg-gradient-to-br from-emerald-500/5 to-green-500/5 border-emerald-500/20">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest">Total Spent</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">ยอดซื้อสะสม</p>
           <p className="text-xl font-bold mt-1">฿{totalSpent.toLocaleString()}</p>
         </Card>
         <Card className="p-4 bg-gradient-to-br from-blue-500/5 to-purple-500/5 border-blue-500/20">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest">Purchases</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">จำนวนรายการที่ซื้อ</p>
           <p className="text-xl font-bold mt-1">{totalPurchases}</p>
         </Card>
         <Card className="p-4 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 border-amber-500/20">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest">Loyalty Points</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">คะแนนสะสม</p>
           <p className="text-xl font-bold mt-1">{loyaltyPoints}</p>
         </Card>
         <Card className="p-4 bg-gradient-to-br from-purple-500/5 to-pink-500/5 border-purple-500/20">
-          <p className="text-xs text-muted-foreground uppercase tracking-widest">Analyses</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">ผลการวิเคราะห์ผิว</p>
           <p className="text-xl font-bold mt-1">{customer.skin_analyses?.length || 0}</p>
         </Card>
       </div>
@@ -296,7 +296,7 @@ export default function SalesCustomerDetailPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-3">
               <TrendUp weight="duotone" className="w-6 h-6 text-emerald-500" />
-              การวิเคราะห์ทำนาย AI
+              การวิเคราะห์เชิงลึกโดย AI
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -305,12 +305,12 @@ export default function SalesCustomerDetailPage() {
         </Card>
       )}
 
-      {/* ไทม์ไลน์ลูกค้า */}
+      {/* ประวัติกิจกรรมลูกค้า */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <CalendarDots weight="duotone" className="w-6 h-6 text-primary" />
-            ไทม์ไลน์ลูกค้า
+            ประวัติกิจกรรมลูกค้า
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -318,12 +318,12 @@ export default function SalesCustomerDetailPage() {
         </CardContent>
       </Card>
 
-      {/* ประวัติการสนทนา */}
+      {/* ประวัติการแชท */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <ChatCircle weight="duotone" className="w-6 h-6 text-blue-500" />
-            ประวัติการสนทนา
+            ประวัติการแชท
           </CardTitle>
         </CardHeader>
         <CardContent>

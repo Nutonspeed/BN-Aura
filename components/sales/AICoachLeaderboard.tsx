@@ -59,11 +59,11 @@ export default function AICoachLeaderboard() {
 
       // Aggregate per staff
       const staffMap: Record<string, {
-        sessions: number;
+        เซสชัน: number;
         completed: number;
         probSum: number;
         probCount: number;
-        objections: number;
+        ข้อโต้แย้ง: number;
       }> = {};
 
       conversations.forEach(c => {
@@ -153,22 +153,22 @@ export default function AICoachLeaderboard() {
             <div className="flex items-center gap-3 mt-1 text-[10px] text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Sparkle className="w-3 h-3 text-purple-400" />
-                {s.totalSessions} sessions
+                {s.totalSessions} เซสชัน
               </span>
               <span className="flex items-center gap-1">
                 <Target className="w-3 h-3 text-emerald-400" />
-                {s.completedDeals} closed
+                {s.completedDeals} ปิดการขาย
               </span>
               <span className="flex items-center gap-1">
                 <TrendUp className="w-3 h-3 text-blue-400" />
-                {s.avgProbability}% avg
+                {s.avgProbability}% เฉลี่ย
               </span>
             </div>
           </div>
 
           <div className="text-right flex-shrink-0">
             <p className="text-lg font-black text-foreground tabular-nums">{s.objectionsHandled}</p>
-            <p className="text-[9px] text-muted-foreground">objections</p>
+            <p className="text-[9px] text-muted-foreground">ข้อโต้แย้ง</p>
           </div>
         </motion.div>
       ))}

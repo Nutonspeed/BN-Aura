@@ -98,7 +98,7 @@ function SystemMonitoringContent() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Pulse weight="duotone" className="w-4 h-4" />
-            Infrastructure Intelligence
+            สถานะระบบ
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -114,7 +114,7 @@ function SystemMonitoringContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Real-time infrastructure performance, health nodes, and global sync status.
+            ตรวจสอบประสิทธิภาพระบบ สถานะเซิร์ฟเวอร์ และการเชื่อมต่อ
           </motion.p>
         </div>
 
@@ -165,7 +165,7 @@ function SystemMonitoringContent() {
           iconColor={(currentMetric?.memory || 0) > 85 ? 'text-rose-500' : 'text-purple-500'}
         />
         <StatCard
-          title="Network Nodes"
+          title="การเชื่อมต่อ"
           value={currentMetric?.active_connections || 0}
           icon={Users}
           trend="neutral"
@@ -205,12 +205,12 @@ function SystemMonitoringContent() {
                   <div className="flex gap-4">
                     {criticalAlerts > 0 && (
                       <Badge variant="destructive" pulse className="font-black px-4 py-1.5 uppercase">
-                        {criticalAlerts} Critical Node
+                        {criticalAlerts} วิกฤต
                       </Badge>
                     )}
                     {warningAlerts > 0 && (
                       <Badge variant="warning" className="font-black px-4 py-1.5 uppercase">
-                        {warningAlerts} Warning Node
+                        {warningAlerts} คำเตือน
                       </Badge>
                     )}
                   </div>
@@ -231,7 +231,7 @@ function SystemMonitoringContent() {
           <CardHeader className="border-b border-border/50 pb-6">
             <CardTitle className="text-sm font-black uppercase tracking-[0.2em] flex items-center gap-3">
               <Database weight="duotone" className="w-5 h-5 text-primary" />
-              Core Service Matrix
+              สถานะบริการหลัก
             </CardTitle>
           </CardHeader>
           
@@ -286,7 +286,7 @@ function SystemMonitoringContent() {
             <div className="pt-4 flex items-center justify-between border-t border-border/50 mt-4">
               <div className="flex items-center gap-2">
                 <ShieldCheck weight="duotone" className="w-4 h-4 text-emerald-500" />
-                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Diagnostic Node: Healthy</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">สถานะ: ปกติ</span>
               </div>
               <span className="text-[10px] font-medium text-muted-foreground italic">
                 Last heartbeat: {health?.last_check ? new Date(health.last_check).toLocaleTimeString() : 'N/A'}

@@ -52,13 +52,13 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
               />
             </div>
             <p className="text-xs opacity-80 uppercase font-bold tracking-wider">
-              {data.churnRisk.level} Risk Level
+              {data.churnRisk.level} ระดับความเสี่ยง
             </p>
           </div>
 
           {data.churnRisk.factors.length > 0 && (
             <div className="mt-4 pt-4 border-t border-black/10">
-              <p className="text-xs font-bold mb-2 opacity-80">RISK FACTORS</p>
+              <p className="text-xs font-bold mb-2 opacity-80">ปัจจัยความเสี่ยง</p>
               <ul className="space-y-1">
                 {data.churnRisk.factors.map((factor, i) => (
                   <li key={i} className="text-sm flex items-start gap-2">
@@ -76,10 +76,10 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2 text-emerald-400">
               <TrendUp className="w-5 h-5" />
-              <h3 className="font-bold">มูลค่าตลอดชีพ</h3>
+              <h3 className="font-bold">มูลค่าลูกค้าตลอดช่วงชีวิต (LTV)</h3>
             </div>
             <div className="text-right">
-              <p className="text-xs text-muted-foreground uppercase font-bold">ทำนาย</p>
+              <p className="text-xs text-muted-foreground uppercase font-bold">พยากรณ์ยอดขาย</p>
               <span className="text-2xl font-black text-white">
                 ฿{data.ltv.predicted.toLocaleString()}
               </span>
@@ -90,17 +90,17 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
             <span className="text-3xl font-black text-emerald-400">
               +฿{(data.ltv.predicted - data.ltv.current).toLocaleString()}
             </span>
-            <span className="text-sm text-muted-foreground mb-1.5">potential growth</span>
+            <span className="text-sm text-muted-foreground mb-1.5">โอกาสเติบโต</span>
           </div>
 
           <div className="mt-4 pt-4 border-t border-emerald-500/20 flex justify-between items-center text-sm">
-            <span className="text-muted-foreground">ปัจจุบัน Value</span>
+            <span className="text-muted-foreground">มูลค่าปัจจุบัน</span>
             <span className="font-bold text-white">฿{data.ltv.current.toLocaleString()}</span>
           </div>
         </div>
       </div>
 
-      {/* การกระทำที่ดีที่สุดถัดไป */}
+      {/* คำแนะนำการดำเนินการถัดไป */}
       <div className="p-1 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600">
         <div className="bg-slate-900 rounded-xl p-5">
           <div className="flex items-start justify-between mb-4">
@@ -109,16 +109,16 @@ export default function PredictiveAnalyticsView({ data }: PredictiveAnalyticsVie
                 <Lightbulb className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold text-white text-lg">การกระทำที่ดีที่สุดถัดไป</h3>
+                <h3 className="font-bold text-white text-lg">คำแนะนำการดำเนินการถัดไป</h3>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/20 text-blue-400">
-                    {data.nextBestAction.confidence}% ความมั่นใจ
+                    {data.nextBestAction.confidence}% ความแม่นยำ
                   </span>
                 </div>
               </div>
             </div>
             <button className="px-4 py-2 bg-white text-black font-bold rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-2">
-              Execute
+              ดำเนินการ
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

@@ -151,7 +151,7 @@ function PurchaseOrderManagementInner() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <FileText weight="duotone" className="w-4 h-4" />
-            Procurement Intelligence Node
+            คำสั่งซื้อ
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -159,7 +159,7 @@ function PurchaseOrderManagementInner() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Purchase <span className="text-primary">Orders</span>
+            คำสั่ง<span className="text-primary">ซื้อ</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -208,7 +208,7 @@ function PurchaseOrderManagementInner() {
             className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            Initialize Order
+            สร้างคำสั่งซื้อ
           </Button>
         </div>
       </div>

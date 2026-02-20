@@ -66,15 +66,15 @@ export default function MobileQuotaWidget({
           .from('clinic_staff')
           .select(`
             clinic_id,
-            clinics(name)
+            clinics(display_name)
           `)
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (staffData?.clinic_id) {
           // Fetch quota information
-          const quotaResponse = await fetch(`/api/quota/billing-test?action=quota-config&clinicId=${staffData.clinic_id}`);
-          const quotaResult = await quotaResponse.json();
+          const quotaResponse = await fetch(`/api/quota/billing-test?action=quota-config&clinicId=${staffData.clinic_id}`).catch(() => null);
+          const quotaResult = quotaResponse ? await quotaResponse.json().catch(() => ({ success: false })) : { success: false };
 
           if (quotaResult.success) {
             const quota = quotaResult.data;
@@ -88,7 +88,7 @@ export default function MobileQuotaWidget({
               willIncurCharge: utilizationRate >= 100,
               cacheHitRate: 92,
               quotaSavedToday: 5,
-              clinicName: (staffData.clinics as any)?.name || 'Clinic',
+              clinicName: (staffData.clinics as any)?.display_name?.th || (staffData.clinics as any)?.display_name?.en || 'Clinic',
               lastUpdated: new Date().toISOString()
             });
           }

@@ -1,23 +1,25 @@
 /**
- * Skin Metrics Engine - VISIA-Equivalent 8 Metrics Analysis
- * Analyzes: Spots, Wrinkles, Texture, Pores, UV Spots, Brown Spots, Red Areas, Porphyrins
+ * Skin Metrics Engine
+ * Calculates comprehensive skin analysis metrics from VISIA signals and AI results
  */
 
-interface SkinMetric {
-  id: string;
+export type SkinMetricSeverity = 'excellent' | 'good' | 'average' | 'concern' | 'severe';
+
+export interface SkinMetric {
+  id: 'spots' | 'wrinkles' | 'texture' | 'pores' | 'uvSpots' | 'brownSpots' | 'redAreas' | 'porphyrins';
   name: string;
   nameThai: string;
-  score: number; // 0-100 (higher = better skin condition)
-  percentile: number; // compared to age group
-  severity: 'excellent' | 'good' | 'average' | 'concern' | 'severe';
+  score: number; // 0-100 (higher = better)
+  percentile: number;
+  severity: SkinMetricSeverity;
   description: string;
   descriptionThai: string;
   detectedCount?: number;
-  affectedArea?: number; // percentage of face
+  affectedArea?: number; // % of face
   recommendations: string[];
 }
 
-interface SkinMetricsResult {
+export interface SkinMetricsResult {
   analysisId: string;
   timestamp: string;
   overallScore: number;
@@ -31,166 +33,84 @@ interface SkinMetricsResult {
     priorityTreatments: string[];
   };
   comparisonToAverage: {
-    betterThan: number; // percentage
+    betterThan: number;
     ageGroup: string;
   };
 }
 
-interface ImageAnalysisInput {
-  imageData: string; // base64
-  actualAge: number;
-  skinType?: string;
-}
-
-class SkinMetricsEngine {
-  
-  /**
-   * Analyze skin from image and return 8 VISIA-equivalent metrics
-   */
-  static async analyze(input: ImageAnalysisInput): Promise<SkinMetricsResult> {
-    // In production, this would process the actual image
-    // For now, return realistic sample data that can be replaced with real AI
-    const analysisId = `SKN-${Date.now()}`;
-    
-    const metrics = this.calculateMetrics(input.actualAge);
-    const overallScore = this.calculateOverallScore(metrics);
-    const skinAge = this.calculateSkinAge(metrics, input.actualAge);
-    
-    return {
-      analysisId,
-      timestamp: new Date().toISOString(),
-      overallScore,
-      skinAge,
-      actualAge: input.actualAge,
-      skinAgeDifference: skinAge - input.actualAge,
-      metrics,
-      summary: this.generateSummary(metrics),
-      comparisonToAverage: {
-        betterThan: this.calculatePercentile(overallScore, input.actualAge),
-        ageGroup: this.getAgeGroup(input.actualAge),
-      },
-    };
+export class SkinMetricsEngine {
+  static async analyze(input: { imageData: string; actualAge: number; skinType?: string }): Promise<SkinMetricsResult> {
+    // Placeholder: plug in real image processing later.
+    return this.getSampleResult(input.actualAge);
   }
 
   /**
-   * Calculate all 8 metrics
+   * Calculate all skin metrics from VISIA signals
    */
   private static calculateMetrics(age: number, visiaSignals?: Record<string, number>): SkinMetric[] {
     const ageFactor = Math.max(0, Math.min(1, (60 - age) / 40));
-    const getScore = (key: string, ageBaseline: number): number => {
-      if (visiaSignals && visiaSignals[key] !== undefined) return Math.round(visiaSignals[key]);
-      return Math.round(ageBaseline * (0.7 + ageFactor * 0.3));
+
+    const getScore = (key: SkinMetric['id'], baseline: number): number => {
+      const v = visiaSignals?.[key];
+      if (typeof v === 'number' && Number.isFinite(v)) return Math.round(Math.max(0, Math.min(100, v)));
+      // Fallback: age-aware baseline with small variance
+      const variance = (Math.random() - 0.5) * 10; // ±5
+      const adjusted = baseline * (0.7 + ageFactor * 0.3) + variance;
+      return Math.round(Math.max(15, Math.min(95, adjusted)));
     };
-    const getSev = (score: number): 'excellent' | 'good' | 'average' | 'concern' | 'severe' => {
-      if (score >= 85) return 'excellent'; if (score >= 70) return 'good'; if (score >= 50) return 'average'; if (score >= 30) return 'concern'; return 'severe';
+
+    const getSeverity = (score: number): SkinMetricSeverity => {
+      if (score >= 85) return 'excellent';
+      if (score >= 70) return 'good';
+      if (score >= 50) return 'average';
+      if (score >= 30) return 'concern';
+      return 'severe';
     };
+
     const getPct = (score: number): number => Math.min(99, Math.max(1, Math.round(score * 0.9 + 5)));
     const getArea = (score: number): number => Math.round(Math.max(2, (100 - score) * 0.4));
+
+    const metric = (
+      id: SkinMetric['id'],
+      name: string,
+      nameThai: string,
+      baseline: number,
+      description: string,
+      descriptionThai: string,
+      recommendations: string[]
+    ): SkinMetric => {
+      const score = getScore(id, baseline);
+      return {
+        id,
+        name,
+        nameThai,
+        score,
+        percentile: getPct(score),
+        severity: getSeverity(score),
+        description,
+        descriptionThai,
+        affectedArea: getArea(score),
+        recommendations,
+      };
+    };
+
     return [
-      {
-        id: 'spots',
-        name: 'Spots',
-        nameThai: 'จุดด่างดำ',
-        score: getScore('spots', 78),
-        percentile: getPct(getScore('spots', 78)),
-        severity: getSev(getScore('spots', 78)),
-        description: 'Surface-level spots and discoloration',
-        descriptionThai: 'จุดด่างดำและความไม่สม่ำเสมอของสีผิว',
-        affectedArea: getArea(getScore('spots', 78)),
-        recommendations: ['Vitamin C Serum', 'Chemical Peel', 'IPL Treatment'],
-      },
-      {
-        id: 'wrinkles',
-        name: 'Wrinkles',
-        nameThai: 'ริ้วรอย',
-        score: getScore('wrinkles', 72),
-        percentile: getPct(getScore('wrinkles', 72)),
-        severity: getSev(getScore('wrinkles', 72)),
-        description: 'Fine lines and deep wrinkles',
-        descriptionThai: 'ริ้วรอยตื้นและริ้วรอยลึก',
-        affectedArea: getArea(getScore('wrinkles', 72)),
-        recommendations: ['Botox', 'Retinol', 'Laser Resurfacing'],
-      },
-      {
-        id: 'texture',
-        name: 'Texture',
-        nameThai: 'พื้นผิว',
-        score: getScore('texture', 75),
-        percentile: getPct(getScore('texture', 75)),
-        severity: getSev(getScore('texture', 75)),
-        description: 'Skin smoothness and evenness',
-        descriptionThai: 'ความเรียบเนียนและสม่ำเสมอของผิว',
-        affectedArea: getArea(getScore('texture', 75)),
-        recommendations: ['Microdermabrasion', 'Chemical Peel'],
-      },
-      {
-        id: 'pores',
-        name: 'Pores',
-        nameThai: 'รูขุมขน',
-        score: getScore('pores', 65),
-        percentile: getPct(getScore('pores', 65)),
-        severity: getSev(getScore('pores', 65)),
-        description: 'Pore size and visibility',
-        descriptionThai: 'ขนาดและความเด่นชัดของรูขุมขน',
-        affectedArea: getArea(getScore('pores', 65)),
-        recommendations: ['Carbon Peel', 'Fractional Laser', 'Niacinamide'],
-      },
-      {
-        id: 'uvSpots',
-        name: 'UV Spots',
-        nameThai: 'จุด UV',
-        score: getScore('uvSpots', 60),
-        percentile: getPct(getScore('uvSpots', 60)),
-        severity: getSev(getScore('uvSpots', 60)),
-        description: 'Sun damage visible under UV light',
-        descriptionThai: 'ความเสียหายจากแสงแดดที่มองเห็นภายใต้แสง UV',
-        affectedArea: getArea(getScore('uvSpots', 60)),
-        recommendations: ['Sunscreen SPF50+', 'Laser Toning', 'Antioxidant Serum'],
-      },
-      {
-        id: 'brownSpots',
-        name: 'Brown Spots',
-        nameThai: 'จุดสีน้ำตาล',
-        score: getScore('brownSpots', 74),
-        percentile: getPct(getScore('brownSpots', 74)),
-        severity: getSev(getScore('brownSpots', 74)),
-        description: 'Hyperpigmentation and melasma',
-        descriptionThai: 'ฝ้า กระ และจุดสีน้ำตาล',
-        affectedArea: getArea(getScore('brownSpots', 74)),
-        recommendations: ['Hydroquinone', 'Vitamin C', 'Pico Laser'],
-      },
-      {
-        id: 'redAreas',
-        name: 'Red Areas',
-        nameThai: 'บริเวณแดง',
-        score: getScore('redAreas', 70),
-        percentile: getPct(getScore('redAreas', 70)),
-        severity: getSev(getScore('redAreas', 70)),
-        description: 'Redness, inflammation, and vascular issues',
-        descriptionThai: 'รอยแดง การอักเสบ และปัญหาหลอดเลือด',
-        affectedArea: getArea(getScore('redAreas', 70)),
-        recommendations: ['Azelaic Acid', 'Vascular Laser', 'Anti-redness Cream'],
-      },
-      {
-        id: 'porphyrins',
-        name: 'Porphyrins',
-        nameThai: 'พอร์ฟิริน',
-        score: getScore('porphyrins', 68),
-        percentile: getPct(getScore('porphyrins', 68)),
-        severity: getSev(getScore('porphyrins', 68)),
-        description: 'Bacterial presence in pores (acne indicator)',
-        descriptionThai: 'แบคทีเรียในรูขุมขน (ตัวบ่งชี้สิว)',
-        affectedArea: getArea(getScore('porphyrins', 68)),
-        recommendations: ['Blue Light Therapy', 'Salicylic Acid', 'Extraction Facial'],
-      },
+      metric('spots', 'Spots', 'จุดด่างดำ', 78, 'Surface-level spots and discoloration', 'จุดด่างดำและสีผิวไม่สม่ำเสมอ', ['Vitamin C Serum', 'Chemical Peel', 'IPL Treatment']),
+      metric('wrinkles', 'Wrinkles', 'ริ้วรอย', 72, 'Fine lines and deep wrinkles', 'ริ้วรอยตื้นและริ้วรอยลึก', ['Botox', 'Retinol', 'Laser Resurfacing']),
+      metric('texture', 'Texture', 'เนื้อผิว', 75, 'Skin smoothness and evenness', 'ความเรียบเนียนและความสม่ำเสมอของผิว', ['Hydrafacial', 'Microneedling', 'AHA/BHA']),
+      metric('pores', 'Pores', 'รูขุมขน', 70, 'Pore visibility and size', 'ความชัดเจนและขนาดรูขุมขน', ['Deep Cleansing', 'Carbon Peel', 'Niacinamide']),
+      metric('uvSpots', 'UV Spots', 'จุด UV', 73, 'Sun damage indicators under UV', 'สัญญาณความเสียหายจากแดด (ประเมินจากภาพ)', ['Sunscreen SPF50+', 'Antioxidants', 'Picosecond Laser']),
+      metric('brownSpots', 'Brown Spots', 'ฝ้า/กระ', 74, 'Hyperpigmentation and melasma', 'ฝ้า กระ และจุดสีน้ำตาล', ['Hydroquinone', 'Vitamin C', 'Pico Laser']),
+      metric('redAreas', 'Red Areas', 'จุดแดง', 70, 'Redness, inflammation, and vascular issues', 'รอยแดง การอักเสบ และปัญหาหลอดเลือด', ['Azelaic Acid', 'Vascular Laser', 'Anti-redness Cream']),
+      metric('porphyrins', 'Porphyrins', 'แบคทีเรีย', 68, 'Bacterial presence in pores (acne indicator)', 'แบคทีเรียในรูขุมขน (ตัวบ่งชี้สิว)', ['Blue Light Therapy', 'Salicylic Acid', 'Extraction Facial']),
     ];
   }
 
   /**
-   * Calculate overall skin score
+   * Calculate overall skin score from individual metrics
    */
   private static calculateOverallScore(metrics: SkinMetric[]): number {
-    const weights: Record<string, number> = {
+    const weights: Record<SkinMetric['id'], number> = {
       spots: 0.12,
       wrinkles: 0.18,
       texture: 0.12,
@@ -198,64 +118,70 @@ class SkinMetricsEngine {
       uvSpots: 0.15,
       brownSpots: 0.10,
       redAreas: 0.10,
-      porphyrins: 0.10,
+      porphyrins: 0.10
     };
-    
-    let weightedSum = 0;
-    for (const metric of metrics) {
-      weightedSum += metric.score * (weights[metric.id] || 0.125);
-    }
-    
-    return Math.round(weightedSum);
+
+    const weightedScore = metrics.reduce((sum, metric) => {
+      const weight = weights[metric.id] || 0.125;
+      return sum + (metric.score * weight);
+    }, 0);
+
+    return Math.round(weightedScore);
   }
 
   /**
-   * Calculate skin age based on metrics
+   * Estimate skin age based on metrics and actual age
    */
   private static calculateSkinAge(metrics: SkinMetric[], actualAge: number): number {
     const overallScore = this.calculateOverallScore(metrics);
     // Higher score = younger skin age
     // Base: actual age, adjust by score deviation from 70 (average)
-    const scoreDeviation = (70 - overallScore) / 10;
-    return Math.round(actualAge + scoreDeviation * 2);
+    const scoreDeviation = (overallScore - 70) / 10;
+    const skinAge = Math.max(18, Math.min(80, actualAge - (scoreDeviation * 3)));
+    return Math.round(skinAge);
   }
 
   /**
-   * Generate summary with strengths and concerns
-   */
-  private static generateSummary(metrics: SkinMetric[]): { strengths: string[]; concerns: string[]; priorityTreatments: string[] } {
-    const strengths: string[] = [];
-    const concerns: string[] = [];
-    const treatments = new Set<string>();
-    
-    for (const metric of metrics) {
-      if (metric.score >= 80) {
-        strengths.push(`${metric.nameThai}: ${metric.score}% (${metric.severity === 'excellent' ? 'ดีเยี่ยม' : 'ดี'})`);
-      } else if (metric.score < 50) {
-        concerns.push(`${metric.nameThai}: ${metric.score}% (${metric.severity === 'severe' ? 'ต้องดูแลเร่งด่วน' : 'ควรปรับปรุง'})`);
-        metric.recommendations.slice(0, 2).forEach(t => treatments.add(t));
-      }
-    }
-    
-    return {
-      strengths,
-      concerns,
-      priorityTreatments: Array.from(treatments).slice(0, 5),
-    };
-  }
-
-  /**
-   * Calculate percentile compared to age group
+   * Calculate percentile for a given score and age
    */
   private static calculatePercentile(score: number, age: number): number {
     // Simplified percentile calculation
     // In production, this would use real population data
     const basePercentile = (score / 100) * 80 + 10;
-    return Math.min(99, Math.max(1, Math.round(basePercentile)));
+    const ageAdjustment = Math.max(-20, Math.min(20, (35 - age) * 0.5));
+    return Math.round(Math.max(5, Math.min(95, basePercentile + ageAdjustment)));
   }
 
   /**
-   * Get age group label
+   * Generate summary insights from metrics
+   */
+  private static generateSummary(metrics: SkinMetric[]): {
+    strengths: string[];
+    concerns: string[];
+    priorityTreatments: string[];
+  } {
+    const strengths: string[] = [];
+    const concerns: string[] = [];
+    const priorityTreatments: string[] = [];
+
+    metrics.forEach(metric => {
+      if (metric.score >= 80) {
+        strengths.push(`${metric.nameThai}: ${metric.score}%`);
+      } else if (metric.score < 60) {
+        concerns.push(`${metric.nameThai}: ${metric.score}%`);
+        priorityTreatments.push(...metric.recommendations.slice(0, 2));
+      }
+    });
+
+    // Add general insights
+    if (strengths.length === 0) strengths.push('จุดแข็ง: ควรเริ่มดูแลอย่างสม่ำเสมอ');
+    if (concerns.length === 0) concerns.push('จุดที่ควรปรับปรุง: รักษารูทีนเดิมและป้องกันแดด');
+
+    return { strengths, concerns, priorityTreatments };
+  }
+
+  /**
+   * Get age group classification
    */
   private static getAgeGroup(age: number): string {
     if (age < 25) return '18-24';
@@ -266,16 +192,19 @@ class SkinMetricsEngine {
   }
 
   /**
-   * Get sample result for testing/demo
+   * Calculate skin metrics from VISIA signals
    */
   static calculateFromSignals(age: number, visiaSignals: Record<string, number>): SkinMetricsResult {
     const metrics = this.calculateMetrics(age, visiaSignals);
     const overallScore = this.calculateOverallScore(metrics);
     const skinAge = this.calculateSkinAge(metrics, age);
+    
     return {
-      analysisId: `SKN-AI-${Date.now()}`,
+      analysisId: `SKN-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      overallScore, skinAge, actualAge: age,
+      overallScore,
+      skinAge,
+      actualAge: age,
       skinAgeDifference: skinAge - age,
       metrics,
       summary: this.generateSummary(metrics),
@@ -286,6 +215,17 @@ class SkinMetricsEngine {
     };
   }
 
+  /**
+   * Calculate basic metrics for demo/testing
+   */
+  static calculateBasicMetrics(age: number = 35): SkinMetricsResult {
+    // Use sample result as basic metrics for demo/testing
+    return this.getSampleResult(age);
+  }
+
+  /**
+   * Get sample result for demo purposes
+   */
   static getSampleResult(age: number = 35): SkinMetricsResult {
     const metrics = this.calculateMetrics(age);
     const overallScore = this.calculateOverallScore(metrics);
@@ -308,33 +248,36 @@ class SkinMetricsEngine {
   }
 
   /**
-   * Get metric severity color
+   * Get severity color for UI display
    */
-  static getSeverityColor(severity: string): string {
-    const colors: Record<string, string> = {
-      excellent: '#22c55e', // green
-      good: '#84cc16', // lime
-      average: '#eab308', // yellow
-      concern: '#f97316', // orange
-      severe: '#ef4444', // red
-    };
-    return colors[severity] || '#6b7280';
+  static getSeverityColor(severity: SkinMetricSeverity | 'low' | 'medium' | 'high'): string {
+    switch (severity) {
+      case 'excellent': return '#22c55e';
+      case 'good': return '#84cc16';
+      case 'average': return '#eab308';
+      case 'concern': return '#f97316';
+      case 'severe': return '#ef4444';
+      case 'low': return '#10b981';
+      case 'medium': return '#f59e0b';
+      case 'high': return '#ef4444';
+      default: return '#6b7280';
+    }
   }
 
   /**
-   * Get metric severity label in Thai
+   * Get severity label in Thai
    */
-  static getSeverityLabelThai(severity: string): string {
-    const labels: Record<string, string> = {
-      excellent: 'ดีเยี่ยม',
-      good: 'ดี',
-      average: 'ปานกลาง',
-      concern: 'ควรปรับปรุง',
-      severe: 'ต้องดูแล',
-    };
-    return labels[severity] || severity;
+  static getSeverityLabelThai(severity: SkinMetricSeverity | 'low' | 'medium' | 'high'): string {
+    switch (severity) {
+      case 'excellent': return 'ดีเยี่ยม';
+      case 'good': return 'ดี';
+      case 'average': return 'ปานกลาง';
+      case 'concern': return 'ควรปรับปรุง';
+      case 'severe': return 'ต้องดูแล';
+      case 'low': return 'เล็กน้อย';
+      case 'medium': return 'ปานกลาง';
+      case 'high': return 'รุนแรง';
+      default: return 'ไม่ทราบ';
+    }
   }
 }
-
-export { SkinMetricsEngine };
-export type { SkinMetric, SkinMetricsResult, ImageAnalysisInput };

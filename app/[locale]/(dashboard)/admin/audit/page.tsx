@@ -307,7 +307,7 @@ export default function AuditTrailPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating global event logs, identity transmissions, and security compliance matrices.
+            ตรวจสอบบันทึกกิจกรรม การเข้าสู่ระบบ และความปลอดภัย
           </motion.p>
         </div>
 

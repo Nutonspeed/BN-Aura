@@ -200,7 +200,7 @@ export default function SharedChatPage() {
     return (
       <div className="h-[calc(100vh-160px)] flex flex-col items-center justify-center space-y-6">
         <SpinnerGap className="w-12 h-12 text-primary animate-spin" />
-        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">Initializing Neural Link...</p>
+        <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">กำลังเชื่อมต่อแชท...</p>
       </div>
     );
   }
@@ -222,7 +222,7 @@ export default function SharedChatPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <ChatCircle weight="duotone" className="w-4 h-4" />
-            Neural Communication Node
+            ระบบแชท
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -259,7 +259,7 @@ export default function SharedChatPage() {
               <MagnifyingGlass weight="bold" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
               <input 
                 type="text" 
-                placeholder="Query identity nodes..." 
+                placeholder="ค้นหาการสนทนา..." 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-card border border-border/50 rounded-2xl py-3 pl-11 pr-4 text-xs font-black uppercase tracking-widest text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
@@ -304,7 +304,7 @@ export default function SharedChatPage() {
                       </span>
                     </div>
                     <p className="text-[11px] text-muted-foreground font-medium italic truncate opacity-80 leading-relaxed">
-                      {session.last_message || 'Awaiting transmission...'}
+                      {session.last_message || 'รอข้อความ...'}
                     </p>
                   </div>
                   {session.unread_count > 0 && (
@@ -318,14 +318,14 @@ export default function SharedChatPage() {
           </div>
         </div>
 
-        {/* Terminal Chat Node Area */}
+        {/* พื้นที่แชท */}
         <div className={cn(
           "flex-1 flex flex-col bg-card/50 relative z-10",
           !selectedSession && "hidden md:flex"
         )}>
           {selectedSession ? (
             <>
-              {/* Node Header */}
+              {/* ส่วนหัวแชท */}
               <div className="p-6 border-b border-border/50 flex items-center gap-5 bg-secondary/10 backdrop-blur-md">
                 <Button
                   variant="ghost"
@@ -407,7 +407,7 @@ export default function SharedChatPage() {
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* Payload Transmission Interface */}
+              {/* ช่องพิมพ์ข้อความ */}
               <div className="p-6 border-t border-border/50 bg-secondary/10">
                 <div className="flex gap-4 relative">
                   <div className="absolute inset-0 bg-primary/5 blur-xl opacity-0 focus-within:opacity-100 transition-opacity rounded-3xl" />
@@ -416,7 +416,7 @@ export default function SharedChatPage() {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                    placeholder="Compose neural payload..."
+                    placeholder="พิมพ์ข้อความ..."
                     className="flex-1 bg-card border border-border/50 rounded-[24px] py-4 px-8 text-sm font-bold text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
                   />
                   <Button
@@ -436,9 +436,9 @@ export default function SharedChatPage() {
                   <ChatCircle weight="duotone" className="w-12 h-12 text-muted-foreground group-hover:text-primary transition-colors" />
                 </div>
                 <div className="space-y-3">
-                  <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">Select Protocol</h3>
+                  <h3 className="text-2xl font-black text-foreground uppercase tracking-widest">เลือกการสนทนา</h3>
                   <p className="text-sm text-muted-foreground font-medium max-w-xs mx-auto leading-relaxed italic">
-                    Choose a conversation from the identity hub to establish a secure communication uplink.
+                    เลือกการสนทนาจากรายชื่อเพื่อเริ่มแชท
                   </p>
                 </div>
               </div>

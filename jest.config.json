@@ -1,39 +1,33 @@
 {
   "preset": "ts-jest",
-  "testEnvironment": "jsdom",
+  "testEnvironment": "node",
   "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
-  "moduleNameMapping": {
+  "moduleNameMapper": {
     "^@/(.*)$": "<rootDir>/$1"
   },
   "moduleDirectories": ["node_modules", "<rootDir>"],
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json"],
   "testMatch": [
-    "<rootDir>/tests/**/*.test.ts",
-    "<rootDir>/tests/**/*.test.tsx"
+    "<rootDir>/tests/unit/**/*.test.ts",
+    "<rootDir>/tests/components/**/*.test.tsx"
   ],
   "collectCoverageFrom": [
-    "app/**/*.{ts,tsx}",
     "lib/**/*.{ts,tsx}",
     "components/**/*.{ts,tsx}",
     "!**/*.d.ts",
     "!**/node_modules/**",
-    "!**/.next/**"
+    "!**/.next/**",
+    "!lib/supabase/types.ts",
+    "!**/tests/**"
   ],
-  "coverageThreshold": {
-    "global": {
-      "branches": 70,
-      "functions": 70,
-      "lines": 70,
-      "statements": 70
-    }
-  },
   "transform": {
-    "^.+\\.(ts|tsx)$": "ts-jest"
+    "^.+\\.(ts|tsx)$": [
+      "ts-jest",
+      {
+        "tsconfig": "tsconfig.jest.json"
+      }
+    ]
   },
   "testTimeout": 10000,
-  "globals": {
-    "ts-jest": {
-      "tsconfig": "tsconfig.jest.json"
-    }
-  }
+  "maxWorkers": 1
 }

@@ -218,7 +218,7 @@ export default function WaitlistPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating unassigned temporal slots and prioritized client identity nodes.
+            จัดการรายชื่อรอและลำดับความสำคัญของลูกค้า
           </motion.p>
         </div>
 
@@ -246,11 +246,11 @@ export default function WaitlistPage() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            Sync Queue
+            อัปเดต
           </Button>
           <Button className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
             <Plus weight="bold" className="w-4 h-4" />
-            Initialize Entry
+            เพิ่มรายชื่อ
           </Button>
         </div>
       </div>

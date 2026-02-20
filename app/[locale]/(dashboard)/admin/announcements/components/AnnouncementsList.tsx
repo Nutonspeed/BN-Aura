@@ -219,7 +219,7 @@ export default function AnnouncementsList() {
                     size="sm"
                     onClick={() => toggleActive(announcement.id)}
                     className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-secondary text-muted-foreground hover:text-amber-500 transition-all"
-                    title={announcement.is_active ? 'Deactivate' : 'Activate'}
+                    title={announcement.is_active ? 'ปิดใช้งาน' : 'Activate'}
                   >
                     {announcement.is_active ? <EyeSlash weight="bold" className="w-5 h-5" /> : <Eye weight="bold" className="w-5 h-5" />}
                   </Button>
@@ -238,7 +238,7 @@ export default function AnnouncementsList() {
                     size="sm"
                     onClick={() => handleDelete(announcement.id)}
                     className="h-11 w-11 p-0 rounded-2xl border-border/50 hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 hover:border-rose-500/30 transition-all"
-                    title="Delete Node"
+                    title="ลบ"
                   >
                     <Trash weight="bold" className="w-5 h-5" />
                   </Button>

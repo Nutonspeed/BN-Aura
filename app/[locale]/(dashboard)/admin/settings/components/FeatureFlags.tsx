@@ -123,8 +123,8 @@ export default function FeatureFlags({ onSettingsChange }: FeatureFlagsProps) {
               <TrendUp weight="duotone" className="w-6 h-6" />
             </div>
             <div>
-              <CardTitle className="text-xl font-black uppercase tracking-tight">System Feature Matrix</CardTitle>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Enable or disable operational protocol nodes</p>
+              <CardTitle className="text-xl font-black uppercase tracking-tight">ฟีเจอร์ระบบ</CardTitle>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">เปิดหรือปิดฟีเจอร์ต่างๆ ของระบบ</p>
             </div>
           </div>
         </CardHeader>

@@ -3,6 +3,7 @@
  * Provides a single interface for workflow operations
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/client';
 import { WorkflowStage } from './workflowEngine';
 

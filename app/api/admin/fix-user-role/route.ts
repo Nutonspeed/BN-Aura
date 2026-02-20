@@ -23,11 +23,13 @@ export async function POST() {
     console.log('Found user:', user);
     
     // 2. Check if user has clinic_staff record (using admin client to bypass RLS)
-    let { data: staffRecord, error: staffError } = await adminClient
+    const { data: staffRecordInitial, error: staffError } = await adminClient
       .from('clinic_staff')
       .select('*')
       .eq('user_id', user.id)
       .maybeSingle();
+
+    let staffRecord = staffRecordInitial;
     
     console.log('Staff record check:', { staffRecord, staffError });
     

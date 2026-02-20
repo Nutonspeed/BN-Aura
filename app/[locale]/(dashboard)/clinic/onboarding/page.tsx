@@ -44,8 +44,16 @@ export default function OnboardingPage() {
 
   const next = () => step === 3 ? handleSave() : setStep(s => Math.min(s + 1, 4));
   const back = () => setStep(s => Math.max(s - 1, 0));
-  const toggle = (i: number) => { const s = new Set(selected); s.has(i) ? s.delete(i) : s.add(i); setSelected(s); };
-  const addStaff = () => staff.length < 10 && setStaff([...staff, { name: '', email: '', role: 'sales_staff' }]);
+  const toggle = (i: number) => {
+    const nextSelected = new Set(selected);
+    if (nextSelected.has(i)) nextSelected.delete(i);
+    else nextSelected.add(i);
+    setSelected(nextSelected);
+  };
+  const addStaff = () => {
+    if (staff.length >= 10) return;
+    setStaff([...staff, { name: '', email: '', role: 'sales_staff' }]);
+  };
   const updateStaff = (i: number, f: string, v: string) => { const u = [...staff]; (u[i] as any)[f] = v; setStaff(u); };
 
   const inputCls = "w-full bg-background border border-border rounded-xl py-2.5 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all";

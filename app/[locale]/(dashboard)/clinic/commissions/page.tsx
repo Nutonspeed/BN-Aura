@@ -193,7 +193,7 @@ export default function CommissionsPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <CurrencyCircleDollar weight="duotone" className="w-4 h-4" />
-            Fiscal Incentive Registry
+            ค่าคอมมิชชัน
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -201,7 +201,7 @@ export default function CommissionsPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Commission <span className="text-primary">Ledger</span>
+            ค่า<span className="text-primary">คอมมิชชัน</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -209,7 +209,7 @@ export default function CommissionsPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating practitioner incentives, payout cycles, and clinical yield distributions.
+            จัดการค่าคอมมิชชันและผลตอบแทนพนักงาน
           </motion.p>
         </div>
 
@@ -252,7 +252,7 @@ export default function CommissionsPage() {
           className="p-4"
         />
         <StatCard
-          title="Settled Nodes"
+          title="จ่ายแล้ว"
           value={records.filter(r => r.status === 'paid').reduce((s, r) => s + r.commission_amount, 0)}
           prefix="฿"
           icon={CheckCircle as Icon}
@@ -268,14 +268,14 @@ export default function CommissionsPage() {
           className="p-4"
         />
         <StatCard
-          title="Node Population"
+          title="จำนวนรายการ"
           value={filteredRecords.length}
           icon={Receipt as Icon}
           className="p-4"
         />
       </div>
 
-      {/* Search & Intelligence Controls */}
+      {/* ค้นหาและตัวกรอง */}
       <div className="px-2">
         <Card className="p-6 rounded-[32px] border-border/50 shadow-card">
           <div className="flex flex-col md:flex-row gap-6">
@@ -284,7 +284,7 @@ export default function CommissionsPage() {
               <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
               <input 
                 type="text" 
-                placeholder="Query identity node name or protocol registry..." 
+                placeholder="ค้นหาชื่อหรือบริการ..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
@@ -297,7 +297,7 @@ export default function CommissionsPage() {
                 onChange={(e) => setStatusFilter(e.target.value)}
                 className="w-full sm:w-48 bg-secondary/50 border border-border rounded-2xl py-3.5 px-6 text-xs font-black uppercase tracking-widest text-foreground focus:border-primary outline-none transition-all appearance-none"
               >
-                <option value="all">Protocol: ALL</option>
+                <option value="all">ทั้งหมด</option>
                 <option value="pending">PENDING</option>
                 <option value="approved">APPROVED</option>
                 <option value="paid">SETTLED</option>
@@ -359,7 +359,7 @@ export default function CommissionsPage() {
                   </div>
                   {record.status === 'paid' && record.payment_date && (
                     <Badge variant="ghost" className="bg-emerald-500/5 text-emerald-500 border-none font-black text-[8px] uppercase tracking-widest px-3">
-                      Settled node confirmed
+                      จ่ายแล้ว
                     </Badge>
                   )}
                 </div>

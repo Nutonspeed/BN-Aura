@@ -152,13 +152,18 @@ export const POST = withErrorHandling(async (request: Request) => {
       ...data,
       clinic_id: staffData.clinic_id,
       customer_code: customerCode,
+      assigned_sales_id: user.id,
+      assignment_date: new Date().toISOString(),
       created_by: user.id,
       updated_by: user.id
     })
     .select()
     .single();
 
-  if (insertError) throw insertError;
+  if (insertError) {
+    console.error('Customer insert error:', JSON.stringify(insertError));
+    throw insertError;
+  }
 
   return createSuccessResponse(newCustomer, {
     meta: { action: 'customer_created' }

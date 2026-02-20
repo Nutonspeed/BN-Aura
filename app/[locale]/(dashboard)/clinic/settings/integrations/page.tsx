@@ -439,7 +439,7 @@ export default function IntegrationsPage() {
             <div className="flex-1 space-y-2 relative z-10 text-center md:text-left">
               <h4 className="text-xl font-black text-foreground uppercase tracking-tight">System Link Protocol v1.0</h4>
               <p className="text-sm text-muted-foreground font-medium italic leading-relaxed max-w-2xl">
-                External integrations enable autonomous clinical notifications, automated patient engagement, and high-fidelity synchronization with regional social networks. Protocol modifications propagate globally across clinical terminal nodes.
+                การเชื่อมต่อภายนอกช่วยให้สามารถส่งการแจ้งเตือน ติดตามลูกค้า และเชื่อมต่อกับโซเชียลมีเดียได้โดยอัตโนมัติ
               </p>
             </div>
             <div className="relative z-10 shrink-0">

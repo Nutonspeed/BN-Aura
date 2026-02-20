@@ -42,7 +42,7 @@ export default function InfiniteLeadsList({
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   // Set up intersection observer
-  useCallback(() => {
+  const observeElement = useCallback(() => {
     const element = observerTarget.current;
     if (!element) return;
 
@@ -59,6 +59,26 @@ export default function InfiniteLeadsList({
   const allLeads = data?.pages.flatMap(page => page.data) ?? [];
   const totalCount = data?.pages[0]?.totalCount ?? 0;
 
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'new': return 'ใหม่';
+      case 'contacted': return 'ติดต่อแล้ว';
+      case 'qualified': return 'คัดกรองแล้ว';
+      case 'won': return 'สำเร็จ';
+      case 'lost': return 'หลุด';
+      default: return status;
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    switch (category?.toLowerCase()) {
+      case 'hot': return 'มาแรง';
+      case 'warm': return 'ปานกลาง';
+      case 'cold': return 'ทั่วไป';
+      default: return category?.toUpperCase() || '';
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -71,7 +91,7 @@ export default function InfiniteLeadsList({
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <WarningCircle className="w-12 h-12 text-destructive mb-4" />
-        <p className="text-muted-foreground">Failed to load leads</p>
+        <p className="text-muted-foreground">ไม่สามารถโหลดรายชื่อได้</p>
       </div>
     );
   }
@@ -92,11 +112,11 @@ export default function InfiniteLeadsList({
       {/* Header with count */}
       <div className="flex items-center justify-between px-4 py-2 bg-white/5 rounded-2xl">
         <p className="text-sm text-muted-foreground">
-          Showing <span className="text-white font-bold">{allLeads.length}</span> of{' '}
-          <span className="text-white font-bold">{totalCount}</span> leads
+          แสดง <span className="text-white font-bold">{allLeads.length}</span> จาก{' '}
+          <span className="text-white font-bold">{totalCount}</span> รายชื่อ
         </p>
         {hasNextPage && (
-          <p className="text-xs text-primary">Scroll for more</p>
+          <p className="text-xs text-primary">เลื่อนเพื่อดูเพิ่ม</p>
         )}
       </div>
 
@@ -126,7 +146,7 @@ export default function InfiniteLeadsList({
                   </h4>
                   {lead.score >= 70 && (
                     <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs font-bold rounded-full">
-                      HOT
+                      มาแรง
                     </span>
                   )}
                 </div>
@@ -149,7 +169,7 @@ export default function InfiniteLeadsList({
                     lead.status === 'won' && "bg-emerald-500/20 text-emerald-400",
                     lead.status === 'lost' && "bg-red-500/20 text-red-400"
                   )}>
-                    {lead.status}
+                    {getStatusLabel(lead.status)}
                   </span>
                 </div>
               </div>
@@ -169,7 +189,7 @@ export default function InfiniteLeadsList({
                   </span>
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {lead.category.toUpperCase()}
+                  {getCategoryLabel(lead.category)}
                 </span>
               </div>
             </div>
@@ -190,7 +210,7 @@ export default function InfiniteLeadsList({
             </div>
           ) : (
             <div className="text-sm text-muted-foreground">
-              Scroll down to load more
+              เลื่อนลงเพื่อดูเพิ่มเติม
             </div>
           )}
         </div>
@@ -200,7 +220,7 @@ export default function InfiniteLeadsList({
       {!hasNextPage && allLeads.length > 0 && (
         <div className="text-center py-8">
           <p className="text-sm text-muted-foreground">
-            You've reached the end of the list
+            สิ้นสุดรายการ
           </p>
         </div>
       )}

@@ -323,7 +323,7 @@ export default function SuperAdminDashboard() {
       <div className="min-h-[400px] flex flex-col items-center justify-center space-y-4">
         <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
         <p className="text-muted-foreground animate-pulse text-xs uppercase tracking-widest text-center">
-          กำลังเข้าถึงโหนดควบคุมระดับโลก...
+          กำลังเข้าถึงศูนย์ควบคุม...
         </p>
       </div>
     );
@@ -353,7 +353,7 @@ export default function SuperAdminDashboard() {
             className="flex items-center space-xs text-primary text-label"
           >
             <ShieldCheck weight="duotone" className="w-4 h-4" />
-            โหนดอำนาจระบบ
+            ศูนย์ควบคุมระบบ
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -361,7 +361,7 @@ export default function SuperAdminDashboard() {
             transition={{ delay: 0.1 }}
             className="text-display text-foreground"
           >
-            ซูเปอร์แอดมิน <span className="text-primary">คอนโซล</span>
+            แผงควบคุม<span className="text-primary">ผู้ดูแลระบบ</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -436,7 +436,7 @@ export default function SuperAdminDashboard() {
                 </div>
                 <div>
                   <CardTitle className="text-heading-2">ทะเบียนคลินิกระดับโลก</CardTitle>
-                  <p className="text-label text-muted-foreground mt-0.5">อินสแตนซ์คลัสเตอร์ที่จัดการ</p>
+                  <p className="text-label text-muted-foreground mt-0.5">คลินิกที่จัดการอยู่</p>
                 </div>
               </div>
               <div className="relative group w-full md:w-72">
@@ -444,7 +444,7 @@ export default function SuperAdminDashboard() {
                 <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
                 <input 
                   type="text" 
-                  placeholder="ค้นหาโหนดคลัสเตอร์..." 
+                  placeholder="ค้นหาคลินิก..." 
                   className="w-full bg-card border border-border/50 radius-lg py-3 pl-11 pr-4 text-caption text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
                 />
               </div>
@@ -520,7 +520,7 @@ export default function SuperAdminDashboard() {
                 variant="ghost" 
                 className="w-full mt-8 py-6 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-primary border border-dashed border-border/50"
               >
-                เข้าถึงเมทริกซ์คลัสเตอร์ทั้งหมด
+                ดูคลินิกทั้งหมด
               </Button>
             </CardContent>
           </Card>
@@ -560,7 +560,7 @@ export default function SuperAdminDashboard() {
                 <WarningCircle weight="fill" className="w-6 h-6 text-amber-500 flex-shrink-0" />
                 <p className="text-[10px] text-muted-foreground font-medium leading-relaxed italic">
                   <span className="text-amber-500 font-black uppercase tracking-tighter mr-1.5">พบความผิดปกติ:</span>
-                  ความล่าช้าเล็กน้อยในระบบ กำหนดการซิงโครไนซ์อัตโนมัติ 02:00 UTC.
+                  ความล่าช้าเล็กน้อยในระบบ กำหนดการอัปเดตอัตโนมัติ 02:00 UTC.
                 </p>
               </div>
             </CardContent>
@@ -584,9 +584,9 @@ export default function SuperAdminDashboard() {
             <CardContent className="p-8">
               <div className="space-y-3">
                 {[
-                  { title: "สำรองฐานข้อมูลแบบกระจาย", sub: "ช่วง: 4 ชั่วโมง", icon: Database },
-                  { title: "การล้างแคชประสาท", sub: "เกตเวย์ AI และ Redis", icon: Lightning },
-                  { title: "การตรวจสอบความปลอดภัย", sub: "3 ไอเด็นติตี้กำลังหมดอายุ", icon: ShieldCheck }
+                  { title: "สำรองฐานข้อมูล", sub: "ช่วง: 4 ชั่วโมง", icon: Database },
+                  { title: "ล้างแคชระบบ", sub: "เกตเวย์ AI และ Redis", icon: Lightning },
+                  { title: "การตรวจสอบความปลอดภัย", sub: "3 ผู้ใช้กำลังหมดอายุ", icon: ShieldCheck }
                 ].map((tool, i) => (
                   <motion.button 
                     key={i} 
@@ -634,7 +634,7 @@ export default function SuperAdminDashboard() {
                     </div>
                     <div>
                       <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">การสร้างตัวตน</h3>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">สร้างโหนดผู้ดูแลระบบ</p>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">สร้างผู้ดูแลระบบ</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setShowUserModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
@@ -686,7 +686,7 @@ export default function SuperAdminDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">คลัสเตอร์เป้าหมาย *</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">คลินิกเป้าหมาย *</label>
                       <div className="relative">
                         <Buildings weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                         <select
@@ -695,7 +695,7 @@ export default function SuperAdminDashboard() {
                           className="w-full bg-secondary/50 border border-border rounded-2xl py-4 pl-12 pr-6 text-xs text-foreground focus:border-primary outline-none transition-all appearance-none font-black uppercase tracking-widest"
                           required
                         >
-                          <option value="" className="bg-card">เลือกคลัสเตอร์</option>
+                          <option value="" className="bg-card">เลือกคลินิก</option>
                           {clinics.map(clinic => (
                             <option key={clinic.id} value={clinic.id} className="bg-card">
                               {clinic.name.toUpperCase()}
@@ -707,7 +707,7 @@ export default function SuperAdminDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">โปรโตคอลการเข้าถึง *</label>
+                      <label className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">สิทธิ์การเข้าถึง *</label>
                       <div className="relative">
                         <Shield weight="bold" className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/40" />
                         <select
@@ -731,7 +731,7 @@ export default function SuperAdminDashboard() {
                       <p className="text-[10px] font-black text-primary uppercase tracking-widest">ข้อมูลรับรองเริ่มต้น</p>
                     </div>
                     <p className="text-xl font-mono font-black text-foreground tracking-tighter">BNAura2024!</p>
-                    <p className="text-[9px] text-muted-foreground font-medium italic">โหนดตัวตนต้องสร้างโทเค็นการเข้าถึงใหม่หลังจากซิงโครไนซ์</p>
+                    <p className="text-[9px] text-muted-foreground font-medium italic">ผู้ใช้ต้องเปลี่ยนรหัสผ่านหลังจากเข้าสู่ระบบครั้งแรก</p>
                   </div>
 
                   <div className="flex gap-4 pt-4">
@@ -751,7 +751,7 @@ export default function SuperAdminDashboard() {
                       {creatingUser ? (
                         <>
                           <SpinnerGap weight="bold" className="w-4 h-4 animate-spin" />
-                          กำลังซิงโครไนซ์...
+                          กำลังสร้าง...
                         </>
                       ) : (
                         <>
@@ -800,8 +800,8 @@ export default function SuperAdminDashboard() {
                       <Buildings weight="duotone" className="w-8 h-8" />
                     </div>
                     <div>
-                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">การลงทะเบียนคลัสเตอร์</h3>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">เริ่มต้นโหนดโครงสร้างพื้นฐาน</p>
+                      <h3 className="text-2xl font-bold text-foreground tracking-tight uppercase">ลงทะเบียนคลินิก</h3>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">สร้างคลินิกใหม่</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setShowRegisterModal(false)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">

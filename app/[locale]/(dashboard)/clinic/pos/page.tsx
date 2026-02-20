@@ -337,7 +337,7 @@ export default function POSPage() {
                 transition={{ delay: 0.1 }}
                 className="text-4xl font-heading font-bold text-foreground tracking-tight"
               >
-                Point of <span className="text-primary">Sale</span>
+                จุด<span className="text-primary">ขาย</span>
               </motion.h1>
             </div>
             

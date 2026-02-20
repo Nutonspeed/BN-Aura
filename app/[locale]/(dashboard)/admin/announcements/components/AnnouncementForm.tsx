@@ -261,7 +261,7 @@ export default function AnnouncementForm({ initialData, onClose }: AnnouncementF
               </div>
 
               <div className="space-y-4">
-                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">Priority Protocol</label>
+                <label className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] ml-1">ระดับความสำคัญ</label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {[
                     { value: 'low', label: 'Normal', color: 'text-blue-500' },
@@ -364,7 +364,7 @@ export default function AnnouncementForm({ initialData, onClose }: AnnouncementF
                 ) : (
                   <CheckCircle weight="bold" className="w-5 h-5 group-hover/btn:scale-110 transition-transform" />
                 )}
-                {saving ? 'SYNCHRONIZING...' : initialData?.id ? 'COMMIT PROTOCOL' : 'INITIALIZE BROADCAST'}
+                {saving ? 'กำลังส่ง...' : initialData?.id ? 'ส่งประกาศ' : 'INITIALIZE BROADCAST'}
               </Button>
 
               {onClose && (

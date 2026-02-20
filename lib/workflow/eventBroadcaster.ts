@@ -1,6 +1,13 @@
 import { createClient } from '@/lib/supabase/client';
 import { WorkflowStage } from './workflowEngine';
 
+type WorkflowUpdateDetails = {
+  customerName: string;
+  currentStage: WorkflowStage;
+  priority?: 'low' | 'medium' | 'high' | 'critical';
+  message?: string;
+} & Record<string, unknown>;
+
 /**
  * Event Broadcasting System
  * จัดการการส่งข้อความระหว่าง Dashboard แบบ Real-time
@@ -27,7 +34,7 @@ export interface EventPayload {
     message: string;
     actionRequired?: string;
     priority: 'low' | 'medium' | 'high' | 'critical';
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   };
   timestamp: Date;
 }
@@ -137,7 +144,7 @@ export class EventBroadcaster {
     salesUserId: string, 
     beauticianId: string, 
     customerName: string,
-    treatmentDetails: any
+    treatmentDetails: Record<string, unknown>
   ): Promise<void> {
     const payload: EventPayload = {
       eventType: 'appointment_scheduled',
@@ -170,7 +177,7 @@ export class EventBroadcaster {
     beauticianId: string,
     salesUserId: string,
     customerName: string,
-    treatmentResults: any
+    treatmentResults: Record<string, unknown>
   ): Promise<void> {
     const payload: EventPayload = {
       eventType: 'treatment_completed',
@@ -202,7 +209,7 @@ export class EventBroadcaster {
     sourceUserId: string,
     ownerIds: string[],
     updateType: string,
-    details: any
+    details: WorkflowUpdateDetails
   ): Promise<void> {
     const payload: EventPayload = {
       eventType: 'workflow_updated',
@@ -212,7 +219,7 @@ export class EventBroadcaster {
       data: {
         customerName: details.customerName,
         workflowStage: details.currentStage,
-        message: `Workflow Update: ${updateType}`,
+        message: details.message ?? `Workflow Update: ${updateType}`,
         priority: details.priority || 'low',
         metadata: details
       },
@@ -291,7 +298,7 @@ export class EventBroadcaster {
     // Subscribe to workflow events
     const channel = this.supabase.channel('workflow_events');
     
-    channel.on('broadcast', { event: '*' }, (payload: { event: string; payload: any }) => {
+    channel.on('broadcast', { event: '*' }, (payload: { event: string; payload: unknown }) => {
       this.handleIncomingEvent(payload);
     });
 
@@ -303,7 +310,7 @@ export class EventBroadcaster {
         schema: 'public', 
         table: 'workflow_events' 
       },
-      (payload: { new: any }) => {
+      (payload: { new: unknown }) => {
         this.handleDatabaseEvent(payload);
       }
     );
@@ -314,15 +321,18 @@ export class EventBroadcaster {
   /**
    * จัดการ Incoming Events
    */
-  private handleIncomingEvent(payload: { event: string; payload: any }): void {
+  private handleIncomingEvent(payload: { event: string; payload: unknown }): void {
     try {
+      const incoming = payload.payload as Partial<EventPayload>;
+      if (!incoming || !incoming.workflowId || !incoming.data) return;
+
       const eventPayload: EventPayload = {
-        eventType: payload.event as DashboardEvent,
-        workflowId: payload.payload.workflowId,
-        sourceUserId: payload.payload.data.sourceUserId,
-        targetUsers: payload.payload.targetUsers,
-        data: payload.payload.data,
-        timestamp: new Date(payload.payload.timestamp)
+        eventType: (incoming.eventType as DashboardEvent) ?? 'workflow_updated',
+        workflowId: incoming.workflowId,
+        sourceUserId: incoming.sourceUserId ?? '',
+        targetUsers: incoming.targetUsers ?? [],
+        data: incoming.data as EventPayload['data'],
+        timestamp: incoming.timestamp ? new Date(incoming.timestamp) : new Date()
       };
 
       this.triggerLocalListeners(eventPayload);
@@ -335,16 +345,31 @@ export class EventBroadcaster {
   /**
    * จัดการ Database Events
    */
-  private handleDatabaseEvent(payload: { new: any }): void {
+  private handleDatabaseEvent(payload: { new: unknown }): void {
     try {
-      const eventData = payload.new;
-      
+      const eventData = payload.new as {
+        event_type: DashboardEvent;
+        workflow_id: string;
+        event_data: { sourceUserId?: string; [key: string]: unknown };
+        target_users: string[];
+        created_at: string;
+      };
+
+      const eventDataContent = eventData.event_data || {};
+
       const eventPayload: EventPayload = {
         eventType: eventData.event_type,
         workflowId: eventData.workflow_id,
-        sourceUserId: eventData.event_data.sourceUserId,
-        targetUsers: eventData.target_users,
-        data: eventData.event_data,
+        sourceUserId: eventDataContent.sourceUserId ?? '',
+        targetUsers: eventData.target_users || [],
+        data: {
+          customerName: (eventDataContent as any).customerName ?? '',
+          workflowStage: (eventDataContent as any).workflowStage ?? 'lead_created',
+          message: (eventDataContent as any).message ?? '',
+          actionRequired: (eventDataContent as any).actionRequired,
+          priority: ((eventDataContent as any).priority as 'low' | 'medium' | 'high' | 'critical') ?? 'low',
+          metadata: (eventDataContent as any).metadata
+        },
         timestamp: new Date(eventData.created_at)
       };
 

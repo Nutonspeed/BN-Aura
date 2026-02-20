@@ -259,7 +259,7 @@ export default function ClinicDashboard() {
           )}
         </div>
 
-        {/* Sidebar Intelligence Nodes */}
+        {/* ข้อมูลเพิ่มเติม */}
         <div className="lg:col-span-2 space-y-8">
           {/* AI Quota Widget */}
           {clinicId && (

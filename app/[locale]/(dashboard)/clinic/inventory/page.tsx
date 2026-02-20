@@ -281,7 +281,7 @@ export default function InventoryManagement() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Inventory <span className="text-primary">Matrix</span>
+            คลัง<span className="text-primary">สินค้า</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}

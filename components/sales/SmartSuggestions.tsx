@@ -101,14 +101,14 @@ export default function SmartSuggestions({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-primary" />
-            <h3 className="font-semibold text-foreground">AI Upsell Recommendations</h3>
+            <h3 className="font-semibold text-foreground">คำแนะนำการเพิ่มยอดขายโดย AI</h3>
           </div>
           <button
             onClick={fetchRecommendations}
             disabled={loading}
             className="text-sm px-3 py-1 bg-primary/20 text-primary rounded-lg hover:bg-primary/30 transition-colors disabled:opacity-50"
           >
-            {loading ? 'กำลังวิเคราะห์...' : 'รับคำแนะนำ'}
+            {loading ? 'กำลังวิเคราะห์...' : 'ขอคำแนะนำ'}
           </button>
         </div>
       </div>
@@ -137,9 +137,9 @@ export default function SmartSuggestions({
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold text-foreground">{rec.product}</h4>
                     <span className="text-xs px-2 py-1 bg-background/50 rounded-full text-muted-foreground">
-                      {rec.timing === 'now' ? '⚡ ตอนนี้' : 
-                       rec.timing === 'after_treatment' ? '🕐 หลัง Treatment' : 
-                       '📅 Follow-up'}
+                      {rec.timing === 'now' ? '⚡ ทันที' : 
+                       rec.timing === 'after_treatment' ? '🕐 หลังการรับบริการ' : 
+                       '📅 ติดตามผล'}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground">{rec.reason}</p>
@@ -154,7 +154,7 @@ export default function SmartSuggestions({
                       onClick={() => handleMarkAsDone(index)}
                       className="text-xs px-3 py-2 bg-emerald-500/10 text-emerald-600 rounded-lg hover:bg-emerald-500/20 transition-colors font-medium"
                     >
-                      ✓ เสร็จแล้ว
+                      ✓ เสร็จสิ้น
                     </button>
                     <button 
                       onClick={() => handleDismiss(index)}
@@ -173,7 +173,7 @@ export default function SmartSuggestions({
       {expanded && recommendations.length === 0 && !loading && (
         <div className="p-8 text-center text-muted-foreground">
           <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-30" />
-          <p className="text-sm">ไม่มีคำแนะนำเพิ่มเติมในขณะนี้</p>
+          <p className="text-sm">ไม่พบคำแนะนำเพิ่มเติมในขณะนี้</p>
         </div>
       )}
     </div>

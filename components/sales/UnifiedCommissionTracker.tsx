@@ -1,5 +1,5 @@
 /**
- * Unified Commission Tracker
+ * Unified ระบบติดตามส่วนแบ่งการขาย
  * แสดง commissions จาก workflow system พร้อม realtime updates
  */
 
@@ -21,6 +21,7 @@ import {
   Download,
   Funnel
 } from '@phosphor-icons/react';
+
 interface CommissionRecord {
   id: string;
   sales_staff_id: string;
@@ -100,7 +101,7 @@ export default function UnifiedCommissionTracker() {
         payment_status: record.payment_status,
         transaction_date: record.transaction_date,
         workflow_id: record.workflow_id,
-        customer_name: record.customers?.full_name || 'Unknown Customer'
+        customer_name: record.customers?.full_name || 'ไม่ระบุชื่อลูกค้า'
       }));
 
       setCommissions(commissionRecords);
@@ -149,18 +150,18 @@ export default function UnifiedCommissionTracker() {
     return start.toISOString();
   };
 
-  // Export commissions
+  // ส่งออกข้อมูล commissions
   const exportCommissions = () => {
     const csv = [
-      ['Date', 'Customer', 'Type', 'Base Amount', 'Commission Rate', 'Commission', 'Status'],
+      ['วันที่', 'ลูกค้า', 'ประเภท', 'ยอดซื้อ', 'อัตราส่วนแบ่ง', 'ส่วนแบ่ง', 'สถานะ'],
       ...commissions.map(c => [
         new Date(c.transaction_date).toLocaleDateString(),
         c.customer_name,
-        c.transaction_type,
+        c.transaction_type === 'treatment_payment' ? 'ชำระค่าบริการ' : c.transaction_type,
         c.base_amount.toString(),
         `${c.commission_rate}%`,
         c.commission_amount.toString(),
-        c.payment_status
+        c.payment_status === 'paid' ? 'ชำระแล้ว' : (c.payment_status === 'pending' ? 'ค้างชำระ' : 'ยกเลิก')
       ])
     ].map(row => row.join(',')).join('\n');
 
@@ -184,8 +185,8 @@ export default function UnifiedCommissionTracker() {
   return (
     <div className="p-6">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Commission Tracker</h1>
-        <p className="text-gray-400">Track your earnings and commission payments</p>
+        <h1 className="text-3xl font-bold text-white mb-2">ระบบติดตามส่วนแบ่งการขาย</h1>
+        <p className="text-gray-400">ติดตามรายได้และส่วนแบ่งจากยอดขายของคุณ</p>
       </div>
 
       {/* Summary Cards */}
@@ -200,7 +201,7 @@ export default function UnifiedCommissionTracker() {
               <CurrencyDollar className="w-8 h-8 text-green-400" />
               <TrendUp className="w-5 h-5 text-green-400" />
             </div>
-            <p className="text-gray-400 text-sm mb-1">ค่าคอมมิชชันรวม</p>
+            <p className="text-gray-400 text-sm mb-1">รายได้ส่วนแบ่งรวม</p>
             <p className="text-2xl font-bold text-white">
               ฿{summary.totalCommission.toLocaleString()}
             </p>
@@ -216,7 +217,7 @@ export default function UnifiedCommissionTracker() {
               <Clock className="w-8 h-8 text-orange-400" />
               <WarningCircle className="w-5 h-5 text-orange-400" />
             </div>
-            <p className="text-gray-400 text-sm mb-1">รอดำเนินการ</p>
+            <p className="text-gray-400 text-sm mb-1">ค้างชำระ</p>
             <p className="text-2xl font-bold text-white">
               ฿{summary.pendingCommission.toLocaleString()}
             </p>
@@ -232,7 +233,7 @@ export default function UnifiedCommissionTracker() {
               <CheckCircle className="w-8 h-8 text-blue-400" />
               <CalendarDots className="w-5 h-5 text-blue-400" />
             </div>
-            <p className="text-gray-400 text-sm mb-1">จ่ายแล้ว</p>
+            <p className="text-gray-400 text-sm mb-1">ชำระแล้ว</p>
             <p className="text-2xl font-bold text-white">
               ฿{summary.paidCommission.toLocaleString()}
             </p>
@@ -246,9 +247,9 @@ export default function UnifiedCommissionTracker() {
           >
             <div className="flex items-center justify-between mb-2">
               <TrendUp className="w-8 h-8 text-purple-400" />
-              <span className="text-purple-400 text-sm font-medium">AVG</span>
+              <span className="text-purple-400 text-sm font-medium">เฉลี่ย</span>
             </div>
-            <p className="text-gray-400 text-sm mb-1">Average</p>
+            <p className="text-gray-400 text-sm mb-1">เฉลี่ยต่อรายการ</p>
             <p className="text-2xl font-bold text-white">
               ฿{Math.round(summary.averageCommission).toLocaleString()}
             </p>
@@ -260,9 +261,9 @@ export default function UnifiedCommissionTracker() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex gap-2">
           {[
-            { id: 'daily', label: 'Daily' },
-            { id: 'weekly', label: 'Weekly' },
-            { id: 'monthly', label: 'Monthly' }
+            { id: 'daily', label: 'รายวัน' },
+            { id: 'weekly', label: 'รายสัปดาห์' },
+            { id: 'monthly', label: 'รายเดือน' }
           ].map(p => (
             <button
               key={p.id}
@@ -284,9 +285,9 @@ export default function UnifiedCommissionTracker() {
             onChange={(e) => setFilter(e.target.value as any)}
             className="px-4 py-2 bg-white/5 border border-white/10 rounded-lg text-gray-400 focus:outline-none focus:border-primary/50"
           >
-            <option value="all">All Status</option>
-            <option value="pending">รอดำเนินการ</option>
-            <option value="paid">จ่ายแล้ว</option>
+            <option value="all">ทุกสถานะ</option>
+            <option value="pending">ค้างชำระ</option>
+            <option value="paid">ชำระแล้ว</option>
           </select>
 
           <button
@@ -294,24 +295,73 @@ export default function UnifiedCommissionTracker() {
             className="px-4 py-2 bg-white/5 text-gray-400 rounded-lg hover:bg-white/10 transition-colors flex items-center gap-2"
           >
             <Download className="w-4 h-4" />
-            Export
+            ส่งออกข้อมูล
           </button>
         </div>
       </div>
 
-      {/* Commission List */}
+      {/* ส่วนแบ่ง List */}
       <div className="bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile View - Cards */}
+        <div className="md:hidden">
+          {commissions.map((commission, index) => (
+            <motion.div
+              key={commission.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className="p-4 border-b border-white/10 last:border-0"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <p className="text-white font-medium">{commission.customer_name}</p>
+                  <p className="text-xs text-gray-400">
+                    {new Date(commission.transaction_date).toLocaleDateString('th-TH')}
+                  </p>
+                </div>
+                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                  commission.payment_status === 'paid'
+                    ? 'bg-green-500/20 text-green-400'
+                    : commission.payment_status === 'pending'
+                    ? 'bg-orange-500/20 text-orange-400'
+                    : 'bg-red-500/20 text-red-400'
+                }`}>
+                  {commission.payment_status === 'paid' ? 'ชำระแล้ว' : (commission.payment_status === 'pending' ? 'ค้างชำระ' : 'ยกเลิก')}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div>
+                  <p className="text-xs text-gray-500">ประเภท</p>
+                  <p className="text-gray-300">
+                    {commission.transaction_type === 'treatment_payment' ? 'ชำระค่าบริการ' : commission.transaction_type.replace('_', ' ')}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500">ส่วนแบ่ง ({commission.commission_rate}%)</p>
+                  <p className="text-green-400 font-medium">฿{commission.commission_amount.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">ยอดซื้อ</p>
+                  <p className="text-gray-300">฿{commission.base_amount.toLocaleString()}</p>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Desktop View - Table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="text-left p-4 text-gray-400 font-medium">Date</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Customer</th>
-                <th className="text-left p-4 text-gray-400 font-medium">Type</th>
-                <th className="text-right p-4 text-gray-400 font-medium">Base Amount</th>
-                <th className="text-right p-4 text-gray-400 font-medium">Rate</th>
-                <th className="text-right p-4 text-gray-400 font-medium">Commission</th>
-                <th className="text-center p-4 text-gray-400 font-medium">Status</th>
+                <th className="text-left p-4 text-gray-400 font-medium">วันที่</th>
+                <th className="text-left p-4 text-gray-400 font-medium">ลูกค้า</th>
+                <th className="text-left p-4 text-gray-400 font-medium">ประเภท</th>
+                <th className="text-right p-4 text-gray-400 font-medium">ยอดซื้อ</th>
+                <th className="text-right p-4 text-gray-400 font-medium">อัตราส่วนแบ่ง</th>
+                <th className="text-right p-4 text-gray-400 font-medium">ส่วนแบ่ง</th>
+                <th className="text-center p-4 text-gray-400 font-medium">สถานะ</th>
               </tr>
             </thead>
             <tbody>
@@ -324,13 +374,13 @@ export default function UnifiedCommissionTracker() {
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
                 >
                   <td className="p-4 text-gray-300">
-                    {new Date(commission.transaction_date).toLocaleDateString()}
+                    {new Date(commission.transaction_date).toLocaleDateString('th-TH')}
                   </td>
                   <td className="p-4 text-white font-medium">
                     {commission.customer_name}
                   </td>
                   <td className="p-4 text-gray-300">
-                    {commission.transaction_type.replace('_', ' ')}
+                    {commission.transaction_type === 'treatment_payment' ? 'ชำระค่าบริการ' : commission.transaction_type.replace('_', ' ')}
                   </td>
                   <td className="p-4 text-right text-gray-300">
                     ฿{commission.base_amount.toLocaleString()}
@@ -349,21 +399,21 @@ export default function UnifiedCommissionTracker() {
                         ? 'bg-orange-500/20 text-orange-400'
                         : 'bg-red-500/20 text-red-400'
                     }`}>
-                      {commission.payment_status}
+                      {commission.payment_status === 'paid' ? 'ชำระแล้ว' : (commission.payment_status === 'pending' ? 'ค้างชำระ' : 'ยกเลิก')}
                     </span>
                   </td>
                 </motion.tr>
               ))}
             </tbody>
           </table>
-
-          {commissions.length === 0 && (
-            <div className="text-center py-12">
-              <CurrencyDollar className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <p className="text-gray-400">ไม่พบค่าคอมมิชชันในช่วงเวลานี้</p>
-            </div>
-          )}
         </div>
+
+        {commissions.length === 0 && (
+          <div className="text-center py-12">
+            <CurrencyDollar className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <p className="text-gray-400">ไม่พบค่าคอมมิชชันในช่วงเวลานี้</p>
+          </div>
+        )}
       </div>
     </div>
   );

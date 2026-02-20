@@ -348,10 +348,10 @@ export default function GalleryPage() {
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
                             <h3 className="text-lg font-bold text-foreground tracking-tight group-hover:text-primary transition-colors truncate">
-                              {comparison.title || comparison.treatment_name || 'Protocol Node'}
+                              {comparison.title || comparison.treatment_name || 'ไม่ระบุชื่อ'}
                             </h3>
                             <Badge variant={comparison.is_public ? 'success' : 'secondary'} size="sm" className="font-black uppercase text-[8px] tracking-widest px-2">
-                              {comparison.is_public ? 'Public' : 'Encrypted'}
+                              {comparison.is_public ? 'สาธารณะ' : 'ส่วนตัว'}
                             </Badge>
                           </div>
                           {comparison.description && (

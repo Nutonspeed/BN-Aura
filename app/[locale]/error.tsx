@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import * as Sentry from '@sentry/nextjs';
 
 export default function LocaleError({
@@ -33,12 +34,12 @@ export default function LocaleError({
           >
             ลองใหม่อีกครั้ง
           </button>
-          <a
+          <Link
             href="/"
             className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl font-medium hover:bg-gray-300 transition-colors"
           >
             กลับหน้าหลัก
-          </a>
+          </Link>
         </div>
         {process.env.NODE_ENV === 'development' && (
           <details className="mt-6 text-left bg-red-50 rounded-lg p-4">

@@ -92,7 +92,7 @@ export default function AnalyticsDashboard() {
             กำลังสร้าง <span className="text-primary">ระบบข้อมูล</span>
           </p>
           <p className="text-xs font-black text-muted-foreground uppercase tracking-[0.3em] animate-pulse">
-            กำลังซิงโครไนซ์ข้อมูลและโหนดต่างๆ...
+            กำลังอัปเดตข้อมูล...
           </p>
         </div>
       </div>

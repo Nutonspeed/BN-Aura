@@ -290,8 +290,8 @@ export default function AICoachPanel({
               <Sparkle className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="font-bold text-foreground">AI Sales Coach</h3>
-              <p className="text-xs text-muted-foreground">ความช่วยเหลือแบบเรียลไทม์</p>
+              <h3 className="font-bold text-foreground">ผู้ช่วยฝ่ายขาย AI</h3>
+              <p className="text-xs text-muted-foreground">ระบบช่วยแนะนำการขายอัจฉริยะ</p>
             </div>
           </div>
           <button
@@ -303,13 +303,13 @@ export default function AICoachPanel({
         </div>
       </div>
 
-      {/* ความน่าจะเป็นการขาย Meter */}
+      {/* โอกาสในการปิดยอดขาย Meter */}
       {dealProbability !== null && (
         <div className="p-4 border-b border-border bg-gradient-to-br from-background to-muted/20">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-foreground flex items-center gap-2">
               <Target className="w-4 h-4" />
-              ความน่าจะเป็นการขาย
+              โอกาสในการปิดยอดขาย
             </span>
             <span className={`text-2xl font-bold ${
               dealProbability >= 70 ? 'text-green-500' :
@@ -337,9 +337,9 @@ export default function AICoachPanel({
       {/* Tab Navigation */}
       <div className="flex border-b border-border">
         {[
-          { id: 'advice' as const, label: 'Advice', icon: Lightbulb },
-          { id: 'objection' as const, label: 'Objection', icon: WarningCircle },
-          { id: 'upsell' as const, label: 'Upsell', icon: ShoppingCart },
+          { id: 'advice' as const, label: 'คำแนะนำ', icon: Lightbulb },
+          { id: 'objection' as const, label: 'ข้อโต้แย้ง', icon: WarningCircle },
+          { id: 'upsell' as const, label: 'การเสนอขายเพิ่มเติม', icon: ShoppingCart },
         ].map(tab => (
           <button
             key={tab.id}
@@ -389,11 +389,11 @@ export default function AICoachPanel({
                     </div>
                   </div>
 
-                  {/* ประเด็นที่ควรพูด */}
+                  {/* หัวข้อการสนทนาที่แนะนำ */}
                   <div className="space-y-2">
                     <h4 className="font-semibold text-sm text-foreground flex items-center gap-2">
                       <ChatCircle className="w-4 h-4 text-primary" />
-                      ประเด็นที่ควรพูด
+                      หัวข้อการสนทนาที่แนะนำ
                     </h4>
                     {advice.talkingPoints.map((point, index) => (
                       <motion.div
@@ -410,12 +410,12 @@ export default function AICoachPanel({
                     ))}
                   </div>
 
-                  {/* เทคนิคการปิดการขาย */}
+                  {/* กลยุทธ์การปิดการขาย */}
                   <div className="p-3 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl">
                     <div className="flex items-start gap-2">
                       <Target className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
                       <div>
-                        <h4 className="font-semibold text-sm text-foreground mb-1">เทคนิคการปิดการขาย</h4>
+                        <h4 className="font-semibold text-sm text-foreground mb-1">กลยุทธ์การปิดการขาย</h4>
                         <p className="text-sm text-foreground/90">{advice.closingTechnique}</p>
                       </div>
                     </div>
@@ -425,7 +425,7 @@ export default function AICoachPanel({
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <Sparkle className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="text-sm">เริ่มการสนทนาเพื่อรับคำแนะนำจาก AI</p>
+                <p className="text-sm">เริ่มการสนทนาเพื่อรับคำแนะนำจากผู้ช่วย AI</p>
               </div>
             )}
           </>
@@ -474,7 +474,7 @@ export default function AICoachPanel({
               ))}
             </div>
 
-            {/* Objection Response */}
+            {/* ข้อโต้แย้ง Response */}
             {objectionResponse && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -550,19 +550,19 @@ export default function AICoachPanel({
                   <p className="text-xs text-foreground/80 mb-2">{item.reason}</p>
                   <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                     <Clock className="w-3 h-3" />
-                    <span>Timing: {item.timing === 'now' ? 'แนะนำตอนนี้' : item.timing === 'after_treatment' ? 'หลังการรักษา' : 'ติดตามผล'}</span>
+                    <span>ช่วงเวลาที่แนะนำ: {item.timing === 'now' ? 'นำเสนอทันที' : item.timing === 'after_treatment' ? 'หลังการรักษา' : 'ติดตามผล'}</span>
                   </div>
                 </motion.div>
               ))
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <ShoppingCart className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p className="text-sm">ยังไม่มีคำแนะนำการขายเพิ่ม</p>
+                <p className="text-sm">ยังไม่มีข้อมูลการเสนอขายเพิ่มเติม</p>
                 <button
                   onClick={fetchUpsell}
                   className="mt-3 text-xs text-primary hover:underline"
                 >
-                  สร้างคำแนะนำ
+                  รับคำแนะนำใหม่
                 </button>
               </div>
             )}
@@ -574,7 +574,7 @@ export default function AICoachPanel({
                 className="w-full py-2 text-xs font-bold text-primary hover:bg-primary/5 rounded-lg transition disabled:opacity-50"
               >
                 <Lightning className="w-3.5 h-3.5 inline mr-1" />
-                รีเฟรชคำแนะนำ
+                อัปเดตคำแนะนำ
               </button>
             )}
           </div>
@@ -591,7 +591,7 @@ export default function AICoachPanel({
           <Sparkle className="w-4 h-4" />
           {loading || objectionLoading || upsellLoading ? 'กำลังวิเคราะห์...' : 
            activeTab === 'advice' ? 'รับคำแนะนำใหม่' :
-           activeTab === 'objection' ? 'จัดการข้อโต้แย้ง' : 'รับไอเดียการขายเพิ่ม'}
+           activeTab === 'objection' ? 'จัดการข้อโต้แย้ง' : 'รับไอเดียการเสนอขายเพิ่ม'}
         </button>
       </div>
     </motion.div>

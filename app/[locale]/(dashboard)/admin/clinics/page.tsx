@@ -1,5 +1,6 @@
 'use client';
 
+import type { MouseEvent } from 'react';
 import { 
   Buildings,
   MagnifyingGlass,
@@ -306,7 +307,7 @@ export default function ClinicManagementPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating clinical infrastructure nodes and regional data clusters.
+            จัดการคลินิกและข้อมูลสาขาทั้งหมด
           </motion.p>
         </div>
         
@@ -496,7 +497,7 @@ export default function ClinicManagementPage() {
                       <Eye weight="bold" className="w-4 h-4" />
                     </Button>
                     <Button 
-                      onClick={(e) => { e.stopPropagation(); handleUpdateStatus(clinic.id, clinic.is_active); }}
+                      onClick={(e: MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); handleUpdateStatus(clinic.id, clinic.is_active); }}
                       variant="outline"
                       size="sm"
                       className={cn(

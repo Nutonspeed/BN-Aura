@@ -140,7 +140,7 @@ export default function SupplierManagementContent() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Supplier <span className="text-primary">Network</span>
+            เครือข่าย<span className="text-primary">ซัพพลายเออร์</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}

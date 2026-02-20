@@ -49,7 +49,7 @@ export default function SettingsHeader({ onSave, hasUnsavedChanges }: SettingsHe
           transition={{ delay: 0.2 }}
           className="text-muted-foreground font-light text-sm italic"
         >
-          Configuring global parameters, feature flags, and clinical orchestration.
+          จัดการพารามิเตอร์ระบบ ฟีเจอร์ และการตั้งค่าคลินิก
         </motion.p>
       </div>
       

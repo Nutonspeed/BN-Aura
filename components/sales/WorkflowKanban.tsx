@@ -137,7 +137,7 @@ export default function WorkflowKanban() {
             grouped[workflow.current_stage].push({
               id: workflow.id,
               customer_id: workflow.customer_id,
-              customer_name: workflow.metadata?.customer_name || 'Unknown',
+              customer_name: workflow.metadata?.customer_name || 'ไม่ระบุชื่อ',
               current_stage: workflow.current_stage,
               treatment_plan: workflow.treatment_plan,
               created_at: workflow.created_at,
@@ -207,7 +207,7 @@ export default function WorkflowKanban() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Pulse weight="duotone" className="w-4 h-4" />
-            Operational Orchestration Node
+            ศูนย์ควบคุมการดำเนินงาน
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -215,7 +215,7 @@ export default function WorkflowKanban() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Workflow <span className="text-primary">Pipeline</span>
+            ขั้นตอน <span className="text-primary">งานขาย</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -223,18 +223,18 @@ export default function WorkflowKanban() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating end-to-end customer journeys and clinical transformation protocol cycles.
+            บริหารจัดการเส้นทางลูกค้าและขั้นตอนการดูแลรักษาอย่างครบวงจร
           </motion.p>
         </div>
         
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="outline" className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary">
             <Funnel weight="bold" className="w-4 h-4" />
-            Node Filter
+            กรองข้อมูล
           </Button>
           <Button className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest group">
             <Plus weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Initialize Workflow
+            เริ่มงานขายใหม่
           </Button>
         </div>
       </div>
@@ -242,13 +242,13 @@ export default function WorkflowKanban() {
       {/* Stats Summary Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="Consolidated Nodes"
+          title="งานขายทั้งหมด"
           value={stats.total}
           icon={Briefcase as any}
           className="p-4"
         />
         <StatCard
-          title="Yield Forecast"
+          title="พยากรณ์รายได้"
           value={stats.volume}
           prefix="฿"
           icon={CurrencyDollar as any}
@@ -258,14 +258,14 @@ export default function WorkflowKanban() {
           className="p-4"
         />
         <StatCard
-          title="Active Flux"
+          title="งานที่กำลังดำเนินการ"
           value={stats.active}
           icon={Lightning as any}
           iconColor="text-amber-500"
           className="p-4"
         />
         <StatCard
-          title="Success Quota"
+          title="งานที่ปิดสำเร็จ"
           value={stats.completed}
           icon={CheckCircle as any}
           iconColor="text-primary"
@@ -331,10 +331,10 @@ export default function WorkflowKanban() {
                         <div className="p-4 bg-secondary/30 rounded-2xl border border-border/50 group-hover/card:border-primary/20 transition-all shadow-inner">
                           <div className="flex items-center gap-2 mb-2">
                             <Sparkle weight="bold" className="w-3 h-3 text-primary/60" />
-                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">Active Protocol</p>
+                            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest leading-none">งานที่กำลังทำ</p>
                           </div>
                           <p className="text-[11px] text-foreground/80 font-bold truncate leading-relaxed italic">
-                            {workflow.treatment_plan.treatments?.[0] || 'No protocol defined'}
+                            {workflow.treatment_plan.treatments?.[0] || 'ยังไม่มีแผนงาน'}
                           </p>
                         </div>
                       )}
@@ -346,7 +346,7 @@ export default function WorkflowKanban() {
                         </div>
                         {workflow.estimated_commission && (
                           <div className="flex flex-col items-end">
-                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-0.5 opacity-60">Incentive</p>
+                            <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-0.5 opacity-60">ส่วนแบ่งรายได้</p>
                             <span className="text-xs font-black text-emerald-500 tabular-nums shadow-glow-sm">
                               ฿{workflow.estimated_commission.toLocaleString()}
                             </span>
@@ -364,8 +364,8 @@ export default function WorkflowKanban() {
                     <Plus weight="duotone" className="w-10 h-10" />
                   </div>
                   <div className="space-y-2">
-                    <p className="text-xs font-black uppercase tracking-[0.3em]">Nominal Node</p>
-                    <p className="text-[9px] font-medium max-w-[160px] italic">Awaiting transmission</p>
+                    <p className="text-xs font-black uppercase tracking-[0.3em]">ว่าง</p>
+                    <p className="text-[9px] font-medium max-w-[160px] italic">รอข้อมูล</p>
                   </div>
                 </div>
               )}
@@ -405,7 +405,7 @@ export default function WorkflowKanban() {
                     </div>
                     <div>
                       <h3 className="text-2xl font-black text-foreground tracking-tight uppercase leading-tight">{selectedWorkflow.customer_name}</h3>
-                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Identity Node Alpha Registry</p>
+                      <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">ข้อมูลประจำตัวลูกค้า</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" onClick={() => setSelectedWorkflow(null)} className="h-10 w-10 p-0 rounded-xl hover:bg-secondary">
@@ -415,14 +415,14 @@ export default function WorkflowKanban() {
                 
                 <div className="grid grid-cols-2 gap-8">
                   <div className="p-6 bg-secondary/30 rounded-[32px] border border-border/50 shadow-inner">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 opacity-60">Operational Stage</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-3 opacity-60">ขั้นตอนการดำเนินงาน</p>
                     <Badge variant="ghost" className="bg-primary/10 text-primary border-none font-black text-[10px] uppercase tracking-[0.2em] px-4 py-2">
                       {workflowStages.find(s => s.id === selectedWorkflow.current_stage)?.label || 'UNDEFINED'}
                     </Badge>
                   </div>
                   
                   <div className="p-6 bg-secondary/30 rounded-[32px] border border-border/50 shadow-inner text-right">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 opacity-60">Yield Valuation</p>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 opacity-60">ส่วนแบ่งรายได้</p>
                     <p className="text-2xl font-black text-emerald-500 tabular-nums tracking-tighter text-glow-sm">
                       ฿{selectedWorkflow.estimated_commission?.toLocaleString() || '0'}
                     </p>
@@ -436,7 +436,7 @@ export default function WorkflowKanban() {
                     </div>
                     <div className="flex items-center gap-3 relative z-10">
                       <Sparkle weight="duotone" className="w-5 h-5 text-primary" />
-                      <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em]">Prescribed Protocol payload</h4>
+                      <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em]">รายละเอียดแผนการรักษา</h4>
                     </div>
                     <div className="flex flex-wrap gap-2.5 relative z-10">
                       {selectedWorkflow.treatment_plan.treatments?.map((t: string, i: number) => (
@@ -450,15 +450,15 @@ export default function WorkflowKanban() {
 
                 <div className="space-y-6 pt-4">
                   <div className="flex items-center justify-between px-2">
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">Protocol Transition Control</p>
-                    <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] uppercase px-3 py-1">Linear Sequence</Badge>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.4em]">ควบคุมการเปลี่ยนขั้นตอน</p>
+                    <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[8px] uppercase px-3 py-1">ลำดับขั้นตอน</Badge>
                   </div>
                   <div className="flex flex-wrap gap-3 justify-center bg-secondary/20 p-6 rounded-[32px] border border-border/50 shadow-inner">
                     {workflowStages.map((stage, index) => {
                       const currentIndex = workflowStages.findIndex(s => s.id === selectedWorkflow.current_stage);
                       const isNext = index === currentIndex + 1;
                       const isCompleted = index < currentIndex;
-                      const isปัจจุบัน = index === currentIndex;
+                      const isCurrent = index === currentIndex;
                       
                       return (
                         <Button
@@ -469,8 +469,8 @@ export default function WorkflowKanban() {
                           className={cn(
                             "px-5 py-6 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all h-auto min-w-[100px]",
                             isCompleted && "text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500/10 border-none opacity-60 shadow-none",
-                            isปัจจุบัน && "border-primary text-primary bg-primary/10 shadow-glow-sm",
-                            !isNext && !isCompleted && !isปัจจุบัน && "opacity-20 border-border/30 grayscale"
+                            isCurrent && "border-primary text-primary bg-primary/10 shadow-glow-sm",
+                            !isNext && !isCompleted && !isCurrent && "opacity-20 border-border/30 grayscale"
                           )}
                         >
                           {isCompleted ? <CheckCircle weight="bold" className="w-5 h-5" /> : stage.label}
@@ -482,10 +482,10 @@ export default function WorkflowKanban() {
 
                 <div className="flex gap-4 pt-6">
                   <Button variant="outline" className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest border-border/50 hover:bg-secondary">
-                    View Case Node
+                    ดูรายละเอียดเคส
                   </Button>
                   <Button className="flex-1 py-6 rounded-[24px] text-[10px] font-black uppercase tracking-widest shadow-premium">
-                    Synchronize Ledger
+                    บันทึกข้อมูลบัญชี
                   </Button>
                 </div>
               </div>

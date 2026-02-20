@@ -38,7 +38,7 @@ export default function InvoicesTab({ formatCurrency, onDownload, onViewInvoice 
             <span className="font-mono text-sm text-primary font-bold tracking-widest block uppercase">
               INV-2026-00{invoice}
             </span>
-            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Digital Registry Node</span>
+            <span className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">ใบแจ้งหนี้ดิจิทัล</span>
           </div>
         </div>
       )

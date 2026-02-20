@@ -54,7 +54,7 @@ export function useWorkflowState(customerId: string) {
           .eq('customer_id', customerId)
           .order('created_at', { ascending: false })
           .limit(1)
-          .single();
+          .maybeSingle();
 
         if (error && error.code !== 'PGRST116') {
           // Silently handle errors - table might not exist yet

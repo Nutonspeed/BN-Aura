@@ -80,7 +80,7 @@ export default function CustomerTimelineView({ events }: CustomerTimelineViewPro
                 {format(new Date(event.date), 'd MMM yyyy HH:mm', { locale: th })}
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] uppercase font-bold bg-black/20 text-muted-foreground">
-                {event.type}
+                {event.type === "conversation" ? "การสนทนา" : event.type === "appointment" ? "นัดหมาย" : event.type === "purchase" ? "ยอดซื้อ" : event.type === "status_change" ? "เปลี่ยนสถานะ" : event.type}
               </span>
             </div>
             
@@ -101,12 +101,12 @@ export default function CustomerTimelineView({ events }: CustomerTimelineViewPro
                     event.metadata.sentiment.score < -0.5 ? 'bg-red-500/10 text-red-400' : 
                     'bg-yellow-500/10 text-yellow-400'
                   }`}>
-                    Sentiment: {event.metadata.sentiment.label}
+                    อารมณ์ลูกค้า: {event.metadata.sentiment.label}
                   </span>
                 )}
                 {event.metadata.dealProbability !== undefined && event.metadata.dealProbability !== null && (
                   <span className="text-xs px-2 py-1 rounded bg-blue-500/10 text-blue-400">
-                    Prob: {event.metadata.dealProbability}%
+                    โอกาสปิดการขาย: {event.metadata.dealProbability}%
                   </span>
                 )}
               </div>

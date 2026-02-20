@@ -118,9 +118,8 @@ const localStorageMock = {
   clear: jest.fn(),
 };
 
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock,
-});
+const storageTarget: any = typeof window !== 'undefined' ? window : globalThis;
+Object.defineProperty(storageTarget, 'localStorage', { value: localStorageMock });
 
 // Mock fetch
 global.fetch = jest.fn();
@@ -206,6 +205,7 @@ expect.extend({
 });
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toBeValidClinic(): R;

@@ -1,5 +1,6 @@
 'use client';
 
+import React, { type MouseEvent } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/button';
@@ -212,7 +213,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       onViewTicket(ticket);
                     }}
@@ -224,7 +225,7 @@ export default function TicketsList({ onViewTicket, onEditTicket }: TicketsListP
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={(e) => {
+                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
                       e.stopPropagation();
                       onEditTicket(ticket);
                     }}

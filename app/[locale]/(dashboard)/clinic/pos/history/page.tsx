@@ -142,7 +142,7 @@ function POSHistoryContent() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            Sync Ledger
+            อัปเดต
           </Button>
           <Button className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
             <DownloadSimple weight="bold" className="w-4 h-4" />
@@ -175,7 +175,7 @@ function POSHistoryContent() {
           className="p-4"
         />
         <StatCard
-          title="Total Transactions"
+          title="ธุรกรรมทั้งหมด"
           value={stats.total}
           icon={ShoppingCart as Icon}
           iconColor="text-primary"
@@ -270,7 +270,7 @@ function POSHistoryContent() {
                       <p className={cn(
                         "text-[9px] font-black uppercase tracking-widest",
                         selectedTransaction?.id === txn.id ? "text-white/60" : "text-muted-foreground"
-                      )}>{txn.items.length} Protocol Nodes</p>
+                      )}>{txn.items.length} รายการ</p>
                     </div>
                   </motion.button>
                 ))}

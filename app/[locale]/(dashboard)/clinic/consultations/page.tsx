@@ -141,7 +141,7 @@ export default function ConsultationsPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <VideoCamera weight="duotone" className="w-4 h-4" />
-            Telemedicine Gateway Matrix
+            ระบบปรึกษาออนไลน์
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -149,7 +149,7 @@ export default function ConsultationsPage() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            Virtual <span className="text-primary">Consultations</span>
+            ปรึกษา<span className="text-primary">ออนไลน์</span>
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -157,7 +157,7 @@ export default function ConsultationsPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating remote clinical evaluations and real-time aesthetic guidance nodes.
+            จัดการการปรึกษาออนไลน์และการประเมินทางคลินิกแบบเรียลไทม์
           </motion.p>
         </div>
 
@@ -181,7 +181,7 @@ export default function ConsultationsPage() {
             className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest group"
           >
             <Plus weight="bold" className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Initialize node
+            สร้างห้อง
           </Button>
         </motion.div>
       </div>
@@ -189,7 +189,7 @@ export default function ConsultationsPage() {
       {/* Metrics Summary Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2">
         <StatCard
-          title="Scheduled Nodes"
+          title="นัดหมายที่รอ"
           value={consultations.filter(c => c.status === 'scheduled' || c.status === 'waiting').length}
           icon={CalendarDots as any}
           className="p-4"
@@ -213,7 +213,7 @@ export default function ConsultationsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 px-2">
-        {/* Active Registry Node */}
+        {/* รายการนัดหมาย */}
         <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden group">
           <CardHeader className="p-8 md:p-10 border-b border-border/50 bg-secondary/30 relative">
             <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
@@ -225,12 +225,12 @@ export default function ConsultationsPage() {
                   <Video weight="duotone" className="w-7 h-7" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-black uppercase tracking-tight">Scheduled Nodes</CardTitle>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Pending virtual synchronizations</p>
+                  <CardTitle className="text-xl font-black uppercase tracking-tight">นัดหมายที่รอ</CardTitle>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">รอการปรึกษาออนไลน์</p>
                 </div>
               </div>
               <Badge variant="ghost" className="bg-primary/5 text-primary border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">
-                {consultations.filter(c => c.status === 'scheduled' || c.status === 'waiting').length} ACTIVE_REGISTRY
+                {consultations.filter(c => c.status === 'scheduled' || c.status === 'waiting').length} รายการ
               </Badge>
             </div>
           </CardHeader>
@@ -239,12 +239,12 @@ export default function ConsultationsPage() {
             {loading && !consultations.length ? (
               <div className="py-32 flex flex-col items-center justify-center gap-6 opacity-40">
                 <SpinnerGap weight="bold" className="w-12 h-12 text-primary animate-spin" />
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">Accessing Session Matrix...</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">กำลังโหลดข้อมูล...</p>
               </div>
             ) : consultations.filter(c => c.status === 'scheduled' || c.status === 'waiting').length === 0 ? (
               <div className="py-32 text-center opacity-30 flex flex-col items-center gap-6">
                 <VideoCamera weight="duotone" className="w-20 h-20" />
-                <p className="text-[10px] font-black uppercase tracking-[0.3em]">Registry Nominal</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em]">ไม่มีรายการ</p>
               </div>
             ) : (
               <div className="space-y-6">
@@ -262,7 +262,7 @@ export default function ConsultationsPage() {
                           <User weight="duotone" className="w-8 h-8" />
                         </div>
                         <div className="space-y-1.5">
-                          <p className="text-lg font-black text-foreground uppercase tracking-tight leading-tight group-hover/item:text-primary transition-colors">{c.customer?.full_name || 'ANONYMOUS_IDENTITY'}</p>
+                          <p className="text-lg font-black text-foreground uppercase tracking-tight leading-tight group-hover/item:text-primary transition-colors">{c.customer?.full_name || 'ไม่ระบุชื่อ'}</p>
                           <div className="flex items-center gap-3">
                             {getStatusBadge(c.status)}
                             <div className="flex items-center gap-2 text-[10px] font-black text-muted-foreground uppercase tracking-widest opacity-60">
@@ -297,7 +297,7 @@ export default function ConsultationsPage() {
                     {c.notes && (
                       <div className="p-4 bg-secondary/30 rounded-2xl border border-border/50 shadow-inner">
                         <p className="text-[11px] text-muted-foreground font-medium italic leading-relaxed">
-                          Node Notes: {c.notes}
+                          หมายเหตุ: {c.notes}
                         </p>
                       </div>
                     )}
@@ -308,7 +308,7 @@ export default function ConsultationsPage() {
           </CardContent>
         </Card>
 
-        {/* Historical Matrix Node */}
+        {/* ประวัติการปรึกษา */}
         <Card className="rounded-[48px] border-border/50 shadow-premium overflow-hidden group">
           <CardHeader className="p-8 md:p-10 border-b border-border/50 bg-secondary/30 relative">
             <div className="absolute top-0 right-0 p-12 opacity-[0.03] group-hover:scale-110 transition-transform duration-700 pointer-events-none">
@@ -320,8 +320,8 @@ export default function ConsultationsPage() {
                   <ClockCounterClockwise weight="duotone" className="w-7 h-7" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-black uppercase tracking-tight">Archived Nodes</CardTitle>
-                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">Historical session logs</p>
+                  <CardTitle className="text-xl font-black uppercase tracking-tight">ประวัติ</CardTitle>
+                  <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em] mt-1">บันทึกการปรึกษาที่ผ่านมา</p>
                 </div>
               </div>
               <Badge variant="ghost" className="bg-secondary text-muted-foreground border-none font-black text-[10px] tracking-widest uppercase px-4 py-1.5 shadow-sm">
@@ -351,7 +351,7 @@ export default function ConsultationsPage() {
                         <CheckCircle weight="duotone" className="w-6 h-6" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-base font-black text-foreground truncate uppercase tracking-tight">{item.customer?.full_name || 'IDENTITY_NODE'}</p>
+                        <p className="text-base font-black text-foreground truncate uppercase tracking-tight">{item.customer?.full_name || 'ไม่ระบุชื่อ'}</p>
                         <p className="text-[10px] text-muted-foreground font-black uppercase tracking-widest opacity-60 mt-0.5">{formatDateTime(item.scheduled_at)}</p>
                       </div>
                     </div>
@@ -364,7 +364,7 @@ export default function ConsultationsPage() {
         </Card>
       </div>
 
-      {/* Initialize Room Modal Protocol */}
+      {/* สร้างห้องปรึกษา */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4 overflow-y-auto">
@@ -392,8 +392,8 @@ export default function ConsultationsPage() {
                     <VideoCamera weight="duotone" className="w-7 h-7" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tight leading-tight">Initialize Room</h2>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">Configure virtual diagnostic node</p>
+                    <h2 className="text-2xl font-black text-foreground uppercase tracking-tight leading-tight">สร้างห้องปรึกษา</h2>
+                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mt-1">ตั้งค่าห้องปรึกษาออนไลน์</p>
                   </div>
                 </div>
                 <Button 

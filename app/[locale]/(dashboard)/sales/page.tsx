@@ -223,12 +223,14 @@ export default function SalesDashboard() {
           // For each customer, fetch related loyalty points and skin analyses separately
           const enhancedCustomers = await Promise.all(
             customerData.map(async (customer) => {
-              // Fetch loyalty points for this customer
-              const { data: loyaltyPoints } = await supabase
-                .from('loyalty_points')
-                .select('id, points, updated_at')
-                .eq('user_id', customer.user_id)
-                .order('updated_at', { ascending: false });
+              // Fetch loyalty points for this customer (skip if no user_id)
+              const { data: loyaltyPoints } = customer.user_id
+                ? await supabase
+                    .from('loyalty_points')
+                    .select('id, points, updated_at')
+                    .eq('user_id', customer.user_id)
+                    .order('updated_at', { ascending: false })
+                : { data: [] };
 
               // Fetch skin analyses for this customer
               const { data: skinAnalyses } = await supabase
@@ -420,9 +422,9 @@ export default function SalesDashboard() {
 
     // Conversion rates by urgency score
     const conversionRates = [
-      { urgency: 'High (70-100%)', rate: 85, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.7).length },
-      { urgency: 'Medium (40-69%)', rate: 65, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.4 && (c.aiEnhanced?.urgencyScore || 0) <= 0.7).length },
-      { urgency: 'Low (0-39%)', rate: 35, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) <= 0.4).length }
+      { urgency: 'สนใจระดับสูง (70-100%)', rate: 85, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.7).length },
+      { urgency: 'สนใจระดับกลาง (40-69%)', rate: 65, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) > 0.4 && (c.aiEnhanced?.urgencyScore || 0) <= 0.7).length },
+      { urgency: 'สนใจเบื้องต้น (0-39%)', rate: 35, count: customers.filter(c => (c.aiEnhanced?.urgencyScore || 0) <= 0.4).length }
     ];
 
     // Performance metrics
@@ -459,22 +461,22 @@ export default function SalesDashboard() {
             <TrendUp weight="duotone" className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-black uppercase tracking-tight">แดชบอร์ดการขาย</h1>
-            <p className="text-sm text-muted-foreground">ศูนย์ข้อมูลเชิงพาณิชย์</p>
+            <h1 className="text-2xl font-black uppercase tracking-tight">ภาพรวมยอดขาย</h1>
+            <p className="text-sm text-muted-foreground">ข้อมูลและสถิติงานขาย</p>
           </div>
         </div>
         <Button onClick={() => setShowCreateCustomerForm(true)} className="gap-2">
           <UserPlus weight="bold" className="w-4 h-4" />
-          Add Customer
+          ลงทะเบียนลูกค้าใหม่
         </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'ลูกค้าเป้าหมายทั้งหมด', value: stats.totalLeads, icon: Users, color: 'text-blue-500' },
-          { title: 'การแปลง', value: stats.conversions, icon: TrendUp, color: 'text-emerald-500' },
+          { title: 'ลูกค้าใหม่', value: stats.totalLeads, icon: Users, color: 'text-blue-500' },
+          { title: 'ปิดการขายสำเร็จ', value: stats.conversions, icon: TrendUp, color: 'text-emerald-500' },
           { title: 'รายได้', value: `฿${stats.revenue.toLocaleString()}`, icon: ChartBar, color: 'text-primary' },
-          { title: 'ค่าคอมมิชชัน', value: `฿${stats.commissionEarned.toLocaleString()}`, icon: Coins, color: 'text-amber-500' },
+          { title: 'รายได้จากค่าคอมมิชชัน', value: `฿${stats.commissionEarned.toLocaleString()}`, icon: Coins, color: 'text-amber-500' },
         ].map((stat, idx) => (
           <Card key={idx} className="p-6 rounded-2xl border-border/50">
             <div className="flex items-center justify-between">
@@ -488,20 +490,20 @@ export default function SalesDashboard() {
         ))}
       </div>
 
-      {/* Hot Leads Alert — fixed position notification */}
+      {/* HotLeadsAlert — fixed position notification */}
       <HotLeadsAlert />
 
       {/* Tab Navigation */}
-      <div className="flex gap-2 border-b border-border/50 pb-1">
+      <div className="flex gap-2 border-b border-border/50 pb-1 overflow-x-auto no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
         {[
           { id: 'overview' as const, label: 'ภาพรวม', icon: ChartBar },
-          { id: 'pipeline' as const, label: 'ไปป์ไลน์งาน', icon: Kanban },
-          { id: 'commissions' as const, label: 'ตัวติดตามค่าคอมมิชชัน', icon: CurrencyDollar },
+          { id: 'pipeline' as const, label: 'ขั้นตอนการทำงาน (Pipeline)', icon: Kanban },
+          { id: 'commissions' as const, label: 'เป้าหมายรายได้', icon: CurrencyDollar },
         ].map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-5 py-3 text-xs font-black uppercase tracking-widest rounded-t-xl transition-all ${
+            className={`flex items-center gap-2 px-5 py-3 text-xs font-black uppercase tracking-widest rounded-t-xl transition-all whitespace-nowrap ${
               activeTab === tab.id
                 ? 'bg-primary/10 text-primary border-b-2 border-primary'
                 : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
@@ -514,19 +516,19 @@ export default function SalesDashboard() {
       </div>
 
       {/* === OVERVIEW TAB === */}
-      {activeTab === 'overview' && (<>
-
-      {/* AI Quota Status Card */}
+      {activeTab === 'overview' && (
+    <>
+      {/* โควต้าการใช้งาน AI Card */}
       <Card className="rounded-2xl border-border/50 bg-gradient-to-r from-purple-500/5 to-pink-500/5">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Pulse weight="duotone" className="w-6 h-6 text-purple-500" />
-              AI Quota Status
+              โควต้าการใช้งาน AI
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Neural Cache Savings</p>
-              <p className="text-lg font-bold text-emerald-500">+{quotaInfo.quotaSavedToday} scans</p>
+              <p className="text-sm text-muted-foreground">ประหยัดโควต้าด้วยระบบจำข้อมูล</p>
+              <p className="text-lg font-bold text-emerald-500">+{quotaInfo.quotaSavedToday} ครั้ง</p>
             </div>
           </CardTitle>
         </CardHeader>
@@ -534,7 +536,7 @@ export default function SalesDashboard() {
           {/* Quota Usage Progress */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Monthly Quota Usage</span>
+              <span className="text-muted-foreground">การใช้งานรายเดือน</span>
               <span className="font-semibold">{quotaInfo.utilizationRate}%</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-3">
@@ -548,8 +550,8 @@ export default function SalesDashboard() {
               />
             </div>
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>{quotaInfo.currentUsage} used</span>
-              <span>{quotaInfo.monthlyQuota} total</span>
+              <span>{quotaInfo.currentUsage} ใช้ไปแล้ว</span>
+              <span>{quotaInfo.monthlyQuota} ทั้งหมด</span>
             </div>
           </div>
 
@@ -558,23 +560,23 @@ export default function SalesDashboard() {
             <div className="p-4 bg-card border border-border/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest">Remaining</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-widest">คงเหลือ</span>
               </div>
-              <p className="text-xl font-bold mt-1">{quotaInfo.remainingScans} scans</p>
+              <p className="text-xl font-bold mt-1">{quotaInfo.remainingScans} ครั้ง</p>
             </div>
             <div className="p-4 bg-card border border-border/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest">Cache Efficiency</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-widest">ความเร็วประมวลผล</span>
               </div>
               <p className="text-xl font-bold mt-1">{quotaInfo.cacheHitRate}%</p>
             </div>
             <div className="p-4 bg-card border border-border/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${quotaInfo.willIncurCharge ? 'bg-red-500' : 'bg-green-500'}`}></div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest">Status</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-widest">สถานะ</span>
               </div>
-              <p className="text-xl font-bold mt-1">{quotaInfo.willIncurCharge ? 'เกินโควต้า' : 'ปกติ'}</p>
+              <p className="text-xl font-bold mt-1">{quotaInfo.willIncurCharge ? 'ใช้เกินกำหนด' : 'ปกติ'}</p>
             </div>
           </div>
 
@@ -601,7 +603,7 @@ export default function SalesDashboard() {
             <div className="flex items-center gap-3 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg">
               <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
               <span className="text-sm text-emerald-600 font-medium">
-                🧠 Neural Cache ประหยัด {quotaInfo.quotaSavedToday} scans วันนี้ จากการสแกนลูกค้าเดิม
+                🧠 Neural Cache ประหยัด {quotaInfo.quotaSavedToday} ครั้ง วันนี้ จากการสแกนลูกค้าเดิม
               </span>
             </div>
           )}
@@ -621,10 +623,10 @@ export default function SalesDashboard() {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Coins weight="duotone" className="w-6 h-6 text-emerald-500" />
-              ตัวติดตามค่าคอม
+              เป้าหมายรายได้
             </div>
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">เป้าหมายรายเดือน</p>
+              <p className="text-sm text-muted-foreground">เป้าหมายประจำเดือน</p>
               <p className="text-lg font-bold text-foreground">฿{monthlyTarget.toLocaleString()}</p>
             </div>
           </CardTitle>
@@ -633,7 +635,7 @@ export default function SalesDashboard() {
           {/* Progress Bar */}
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">ความคืบหน้าเดือนนี้</span>
+              <span className="text-muted-foreground">ความคืบหน้าของเป้าหมาย</span>
               <span className="font-semibold">{getCommissionProgress().toFixed(1)}%</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-3">
@@ -653,7 +655,7 @@ export default function SalesDashboard() {
             <div className="p-4 bg-card border border-border/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest">Today</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-widest">วันนี้</span>
               </div>
               <p className="text-xl font-bold mt-1">
                 ฿{(dailyCommissions.length > 0 && typeof dailyCommissions[0] === 'number' 
@@ -664,14 +666,14 @@ export default function SalesDashboard() {
             <div className="p-4 bg-card border border-border/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest">This Month</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-widest">เดือนนี้</span>
               </div>
               <p className="text-xl font-bold mt-1">฿{stats.commissionEarned.toLocaleString()}</p>
             </div>
             <div className="p-4 bg-card border border-border/50 rounded-xl">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-500"></div>
-                <span className="text-xs text-muted-foreground uppercase tracking-widest">Remaining</span>
+                <span className="text-xs text-muted-foreground uppercase tracking-widest">คงเหลือ</span>
               </div>
               <p className="text-xl font-bold mt-1">
                 ฿{Math.max(0, monthlyTarget - stats.commissionEarned).toLocaleString()}
@@ -682,18 +684,18 @@ export default function SalesDashboard() {
           {/* Commission Rate Info */}
           <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg">
             <span className="text-xs text-muted-foreground">
-              📈 Commission Rate: <strong>15%</strong> of total sales • Next payout: End of month
+              📈 ส่วนแบ่งยอดขาย: <strong>15%</strong> ของยอดขายรวม • รอบการจ่ายเงิน: สิ้นเดือน
             </span>
           </div>
         </CardContent>
       </Card>
 
-      {/* AI Coach Performance Insights */}
+      {/* บทวิเคราะห์ประสิทธิภาพโดย AI Insights */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Sparkle weight="duotone" className="w-6 h-6 text-purple-400" />
-            AI Coach Performance
+            บทวิเคราะห์ประสิทธิภาพโดย AI
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -701,12 +703,12 @@ export default function SalesDashboard() {
         </CardContent>
       </Card>
 
-      {/* AI Coach Leaderboard */}
+      {/* อันดับที่ปรึกษาฝ่ายขาย */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Trophy weight="duotone" className="w-6 h-6 text-amber-400" />
-            AI Coach Leaderboard
+            อันดับที่ปรึกษาฝ่ายขาย
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -714,12 +716,12 @@ export default function SalesDashboard() {
         </CardContent>
       </Card>
 
-      {/* Enhanced Customer Management */}
+      {/* ระบบจัดการลูกค้าเชิงรุก */}
       <Card className="rounded-2xl border-border/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Users weight="duotone" className="w-6 h-6 text-primary" />
-            Enhanced Customer Management
+            ระบบจัดการลูกค้าเชิงรุก
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -731,7 +733,7 @@ export default function SalesDashboard() {
         <CardHeader>
           <CardTitle className="flex items-center gap-3">
             <Users weight="duotone" className="w-6 h-6 text-primary" />
-            Customer Pipeline ({customers.length})
+            ลูกค้าที่กำลังติดตาม ({customers.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -760,12 +762,12 @@ export default function SalesDashboard() {
                         {Array.isArray(customer.loyalty_points) && customer.loyalty_points.length > 0 && (
                           <div className="flex items-center gap-1 text-xs bg-amber-500/10 text-amber-600 px-2 py-1 rounded">
                             <Star className="w-3 h-3" />
-                            {customer.loyalty_points.reduce((sum: number, lp: any) => sum + (lp.points || 0), 0)} pts
+                            {customer.loyalty_points.reduce((sum: number, lp: any) => sum + (lp.points || 0), 0)} แต้ม
                           </div>
                         )}
                         {(customer.metadata as any)?.total_purchases > 0 && (
                           <span className="text-xs text-muted-foreground">
-                            {(customer.metadata as any)?.total_purchases} purchases
+                            {(customer.metadata as any)?.total_purchases} ครั้ง
                           </span>
                         )}
                         {/* AI Urgency Score */}
@@ -776,16 +778,16 @@ export default function SalesDashboard() {
                             'bg-green-500/10 text-green-600'
                           }`}>
                             <span className="w-2 h-2 rounded-full bg-current"></span>
-                            {Math.round(customer.aiEnhanced.urgencyScore * 100)}% priority
+                            {Math.round(customer.aiEnhanced.urgencyScore * 100)}% ระดับความสำคัญ
                           </div>
                         )}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge className="bg-blue-500/10 text-blue-500">{customer.status || 'active'}</Badge>
+                    <Badge className="bg-blue-500/10 text-blue-500">{customer.status === 'converted' ? 'ปิดการขายแล้ว' : (customer.status === 'active' ? 'กำลังติดตาม' : (customer.status || 'รอดำเนินการ'))}</Badge>
                     {customer.aiEnhanced?.urgencyScore > 0.6 && (
-                      <Badge className="bg-orange-500/10 text-orange-600">🔥 Hot Lead</Badge>
+                      <Badge className="bg-orange-500/10 text-orange-600">🔥 สนใจสูง</Badge>
                     )}
                   </div>
                 </div>
@@ -794,9 +796,11 @@ export default function SalesDashboard() {
             {customers.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <Users className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                <p>No customers yet - start by adding your first customer</p>
+                <p>ยังไม่มีข้อมูลลูกค้า - เริ่มต้นด้วยการเพิ่มลูกค้าคนแรกของคุณ</p>
               </div>
             )}
+          }
+
           </div>
         </CardContent>
       </Card>
@@ -820,14 +824,14 @@ export default function SalesDashboard() {
             >
               <div className="space-y-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-foreground uppercase tracking-tight">Add New Customer</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Create a new customer profile for your sales pipeline</p>
+                  <h3 className="text-xl font-bold text-foreground uppercase tracking-tight">ลงทะเบียนลูกค้าใหม่</h3>
+                  <p className="text-sm text-muted-foreground mt-1">สร้างข้อมูลลูกค้าใหม่เพื่อเริ่มงานขาย</p>
                 </div>
 
                 <form onSubmit={handleCreateCustomer} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">First Name</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">ชื่อจริง</label>
                       <input
                         type="text"
                         required
@@ -839,7 +843,7 @@ export default function SalesDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Last Name</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">นามสกุล</label>
                       <input
                         type="text"
                         required
@@ -853,7 +857,7 @@ export default function SalesDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Email</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">อีเมล</label>
                       <input
                         type="email"
                         required
@@ -865,7 +869,7 @@ export default function SalesDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Phone</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">เบอร์โทรศัพท์</label>
                       <input
                         type="tel"
                         value={customerFormData.phone}
@@ -878,7 +882,7 @@ export default function SalesDashboard() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Date of Birth</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">วันเดือนปีเกิด</label>
                       <input
                         type="date"
                         value={customerFormData.dateOfBirth}
@@ -888,21 +892,21 @@ export default function SalesDashboard() {
                     </div>
 
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Gender</label>
+                      <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">เพศ</label>
                       <select
                         value={customerFormData.gender}
                         onChange={(e) => setCustomerFormData(prev => ({ ...prev, gender: e.target.value as any }))}
                         className="w-full bg-secondary border border-border rounded-xl py-3 px-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all"
                       >
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
-                        <option value="other">Other</option>
+                        <option value="female">หญิง</option>
+                        <option value="male">ชาย</option>
+                        <option value="other">อื่นๆ</option>
                       </select>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Skin Type</label>
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">สภาพผิว</label>
                     <input
                       type="text"
                       value={customerFormData.skinType}
@@ -913,7 +917,7 @@ export default function SalesDashboard() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Skin Concerns</label>
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">ปัญหาผิวที่กังวล</label>
                     <textarea
                       value={customerFormData.concerns}
                       onChange={(e) => setCustomerFormData(prev => ({ ...prev, concerns: e.target.value }))}
@@ -931,7 +935,7 @@ export default function SalesDashboard() {
                       className="flex-1 py-3 rounded-xl text-xs font-bold uppercase tracking-widest"
                       disabled={createLoading}
                     >
-                      Cancel
+                      ยกเลิก
                     </Button>
                     <Button
                       type="submit"
@@ -941,12 +945,12 @@ export default function SalesDashboard() {
                       {createLoading ? (
                         <>
                           <SpinnerGap className="w-4 h-4 animate-spin" />
-                          Creating...
+                          กำลังบันทึก...
                         </>
                       ) : (
                         <>
                           <Plus weight="bold" className="w-4 h-4" />
-                          Add Customer
+                          ลงทะเบียนลูกค้าใหม่
                         </>
                       )}
                     </Button>
@@ -958,12 +962,12 @@ export default function SalesDashboard() {
         )}
       </AnimatePresence>
 
-      {/* AI Sales Coach Recommendations */}
+      {/* ผู้ช่วยฝ่ายขาย AI Recommendations */}
       {customers.length > 0 && (
         <div className="space-y-6">
           <h2 className="text-lg font-bold flex items-center gap-3">
             <TrendUp weight="duotone" className="w-6 h-6 text-primary" />
-            AI Sales Coach
+            ผู้ช่วยฝ่ายขาย AI
           </h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {customers.slice(0, 2).map((customer) => {
@@ -998,7 +1002,7 @@ export default function SalesDashboard() {
               return (
                 <div key={customer.id} className="space-y-3">
                   <h3 className="font-semibold text-sm text-muted-foreground">
-                    Recommendations for {customer.full_name || 'ไม่ระบุ'}
+                    คำแนะนำสำหรับ {customer.full_name || 'ไม่ระบุ'}
                   </h3>
                   <SmartSuggestions 
                     customerContext={customerContext}
@@ -1015,7 +1019,7 @@ export default function SalesDashboard() {
       <div className="space-y-6">
         <h2 className="text-lg font-bold flex items-center gap-3">
           <ChartLine weight="duotone" className="w-6 h-6 text-primary" />
-          Sales Analytics & Insights
+          การวิเคราะห์ข้อมูลและสถิติยอดขาย
         </h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1024,7 +1028,7 @@ export default function SalesDashboard() {
             <CardHeader className="px-0 pt-0">
               <CardTitle className="flex items-center gap-3">
                 <TrendUp weight="duotone" className="w-5 h-5 text-emerald-500" />
-                Daily Revenue Trend
+                สถิติรายได้รายวัน
               </CardTitle>
             </CardHeader>
             <CardContent className="px-0 pb-0">
@@ -1055,7 +1059,7 @@ export default function SalesDashboard() {
                       }}
                       formatter={(value: any, name) => [
                         `฿${value.toLocaleString()}`, 
-                        name === 'revenue' ? 'Revenue' : 'Target'
+                        name === 'revenue' ? 'รายได้' : 'เป้าหมายประจำวัน'
                       ]}
                     />
                     <Line 
@@ -1080,12 +1084,12 @@ export default function SalesDashboard() {
             </CardContent>
           </Card>
 
-          {/* Customer Growth Chart */}
+          {/* อัตราการเพิ่มขึ้นของลูกค้า Chart */}
           <Card className="p-6 rounded-2xl border-border/50">
             <CardHeader className="px-0 pt-0">
               <CardTitle className="flex items-center gap-3">
                 <Users weight="duotone" className="w-5 h-5 text-blue-500" />
-                Customer Growth
+                อัตราการเพิ่มขึ้นของลูกค้า
               </CardTitle>
             </CardHeader>
             <CardContent className="px-0 pb-0">
@@ -1115,7 +1119,7 @@ export default function SalesDashboard() {
                       }}
                       formatter={(value: any, name) => [
                         value, 
-                        name === 'total' ? 'Total Customers' : 'Converted'
+                        name === 'total' ? 'จำนวนลูกค้าทั้งหมด' : 'ปิดการขายสำเร็จ'
                       ]}
                     />
                     <Bar dataKey="total" fill="#3B82F6" opacity={0.8} radius={[2, 2, 0, 0]} />
@@ -1132,7 +1136,7 @@ export default function SalesDashboard() {
           <Card className="p-4 bg-gradient-to-br from-blue-500/5 to-purple-500/5 border-blue-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Avg Deal Size</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">ยอดซื้อเฉลี่ยต่อบิล</p>
                 <p className="text-xl font-bold mt-1">
                   ฿{analyticsData.performanceMetrics.avgDealSize?.toLocaleString() || '0'}
                 </p>
@@ -1144,9 +1148,9 @@ export default function SalesDashboard() {
           <Card className="p-4 bg-gradient-to-br from-emerald-500/5 to-green-500/5 border-emerald-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Conversion Time</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">ระยะเวลาปิดการขายเฉลี่ย</p>
                 <p className="text-xl font-bold mt-1">
-                  {analyticsData.performanceMetrics.conversionTime != null ? `${analyticsData.performanceMetrics.conversionTime} days` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
+                  {analyticsData.performanceMetrics.conversionTime != null ? `${analyticsData.performanceMetrics.conversionTime} วัน` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
                 </p>
               </div>
               <Pulse className="w-6 h-6 text-emerald-500" />
@@ -1156,9 +1160,9 @@ export default function SalesDashboard() {
           <Card className="p-4 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 border-amber-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Customer Lifetime</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">อายุการเป็นลูกค้า (Lifetime Value)</p>
                 <p className="text-xl font-bold mt-1">
-                  {analyticsData.performanceMetrics.customerLifetime != null ? `${analyticsData.performanceMetrics.customerLifetime} months` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
+                  {analyticsData.performanceMetrics.customerLifetime != null ? `${analyticsData.performanceMetrics.customerLifetime} เดือน` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
                 </p>
               </div>
               <ChartPie className="w-6 h-6 text-amber-500" />
@@ -1168,7 +1172,7 @@ export default function SalesDashboard() {
           <Card className="p-4 bg-gradient-to-br from-rose-500/5 to-pink-500/5 border-rose-500/20">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground uppercase tracking-widest">Retention Rate</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-widest">อัตราการกลับมาซื้อซ้ำ</p>
                 <p className="text-xl font-bold mt-1">
                   {analyticsData.performanceMetrics.retentionRate != null ? `${analyticsData.performanceMetrics.retentionRate}%` : <span className="text-sm text-muted-foreground">ยังไม่มีข้อมูล</span>}
                 </p>
@@ -1183,7 +1187,7 @@ export default function SalesDashboard() {
           <CardHeader className="px-0 pt-0">
             <CardTitle className="flex items-center gap-3">
               <ChartBar weight="duotone" className="w-5 h-5 text-purple-500" />
-              Conversion Rate by AI Urgency Score
+              อัตราปิดการขายตามความสำคัญ
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pb-0">
@@ -1196,7 +1200,7 @@ export default function SalesDashboard() {
                     }`} />
                     <div>
                       <p className="font-semibold text-sm">{item.urgency}</p>
-                      <p className="text-xs text-muted-foreground">{item.count} customers</p>
+                      <p className="text-xs text-muted-foreground">{item.count} ราย</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -1217,7 +1221,8 @@ export default function SalesDashboard() {
         </Card>
       </div>
 
-      </>)}
+      </>
+      )}
 
       {/* === PIPELINE TAB === */}
       {activeTab === 'pipeline' && (

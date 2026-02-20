@@ -65,7 +65,7 @@ export default function ContactPortalPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating multi-channel customer communications and clinical support protocols.
+            จัดการช่องทางติดต่อลูกค้าและการสนับสนุนคลินิก
           </motion.p>
         </div>
         

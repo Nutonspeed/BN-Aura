@@ -158,7 +158,7 @@ export default function SecurityDashboard() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <ShieldCheck weight="duotone" className="w-4 h-4" />
-            Fortress Intelligence Node
+            ความปลอดภัยระบบ
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -166,7 +166,7 @@ export default function SecurityDashboard() {
             transition={{ delay: 0.1 }}
             className="text-4xl font-heading font-bold text-foreground tracking-tight uppercase"
           >
-            System <span className="text-primary">Security</span>
+            ความ<span className="text-primary">ปลอดภัย</span>ระบบ
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, x: -20 }}
@@ -174,7 +174,7 @@ export default function SecurityDashboard() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating global security protocols, encryption nodes, and threat mitigation matrices.
+            จัดการนโยบายความปลอดภัย การเข้ารหัส และการป้องกันภัยคุกคาม
           </motion.p>
         </div>
 
@@ -186,11 +186,11 @@ export default function SecurityDashboard() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            Sync Defense
+            อัปเดต
           </Button>
           <Button className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium">
             <Detective weight="bold" className="w-4 h-4" />
-            Threat Audit
+            ตรวจสอบภัยคุกคาม
           </Button>
         </div>
       </div>
@@ -198,7 +198,7 @@ export default function SecurityDashboard() {
       {/* Quick Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="Security Index"
+          title="ดัชนีความปลอดภัย"
           value={98.4}
           suffix="%"
           decimals={1}
@@ -207,20 +207,20 @@ export default function SecurityDashboard() {
           className="p-4"
         />
         <StatCard
-          title="Active Identities"
+          title="เซสชันที่ใช้งาน"
           value={metrics.activeSessions}
           icon={Fingerprint as Icon}
           className="p-4"
         />
         <StatCard
-          title="Blocked Payloads"
+          title="การเข้าสู่ระบบล้มเหลว"
           value={metrics.failedLogins}
           icon={XCircle as Icon}
           iconColor="text-rose-500"
           className="p-4"
         />
         <StatCard
-          title="Protocol Health"
+          title="สถานะระบบ"
           value={100}
           suffix="%"
           icon={Pulse as Icon}
@@ -241,8 +241,8 @@ export default function SecurityDashboard() {
                   <Monitor weight="duotone" className="w-6 h-6" />
                 </div>
                 <div>
-                  <CardTitle className="text-xl font-black uppercase tracking-tight">Access Registry Node</CardTitle>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">Real-time identity transmission logs</p>
+                  <CardTitle className="text-xl font-black uppercase tracking-tight">บันทึกการเข้าถึง</CardTitle>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black mt-0.5">บันทึกการเข้าสู่ระบบแบบเรียลไทม์</p>
                 </div>
               </div>
             </CardHeader>
@@ -258,7 +258,7 @@ export default function SecurityDashboard() {
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-primary/10 blur-[60px] rounded-full group-hover:bg-primary/20 transition-all duration-700" />
             <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em] flex items-center gap-3 mb-8 relative z-10">
               <Lock weight="duotone" className="w-5 h-5" />
-              Identity Protocol
+              นโยบายรหัสผ่าน
             </h4>
             <div className="space-y-6 relative z-10">
               <PasswordStrength 
@@ -273,8 +273,8 @@ export default function SecurityDashboard() {
               />
               <div className="pt-6 border-t border-border/30">
                 <div className="flex justify-between items-center px-1">
-                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">2FA Node Coverage</span>
-                  <Badge variant="ghost" className="bg-emerald-500/5 text-emerald-500 border-none font-black text-[9px] uppercase px-3">{metrics.twoFactorEnabled}% SYNC</Badge>
+                  <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">การใช้งาน 2FA</span>
+                  <Badge variant="ghost" className="bg-emerald-500/5 text-emerald-500 border-none font-black text-[9px] uppercase px-3">{metrics.twoFactorEnabled}% เปิดใช้</Badge>
                 </div>
               </div>
             </div>
@@ -283,7 +283,7 @@ export default function SecurityDashboard() {
           <Card className="p-8 rounded-[40px] border-border shadow-card overflow-hidden group">
             <h4 className="text-[10px] font-black text-foreground uppercase tracking-[0.3em] flex items-center gap-3 mb-6">
               <Key weight="duotone" className="w-5 h-5 text-primary" />
-              API Uplink Matrix
+              จัดการ API Key
             </h4>
             <div className="space-y-4">
               <APIKeyManagement />
@@ -293,15 +293,15 @@ export default function SecurityDashboard() {
           <Card className="p-8 rounded-[40px] border-rose-500/10 bg-rose-500/[0.02] space-y-4 group">
             <h4 className="text-[10px] font-black text-rose-400 uppercase tracking-[0.3em] flex items-center gap-3">
               <WarningCircle weight="duotone" className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              Containment Status
+              สถานะเหตุการณ์
             </h4>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Active Incidents</span>
-                <span className="text-sm font-black text-rose-500 tabular-nums">{metrics.activeIncidents} Nodes</span>
+                <span className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">เหตุการณ์ที่ยังเปิดอยู่</span>
+                <span className="text-sm font-black text-rose-500 tabular-nums">{metrics.activeIncidents} รายการ</span>
               </div>
               <p className="text-[10px] text-muted-foreground font-medium italic leading-relaxed">
-                Critical system vulnerabilities are automatically isolated in sector delta.
+                ช่องโหว่ร้ายแรงจะถูกแยกออกและจัดการโดยอัตโนมัติ
               </p>
             </div>
           </Card>
@@ -318,7 +318,7 @@ export default function SecurityDashboard() {
               className="bg-card border border-border rounded-[40px] p-10 max-w-lg w-full relative overflow-hidden"
             >
               <div className="flex items-center justify-between mb-8">
-                <h3 className="text-2xl font-black uppercase tracking-tight">Alert Protocol</h3>
+                <h3 className="text-2xl font-black uppercase tracking-tight">รายละเอียดการแจ้งเตือน</h3>
                 <Button variant="ghost" onClick={() => setSelectedAlert(null)}>
                   <XCircle weight="bold" className="w-6 h-6" />
                 </Button>

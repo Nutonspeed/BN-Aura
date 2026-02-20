@@ -1,8 +1,10 @@
+/** @jest-environment jsdom */
 // Component Tests for UI Components
 // Test React components functionality
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 // Mock Next.js router
@@ -271,19 +273,21 @@ describe('UI Components', () => {
       expect(button).toHaveAttribute('aria-label', 'Submit form');
     });
 
-    it('should support keyboard navigation', () => {
+    it('should support keyboard navigation', async () => {
       const mockOnClick = jest.fn();
       
       render(<TestComponent title="Test Title" onClick={mockOnClick} />);
       
       const button = screen.getByTestId('test-button');
+      button.focus();
+      const user = userEvent.setup();
       
       // Test Enter key
-      fireEvent.keyDown(button, { key: 'Enter' });
+      await user.keyboard('{Enter}');
       expect(mockOnClick).toHaveBeenCalledTimes(1);
       
       // Test Space key
-      fireEvent.keyDown(button, { key: ' ' });
+      await user.keyboard(' ');
       expect(mockOnClick).toHaveBeenCalledTimes(2);
     });
   });

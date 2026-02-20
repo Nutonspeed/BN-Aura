@@ -222,7 +222,7 @@ function CustomerManagementContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            จัดการโปรไฟล์ผู้ป่วย ประวัติผิว และโหนดความก้าวหน้าด้านความงาม
+            จัดการโปรไฟล์ผู้ป่วย ประวัติผิว และความก้าวหน้าด้านความงาม
           </motion.p>
         </div>
         <motion.button 

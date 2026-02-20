@@ -87,7 +87,7 @@ function BranchManagementContent() {
   };
 
   const handleDeleteBranch = async (id: string) => {
-    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการยุติโหนดสาขานี้? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+    if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการปิดสาขานี้? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
     
     try {
       const res = await fetch(`/api/branches/${id}`, { method: 'DELETE' });
@@ -130,7 +130,7 @@ function BranchManagementContent() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Buildings weight="duotone" className="w-4 h-4" />
-            โหนดขยายคลินิก
+            การขยายสาขา
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -200,7 +200,7 @@ function BranchManagementContent() {
         {loading ? (
           <div className="py-32 flex flex-col items-center gap-4">
             <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังซิงโครไนซ์กริดขยาย...</p>
+            <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังโหลดข้อมูลสาขา...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -275,7 +275,7 @@ function BranchManagementContent() {
                         สร้างเมื่อ: {new Date(branch.created_at).toLocaleDateString()}
                       </div>
                       <Button variant="ghost" size="sm" className="text-primary font-black uppercase text-[10px] tracking-widest gap-2">
-                        ดูโหนด <CaretRight weight="bold" className="w-3 h-3" />
+                        ดูรายละเอียด <CaretRight weight="bold" className="w-3 h-3" />
                       </Button>
                     </div>
                   </CardContent>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createClient } from '@/lib/supabase/client';
 
 /**
@@ -383,6 +384,7 @@ export class WorkflowEngine {
     message: string;
     priority: 'high' | 'medium' | 'low';
   }> {
+    void action;
     const notifications = [];
 
     switch (newStage) {

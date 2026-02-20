@@ -142,7 +142,7 @@ export default function AppointmentPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <CalendarDots weight="duotone" className="w-4 h-4" />
-            โหนดการจัดการเวลา
+            การจัดการนัดหมาย
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -158,7 +158,7 @@ export default function AppointmentPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            จัดการนัดหมายการรักษาและการปรึกษาทางคลินิกผ่านโหนดเวลา
+            จัดการนัดหมายการรักษาและการปรึกษาทางคลินิก
           </motion.p>
         </div>
 
@@ -170,14 +170,14 @@ export default function AppointmentPage() {
             className="gap-2 px-6 py-6 rounded-2xl text-xs font-black uppercase tracking-widest border-border/50 hover:bg-secondary group"
           >
             <ArrowsClockwise weight="bold" className={cn("w-4 h-4", loading && "animate-spin")} />
-            ซิงโครไนซ์ตาราง
+            อัปเดตตาราง
           </Button>
           <Button 
             onClick={handleAddAppointment}
             className="gap-2 px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest shadow-premium"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            เริ่มต้นโหนด
+            สร้างนัดหมาย
           </Button>
         </div>
       </div>
@@ -185,7 +185,7 @@ export default function AppointmentPage() {
       {/* Stats Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="โหลดโหนดรายวัน"
+          title="นัดหมายรายวัน"
           value={stats.total}
           icon={Monitor as Icon}
           className="p-4"
@@ -198,14 +198,14 @@ export default function AppointmentPage() {
           className="p-4"
         />
         <StatCard
-          title="รอซิงโครไนซ์"
+          title="รอดำเนินการ"
           value={stats.pending}
           icon={Clock as Icon}
           iconColor="text-amber-500"
           className="p-4"
         />
         <StatCard
-          title="โหนดที่เสร็จสิ้น"
+          title="นัดหมายที่เสร็จสิ้น"
           value={stats.completed}
           icon={CheckCircle as Icon}
           iconColor="text-primary"
@@ -286,7 +286,7 @@ export default function AppointmentPage() {
               <h4 className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">ข้อมูลเชิงลึกเวลา</h4>
             </div>
             <p className="text-xs text-muted-foreground italic font-medium leading-relaxed relative z-10">
-              ตรวจพบประสิทธิภาพการวินิจฉัยสูงสุดในช่วงบ่าย ประสิทธิภาพโปรโตคอล +12.4% ในช่วงพีค
+              ตรวจพบประสิทธิภาพการวินิจฉัยสูงสุดในช่วงบ่าย ประสิทธิภาพการทำงาน +12.4% ในช่วงพีค
             </p>
           </Card>
         </div>
@@ -322,12 +322,12 @@ export default function AppointmentPage() {
             {loading ? (
               <div className="py-32 flex flex-col items-center justify-center gap-4">
                 <SpinnerGap className="w-10 h-10 text-primary animate-spin" />
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังซิงโครไนซ์กริดเวลา...</p>
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">กำลังโหลดตารางนัดหมาย...</p>
               </div>
             ) : appointments.length === 0 ? (
               <Card variant="ghost" className="py-32 border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-6 opacity-40 rounded-2xl">
                 <CalendarDots weight="duotone" className="w-16 h-16 text-muted-foreground" />
-                <p className="text-sm font-black uppercase tracking-widest text-center">ไม่พบโหนดที่ใช้งานในรอบนี้</p>
+                <p className="text-sm font-black uppercase tracking-widest text-center">ไม่พบนัดหมายในรอบนี้</p>
               </Card>
             ) : (
               <AnimatePresence mode="popLayout">
@@ -367,7 +367,7 @@ export default function AppointmentPage() {
                                 </Badge>
                                 <div className="flex items-center gap-2 text-[9px] font-black text-muted-foreground uppercase tracking-widest">
                                   <Clock weight="bold" className="w-3.5 h-3.5 opacity-60" />
-                                  โหนด 60M
+                                  60 นาที
                                 </div>
                               </div>
                             </div>

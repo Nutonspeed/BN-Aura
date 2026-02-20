@@ -149,7 +149,7 @@ export default function SupportTicketTable({
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={(e) => { e.stopPropagation(); onTicketSelect(ticket); }}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); onTicketSelect(ticket); }}
             className="h-9 w-9 p-0 rounded-xl border-border/50 hover:bg-secondary text-muted-foreground hover:text-primary transition-all"
           >
             <Eye weight="bold" className="w-4 h-4" />
@@ -157,7 +157,7 @@ export default function SupportTicketTable({
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={(e) => { e.stopPropagation(); onTicketEdit(ticket); }}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); onTicketEdit(ticket); }}
             className="h-9 w-9 p-0 rounded-xl border-border/50 hover:bg-secondary text-muted-foreground hover:text-primary transition-all"
           >
             <PencilSimple weight="bold" className="w-4 h-4" />
@@ -165,7 +165,7 @@ export default function SupportTicketTable({
           <Button 
             variant="outline" 
             size="sm" 
-            onClick={(e) => { e.stopPropagation(); onTicketDelete(ticket.id); }}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); onTicketDelete(ticket.id); }}
             className="h-9 w-9 p-0 rounded-xl border-border/50 hover:bg-rose-500/10 text-muted-foreground hover:text-rose-500 hover:border-rose-500/30 transition-all"
           >
             <Trash weight="bold" className="w-4 h-4" />
@@ -298,7 +298,7 @@ export default function SupportTicketTable({
                       variant="outline" 
                       size="sm" 
                       className="h-10 w-10 p-0 border-border/50 rounded-xl hover:bg-secondary text-primary"
-                      onClick={(e) => { e.stopPropagation(); onTicketEdit(ticket); }}
+                      onClick={(e: React.MouseEvent<HTMLButtonElement>) => { e.stopPropagation(); onTicketEdit(ticket); }}
                     >
                       <PencilSimple weight="bold" className="w-4 h-4" />
                     </Button>

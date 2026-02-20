@@ -49,20 +49,20 @@ function CustomerCard({ customer }: { customer: Customer }) {
         </div>
         <div className="text-right space-y-1">
           <div className="text-xs font-bold text-emerald-400">฿{customer.totalSpent.toLocaleString()}</div>
-          <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">Total Spent</p>
+          <p className="text-[9px] text-muted-foreground uppercase tracking-tighter">ยอดซื้อสะสม</p>
         </div>
       </div>
       
       <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
         <span className="text-[10px] text-muted-foreground italic">
-          Last contact: {customer.lastContactDate ? new Date(customer.lastContactDate).toLocaleDateString() : 'Never'}
+          ติดต่อล่าสุด: {customer.lastContactDate ? new Date(customer.lastContactDate).toLocaleDateString() : 'ยังไม่เคยติดต่อ'}
         </span>
         <Link
           href={`/sales/chat?customerId=${encodeURIComponent(customer.id)}`}
           className="flex items-center gap-1.5 text-[10px] font-bold text-primary bg-primary/10 px-3 py-1 rounded-full hover:bg-primary/20 transition-colors"
         >
           <ChatCircle className="w-3 h-3" />
-          Chat
+          แชท
         </Link>
       </div>
     </motion.div>

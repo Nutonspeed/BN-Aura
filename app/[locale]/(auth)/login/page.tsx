@@ -46,43 +46,15 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Keep loading=true during redirect to prevent button flicker
-        try {
-          // 1) Try JWT metadata role first (fastest, no RLS issues)
-          const metaRole = data.user.user_metadata?.role;
-          let target = '/customer';
+        const metaRole = data.user.user_metadata?.role;
+        let target = '/customer';
 
-          if (metaRole) {
-            if (metaRole === 'super_admin') { target = '/admin'; }
-            else if (metaRole === 'sales_staff') { target = '/sales'; }
-            else if (metaRole === 'beautician') { target = '/beautician'; }
-            else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(metaRole)) { target = '/clinic'; }
-          } else {
-            // 2) Fallback: query DB with real timeout (5s)
-            try {
-              const dbQuery = Promise.all([
-                supabase.from('clinic_staff').select('role, clinic_id').eq('user_id', data.user.id).eq('is_active', true).order('created_at', { ascending: true }).limit(1).maybeSingle(),
-                supabase.from('users').select('role').eq('id', data.user.id).maybeSingle()
-              ]);
-              const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
-              const [staffResult, userResult] = await Promise.race([dbQuery, timeoutPromise]) as any;
-              const staffData = staffResult?.data;
-              const userData = userResult?.data;
-              if (userData?.role === 'super_admin') { target = '/admin'; }
-              else if (staffData?.role === 'sales_staff') { target = '/sales'; }
-              else if (staffData?.role === 'beautician') { target = '/beautician'; }
-              else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(staffData?.role || '')) { target = '/clinic'; }
-            } catch {
-              // timeout or error — use default /customer
-              console.warn('Login: DB role query timed out, using default redirect');
-            }
-          }
+        if (metaRole === 'super_admin') { target = '/admin'; }
+        else if (metaRole === 'sales_staff') { target = '/sales'; }
+        else if (metaRole === 'beautician') { target = '/beautician'; }
+        else if (['clinic_owner', 'clinic_admin', 'clinic_staff'].includes(metaRole)) { target = '/clinic'; }
 
-          window.location.href = '/' + locale + target;
-        } catch (routeError) {
-          console.error('Login: Route error:', routeError);
-          window.location.href = '/' + locale + '/customer';
-        }
+        window.location.href = '/' + locale + target;
       }
     } catch (err) {
       setError('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');

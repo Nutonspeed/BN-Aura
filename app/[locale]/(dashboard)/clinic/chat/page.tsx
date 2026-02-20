@@ -113,7 +113,7 @@ export default function ChatAdvisor() {
               className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
             >
               <Sparkle weight="bold" className="w-3 h-3 animate-pulse" />
-              โหนดการให้เหตุผลทางประสาท
+              ระบบวิเคราะห์อัจฉริยะ
             </motion.div>
             <h1 className="text-3xl font-heading font-bold text-foreground uppercase tracking-tight">AI แชท <span className="text-primary">ที่ปรึกษา</span></h1>
           </div>
@@ -139,7 +139,7 @@ export default function ChatAdvisor() {
         <Card className="lg:col-span-3 rounded-[48px] border-border/50 flex flex-col overflow-hidden relative shadow-premium bg-secondary/10">
           <div className="absolute inset-0 bg-scanner-grid opacity-[0.02] pointer-events-none" />
           
-          {/* Messages Neural Area */}
+          {/* พื้นที่ข้อความ */}
           <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar relative z-10">
             <AnimatePresence initial={false}>
               {messages.map((msg) => (
@@ -194,7 +194,7 @@ export default function ChatAdvisor() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="สอบถามเกี่ยวกับเคสทางคลินิกหรือโปรโตคอลการรักษา..."
+                placeholder="สอบถามเกี่ยวกับเคสทางคลินิกหรือแผนการรักษา..."
                 className="w-full bg-card border border-border/50 rounded-[32px] py-6 pl-10 pr-24 text-foreground placeholder:text-muted-foreground/30 focus:outline-none focus:border-primary transition-all shadow-inner relative z-10 font-bold"
               />
               <Button 
@@ -228,7 +228,7 @@ export default function ChatAdvisor() {
               
               <div className="space-y-6 relative z-10">
                 <div className="p-6 bg-primary/5 rounded-[32px] border border-primary/10 shadow-inner group-hover:border-primary/20 transition-all duration-500">
-                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">โฟกัสโหนดหลัก</p>
+                  <p className="text-[9px] font-black text-primary uppercase tracking-[0.2em] mb-2">งานหลัก</p>
                   <p className="text-base font-black text-foreground tracking-tight uppercase">ศูนย์ข้อมูลตัวตน <span className="text-[10px] text-muted-foreground ml-1">#SYNC-2026</span></p>
                 </div>
                 
@@ -236,8 +236,8 @@ export default function ChatAdvisor() {
                   <p className="text-[9px] font-black text-muted-foreground uppercase tracking-[0.3em] ml-1">ประวัติการส่งข้อมูล</p>
                   <div className="space-y-3">
                     {[
-                      "การวิเคราะห์ Neural (91%)",
-                      "โปรโตคอล: Pico Rejuvenation"
+                      "การวิเคราะห์ AI (91%)",
+                      "แผนการรักษา: Pico Rejuvenation"
                     ].map((activity, i) => (
                       <div key={i} className="flex gap-3 items-center group/item">
                         <div className="w-1.5 h-1.5 rounded-full bg-primary/40 group-hover/item:scale-150 transition-transform shadow-[0_0_8px_rgba(var(--primary),0.4)]" />
@@ -254,11 +254,11 @@ export default function ChatAdvisor() {
             <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:scale-110 transition-transform">
               <Lightning weight="fill" className="w-24 h-24 text-primary" />
             </div>
-            <h3 className="text-xs font-black text-foreground uppercase tracking-[0.2em] relative z-10">ลิงก์ Prompt Neural</h3>
+            <h3 className="text-xs font-black text-foreground uppercase tracking-[0.2em] relative z-10">คำถามแนะนำ</h3>
             <div className="flex flex-wrap gap-2.5 relative z-10">
-              {['เปรียบเทียบโหนด', 
+              {['เปรียบเทียบข้อมูล', 
                 'เพิ่มประสิทธิภาพ Delta', 
-                'ตรรกะ Neural', 
+                'ตรรกะ AI', 
                 'การวิเคราะห์ทางการเงิน'
               ].map((tag) => (
                 <button 

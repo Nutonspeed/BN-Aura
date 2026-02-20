@@ -96,7 +96,7 @@ function PermissionsContent() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating system access levels, clinical role definitions, and identity security.
+            จัดการระดับสิทธิ์การเข้าถึง บทบาท และความปลอดภัยของผู้ใช้
           </motion.p>
         </div>
 
@@ -106,7 +106,7 @@ function PermissionsContent() {
             className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            Initialize Role Node
+            สร้างบทบาท Node
           </Button>
         </div>
       </div>

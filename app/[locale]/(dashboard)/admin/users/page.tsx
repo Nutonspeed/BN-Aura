@@ -155,9 +155,9 @@ export default function UserManagementPage() {
 
   const getRoleBadge = (role: string) => {
     const configs: Record<string, { bg: string; label: string }> = {
-      super_admin: { bg: 'bg-red-500/10 text-red-500', label: 'Super Admin' },
-      premium_customer: { bg: 'bg-purple-500/10 text-purple-500', label: 'Premium' },
-      free_user: { bg: 'bg-secondary text-muted-foreground', label: 'Free User' }
+      super_admin: { bg: 'bg-red-500/10 text-red-500', label: 'ผู้ดูแลระบบ' },
+      premium_customer: { bg: 'bg-purple-500/10 text-purple-500', label: 'พรีเมียม' },
+      free_user: { bg: 'bg-secondary text-muted-foreground', label: 'ผู้ใช้ฟรี' }
     };
     const config = configs[role] || configs.free_user;
     return (
@@ -271,7 +271,7 @@ export default function UserManagementPage() {
             className="flex items-center gap-2 text-primary text-[10px] font-black uppercase tracking-[0.3em]"
           >
             <Users weight="duotone" className="w-4 h-4" />
-            Identity Management
+            จัดการผู้ใช้
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
@@ -287,7 +287,7 @@ export default function UserManagementPage() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground font-light text-sm italic"
           >
-            Orchestrating global system users, access credentials, and identity protocols.
+            จัดการผู้ใช้ระบบ สิทธิ์การเข้าถึง และข้อมูลรับรอง
           </motion.p>
         </div>
         
@@ -301,7 +301,7 @@ export default function UserManagementPage() {
             className="gap-3 shadow-premium px-8 py-6 rounded-2xl text-xs font-black uppercase tracking-widest"
           >
             <Plus weight="bold" className="w-4 h-4" />
-            <span>Initialize Identity</span>
+            <span>สร้างผู้ใช้</span>
           </Button>
         </motion.div>
       </div>
@@ -309,13 +309,13 @@ export default function UserManagementPage() {
       {/* Stats Summary Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-2">
         <StatCard
-          title="Total Registry"
+          title="ผู้ใช้ทั้งหมด"
           value={users.length}
           icon={Users}
           className="p-4"
         />
         <StatCard
-          title="Active Nodes"
+          title="ผู้ใช้ที่ใช้งาน"
           value={users.filter(u => u.is_active).length}
           icon={UserCheck}
           trend="up"
@@ -323,14 +323,14 @@ export default function UserManagementPage() {
           className="p-4"
         />
         <StatCard
-          title="Privileged Access"
+          title="ผู้ดูแลระบบ"
           value={users.filter(u => u.role === 'super_admin').length}
           icon={Crown}
           iconColor="text-red-500"
           className="p-4"
         />
         <StatCard
-          title="Live Sessions"
+          title="เซสชันที่ใช้งาน"
           value={Math.floor(users.length * 0.4)}
           icon={Lightning}
           iconColor="text-emerald-500"
@@ -379,7 +379,7 @@ export default function UserManagementPage() {
               <MagnifyingGlass className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
-                placeholder="Query identity name, neural address, or access node..."
+                placeholder="ค้นหาชื่อ อีเมล หรือบทบาท..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full bg-secondary/50 border border-border rounded-2xl py-3.5 pl-12 pr-4 text-sm text-foreground focus:outline-none focus:border-primary transition-all shadow-inner relative z-10"
@@ -418,8 +418,8 @@ export default function UserManagementPage() {
             >
               <div className="space-y-6">
                 <div className="text-center">
-                  <h3 className="text-xl font-bold text-foreground uppercase tracking-tight">Initialize Identity</h3>
-                  <p className="text-sm text-muted-foreground mt-1">Create new system user with access credentials</p>
+                  <h3 className="text-xl font-bold text-foreground uppercase tracking-tight">สร้างผู้ใช้</h3>
+                  <p className="text-sm text-muted-foreground mt-1">สร้างผู้ใช้ใหม่พร้อมข้อมูลรับรอง</p>
                 </div>
 
                 <form onSubmit={handleCreateUser} className="space-y-4">
@@ -495,9 +495,7 @@ export default function UserManagementPage() {
                         </>
                       ) : (
                         <>
-                          <Plus weight="bold" className="w-4 h-4" />
-                          Initialize
-                        </>
+                          <Plus weight="bold" className="w-4 h-4" />สร้าง</>
                       )}
                     </Button>
                   </div>
@@ -516,7 +514,7 @@ export default function UserManagementPage() {
             data={filteredUsers}
             loading={loading}
             rowKey={(user) => user.id}
-            emptyMessage="No identity nodes detected in current neural registry."
+            emptyMessage="ไม่พบผู้ใช้ในระบบ"
             mobileCard={(user) => (
               <div className="space-y-5">
                 <div className="flex justify-between items-start">
@@ -529,7 +527,7 @@ export default function UserManagementPage() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <p className="font-bold text-foreground truncate uppercase tracking-tight">{user.full_name || 'ANONYMOUS_NODE'}</p>
+                      <p className="font-bold text-foreground truncate uppercase tracking-tight">{user.full_name || 'ไม่ระบุชื่อ'}</p>
                       <p className="text-[10px] font-black text-muted-foreground truncate uppercase tracking-widest">{user.email}</p>
                     </div>
                   </div>
@@ -538,7 +536,7 @@ export default function UserManagementPage() {
                 
                 <div className="grid grid-cols-2 gap-6 py-4 border-y border-border/50">
                   <div>
-                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">Initialized</p>
+                    <p className="text-[8px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">วันที่สร้าง</p>
                     <p className="text-xs font-bold text-foreground tabular-nums">{new Date(user.created_at).toLocaleDateString()}</p>
                   </div>
                   <div className="text-right">
@@ -552,7 +550,7 @@ export default function UserManagementPage() {
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-2">
                     <div className={cn("w-1.5 h-1.5 rounded-full", user.is_active ? "bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" : "bg-muted")} />
-                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{user.tier} Protocol</span>
+                    <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{user.tier} ระดับ</span>
                   </div>
                   <div className="flex gap-2">
                     <Button 

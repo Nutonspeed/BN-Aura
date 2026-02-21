@@ -254,6 +254,67 @@ export interface HealthStatus {
   }>;
 }
 
+
+// Alert store
+interface Alert {
+  id: string;
+  type: string;
+  message: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  active: boolean;
+  createdAt: string;
+  metadata?: Record<string, any>;
+}
+
+const alertStore: Alert[] = [];
+
+export function getAlerts(filters?: { severity?: 'low' | 'medium' | 'high' | 'critical'; activeOnly?: boolean }): Alert[] {
+  let result = [...alertStore];
+  if (filters?.severity) result = result.filter(a => a.severity === filters.severity);
+  if (filters?.activeOnly) result = result.filter(a => a.active);
+  return result;
+}
+
+export function createAlert(type: string, message: string, severity: 'low' | 'medium' | 'high' | 'critical', metadata?: Record<string, any>): Alert {
+  const alert: Alert = {
+    id: `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    type,
+    message,
+    severity,
+    active: true,
+    createdAt: new Date().toISOString(),
+    metadata
+  };
+  alertStore.push(alert);
+  return alert;
+}
+
+export function clearAlerts(): void {
+  alertStore.length = 0;
+}
+
+export function clearAlert(id: string): void {
+  const alert = alertStore.find(a => a.id === id);
+  if (alert) alert.active = false;
+}
+
+export function getMetrics() {
+  const stats = aiMonitor.getStatistics();
+  return {
+    totalOperations: stats.count,
+    successRate: stats.errorRate > 0 ? 100 - stats.errorRate : 100,
+    averageResponseTime: stats.avgDuration,
+    operationsPerSecond: 0,
+    p95ResponseTime: stats.p95Duration,
+    minResponseTime: stats.minDuration,
+    maxResponseTime: stats.maxDuration,
+  };
+}
+
+export function resetMetrics(): void {
+  aiMonitor.reset();
+}
+
 export function getHealthStatus(): HealthStatus {
   const stats = aiMonitor.getStatistics();
   const alerts = [];

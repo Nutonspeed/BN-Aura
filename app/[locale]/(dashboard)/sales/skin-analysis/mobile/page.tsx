@@ -268,12 +268,12 @@ export default function MobileSkinAnalysisPage() {
             <button onClick={() => { setInputMode('camera'); startCamera(); }} className="w-full py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl text-white font-bold text-lg shadow-lg shadow-purple-500/30">
               📷 ถ่ายภาพวิเคราะห์
             </button>
-            <button onClick={() => { setInputMode('upload'); fileInputRef.current?.click(); }} className="w-full py-4 bg-white/10 border border-purple-500/30 rounded-2xl text-white font-bold text-lg">
+            <label htmlFor="skin-file-input-mobile" onClick={() => setInputMode('upload')} className="cursor-pointer block w-full py-4 bg-white/10 border border-purple-500/30 rounded-2xl text-white font-bold text-lg text-center">
               📤 อัพโหลดรูปภาพ
-            </button>
+            </label>
             <p className="text-xs text-gray-500 text-center">แนะนำ: ใช้รูปจากกล้องมือถือเพื่อความละเอียดสูงขึ้น</p>
           </div>
-          <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileUpload} className="hidden" />
+          <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileUpload} className="hidden" id="skin-file-input-mobile" />
         </div>
       )}
 

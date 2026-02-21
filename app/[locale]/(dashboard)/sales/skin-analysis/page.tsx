@@ -224,6 +224,8 @@ export default function SalesAISkinAnalysisPage() {
                 <button onClick={() => { setInputMode('camera'); setUploadedImage(null); startCamera(); }} className={cn('flex-1 py-2.5 rounded-xl text-sm font-medium transition-all', inputMode === 'camera' ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25' : 'bg-white/5 text-gray-400 hover:bg-white/10')}>📷 ถ่ายภาพ</button>
                 <button onClick={() => { setInputMode('upload'); if (videoRef.current?.srcObject) { (videoRef.current.srcObject as MediaStream).getTracks().forEach(t => t.stop()); videoRef.current.srcObject = null; } }} className={cn('flex-1 py-2.5 rounded-xl text-sm font-medium transition-all', inputMode === 'upload' ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/25' : 'bg-white/5 text-gray-400 hover:bg-white/10')}>📤 อัพโหลดรูป</button>
               </div>
+              {/* File input outside overflow-hidden so click() works */}
+              <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileUpload} className="hidden" id="skin-file-input" />
               <div className="relative rounded-2xl overflow-hidden bg-black border border-purple-500/20 shadow-2xl shadow-purple-500/10">
                 {inputMode === 'camera' ? (
                   <div className="relative aspect-[4/3]">
@@ -244,11 +246,10 @@ export default function SalesAISkinAnalysisPage() {
                       </>
                     ) : (
                       <div className="text-center p-8 border-2 border-dashed border-purple-400/20 rounded-2xl hover:border-purple-400/50 transition-all m-6 group">
-                        <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={handleFileUpload} className="sr-only" />
                         <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-purple-500/10 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform">📸</div>
                         <p className="text-purple-300 font-medium mb-1">อัพโหลดรูปภาพ</p>
                         <p className="text-gray-600 text-[11px] mb-4">JPG, PNG • ขั้นต่ำ 200x200px • สูงสุด 10MB</p>
-                        <button type="button" onClick={() => fileInputRef.current?.click()} className="px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 active:scale-95">📂 เลือกไฟล์</button>
+                        <label htmlFor="skin-file-input" className="cursor-pointer inline-block px-6 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl text-sm font-medium transition-all shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:scale-105 active:scale-95">📂 เลือกไฟล์</label>
                       </div>
                     )}
                   </div>

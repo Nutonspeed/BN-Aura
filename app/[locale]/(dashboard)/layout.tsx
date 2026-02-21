@@ -185,7 +185,8 @@ export default function DashboardLayout({
       icon: Stack,
       roles: ['clinic_owner', 'clinic_admin', 'clinic_staff', 'sales_staff', 'beautician'],
       items: [
-        { icon: Users, label: 'ลูกค้า', href: '/clinic/customers', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
+        { icon: Users, label: 'ลูกค้า', href: '/clinic/customers', roles: ['clinic_owner', 'clinic_admin'] },
+        { icon: Users, label: 'ลูกค้าของฉัน', href: '/sales/customers', roles: ['sales_staff'] },
         { icon: ShoppingCart, label: 'POS ขาย', href: '/clinic/pos', roles: ['clinic_owner', 'clinic_admin', 'sales_staff'] },
         { icon: Sparkle, label: 'AI วิเคราะห์ผิว', href: '/sales/skin-analysis', roles: ['sales_staff'] },
         { icon: Clock, label: 'ประวัติ POS', href: '/clinic/pos/history', roles: ['clinic_owner', 'clinic_admin'] },
@@ -232,6 +233,16 @@ export default function DashboardLayout({
       roles: ['clinic_owner', 'clinic_admin'],
       items: [
         { icon: ChartBar, label: 'วิเคราะห์ขั้นสูง', href: '/clinic/analytics/advanced', roles: ['clinic_owner', 'clinic_admin'] },
+      ]
+    },
+    {
+      id: 'analytics_sales',
+      label: 'วิเคราะห์ & รายได้',
+      icon: ChartBar,
+      roles: ['sales_staff'],
+      items: [
+        { icon: ChartBar, label: 'Analytics & รายได้', href: '/sales/analytics', roles: ['sales_staff'] },
+          { icon: Lightning, label: 'โควต้า AI', href: '/sales/quota', roles: ['sales_staff'] },
       ]
     },
     {
@@ -406,7 +417,7 @@ export default function DashboardLayout({
                   )} />
                   {(isSidebarOpen || (isClient && window.innerWidth < 1024)) && (
                     <>
-                      <span className="font-bold text-[11px] uppercase tracking-widest flex-1 text-left">{group.label}</span>
+                      <span className="font-semibold text-sm flex-1 text-left">{group.label}</span>
                       <CaretDown className={cn(
                         "w-3.5 h-3.5 transition-transform duration-300",
                         isExpanded ? "rotate-180" : ""
